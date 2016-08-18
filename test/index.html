@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Code Book</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+
+        <script
+            type = 'text/javascript'
+            src = 'https://d3js.org/d3.v3.min.js'></script>
+        <script
+            type = 'text/javascript'
+            src = 'https://graphics.rhoworld.com/src/webcharts/webcharts.v1.6.1.min.js'></script>   
+
+        <link
+            type = 'text/css'
+            rel = 'stylesheet'
+            href = 'https://graphics.rhoworld.com/src/webcharts/webcharts.v1.css'>
+
+        <style>
+            .chart {
+                width: 250px;
+                height: 250px;
+            }
+            .grouped {
+                width: 1000px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class = 'categorical chart' id = 'a'>
+            <h3>Categorical variable</h3>
+        </div>
+        <div class = 'grouped categorical chart' id = 'b'>
+            <h3>Grouped categorical variable</h3>
+        </div>
+        <div class = 'continuous chart' id = 'c'>
+            <h3>Continuous variable</h3>
+        </div>
+        <div class = 'grouped continuous chart' id = 'd'>
+            <h3>Grouped continuous variable</h3>
+        </div>
+    </body>
+
+    <script>
+
+        /***--------------------------------------------------------------------------------------\
+          Categorical chart
+        \--------------------------------------------------------------------------------------***/
+
+            var categoricalSettings =
+                {x: {type: 'linear'
+                    ,label: 'Frequency'}
+                ,y: {column: 'Species'
+                    ,type: 'ordinal'}
+                ,marks:
+                    [   {per: ['Species']
+                        ,type: 'bar'
+                        ,summarizeX: 'count'}]};
+            var categoricalChart = webCharts
+                .createChart('#a', categoricalSettings);
+
+            d3.csv('iris.csv', function(error, data) {
+                categoricalChart.init(data);
+            });
+
+        /***--------------------------------------------------------------------------------------\
+          Grouped categorical chart
+        \--------------------------------------------------------------------------------------***/
+
+            var groupedCategoricalSettings =
+                {x: {type: 'linear'
+                    ,label: 'Frequency'}
+                ,y: {column: 'Species'
+                    ,type: 'ordinal'}
+                ,marks:
+                    [   {per: ['Species']
+                        ,type: 'bar'
+                        ,summarizeX: 'count'}]
+                ,width: 250
+                ,resizable: false};
+            var groupedCategoricalChart = webCharts
+                .createChart('#b', groupedCategoricalSettings);
+
+            d3.csv('iris.csv', function(error, data) {
+                webCharts.multiply(groupedCategoricalChart, data, 'Species');
+            });
+
+        /***--------------------------------------------------------------------------------------\
+          Continuous chart
+        \--------------------------------------------------------------------------------------***/
+
+            var continuousSettings =
+                {x: {type: 'linear'
+                    ,label: '# of Observations'}
+                ,y: {column: 'Petal.Length'
+                    ,type: 'linear'
+                    ,bin: 10}
+                ,marks:
+                    [   {per: ['Petal.Length']
+                        ,type: 'bar'
+                        ,summarizeX: 'count'
+                        ,summarizeY: 'mean'}]};
+            var continuousChart = webCharts
+                .createChart('#c', continuousSettings);
+
+            d3.csv('iris.csv', function(error, data) {
+                continuousChart.init(data);
+            });
+
+        /***--------------------------------------------------------------------------------------\
+          Grouped continuous chart
+        \--------------------------------------------------------------------------------------***/
+
+            var groupedContinuousSettings =
+                {x: {type: 'linear'
+                    ,label: '# of Observations'}
+                ,y: {column: 'Petal.Length'
+                    ,type: 'linear'
+                    ,bin: 10}
+                ,marks:
+                    [   {per: ['Petal.Length']
+                        ,type: 'bar'
+                        ,summarizeX: 'count'
+                        ,summarizeY: 'mean'}]
+                ,width: 250
+                ,resizable: false};
+            var groupedContinuousChart = webCharts
+                .createChart('#d', groupedContinuousSettings);
+
+            d3.csv('iris.csv', function(error, data) {
+                webCharts.multiply(groupedContinuousChart, data, 'Species');
+            });
+
+    </script>
+</html>
