@@ -5,5 +5,5 @@ module.exports = {
     webcharts: 'webCharts',
     d3: 'd3'
   },
-  moduleName: 'yourModuleName'
+  moduleName: 'web-codebook'
 }; 
