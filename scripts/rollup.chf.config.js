@@ -1,3 +1,5 @@
+import babel from 'rollup-plugin-babel';
+
 module.exports = {
   entry: './src/chartfoundry/util/Renderer.js',
   format: 'umd',
@@ -6,7 +8,7 @@ module.exports = {
     d3: 'd3',
     react: 'React'
   },
-  moduleName: 'yourModuleName',
+  moduleName: 'web-codebook',
   plugins: [
     babel({
       exclude: 'node_modules/**',
