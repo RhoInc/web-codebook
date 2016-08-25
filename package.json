@@ -1,7 +1,7 @@
 {
-  "name": "YourProjectNameHere",
-  "version": "0.0.0",
-  "description": "Your Project Description Here",
+  "name": "Web-codebook",
+  "version": "0.0.1",
+  "description": "A Web-codebook is a report which provides information about the variables in a dataset",
   "main": "./build/yourFunction-chf.js",
   "scripts": {
     "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/yourFunction.js",
