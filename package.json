@@ -17,7 +17,7 @@
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
   "scripts": {
-    "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/codebook.js"
+    "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/webcodebook.js"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",
