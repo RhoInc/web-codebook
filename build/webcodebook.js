@@ -1,191 +1,247 @@
 var webcodebook = function () {
-    'use strict';
+	'use strict';
 
-    /*------------------------------------------------------------------------------------------------\
-      Initialize codebook
-    \------------------------------------------------------------------------------------------------*/
+	/*------------------------------------------------------------------------------------------------\
+   Initialize codebook
+ \------------------------------------------------------------------------------------------------*/
 
-    function init(data) {
-        var settings = this.config;
+	function init(data) {
+		var settings = this.config;
 
-        //create chart wrapper in specified div
-        this.wrap = d3.select(this.element).append('div');
-        this.wrap.attr("class", "web-codebook");
+		//create chart wrapper in specified div
+		this.wrap = d3.select(this.element).append('div').attr("class", "web-codebook");
 
-        //save raw data
-        this.data.raw = data;
+		//save raw data
+		this.data.raw = data;
 
-        //settings and defaults
-        this.util.setDefaults(this);
-        this.layout();
+		//settings and defaults
+		this.util.setDefaults(this);
+		this.layout();
 
-        //prepare the data summaries
-        this.data.summary = this.data.makeSummary(data);
+		//prepare the data summaries
+		this.data.summary = this.data.makeSummary(data);
 
-        //stub a data summary 
-        /*
-        this.summary_data = [
-            {value_col:"sex"},
-            {value_col:"race"},
-            {value_col:"age"}
-        ]
-        */
+		//draw controls
 
-        //draw controls
+		//initialize and then draw the codebook
+		// this.summaryTable.init()
+		this.summaryTable.draw(this);
+	}
 
-        //initialize and then draw the codebook
-        this.summaryTable.init();
-        this.summaryTable.draw(this);
-    }
+	/*------------------------------------------------------------------------------------------------\
+   Generate HTML containers.
+ \------------------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------------------\
-      Generate HTML containers.
-    \------------------------------------------------------------------------------------------------*/
+	function layout() {
+		this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
+		this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable');
+	}
 
-    function layout() {
-        this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
-        this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable');
-    }
+	function init$1(chart) {}
 
-    function init$1(chart) {}
+	const controls = {
+		init: init$1
+	};
 
-    const controls = {
-        init: init$1
-    };
+	/*------------------------------------------------------------------------------------------------\
+ intialize the summary table
+ \------------------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------------------\
-    intialize the summary table
-    \------------------------------------------------------------------------------------------------*/
+	function init$2(chart) {}
 
-    function init$2(chart) {}
+	/*------------------------------------------------------------------------------------------------\
+   draw/update the summaryTable
+ \------------------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------------------\
-      draw/update the summaryTable
-    \------------------------------------------------------------------------------------------------*/
+	function draw(chart) {
+		console.log(chart);
+		//enter/update/exit for variableDivs
 
-    function draw(chart) {
-        console.log(chart);
-        //enter/update/exit for variableDivs
+		//BIND the newest data
+		var varRows = chart.summaryTable.wrap.selectAll("div.variable").data(chart.data.summary, d => d.value_col);
 
-        //BIND the newest data
-        var varRows = chart.summaryTable.wrap.selectAll("div.variable").data(chart.data.summary, d => d.value_col);
+		//ENTER
+		varRows.enter().append("div").attr("class", "variable-row");
 
-        //ENTER
-        varRows.enter().append("div").attr("class", "variable-row");
+		//ENTER + Update
+		varRows.each(chart.summaryTable.renderRow);
 
-        //ENTER + Update
-        varRows.each(chart.summaryTable.renderRow);
+		//EXIT
+		varRows.exit().remove();
+	}
 
-        //EXIT
-        varRows.exit().remove();
-    }
+	/*------------------------------------------------------------------------------------------------\
+   destroy the summary table
+ \------------------------------------------------------------------------------------------------*/
 
-    /*------------------------------------------------------------------------------------------------\
-      destroy the summary table
-    \------------------------------------------------------------------------------------------------*/
+	function destroy(chart) {}
 
-    function destroy(chart) {}
+	function makeOverview() {
+		const aspect = 8;
+		const margin = { left: 250,
+			right: 25 };
 
-    /*------------------------------------------------------------------------------------------------\
-    intialize the summary table
-    \------------------------------------------------------------------------------------------------*/
+		if (this.data()[0].type === 'categorical') {
 
-    function renderRow(d) {
-        var rowWrap = d3.select(this);
-        rowWrap.append("div").attr("class", "row-overview").text(d => d.value_col);
-        rowWrap.append("div").attr("class", "row-details");
-    }
+			const data = this.data()[0].statistics.values.sort((a, b) => a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1).slice(0, 5);
+			const webChartContainer = this.node();
+			const webChartSettings = { x: { column: 'prop_n',
+					type: 'linear',
+					label: '',
+					format: '%',
+					domain: [0, 1] },
+				y: { column: 'key',
+					type: 'ordinal',
+					label: '',
+					order: data.map(d => d.key).reverse() },
+				marks: [{ type: 'circle',
+					per: ['key'],
+					summarizeX: 'mean',
+					tooltip: '[key]: [n] ([prop_n])' }],
+				gridlines: 'xy',
+				aspect: aspect,
+				margin: margin
+			};
+			const webChart = new webCharts.createChart(webChartContainer, webChartSettings);
 
-    const summaryTable = { init: init$2,
-        draw: draw,
-        destroy: destroy,
-        renderRow: renderRow
-    };
+			webChart.init(data);
+		} else {
 
-    function setDefaults(chart) {}
+			const data = this.data()[0].values;
+			data.forEach((d, i) => {
+				data[i] = { value: d };
+			});
+			const webChartContainer = this.node();
+			const webChartSettings = { x: { column: 'value',
+					type: 'linear',
+					label: '',
+					bin: 25 },
+				y: { column: 'value',
+					type: 'linear',
+					label: '',
+					domain: [0, null] },
+				marks: [{ type: 'bar',
+					per: ['value'],
+					summarizeX: 'mean',
+					summarizeY: 'count' }],
+				gridlines: 'y',
+				aspect: aspect,
+				margin: margin
+			};
+			const webChart = new webCharts.createChart(webChartContainer, webChartSettings);
 
-    const util = {
-        setDefaults: setDefaults
-    };
+			webChart.init(data);
+		}
+	}
 
-    function makeSummary(data) {
+	/*------------------------------------------------------------------------------------------------\
+ intialize the summary table
+ \------------------------------------------------------------------------------------------------*/
 
-        function determineType(vector) {
-            const numericValues = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d));
+	function renderRow(d) {
+		var rowWrap = d3.select(this);
+		rowWrap.append("div").attr("class", "row-overview").call(makeOverview);
+		//rowWrap.append("div").attr("class","row-details").call(makeDetails)
+	}
 
-            return numericValues.length === vector.length && numericValues.length > 4 ? 'continuous' : 'categorical';
-        }
+	const summaryTable = { init: init$2,
+		draw: draw,
+		destroy: destroy,
+		renderRow: renderRow
+	};
 
-        const summarize = {
+	function setDefaults(chart) {}
 
-            categorical: function (vector) {
-                const values = d3.nest().key(d => d).rollup(d => {
-                    return {
-                        n: d.length,
-                        prop: d.length / vector.length };
-                }).entries(vector);
+	const util = {
+		setDefaults: setDefaults
+	};
 
-                values.forEach(value => {
-                    for (var statistic in value.values) {
-                        value[statistic] = value.values[statistic];
-                    }
-                    delete value.values;
-                });
+	function makeSummary(data) {
 
-                return values;
-            },
+		function determineType(vector) {
+			const numericValues = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d));
 
-            continuous: function (vector) {
-                const nonMissing = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d)).map(d => +d).sort();
-                const statistics = {};
-                statistics.n = nonMissing.length;
-                statistics.nMissing = vector.length - statistics.n;
-                statistics.mean = d3.mean(nonMissing);
-                const quantiles = [['min', 0], ['5th percentile', .05], ['1st quartile', .25], ['median', .5], ['3rd quartile', .75], ['95th percentile', .95], ['max', 1]];
-                quantiles.forEach(quantile => {
-                    let statistic = quantile[0];
-                    statistics[statistic] = d3.quantile(nonMissing, quantile[1]);
-                });
+			return numericValues.length === vector.length && numericValues.length > 4 ? 'continuous' : 'categorical';
+		}
 
-                return statistics;
-            }
+		const summarize = {
 
-        };
+			categorical: function (vector) {
+				const statistics = {};
+				statistics.N = vector.length;
+				const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== 'NA');
+				statistics.n = nonMissing.length;
+				statistics.nMissing = vector.length - statistics.n;
+				statistics.values = d3.nest().key(d => d).rollup(d => {
+					return {
+						n: d.length,
+						prop_N: d.length / statistics.N,
+						prop_n: d.length / statistics.n };
+				}).entries(nonMissing);
 
-        const variables = Object.keys(data[0]);
+				statistics.values.forEach(value => {
+					for (var statistic in value.values) {
+						value[statistic] = value.values[statistic];
+					}
+					delete value.values;
+				});
 
-        variables.forEach((variable, i) => {
-            variables[i] = { value_col: variable };
-            variables[i].values = data.map(d => d[variable]).sort();
-            variables[i].type = determineType(variables[i].values);
+				return statistics;
+			},
 
-            if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
-        });
+			continuous: function (vector) {
+				const statistics = {};
+				statistics.N = vector.length;
+				const nonMissing = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d)).map(d => +d).sort();
+				statistics.n = nonMissing.length;
+				statistics.nMissing = vector.length - statistics.n;
+				statistics.mean = d3.mean(nonMissing);
+				statistics.SD = d3.deviation(nonMissing);
+				const quantiles = [['min', 0], ['5th percentile', .05], ['1st quartile', .25], ['median', .5], ['3rd quartile', .75], ['95th percentile', .95], ['max', 1]];
+				quantiles.forEach(quantile => {
+					let statistic = quantile[0];
+					statistics[statistic] = d3.quantile(nonMissing, quantile[1]);
+				});
 
-        return variables;
-    }
+				return statistics;
+			}
 
-    const data = {
-        makeSummary: makeSummary
-    };
+		};
 
-    function createChart(element = 'body', config) {
-        let chart = { element: element,
-            config: config,
-            init: init,
-            layout: layout,
-            controls: controls,
-            summaryTable: summaryTable,
-            data: data,
-            util: util };
+		const variables = Object.keys(data[0]);
 
-        return chart;
-    }
+		variables.forEach((variable, i) => {
+			variables[i] = { value_col: variable };
+			variables[i].values = data.map(d => d[variable]).sort();
+			variables[i].type = determineType(variables[i].values);
 
-    var index = {
-        createChart
-    };
+			if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
+		});
 
-    return index;
+		return variables;
+	}
+
+	const data = {
+		makeSummary: makeSummary
+	};
+
+	function createChart(element = 'body', config) {
+		let chart = { element: element,
+			config: config,
+			init: init,
+			layout: layout,
+			controls: controls,
+			summaryTable: summaryTable,
+			data: data,
+			util: util };
+
+		return chart;
+	}
+
+	var index = {
+		createChart
+	};
+
+	return index;
 }();
 
