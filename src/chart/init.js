@@ -3,5 +3,25 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function init(data) {
-    console.log("initializing!")
+    var settings = this.config;
+
+    //create chart wrapper in specified div
+    this.wrap = d3.select(this.element).append('div');
+    this.wrap.attr("class","web-codebook")
+
+    //save raw data
+    this.raw_data = data; 
+
+     //settings and defaults
+    this.util.setDefaults(this)
+    this.layout();
+
+    //prepare the data summaries
+
+    //draw controls
+
+    //initialize and then draw the codebook
+    this.summaryTable.init()
+    this.summaryTable.draw()
+
 }

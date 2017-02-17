@@ -2,16 +2,11 @@
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-export function layout() {
-    var wrapper = this.wrap
-        .append('div')
-        .attr('class', 'web-codebook')
-            .append('div')
-            .attr('class', 'table-wrapper');
-    wrapper
+export function layout() {  
+    this.controls.wrap = this.wrap
         .append('div')
         .attr('class', 'controls');
-    wrapper
+    this.table.wrap = this.wrap
         .append('div')
         .attr('class', 'summaryTable');
 }

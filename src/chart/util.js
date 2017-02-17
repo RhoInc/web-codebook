@@ -2,4 +2,8 @@
   Define util object.
 \------------------------------------------------------------------------------------------------*/
 
-export const util ={};
+import { setDefaults } from './util/setDefaults'
+
+export const util ={
+	setDefaults:setDefaults
+};

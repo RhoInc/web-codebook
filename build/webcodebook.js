@@ -6,7 +6,26 @@ var webcodebook = function () {
     \------------------------------------------------------------------------------------------------*/
 
     function init(data) {
-        console.log("initializing!");
+        var settings = this.config;
+
+        //create chart wrapper in specified div
+        this.wrap = d3.select(this.element).append('div');
+        this.wrap.attr("class", "web-codebook");
+
+        //save raw data
+        this.raw_data = data;
+
+        //settings and defaults
+        this.util.setDefaults(this);
+        this.layout();
+
+        //prepare the data summaries
+
+        //draw controls
+
+        //initialize and then draw the codebook
+        this.summaryTable.init();
+        this.summaryTable.draw();
     }
 
     /*------------------------------------------------------------------------------------------------\
@@ -14,9 +33,8 @@ var webcodebook = function () {
     \------------------------------------------------------------------------------------------------*/
 
     function layout() {
-        var wrapper = this.wrap.append('div').attr('class', 'web-codebook').append('div').attr('class', 'table-wrapper');
-        wrapper.append('div').attr('class', 'controls');
-        wrapper.append('div').attr('class', 'summaryTable');
+        this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
+        this.table.wrap = this.wrap.append('div').attr('class', 'summaryTable');
     }
 
     function init$1(chart) {}
@@ -35,7 +53,9 @@ var webcodebook = function () {
       draw/update the summaryTable
     \------------------------------------------------------------------------------------------------*/
 
-    function draw(chart) {}
+    function draw(chart) {
+        console.log(chart);
+    }
 
     /*------------------------------------------------------------------------------------------------\
       destroy the summary table
@@ -48,11 +68,11 @@ var webcodebook = function () {
         destroy: destroy
     };
 
-    /*------------------------------------------------------------------------------------------------\
-      Define util object.
-    \------------------------------------------------------------------------------------------------*/
+    function setDefaults(chart) {}
 
-    const util = {};
+    const util = {
+        setDefaults: setDefaults
+    };
 
     function createChart(element = 'body', config) {
         let chart = { element: element,
