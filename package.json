@@ -1,23 +1,34 @@
 {
-  "name": "Web-codebook",
-  "version": "0.0.1",
-  "description": "A Web-codebook is a report which provides information about the variables in a dataset",
-  "main": "./build/yourFunction-chf.js",
-  "scripts": {
-    "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/yourFunction.js",
-    "build-chf": "rollup -c ./scripts/rollup.chf.config.js  > ./build/yourFunction-chf.js"
-  },
-  "author": "Rho, Inc.",
+  "name": "web-codebook",
+  "version": "0.0.0",
+  "description": "Interactive data set summaries.",
+  "keywords": [
+    "data",
+    "summary",
+    "interactive",
+    "codebook"
+  ],
+  "homepage": "https://github.com/rhoinc/web-codebook",
   "license": "MIT",
-  "dependencies": {
-    "d3": "^3.5.14",
-    "react": "^0.14.7",
-    "webcharts": "^1.3.2"
+  "author": "Rho, Inc.",
+  "main": "build/codebook.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rhoinc/web-codebook.git"
+  },
+  "scripts": {
+    "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/codebook.js"
   },
   "devDependencies": {
-    "babel": "^5.8.35",
+    "babel-cli": "^6.0.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "rollup": "^0.25.1",
     "rollup-plugin-babel": "^2.4.0"
+  },
+  "dependencies": {
+    "d3": "~3"
+  },
+  "bugs": {
+    "url": "https://github.com/rhoinc/web-codebook/issues"
   }
 }
