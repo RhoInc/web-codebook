@@ -64,7 +64,7 @@ var webcodebook = function () {
         var varRows = chart.summaryTable.wrap.selectAll("div.variable").data(chart.summary_data, d => d.value_col);
 
         //ENTER
-        varRows.enter().append("div").attr("class", "variable");
+        varRows.enter().append("div").attr("class", "variable-row");
 
         //ENTER + Update
         varRows.each(chart.summaryTable.renderRow);
@@ -84,8 +84,9 @@ var webcodebook = function () {
     \------------------------------------------------------------------------------------------------*/
 
     function renderRow(d) {
-        console.log(this);
-        console.log(d);
+        var rowWrap = d3.select(this);
+        rowWrap.append("div").classed("row-overview");
+        rowWrap.append("div").classed("row-details");
     }
 
     const summaryTable = { init: init$2,
