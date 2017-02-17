@@ -1,9 +1,9 @@
 module.exports = {
-  entry: './src/wrapper.js',
+  entry: './src/index.js',
   format: 'iife',
   globals: {
     webcharts: 'webCharts',
     d3: 'd3'
   },
-  moduleName: 'web-codebook'
+  moduleName: 'webcodebook'
 }; 
