@@ -3,6 +3,8 @@ import { layout } from './chart/layout';
 import { controls } from './chart/controls';
 import { summaryTable } from './chart/summaryTable';
 import { util } from './chart/util';
+import { data } from './chart/data';
+
 
 export function createChart(element = 'body', config) {
     let chart =
@@ -12,6 +14,7 @@ export function createChart(element = 'body', config) {
         ,layout: layout
         ,controls: controls
         ,summaryTable: summaryTable
+        ,data:data
         ,util: util};
 
     return chart;

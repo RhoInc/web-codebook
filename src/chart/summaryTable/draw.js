@@ -9,7 +9,7 @@ export function draw(chart) {
 	//BIND the newest data
 	var varRows = chart.summaryTable.wrap
 	.selectAll("div.variable")
-	.data(chart.summary_data, d=>d.value_col)
+	.data(chart.data.summary, d=>d.value_col)
 
 	//ENTER
 	varRows.enter()
