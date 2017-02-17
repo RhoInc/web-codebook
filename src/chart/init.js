@@ -18,10 +18,17 @@ export function init(data) {
 
     //prepare the data summaries
 
+    //stub a data summary 
+    this.summary_data = [
+        {value_col:"sex"},
+        {value_col:"race"},
+        {value_col:"age"}
+    ]
+
     //draw controls
 
     //initialize and then draw the codebook
     this.summaryTable.init()
-    this.summaryTable.draw()
+    this.summaryTable.draw(this)
 
 }

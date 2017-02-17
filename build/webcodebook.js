@@ -21,11 +21,14 @@ var webcodebook = function () {
 
         //prepare the data summaries
 
+        //stub a data summary 
+        this.summary_data = [{ value_col: "sex" }, { value_col: "race" }, { value_col: "age" }];
+
         //draw controls
 
         //initialize and then draw the codebook
         this.summaryTable.init();
-        this.summaryTable.draw();
+        this.summaryTable.draw(this);
     }
 
     /*------------------------------------------------------------------------------------------------\
@@ -34,7 +37,7 @@ var webcodebook = function () {
 
     function layout() {
         this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
-        this.table.wrap = this.wrap.append('div').attr('class', 'summaryTable');
+        this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable');
     }
 
     function init$1(chart) {}
@@ -55,6 +58,19 @@ var webcodebook = function () {
 
     function draw(chart) {
         console.log(chart);
+        //enter/update/exit for variableDivs
+
+        //BIND the newest data
+        var varRows = chart.summaryTable.wrap.selectAll("div.variable").data(chart.summary_data, d => d.value_col);
+
+        //ENTER
+        varRows.enter().append("div").attr("class", "variable");
+
+        //ENTER + Update
+        varRows.each(chart.summaryTable.renderRow);
+
+        //EXIT
+        varRows.exit().remove();
     }
 
     /*------------------------------------------------------------------------------------------------\
@@ -63,9 +79,19 @@ var webcodebook = function () {
 
     function destroy(chart) {}
 
+    /*------------------------------------------------------------------------------------------------\
+    intialize the summary table
+    \------------------------------------------------------------------------------------------------*/
+
+    function renderRow(d) {
+        console.log(this);
+        console.log(d);
+    }
+
     const summaryTable = { init: init$2,
         draw: draw,
-        destroy: destroy
+        destroy: destroy,
+        renderRow: renderRow
     };
 
     function setDefaults(chart) {}
