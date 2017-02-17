@@ -1,19 +1,19 @@
 div{
 	border:1px solid black;
-	padding:1em;
+	padding:1%;
 }
 
 /*Codebook layout*/
-.web-codebook .variable-row{
+.web-codebook .variable-row div{
 	display:inline-block;
 }
 
 .web-codebook .variable-row .row-overview{
-	width:200px;
+	width:25%;
 	border:1px solid green;
 }
 .web-codebook .variable-row .row-details{
-	width:600px;
+	width:65%;
 	border:1px solid green;
 }
 

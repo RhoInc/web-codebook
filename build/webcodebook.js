@@ -85,8 +85,8 @@ var webcodebook = function () {
 
     function renderRow(d) {
         var rowWrap = d3.select(this);
-        rowWrap.append("div").classed("row-overview");
-        rowWrap.append("div").classed("row-details");
+        rowWrap.append("div").attr("class", "row-overview");
+        rowWrap.append("div").attr("class", "row-details");
     }
 
     const summaryTable = { init: init$2,
