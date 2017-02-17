@@ -2,3 +2,18 @@ div{
 	border:1px solid black;
 	padding:1em;
 }
+
+/*Codebook layout*/
+.web-codebook .variable-row{
+	display:inline-block;
+}
+
+.web-codebook .variable-row .row-overview{
+	width:200px;
+	border:1px solid green;
+}
+.web-codebook .variable-row .row-details{
+	width:600px;
+	border:1px solid green;
+}
+

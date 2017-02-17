@@ -14,7 +14,7 @@ export function draw(chart) {
 	//ENTER
 	varRows.enter()
 	.append("div")
-	.attr("class","variable")
+	.attr("class","variable-row")
 	
 	//ENTER + Update
 	varRows.each(chart.summaryTable.renderRow)
