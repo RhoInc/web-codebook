@@ -9,8 +9,7 @@ var webcodebook = function () {
         var settings = this.config;
 
         //create chart wrapper in specified div
-        this.wrap = d3.select(this.element).append('div');
-        this.wrap.attr("class", "web-codebook");
+        this.wrap = d3.select(this.element).append('div').attr("class", "web-codebook");
 
         //save raw data
         this.data.raw = data;
@@ -22,19 +21,10 @@ var webcodebook = function () {
         //prepare the data summaries
         this.data.summary = this.data.makeSummary(data);
 
-        //stub a data summary 
-        /*
-        this.summary_data = [
-            {value_col:"sex"},
-            {value_col:"race"},
-            {value_col:"age"}
-        ]
-        */
-
         //draw controls
 
         //initialize and then draw the codebook
-        this.summaryTable.init();
+        // this.summaryTable.init()
         this.summaryTable.draw(this);
     }
 
@@ -86,14 +76,25 @@ var webcodebook = function () {
 
     function destroy(chart) {}
 
-    /*------------------------------------------------------------------------------------------------\
-    intialize the summary table
-    \------------------------------------------------------------------------------------------------*/
+    function rowDetails(d) {
+        console.log(d);
+        var wrap = d3.select(this);
+        var title = wrap.append("div").html(d => d.value_col + " <span class='small'>" + d.type + "</span>");
+        var stats_div = wrap.append("div").attr("class", "stat-row");
+        var statNames = Object.keys(d.statistics).filter(f => f != "values");
+        var statList = statNames.map(function (stat) {
+            return { key: stat, value: d.statistics[stat] };
+        });
+
+        var stats = stats_div.selectAll("div").data(statList).enter().append("div").attr('class', "stat");
+        stats.append("div").text(d => d.key).attr("class", "label");
+        stats.append("div").text(d => d.value).attr("class", "value");
+    }
 
     function renderRow(d) {
         var rowWrap = d3.select(this);
-        rowWrap.append("div").attr("class", "row-overview").text(d => d.value_col);
-        rowWrap.append("div").attr("class", "row-details");
+        rowWrap.append("div").attr("class", "row-overview section");
+        rowWrap.append("div").attr("class", "row-details section").each(rowDetails);
     }
 
     const summaryTable = { init: init$2,
@@ -119,28 +120,36 @@ var webcodebook = function () {
         const summarize = {
 
             categorical: function (vector) {
-                const values = d3.nest().key(d => d).rollup(d => {
+                const statistics = {};
+                statistics.N = vector.length;
+                const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== 'NA');
+                statistics.n = nonMissing.length;
+                statistics.nMissing = vector.length - statistics.n;
+                statistics.values = d3.nest().key(d => d).rollup(d => {
                     return {
                         n: d.length,
-                        prop: d.length / vector.length };
-                }).entries(vector);
+                        prop_N: d.length / statistics.N,
+                        prop_n: d.length / statistics.n };
+                }).entries(nonMissing);
 
-                values.forEach(value => {
+                statistics.values.forEach(value => {
                     for (var statistic in value.values) {
                         value[statistic] = value.values[statistic];
                     }
                     delete value.values;
                 });
 
-                return values;
+                return statistics;
             },
 
             continuous: function (vector) {
-                const nonMissing = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d)).map(d => +d).sort();
                 const statistics = {};
+                statistics.N = vector.length;
+                const nonMissing = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d)).map(d => +d).sort();
                 statistics.n = nonMissing.length;
                 statistics.nMissing = vector.length - statistics.n;
                 statistics.mean = d3.mean(nonMissing);
+                statistics.SD = d3.deviation(nonMissing);
                 const quantiles = [['min', 0], ['5th percentile', .05], ['1st quartile', .25], ['median', .5], ['3rd quartile', .75], ['95th percentile', .95], ['max', 1]];
                 quantiles.forEach(quantile => {
                     let statistic = quantile[0];
