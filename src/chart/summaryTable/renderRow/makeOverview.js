@@ -1,18 +1,18 @@
-export default function makeOverview() {
-    const aspect = 8;
+export function makeOverview(d) {
+    //const aspect = 1.2;
     const margin =
-        {left: 250
+        {left: 100
         ,right: 25};
 
-    if (this.data()[0].type === 'categorical') {
+    if (d.type === 'categorical') {
 
-        const data = this.data()[0].statistics.values
+        const data = d.statistics.values
             .sort((a,b) =>
                 a.prop_n > b.prop_n ? -2 :
                 a.prop_n < b.prop_n ?  2 :
                     a.key < b.key ? -1 : 1)
             .slice(0,5);
-        const webChartContainer = this.node();
+        const webChartContainer = d3.select(this).node();
         const webChartSettings =
             {x: {column: 'prop_n'
                 ,type: 'linear'
@@ -30,22 +30,21 @@ export default function makeOverview() {
                     ,tooltip: '[key]: [n] ([prop_n])'}
                 ]
             ,gridlines: 'xy'
-            ,aspect: aspect
+            ,resizable:true
+           // ,aspect: aspect
             ,margin: margin
             };
-        const webChart = new webCharts.createChart
-            (webChartContainer
-            ,webChartSettings);
+        const webChart = new webCharts.createChart(webChartContainer,webChartSettings);
 
             webChart.init(data);
 
     } else {
 
-        const data = this.data()[0].values;
+        const data = d.values;
         data.forEach((d,i) => {
             data[i] = {value: d};
         });
-        const webChartContainer = this.node();
+        const webChartContainer = d3.select(this).node();
         const webChartSettings =
             {x: {column: 'value'
                 ,type: 'linear'
@@ -62,7 +61,7 @@ export default function makeOverview() {
                     ,summarizeY: 'count'}
                 ]
             ,gridlines: 'y'
-            ,aspect: aspect
+            //,aspect: aspect
             ,margin: margin
             };
         const webChart = new webCharts.createChart

@@ -3,18 +3,25 @@
 	size:0.5em;
 	color:#999;
 }
+
 /*Codebook layout*/
+.web-codebook .variable-row div.section{
+	padding-top:1em;
+	border-top: 1px dotted #999;
+}
+
+.web-codebook .variable-row div.section{
+	vertical-align: top;
+}
 .web-codebook .variable-row div.section{
 	display:inline-block;
 }
 
 .web-codebook .variable-row .row-overview{
 	width:25%;
-	border:1px solid green;
 }
 .web-codebook .variable-row .row-details{
 	width:65%;
-	border:1px solid green;
 }
 
 /*Codebook Layout - stat row*/
@@ -25,7 +32,6 @@
 .web-codebook .variable-row .row-details .stat-row .stat{
 	display:inline-block;
 	padding-right:.5em;
-
 }
 
 .web-codebook .variable-row .row-details .stat-row .stat{

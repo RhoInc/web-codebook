@@ -1,4 +1,4 @@
-export function rowDetails(d) {
+export function makeDetails(d) {
 	console.log(d)
 	var wrap = d3.select(this)
 	//Render Variable Name/Type

@@ -1,13 +1,12 @@
-import makeOverview from '.makeOverview.js';
-import rowDetails from 'rowDetails.js';
+import { makeOverview } from './renderRow/makeOverview.js';
+import { makeDetails } from './renderRow/makeDetails.js';
 
 /*------------------------------------------------------------------------------------------------\
 intialize the summary table
 \------------------------------------------------------------------------------------------------*/
-import { rowDetails } from './rowDetails';
 
 export function renderRow(d) {
   var rowWrap = d3.select(this)
-  rowWrap.append("div").attr("class","row-overview section").call(makeOverview)
-  rowWrap.append("div").attr("class","row-details section").each(rowDetails)
+  rowWrap.append("div").attr("class","row-overview section").each(makeOverview)
+  rowWrap.append("div").attr("class","row-details section").each(makeDetails)
 }
