@@ -26,7 +26,8 @@
     "rollup-plugin-babel": "^2.4.0"
   },
   "dependencies": {
-    "d3": "~3"
+    "d3": "~3",
+    "webcharts": "~1.7"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"
