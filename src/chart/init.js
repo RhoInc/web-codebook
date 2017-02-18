@@ -19,6 +19,7 @@ export function init(data) {
     this.data.summary = this.data.makeSummary(data)
 
     //draw controls
+    this.util.makeAutomaticFilters(this)
     this.controls.init(this)
 
     //initialize and then draw the codebook

@@ -3,7 +3,11 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { setDefaults } from './util/setDefaults'
+import { makeAutomaticFilters } from './util/makeAutomaticFilters'
+
 
 export const util ={
-	setDefaults:setDefaults
+	setDefaults:setDefaults,
+	makeAutomaticFilters:makeAutomaticFilters
+
 };
