@@ -1,10 +1,10 @@
-div{
-	border:1px solid black;
-	padding:1%;
-}
 
+.small{
+	size:0.5em;
+	color:#999;
+}
 /*Codebook layout*/
-.web-codebook .variable-row div{
+.web-codebook .variable-row div.section{
 	display:inline-block;
 }
 
@@ -15,5 +15,27 @@ div{
 .web-codebook .variable-row .row-details{
 	width:65%;
 	border:1px solid green;
+}
+
+/*Codebook Layout - stat row*/
+.web-codebook .variable-row .row-details>div{
+	padding-bottom:0.5em;
+}
+
+.web-codebook .variable-row .row-details .stat-row .stat{
+	display:inline-block;
+	padding-right:.5em;
+
+}
+
+.web-codebook .variable-row .row-details .stat-row .stat{
+text-align: center
+}
+
+.web-codebook .variable-row .row-details .stat-row .stat .label{
+	display:inline-block;
+	padding-right:.2em;
+	font-size:0.5em;
+	font-color:#999;
 }
 
