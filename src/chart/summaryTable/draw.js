@@ -3,9 +3,10 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function draw(chart) {
+	//update Summary Text
+	chart.summaryTable.updateSummaryText(chart)
+
 	//enter/update/exit for variableDivs
-	console.log(chart.data.summary)
-	
 	//BIND the newest data
 	var varRows = chart.summaryTable.wrap
 	.selectAll("div.variable-row")

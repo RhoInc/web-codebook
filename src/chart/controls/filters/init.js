@@ -56,17 +56,17 @@ export function init(chart) {
         .attr('selected', d=>d.selected?'selected':null);
 
   //Initialize event listeners
-    filterCustom.on('change', function() {
-        console.log('filtering')
-        
+    filterCustom.on('change', function() {        
         // flag the selected options in the config
         d3.select(this).selectAll('option').each(function(option_d) {
             option_d.selected = d3.select(this).property('selected')
         })
 
+        //update the chart
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
-        console.log(chart.data.raw.length+"->"+chart.data.filtered.length)
-        chart.data.summary = chart.data.makeSummary(chart.data.filtered)
+        chart.data.summary = chart.data.filtered.length>0?
+            chart.data.makeSummary(chart.data.filtered):
+            []
         chart.summaryTable.draw(chart)
     });
 }

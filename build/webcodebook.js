@@ -35,7 +35,10 @@ var webcodebook = function () {
 
     function layout() {
         this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
+
         this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable');
+
+        this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText");
     }
 
     function init$1(chart) {
@@ -98,16 +101,14 @@ var webcodebook = function () {
 
         //Initialize event listeners
         filterCustom.on('change', function () {
-            console.log('filtering');
-
             // flag the selected options in the config
             d3.select(this).selectAll('option').each(function (option_d) {
                 option_d.selected = d3.select(this).property('selected');
             });
 
+            //update the chart
             chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-            console.log(chart.data.raw.length + "->" + chart.data.filtered.length);
-            chart.data.summary = chart.data.makeSummary(chart.data.filtered);
+            chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered) : [];
             chart.summaryTable.draw(chart);
         });
     }
@@ -130,9 +131,10 @@ var webcodebook = function () {
     \------------------------------------------------------------------------------------------------*/
 
     function draw(chart) {
-        //enter/update/exit for variableDivs
-        console.log(chart.data.summary);
+        //update Summary Text
+        chart.summaryTable.updateSummaryText(chart);
 
+        //enter/update/exit for variableDivs
         //BIND the newest data
         var varRows = chart.summaryTable.wrap.selectAll("div.variable-row").data(chart.data.summary, function (d) {
             return d.value_col;
@@ -258,17 +260,32 @@ var webcodebook = function () {
     \------------------------------------------------------------------------------------------------*/
 
     function renderRow(d) {
-        console.log("rendering row for" + d.value_col);
         var rowWrap = d3.select(this);
         rowWrap.selectAll("*").remove();
         rowWrap.append("div").attr("class", "row-overview section").each(makeOverview);
         rowWrap.append("div").attr("class", "row-details section").each(makeDetails);
     }
 
+    function updateSummaryText(chart) {
+        //Chart Summary Span
+        if (chart.data.summary.length > 0) {
+            var nCols = chart.data.summary.length;
+            var nShown = chart.data.summary[0].statistics.N;
+            var nTot = chart.data.raw.length;
+            var percent = d3.format('0.1%')(nShown / nTot);
+            var tableSummary = "Data summary for " + nCols + " columns and " + nShown + " of " + nTot + " (" + percent + ") rows shown below.";
+        } else {
+            tableSummary = "No values selected. Update the filters above or load a different data set.";
+        }
+
+        chart.summaryTable.summaryText.text(tableSummary);
+    }
+
     var summaryTable = { init: init$3,
         draw: draw,
         destroy: destroy,
-        renderRow: renderRow
+        renderRow: renderRow,
+        updateSummaryText: updateSummaryText
     };
 
     var defaultSettings = {

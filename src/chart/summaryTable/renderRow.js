@@ -6,7 +6,6 @@ intialize the summary table
 \------------------------------------------------------------------------------------------------*/
 
 export function renderRow(d) {
-  console.log("rendering row for"+d.value_col)
   var rowWrap = d3.select(this)
   rowWrap.selectAll("*").remove()
   rowWrap.append("div").attr("class","row-overview section").each(makeOverview)
