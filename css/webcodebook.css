@@ -45,3 +45,49 @@ text-align: center
 	font-color:#999;
 }
 
+/* controls layout */
+.web-codebook.controls .filterDiv{
+    display:inline-block;
+    vertical-align:top;
+    padding-right:10px;
+
+}
+
+.web-codebook .controls .filterDiv.custom-filters{
+    display:block;
+}
+
+.web-codebook  .controls .custom-filters {
+    clear: both;
+}
+
+.web-codebook  .controls .custom-filters ul li {
+    margin: 0 3px 5px 0;
+}
+
+.web-codebook .controls .custom-filters ul li.active > a > label,
+.web-codebook  .controls .custom-filters ul li:hover > a > label {
+    color: white;
+}
+
+.web-codebook  .controls .custom-filters ul li .filterType{
+    font-size: 0.8em
+}
+
+.web-codebook .controls .custom-filters ul li.filterCustom {
+    display:inline-block ;
+    padding-right:5px;
+}
+
+.web-codebook .controls .custom-filters ul li.filterCustom * {
+    display:block ;
+     min-width: 50px;
+}
+
+
+
+.web-codebook .controls .custom-filters ul li.filterCustom span.filterLabel * {
+    display:inline-block ;
+}
+
+

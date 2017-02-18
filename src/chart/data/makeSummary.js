@@ -47,8 +47,8 @@ export function makeSummary(data) {
                 .sort();
             statistics.n = nonMissing.length;
             statistics.nMissing = vector.length - statistics.n;
-            statistics.mean = d3.mean(nonMissing);
-            statistics.SD = d3.deviation(nonMissing);
+            statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
+            statistics.SD = d3.format('0.2f')(d3.deviation(nonMissing));
             const quantiles =
                 [   ['min', 0]
                 ,   ['5th percentile', .05]
@@ -60,7 +60,7 @@ export function makeSummary(data) {
             quantiles
                 .forEach(quantile => {
                     let statistic = quantile[0];
-                    statistics[statistic] = d3.quantile(nonMissing, quantile[1])
+                    statistics[statistic] = d3.format('0.1f')(d3.quantile(nonMissing, quantile[1]))
                 });
 
             return statistics;

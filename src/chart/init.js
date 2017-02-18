@@ -19,9 +19,8 @@ export function init(data) {
     this.data.summary = this.data.makeSummary(data)
 
     //draw controls
+    this.controls.init(this)
 
     //initialize and then draw the codebook
-   // this.summaryTable.init()
     this.summaryTable.draw(this)
-
 }

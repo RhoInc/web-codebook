@@ -3,9 +3,9 @@ export function makeOverview(d) {
     const margin =
         {left: 100
         ,right: 25};
-
+    const aspect=3
     if (d.type === 'categorical') {
-
+        //Categorical - Dot plot//
         const data = d.statistics.values
             .sort((a,b) =>
                 a.prop_n > b.prop_n ? -2 :
@@ -31,7 +31,7 @@ export function makeOverview(d) {
                 ]
             ,gridlines: 'xy'
             ,resizable:true
-           // ,aspect: aspect
+            ,aspect:aspect
             ,margin: margin
             };
         const webChart = new webCharts.createChart(webChartContainer,webChartSettings);
@@ -39,7 +39,7 @@ export function makeOverview(d) {
             webChart.init(data);
 
     } else {
-
+        //CONTINUOUS - Histogram//
         const data = d.values;
         data.forEach((d,i) => {
             data[i] = {value: d};
@@ -61,7 +61,8 @@ export function makeOverview(d) {
                     ,summarizeY: 'count'}
                 ]
             ,gridlines: 'y'
-            //,aspect: aspect
+            ,resizable:true
+            ,aspect:aspect
             ,margin: margin
             };
         const webChart = new webCharts.createChart

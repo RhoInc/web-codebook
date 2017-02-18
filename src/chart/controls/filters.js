@@ -1,13 +1,8 @@
 /*------------------------------------------------------------------------------------------------\
-  Define controls object.
+  Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './controls/init';
-import { filters } from './controls/filters';
+import { init } from './filters/init';
 
-
-export const controls =
-    {
-    	init: init,
-    	filters:filters
-   };
+export const filters =
+    {init: init};

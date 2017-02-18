@@ -1,5 +1,4 @@
 export function makeDetails(d) {
-	console.log(d)
 	var wrap = d3.select(this)
 	//Render Variable Name/Type
 	var title = wrap.append("div").html(d=>d.value_col + " <span class='small'>"+d.type+"</span>")

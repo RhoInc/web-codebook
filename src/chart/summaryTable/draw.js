@@ -3,12 +3,12 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function draw(chart) {
-	console.log(chart)
 	//enter/update/exit for variableDivs
-		
+	console.log(chart.data.summary)
+	
 	//BIND the newest data
 	var varRows = chart.summaryTable.wrap
-	.selectAll("div.variable")
+	.selectAll("div.variable-row")
 	.data(chart.data.summary, d=>d.value_col)
 
 	//ENTER
