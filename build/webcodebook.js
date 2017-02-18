@@ -79,7 +79,9 @@ var webcodebook = function () {
 
         var filterLabel = filterItem.append('span').attr('class', 'filterLabel');
 
-        filterLabel.append("span").html(d => d.label || d.value_col);
+        filterLabel.append("span").html(function (d) {
+            return d.label || d.value_col;
+        });
 
         var filterCustom = filterItem.append('select').attr('multiple', true);
 
@@ -90,7 +92,9 @@ var webcodebook = function () {
             return d.value;
         }).attr('value', function (d) {
             return d.value;
-        }).attr('selected', d => d.selected ? 'selected' : null);
+        }).attr('selected', function (d) {
+            return d.selected ? 'selected' : null;
+        });
 
         //Initialize event listeners
         filterCustom.on('change', function () {
@@ -108,9 +112,9 @@ var webcodebook = function () {
         });
     }
 
-    const filters = { init: init$2 };
+    var filters = { init: init$2 };
 
-    const controls = {
+    var controls = {
         init: init$1,
         filters: filters
     };
@@ -130,7 +134,9 @@ var webcodebook = function () {
         console.log(chart.data.summary);
 
         //BIND the newest data
-        var varRows = chart.summaryTable.wrap.selectAll("div.variable-row").data(chart.data.summary, d => d.value_col);
+        var varRows = chart.summaryTable.wrap.selectAll("div.variable-row").data(chart.data.summary, function (d) {
+            return d.value_col;
+        });
 
         //ENTER
         varRows.enter().append("div").attr("class", "variable-row");
@@ -150,14 +156,16 @@ var webcodebook = function () {
 
     function makeOverview(d) {
         //const aspect = 1.2;
-        const margin = { left: 100,
+        var margin = { left: 100,
             right: 25 };
-        const aspect = 3;
+        var aspect = 3;
         if (d.type === 'categorical') {
             //Categorical - Dot plot//
-            const data = d.statistics.values.sort((a, b) => a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1).slice(0, 5);
-            const webChartContainer = d3.select(this).node();
-            const webChartSettings = { x: { column: 'prop_n',
+            var data = d.statistics.values.sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            }).slice(0, 5);
+            var webChartContainer = d3.select(this).node();
+            var webChartSettings = { x: { column: 'prop_n',
                     type: 'linear',
                     label: '',
                     format: '%',
@@ -165,7 +173,9 @@ var webcodebook = function () {
                 y: { column: 'key',
                     type: 'ordinal',
                     label: '',
-                    order: data.map(d => d.key).reverse() },
+                    order: data.map(function (d) {
+                        return d.key;
+                    }).reverse() },
                 marks: [{ type: 'circle',
                     per: ['key'],
                     summarizeX: 'mean',
@@ -175,17 +185,17 @@ var webcodebook = function () {
                 aspect: aspect,
                 margin: margin
             };
-            const webChart = new webCharts.createChart(webChartContainer, webChartSettings);
+            var webChart = new webCharts.createChart(webChartContainer, webChartSettings);
 
             webChart.init(data);
         } else {
             //CONTINUOUS - Histogram//
-            const data = d.values;
-            data.forEach((d, i) => {
-                data[i] = { value: d };
+            var _data = d.values;
+            _data.forEach(function (d, i) {
+                _data[i] = { value: d };
             });
-            const webChartContainer = d3.select(this).node();
-            const webChartSettings = { x: { column: 'value',
+            var _webChartContainer = d3.select(this).node();
+            var _webChartSettings = { x: { column: 'value',
                     type: 'linear',
                     label: '',
                     bin: 25 },
@@ -202,27 +212,35 @@ var webcodebook = function () {
                 aspect: aspect,
                 margin: margin
             };
-            const webChart = new webCharts.createChart(webChartContainer, webChartSettings);
+            var _webChart = new webCharts.createChart(_webChartContainer, _webChartSettings);
 
-            webChart.init(data);
+            _webChart.init(_data);
         }
     }
 
     function makeDetails(d) {
         var wrap = d3.select(this);
         //Render Variable Name/Type
-        var title = wrap.append("div").html(d => d.value_col + " <span class='small'>" + d.type + "</span>");
+        var title = wrap.append("div").html(function (d) {
+            return d.value_col + " <span class='small'>" + d.type + "</span>";
+        });
 
         //Render Summary Stats
         var stats_div = wrap.append("div").attr("class", "stat-row");
-        var statNames = Object.keys(d.statistics).filter(f => f != "values");
+        var statNames = Object.keys(d.statistics).filter(function (f) {
+            return f != "values";
+        });
         var statList = statNames.map(function (stat) {
             return { key: stat, value: d.statistics[stat] };
         });
 
         var stats = stats_div.selectAll("div").data(statList).enter().append("div").attr('class', "stat");
-        stats.append("div").text(d => d.key).attr("class", "label");
-        stats.append("div").text(d => d.value).attr("class", "value");
+        stats.append("div").text(function (d) {
+            return d.key;
+        }).attr("class", "label");
+        stats.append("div").text(function (d) {
+            return d.value;
+        }).attr("class", "value");
 
         //Render Values 
 
@@ -247,13 +265,13 @@ var webcodebook = function () {
         rowWrap.append("div").attr("class", "row-details section").each(makeDetails);
     }
 
-    const summaryTable = { init: init$3,
+    var summaryTable = { init: init$3,
         draw: draw,
         destroy: destroy,
         renderRow: renderRow
     };
 
-    const defaultSettings = {
+    var defaultSettings = {
         filters: [],
         autofilter: 10
     };
@@ -270,9 +288,15 @@ var webcodebook = function () {
         //make filters for all categorical variables with less than
         if (chart.config.autofilter > 0) {
             console.log(chart.data.summary);
-            var autofilters = chart.data.summary.filter(f => f.type == "categorical") //categorical filters only
-            .filter(f => f.statistics.values.length <= chart.config.autofilter) //no huge filters
-            .filter(f => f.statistics.values.length > 1) //no silly 1 item filters 
+            var autofilters = chart.data.summary.filter(function (f) {
+                return f.type == "categorical";
+            }) //categorical filters only
+            .filter(function (f) {
+                return f.statistics.values.length <= chart.config.autofilter;
+            }) //no huge filters
+            .filter(function (f) {
+                return f.statistics.values.length > 1;
+            }) //no silly 1 item filters 
             .map(function (m) {
                 return { value_col: m.value_col };
             });
@@ -281,7 +305,7 @@ var webcodebook = function () {
         }
     }
 
-    const util = {
+    var util = {
         setDefaults: setDefaults,
         makeAutomaticFilters: makeAutomaticFilters
 
@@ -290,27 +314,33 @@ var webcodebook = function () {
     function makeSummary(data) {
 
         function determineType(vector) {
-            const numericValues = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d));
+            var numericValues = vector.filter(function (d) {
+                return !isNaN(+d) && !/^\s*$/.test(d);
+            });
 
             return numericValues.length === vector.length && numericValues.length > 4 ? 'continuous' : 'categorical';
         }
 
-        const summarize = {
+        var summarize = {
 
-            categorical: function (vector) {
-                const statistics = {};
+            categorical: function categorical(vector) {
+                var statistics = {};
                 statistics.N = vector.length;
-                const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== 'NA');
+                var nonMissing = vector.filter(function (d) {
+                    return !/^\s*$/.test(d) && d !== 'NA';
+                });
                 statistics.n = nonMissing.length;
                 statistics.nMissing = vector.length - statistics.n;
-                statistics.values = d3.nest().key(d => d).rollup(d => {
+                statistics.values = d3.nest().key(function (d) {
+                    return d;
+                }).rollup(function (d) {
                     return {
                         n: d.length,
                         prop_N: d.length / statistics.N,
                         prop_n: d.length / statistics.n };
                 }).entries(nonMissing);
 
-                statistics.values.forEach(value => {
+                statistics.values.forEach(function (value) {
                     for (var statistic in value.values) {
                         value[statistic] = value.values[statistic];
                     }
@@ -320,17 +350,21 @@ var webcodebook = function () {
                 return statistics;
             },
 
-            continuous: function (vector) {
-                const statistics = {};
+            continuous: function continuous(vector) {
+                var statistics = {};
                 statistics.N = vector.length;
-                const nonMissing = vector.filter(d => !isNaN(+d) && !/^\s*$/.test(d)).map(d => +d).sort();
+                var nonMissing = vector.filter(function (d) {
+                    return !isNaN(+d) && !/^\s*$/.test(d);
+                }).map(function (d) {
+                    return +d;
+                }).sort();
                 statistics.n = nonMissing.length;
                 statistics.nMissing = vector.length - statistics.n;
                 statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
                 statistics.SD = d3.format('0.2f')(d3.deviation(nonMissing));
-                const quantiles = [['min', 0], ['5th percentile', .05], ['1st quartile', .25], ['median', .5], ['3rd quartile', .75], ['95th percentile', .95], ['max', 1]];
-                quantiles.forEach(quantile => {
-                    let statistic = quantile[0];
+                var quantiles = [['min', 0], ['5th percentile', .05], ['1st quartile', .25], ['median', .5], ['3rd quartile', .75], ['95th percentile', .95], ['max', 1]];
+                quantiles.forEach(function (quantile) {
+                    var statistic = quantile[0];
                     statistics[statistic] = d3.format('0.1f')(d3.quantile(nonMissing, quantile[1]));
                 });
 
@@ -339,11 +373,13 @@ var webcodebook = function () {
 
         };
 
-        const variables = Object.keys(data[0]);
+        var variables = Object.keys(data[0]);
 
-        variables.forEach((variable, i) => {
+        variables.forEach(function (variable, i) {
             variables[i] = { value_col: variable };
-            variables[i].values = data.map(d => d[variable]).sort();
+            variables[i].values = data.map(function (d) {
+                return d[variable];
+            }).sort();
             variables[i].type = determineType(variables[i].values);
 
             if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
@@ -357,21 +393,28 @@ var webcodebook = function () {
         filters.forEach(function (filter_d) {
             //remove the filtered values from the data based on the filters
             filtered = filtered.filter(function (rowData) {
-                var currentValues = filter_d.values.filter(f => f.selected).map(m => m.value);
+                var currentValues = filter_d.values.filter(function (f) {
+                    return f.selected;
+                }).map(function (m) {
+                    return m.value;
+                });
                 return currentValues.indexOf(rowData[filter_d.value_col]) > -1;
             });
         });
         return filtered;
     }
 
-    const data = {
+    var data = {
         makeSummary: makeSummary,
         makeFiltered: makeFiltered
 
     };
 
-    function createChart(element = 'body', config) {
-        let chart = { element: element,
+    function createChart() {
+        var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
+        var config = arguments[1];
+
+        var chart = { element: element,
             config: config,
             init: init,
             layout: layout,
@@ -384,7 +427,7 @@ var webcodebook = function () {
     }
 
     var index = {
-        createChart
+        createChart: createChart
     };
 
     return index;

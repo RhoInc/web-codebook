@@ -1,3 +1,5 @@
+import babel from 'rollup-plugin-babel';
+
 module.exports = {
   entry: './src/index.js',
   format: 'iife',
@@ -5,5 +7,23 @@ module.exports = {
     webcharts: 'webCharts',
     d3: 'd3'
   },
-  moduleName: 'webcodebook'
+  moduleName: 'webcodebook',
+   plugins: [
+    babel(
+      {
+        "presets": [
+          [
+            "es2015",
+            {
+              "modules": false
+            }
+          ]
+        ],
+        "plugins": [
+          "external-helpers"
+        ],
+        "exclude": "node_modules/**"
+      })
+  ]
 }; 
+
