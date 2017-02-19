@@ -1,4 +1,4 @@
-export function makeOverview(d) {
+ export function makeOverview(d) {
     //const aspect = 1.2;
     const margin =
         {left: 100
