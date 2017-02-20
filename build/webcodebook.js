@@ -237,7 +237,7 @@ var webcodebook = function () {
             });
             var nValues = value_list.length;
             value_list = value_list.slice(0, 10).join("\n");
-            value_list = value_list.length > 10 ? value_list + "\nAnd " + (nValues - 10) + " more." : value_list;
+            value_list = nValues > 10 ? value_list + "\nAnd " + (nValues - 10) + " more." : value_list;
 
             summary_text_span.append("sup").html("?").style("cursor", "pointer").attr("title", value_list);
         }

@@ -14,7 +14,7 @@ export function makeDetails(d) {
 		var value_list = d.statistics.values.map(m=>m.key+": "+d3.format("0.1%")(m.prop_n))
 		var nValues = value_list.length;
 		value_list = value_list.slice(0,10).join("\n")
-		value_list = value_list.length > 10 ? 
+		value_list = nValues > 10 ? 
 			value_list + "\nAnd "+(nValues-10)+" more.":
 			value_list
 
