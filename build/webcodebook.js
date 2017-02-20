@@ -458,8 +458,92 @@ var webcodebook = function () {
         return chart;
     }
 
+    /*------------------------------------------------------------------------------------------------\
+      Initialize explorer
+    \------------------------------------------------------------------------------------------------*/
+
+    function init$4() {
+        var settings = this.config;
+
+        //create wrapper in specified div
+        this.wrap = d3.select(this.element).append('div').attr("class", "web-codebook-explorer");
+
+        //layout the divs
+        this.layout(this);
+
+        //draw controls
+        this.controls.init(this);
+
+        //draw first codebook
+        this.makeCodebook(this.config.files[0]);
+    }
+
+    /*------------------------------------------------------------------------------------------------\
+      Generate HTML containers.
+    \------------------------------------------------------------------------------------------------*/
+
+    function layout$1() {
+        this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
+
+        this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
+    }
+
+    function init$5(explorer) {
+        explorer.controls.wrap.attr('onsubmit', 'return false;');
+        explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
+
+        //Make file selector
+
+        var file_select_wrap = explorer.controls.wrap.append("div").style("padding", ".5em").style("border-bottom", "2px solid black");
+
+        file_select_wrap.append("span").text("Pick a file: ");
+
+        var select = file_select_wrap.append("select");
+
+        select.selectAll("option").data(explorer.config.files).enter().append("option").text(function (d) {
+            return d.label;
+        });
+
+        select.on("change", function (d) {
+            var current_text = this.value;
+            var current_obj = explorer.config.files.filter(function (f) {
+                return f.label == current_text;
+            })[0];
+            //console.log(d3.select(this).data())
+            explorer.makeCodebook(current_obj);
+        });
+    }
+
+    var controls$1 = {
+        init: init$5
+    };
+
+    function makeCodebook(meta) {
+        this.codebookWrap.selectAll("*").remove();
+        var codebook = webcodebook.createChart('.web-codebook-explorer .codebookWrap', meta.settings);
+        d3.csv(meta.path, function (error, data) {
+            codebook.init(data);
+        });
+    }
+
+    function createExplorer() {
+        var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
+        var config = arguments[1];
+
+        var explorer = { element: element,
+            config: config,
+            init: init$4,
+            layout: layout$1,
+            controls: controls$1,
+            makeCodebook: makeCodebook
+        };
+
+        return explorer;
+    }
+
     var index = {
-        createChart: createChart
+        createChart: createChart,
+        createExplorer: createExplorer
     };
 
     return index;

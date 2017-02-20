@@ -9,7 +9,7 @@ export function layout() {
 
     this.codebookWrap = this.wrap
         .append('div')
-        .attr('class', 'main');
+        .attr('class', 'codebookWrap');
 
    	 
 }

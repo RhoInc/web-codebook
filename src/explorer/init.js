@@ -13,4 +13,7 @@ export function init() {
 
     //draw controls
     this.controls.init(this)
+
+    //draw first codebook
+    this.makeCodebook(this.config.files[0])
 }

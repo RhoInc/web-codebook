@@ -1,24 +1,27 @@
-export function init(chart) {
-    chart.controls.wrap.attr('onsubmit', 'return false;');
-    chart.controls.wrap.selectAll('*').remove();  //Clear controls.
+export function init(explorer) {
+    explorer.controls.wrap.attr('onsubmit', 'return false;');
+    explorer.controls.wrap.selectAll('*').remove();  //Clear controls.
 
   	//Make file selector
     
-	var file_select_wrap = chart.controls.wrap.append("div")	
+	var file_select_wrap = explorer.controls.wrap.append("div")	
 	.style("padding",".5em")
 	.style("border-bottom","2px solid black")
 
-	chart.controls.wrap.append("span").text("Pick a file: ")
-	var select = d3.select(".controls").append("select")
+	file_select_wrap.append("span").text("Pick a file: ")
+	
+	var select = file_select_wrap.append("select")
 
 	select.selectAll("option")
-	.data(chart.controls.config.files)
+	.data(explorer.config.files)
 	.enter()
 	.append("option")
 	.text(function(d){return d.label})
 
 	select.on("change",function(d){
-//		makeCodebook(this.value)
+		var current_text = this.value
+		var current_obj = explorer.config.files.filter(f=>f.label == current_text)[0]
+		explorer.makeCodebook(current_obj)
 	})
 }
 

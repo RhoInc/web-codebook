@@ -1,6 +1,7 @@
 import { init } from './explorer/init';
 import { layout } from './explorer/layout';
 import { controls } from './explorer/controls';
+import { makeCodebook } from './explorer/makeCodebook';
 
 export function createExplorer(element = 'body', config) {
     let explorer =
@@ -9,6 +10,7 @@ export function createExplorer(element = 'body', config) {
         ,init: init
         ,layout: layout
         ,controls: controls
+        ,makeCodebook:makeCodebook
     };
 
     return explorer;
