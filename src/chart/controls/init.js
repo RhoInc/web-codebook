@@ -4,6 +4,7 @@ export function init(chart) {
 
   //Draw filters
     chart.controls.filters.init(chart);
+    chart.controls.groups.init(chart)
 }
 
 

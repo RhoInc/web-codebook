@@ -47,6 +47,7 @@ var webcodebook = function () {
 
         //Draw filters
         chart.controls.filters.init(chart);
+        chart.controls.groups.init(chart);
     }
 
     /*------------------------------------------------------------------------------------------------\
@@ -115,16 +116,29 @@ var webcodebook = function () {
 
     var filters = { init: init$2 };
 
+    /*------------------------------------------------------------------------------------------------\
+      Initialize group controls.
+    \------------------------------------------------------------------------------------------------*/
+
+    function init$3(chart) {
+        console.log(chart);
+        console.log(chart.config);
+    }
+
+    var groups = { init: init$3 };
+
     var controls = {
         init: init$1,
-        filters: filters
+        filters: filters,
+        groups: groups
+
     };
 
     /*------------------------------------------------------------------------------------------------\
     intialize the summary table
     \------------------------------------------------------------------------------------------------*/
 
-    function init$3(chart) {}
+    function init$4(chart) {}
 
     /*------------------------------------------------------------------------------------------------\
       draw/update the summaryTable
@@ -296,7 +310,7 @@ var webcodebook = function () {
         chart.summaryTable.summaryText.text(tableSummary);
     }
 
-    var summaryTable = { init: init$3,
+    var summaryTable = { init: init$4,
         draw: draw,
         destroy: destroy,
         renderRow: renderRow,
@@ -305,7 +319,8 @@ var webcodebook = function () {
 
     var defaultSettings = {
         filters: [],
-        autofilter: 10
+        autofilter: 10,
+        maxGroups: 8
     };
 
     function setDefaults(chart) {
@@ -462,7 +477,7 @@ var webcodebook = function () {
       Initialize explorer
     \------------------------------------------------------------------------------------------------*/
 
-    function init$4() {
+    function init$5() {
         var settings = this.config;
 
         //create wrapper in specified div
@@ -488,7 +503,7 @@ var webcodebook = function () {
         this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
     }
 
-    function init$5(explorer) {
+    function init$6(explorer) {
         explorer.controls.wrap.attr('onsubmit', 'return false;');
         explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -514,7 +529,7 @@ var webcodebook = function () {
     }
 
     var controls$1 = {
-        init: init$5
+        init: init$6
     };
 
     function makeCodebook(meta) {
@@ -531,7 +546,7 @@ var webcodebook = function () {
 
         var explorer = { element: element,
             config: config,
-            init: init$4,
+            init: init$5,
             layout: layout$1,
             controls: controls$1,
             makeCodebook: makeCodebook
