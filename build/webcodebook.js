@@ -509,7 +509,6 @@ var webcodebook = function () {
             var current_obj = explorer.config.files.filter(function (f) {
                 return f.label == current_text;
             })[0];
-            //console.log(d3.select(this).data())
             explorer.makeCodebook(current_obj);
         });
     }
