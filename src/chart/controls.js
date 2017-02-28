@@ -12,5 +12,4 @@ export const controls =
     	init: init,
     	filters:filters,
     	groups:groups
-
    };

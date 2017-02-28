@@ -23,6 +23,7 @@ var webcodebook = function () {
 
         //draw controls
         this.util.makeAutomaticFilters(this);
+        this.util.makeAutomaticGroups(this);
         this.controls.init(this);
 
         //initialize and then draw the codebook
@@ -46,8 +47,8 @@ var webcodebook = function () {
         chart.controls.wrap.selectAll('*').remove(); //Clear controls.
 
         //Draw filters
-        chart.controls.filters.init(chart);
         chart.controls.groups.init(chart);
+        chart.controls.filters.init(chart);
     }
 
     /*------------------------------------------------------------------------------------------------\
@@ -56,9 +57,6 @@ var webcodebook = function () {
 
     //export function init(selector, data, vars, settings) {
     function init$2(chart) {
-        console.log(chart);
-        console.log(chart.config);
-
         //initialize the wrapper
         var selector = chart.controls.wrap.append('div').attr('class', 'custom-filters');
 
@@ -123,6 +121,27 @@ var webcodebook = function () {
     function init$3(chart) {
         console.log(chart);
         console.log(chart.config);
+
+        if (chart.config.groups.length > 0) {
+            var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
+
+            selector.append("span").text("Group by:");
+
+            var groupSelect = selector.append("select");
+
+            var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+                return m.value_col;
+            })]);
+            console.log(groupLevels);
+
+            groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+                return d;
+            });
+
+            groupSelect.on("change", function () {
+                console.log(this.value);
+            });
+        }
     }
 
     var groups = { init: init$3 };
@@ -131,7 +150,6 @@ var webcodebook = function () {
         init: init$1,
         filters: filters,
         groups: groups
-
     };
 
     /*------------------------------------------------------------------------------------------------\
@@ -319,22 +337,28 @@ var webcodebook = function () {
 
     var defaultSettings = {
         filters: [],
-        autofilter: 10,
-        maxGroups: 8
-    };
+        groups: [],
+        autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
+        autofilter: 10 };
 
     function setDefaults(chart) {
 
+        /********************* Filter Settings *********************/
         chart.config.filters = chart.config.filters || defaultSettings.filters;
 
         //autofilter - don't use automatic filter if user specifies filters object
         chart.config.autofilter = chart.config.filters.length > 0 ? false : chart.config.autofilter == null ? defaultSettings.autofilter : chart.config.autofilter;
+
+        /********************* Group Settings *********************/
+        chart.config.groups = chart.config.groups || defaultSettings.groups;
+
+        //autogroups - don't use automatic groups if user specifies groups object
+        chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings.autogroups : chart.config.autogroups;
     }
 
     function makeAutomaticFilters(chart) {
-        //make filters for all categorical variables with less than
-        if (chart.config.autofilter > 0) {
-            console.log(chart.data.summary);
+        //make filters for all categorical variables with less than autofilter levels
+        if (chart.config.autofilter > 1) {
             var autofilters = chart.data.summary.filter(function (f) {
                 return f.type == "categorical";
             }) //categorical filters only
@@ -352,10 +376,30 @@ var webcodebook = function () {
         }
     }
 
+    function makeAutomaticGroups(chart) {
+        //make groups for all categorical variables with less than autofilter levels
+        if (chart.config.autogroups > 1) {
+            var autogroups = chart.data.summary.filter(function (f) {
+                return f.type == "categorical";
+            }) //categorical filters only
+            .filter(function (f) {
+                return f.statistics.values.length <= chart.config.autogroups;
+            }) //no groups
+            .filter(function (f) {
+                return f.statistics.values.length > 1;
+            }) //no silly 1 item groups 
+            .map(function (m) {
+                return { value_col: m.value_col };
+            });
+
+            chart.config.groups = autogroups.length > 0 ? autogroups : null;
+        }
+    }
+
     var util = {
         setDefaults: setDefaults,
-        makeAutomaticFilters: makeAutomaticFilters
-
+        makeAutomaticFilters: makeAutomaticFilters,
+        makeAutomaticGroups: makeAutomaticGroups
     };
 
     function makeSummary(data) {

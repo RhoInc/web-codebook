@@ -1,7 +1,6 @@
 export function makeAutomaticFilters(chart) {
-	//make filters for all categorical variables with less than
-	if(chart.config.autofilter>0){
-		console.log(chart.data.summary)
+	//make filters for all categorical variables with less than autofilter levels
+	if(chart.config.autofilter>1){
 		var autofilters = chart.data.summary
 		.filter(f=>f.type=="categorical") //categorical filters only
 		.filter(f=>f.statistics.values.length <= chart.config.autofilter)//no huge filters

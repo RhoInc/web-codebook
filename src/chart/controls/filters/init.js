@@ -4,9 +4,6 @@
 
 //export function init(selector, data, vars, settings) {
 export function init(chart) {
-    console.log(chart)
-    console.log(chart.config)
-
   //initialize the wrapper
     var selector = chart.controls.wrap
         .append('div')
