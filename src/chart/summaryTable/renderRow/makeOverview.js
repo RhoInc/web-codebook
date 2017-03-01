@@ -1,4 +1,4 @@
- export function makeOverview(d) {
+export function makeOverview(d) {
     //const aspect = 1.2;
     const margin =
         {left: 100
@@ -45,30 +45,7 @@
             data[i] = {value: d};
         });
         const webChartContainer = d3.select(this).node();
-        const webChartSettings =
-            {x: {column: 'value'
-                ,type: 'linear'
-                ,label: ''
-                ,bin: 25}
-            ,y: {column: 'value'
-                ,type: 'linear'
-                ,label: ''
-                ,domain: [0,null]}
-            ,marks:
-                [   {type: 'bar'
-                    ,per: ['value']
-                    ,summarizeX: 'mean'
-                    ,summarizeY: 'count'}
-                ]
-            ,gridlines: 'y'
-            ,resizable:true
-            ,aspect:aspect
-            ,margin: margin
-            };
-        const webChart = new webCharts.createChart
-            (webChartContainer
-            ,webChartSettings);
-
-        webChart.init(data);
+        spikeHistogram(webChartContainer, {measure: 'value', aspect: aspect})
+            .init(data);
     }
 }

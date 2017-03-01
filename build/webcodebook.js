@@ -229,26 +229,7 @@ var webcodebook = function () {
                 _data[i] = { value: d };
             });
             var _webChartContainer = d3.select(this).node();
-            var _webChartSettings = { x: { column: 'value',
-                    type: 'linear',
-                    label: '',
-                    bin: 25 },
-                y: { column: 'value',
-                    type: 'linear',
-                    label: '',
-                    domain: [0, null] },
-                marks: [{ type: 'bar',
-                    per: ['value'],
-                    summarizeX: 'mean',
-                    summarizeY: 'count' }],
-                gridlines: 'y',
-                resizable: true,
-                aspect: aspect,
-                margin: margin
-            };
-            var _webChart = new webCharts.createChart(_webChartContainer, _webChartSettings);
-
-            _webChart.init(_data);
+            spikeHistogram(_webChartContainer, { measure: 'value', aspect: aspect }).init(_data);
         }
     }
 

@@ -17,14 +17,22 @@
 	display:inline-block;
 }
 
+/*Codebook Layout - charts*/
 .web-codebook .variable-row .row-overview{
 	width:25%;
 }
+.web-codebook .tooltip {
+    display: none;
+}
+.web-codebook .tooltip.active {
+    display: block;
+}
+
+/*Codebook Layout - stat row*/
 .web-codebook .variable-row .row-details{
 	width:65%;
 }
 
-/*Codebook Layout - stat row*/
 .web-codebook .variable-row .row-details>div{
 	padding-bottom:0.5em;
 }
@@ -89,5 +97,3 @@ text-align: center
 .web-codebook .controls .custom-filters ul li.filterCustom span.filterLabel * {
     display:inline-block ;
 }
-
-
