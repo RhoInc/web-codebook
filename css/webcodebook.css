@@ -1,99 +1,136 @@
-
-.small{
-	font-size:0.8em;
-	color:#999;
+.web-codebook > * {
+    width: 100%;
 }
 
-/*Codebook layout*/
-.web-codebook .variable-row div.section{
-	padding-top:1em;
-	border-top: 1px dotted #999;
-}
+/*------------------------------------------------------------------------------------------------\
+  Controls layout
+\------------------------------------------------------------------------------------------------*/
 
-.web-codebook .variable-row div.section{
-	vertical-align: top;
-}
-.web-codebook .variable-row div.section{
-	display:inline-block;
-}
+    .web-codebook .controls {
+        display: inline-block;
+        vertical-align: top;
+        padding-right: 10px;
+    }
 
-/*Codebook Layout - charts*/
-.web-codebook .variable-row .row-overview{
-	width:25%;
-}
-.web-codebook .tooltip {
-    display: none;
-}
-.web-codebook .tooltip.active {
-    display: block;
-}
+    .web-codebook .controls > * {
+        clear: both;
+        padding-bottom: 1%;
+    }
 
-/*Codebook Layout - stat row*/
-.web-codebook .variable-row .row-details{
-	width:65%;
-}
+    .web-codebook .controls .group-select span {
+        padding-right: 5px;
+    }
 
-.web-codebook .variable-row .row-details>div{
-	padding-bottom:0.5em;
-}
+    .web-codebook .controls .custom-filters ul li {
+        margin: 0 3px 5px 0;
+    }
 
-.web-codebook .variable-row .row-details .stat-row .stat{
-	display:inline-block;
-	padding-right:.5em;
-}
+    .web-codebook .controls .custom-filters ul li.active > a > label,
+    .web-codebook .controls .custom-filters ul li: hover > a > label {
+        color: white;
+    }
 
-.web-codebook .variable-row .row-details .stat-row .stat{
-text-align: center
-}
+    .web-codebook .controls .custom-filters ul li .filterType {
+        font-size: 0.8em
+    }
 
-.web-codebook .variable-row .row-details .stat-row .stat .label{
-	display:inline-block;
-	padding-right:.2em;
-	font-size:0.8em;
-	font-color:#999;
-}
+    .web-codebook .controls .custom-filters ul li.filterCustom {
+        display: inline-block;
+        padding-right: 5px;
+    }
 
-/* controls layout */
-.web-codebook.controls .filterDiv{
-    display:inline-block;
-    vertical-align:top;
-    padding-right:10px;
+    .web-codebook .controls .custom-filters ul li.filterCustom * {
+        display: block;
+        min-width: 50px;
+    }
 
-}
+    .web-codebook .controls .custom-filters ul li.filterCustom span.filterLabel * {
+        display: inline-block;
+    }
 
-.web-codebook .controls .filterDiv.custom-filters{
-    display:block;
-}
+/*------------------------------------------------------------------------------------------------\
+  Row layout
+\------------------------------------------------------------------------------------------------*/
 
-.web-codebook  .controls .custom-filters {
-    clear: both;
-}
+    .web-codebook .summaryTable > * {
+    }
 
-.web-codebook  .controls .custom-filters ul li {
-    margin: 0 3px 5px 0;
-}
+    .web-codebook .summaryTable .summaryText {
+        display: block;
+        clear: both;
+    }
 
-.web-codebook .controls .custom-filters ul li.active > a > label,
-.web-codebook  .controls .custom-filters ul li:hover > a > label {
-    color: white;
-}
+    .web-codebook .summaryTable .variable-row {
+        width: 100%;
+        padding-top: 1em;
+        border-top: 1px dotted #999;
+        display: inline-block;
+    }
 
-.web-codebook  .controls .custom-filters ul li .filterType{
-    font-size: 0.8em
-}
+    .web-codebook .summaryTable .variable-row > * {
+        display: inline-block;
+    }
 
-.web-codebook .controls .custom-filters ul li.filterCustom {
-    display:inline-block ;
-    padding-right:5px;
-}
+    /**-------------------------------------------------------------------------------------------\
+      Header layout
+    \-------------------------------------------------------------------------------------------**/
 
-.web-codebook .controls .custom-filters ul li.filterCustom * {
-    display:block ;
-     min-width: 50px;
-}
+        .web-codebook .summaryTable .variable-row .row-header,
+        .web-codebook .summaryTable .variable-row .row-details {
+            width: 20%;
+            float: left;
+        }
 
+    /**-------------------------------------------------------------------------------------------\
+      Chart layout
+    \-------------------------------------------------------------------------------------------**/
 
+        .web-codebook .summaryTable .variable-row .row-chart {
+            width: 80%;
+            float: right;
+        }
 
-.web-codebook .controls .custom-filters ul li.filterCustom span.filterLabel * {
-    display:inline-block ;
-}
+        .web-codebook .summaryTable .variable-row .row-chart .legend {
+            float: right;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-chart .tooltip {
+            display: none;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-chart .tooltip.active {
+            display: block;
+        }
+
+    /**-------------------------------------------------------------------------------------------\
+      Details layout
+    \-------------------------------------------------------------------------------------------**/
+
+        .web-codebook .summaryTable .variable-row .row-details>div {
+            padding-bottom: 0.5em;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-details .stat-row .stat {
+            display: inline-block;
+            padding-right: .5em;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-details .stat-row .stat {
+            text-align: center
+        }
+
+        .web-codebook .summaryTable .variable-row .row-details .stat-row .stat .label {
+            display: inline-block;
+            padding-right: .2em;
+            font-size: 0.8em;
+            font-color: #999;
+        }
+
+/*------------------------------------------------------------------------------------------------\
+  Miscellaneous
+\------------------------------------------------------------------------------------------------*/
+
+    .small {
+        font-size: 0.8em;
+        color: #999;
+    }

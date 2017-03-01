@@ -1,13 +1,10 @@
 export function makeSummary(data, group) {
 
     function determineType(vector) {
-        const nonMissingValues = vector
-            .filter(d => !/^\s*$/.test(d));
-        const numericValues = nonMissingValues
-            .filter(d => !isNaN(+d));
-        const distinctValues = d3.set(numericValues).values();
+        const numericValues = vector
+            .filter(d => !isNaN(+d) && !/^\s*$/.test(d));
 
-        return nonMissingValues.length === numericValues.length && distinctValues.length > 10
+        return numericValues.length === vector.length && numericValues.length > 4
             ? 'continuous'
             : 'categorical';
     }
@@ -87,31 +84,15 @@ export function makeSummary(data, group) {
             else
                 variables[i].statistics = summarize.continuous(variables[i].values);
 
-          //Handle groups.
             if (group) {
-                variables[i].group = group;
                 variables[i].groups = d3.set(
                         data.map(d => d[group]))
-                    .values()
-                    .map(g => {
-                        return {group: g}; });
-
+                    .values();
                 variables[i].groups
-                    .forEach(g => {
-                      //Define variable metadata and generate data array.
-                        g.value_col = variables[i].value_col;
-                        g.values = data
-                            .filter(d => d[group] === g.group)
-                            .map(d => d[variable]);
-                        g.type = variables[i].type;
-
-                      //Calculate statistics.
-                        if (variables[i].type === 'categorical')
-                            g.statistics = summarize.categorical(g.values);
-                        else
-                            g.statistics = summarize.continuous(g.values);
+                    .forEach(group => {
+                        group.values = data
+                            .map(d => d});
                     });
-            }
         });
 
     return variables;
