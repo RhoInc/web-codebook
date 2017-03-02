@@ -62,7 +62,7 @@ export function init(chart) {
         //update the chart
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
         chart.data.summary = chart.data.filtered.length>0?
-            chart.data.makeSummary(chart.data.filtered):
+            chart.data.makeSummary(chart.data.filtered, chart.config.group):
             []
         chart.summaryTable.draw(chart)
     });

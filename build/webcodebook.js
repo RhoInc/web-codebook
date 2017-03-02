@@ -107,7 +107,7 @@ var webcodebook = function () {
 
             //update the chart
             chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-            chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered) : [];
+            chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
             chart.summaryTable.draw(chart);
         });
     }
@@ -135,8 +135,9 @@ var webcodebook = function () {
             });
 
             groupSelect.on("change", function () {
+                chart.config.group = this.value !== 'None' ? this.value : null;
                 chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-                chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, this.value !== 'None' ? this.value : null) : [];
+                chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
                 chart.summaryTable.draw(chart);
             });
         }
