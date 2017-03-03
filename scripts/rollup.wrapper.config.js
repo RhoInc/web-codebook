@@ -6,7 +6,7 @@ module.exports = {
   globals: {
     webcharts: 'webCharts',
     d3: 'd3',
-    spikeHistgram: 'spike-histogram'
+    spikeHistogram: 'spikeHistogram'
   },
   moduleName: 'webcodebook',
    plugins: [
