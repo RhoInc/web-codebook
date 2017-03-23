@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Interactive data set summaries.",
   "keywords": [
     "data",
@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "d3": "~3",
-    "webcharts": "~1.7"
+    "webcharts": "~1.7",
+    "spike-histogram": "~0"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"

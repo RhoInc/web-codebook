@@ -4,9 +4,6 @@
 
 //export function init(selector, data, vars, settings) {
 export function init(chart) {
-    console.log(chart)
-    console.log(chart.config)
-
   //initialize the wrapper
     var selector = chart.controls.wrap
         .append('div')
@@ -65,7 +62,7 @@ export function init(chart) {
         //update the chart
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
         chart.data.summary = chart.data.filtered.length>0?
-            chart.data.makeSummary(chart.data.filtered):
+            chart.data.makeSummary(chart.data.filtered, chart.config.group):
             []
         chart.summaryTable.draw(chart)
     });

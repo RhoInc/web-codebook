@@ -3,6 +3,7 @@ export function init(chart) {
     chart.controls.wrap.selectAll('*').remove();  //Clear controls.
 
   //Draw filters
+    chart.controls.groups.init(chart)
     chart.controls.filters.init(chart);
 }
 

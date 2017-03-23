@@ -1,10 +1,13 @@
-export function makeSummary(data) {
+export function makeSummary(data, group) {
 
     function determineType(vector) {
-        const numericValues = vector
-            .filter(d => !isNaN(+d) && !/^\s*$/.test(d));
+        const nonMissingValues = vector
+            .filter(d => !/^\s*$/.test(d));
+        const numericValues = nonMissingValues
+            .filter(d => !isNaN(+d));
+        const distinctValues = d3.set(numericValues).values();
 
-        return numericValues.length === vector.length && numericValues.length > 4
+        return nonMissingValues.length === numericValues.length && distinctValues.length > 10
             ? 'continuous'
             : 'categorical';
     }
@@ -44,7 +47,7 @@ export function makeSummary(data) {
             const nonMissing = vector
                 .filter(d => !isNaN(+d) && !/^\s*$/.test(d))
                 .map(d => +d)
-                .sort();
+                .sort((a,b) => a-b);
             statistics.n = nonMissing.length;
             statistics.nMissing = vector.length - statistics.n;
             statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
@@ -72,16 +75,43 @@ export function makeSummary(data) {
 
     variables
         .forEach((variable,i) => {
+          //Define variable metadata and generate data array.
             variables[i] = {value_col: variable};
             variables[i].values = data
-                .map(d => d[variable])
-                .sort();
+                .map(d => d[variable]);
             variables[i].type = determineType(variables[i].values);
 
+          //Calculate statistics.
             if (variables[i].type === 'categorical')
                 variables[i].statistics = summarize.categorical(variables[i].values);
             else
                 variables[i].statistics = summarize.continuous(variables[i].values);
+
+          //Handle groups.
+            if (group) {
+                variables[i].group = group;
+                variables[i].groups = d3.set(
+                        data.map(d => d[group]))
+                    .values()
+                    .map(g => {
+                        return {group: g}; });
+
+                variables[i].groups
+                    .forEach(g => {
+                      //Define variable metadata and generate data array.
+                        g.value_col = variables[i].value_col;
+                        g.values = data
+                            .filter(d => d[group] === g.group)
+                            .map(d => d[variable]);
+                        g.type = variables[i].type;
+
+                      //Calculate statistics.
+                        if (variables[i].type === 'categorical')
+                            g.statistics = summarize.categorical(g.values);
+                        else
+                            g.statistics = summarize.continuous(g.values);
+                    });
+            }
         });
 
     return variables;

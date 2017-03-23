@@ -23,6 +23,7 @@ var webcodebook = function () {
 
         //draw controls
         this.util.makeAutomaticFilters(this);
+        this.util.makeAutomaticGroups(this);
         this.controls.init(this);
 
         //initialize and then draw the codebook
@@ -46,6 +47,7 @@ var webcodebook = function () {
         chart.controls.wrap.selectAll('*').remove(); //Clear controls.
 
         //Draw filters
+        chart.controls.groups.init(chart);
         chart.controls.filters.init(chart);
     }
 
@@ -55,9 +57,6 @@ var webcodebook = function () {
 
     //export function init(selector, data, vars, settings) {
     function init$2(chart) {
-        console.log(chart);
-        console.log(chart.config);
-
         //initialize the wrapper
         var selector = chart.controls.wrap.append('div').attr('class', 'custom-filters');
 
@@ -108,23 +107,55 @@ var webcodebook = function () {
 
             //update the chart
             chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-            chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered) : [];
+            chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
             chart.summaryTable.draw(chart);
         });
     }
 
     var filters = { init: init$2 };
 
+    /*------------------------------------------------------------------------------------------------\
+      Initialize group controls.
+    \------------------------------------------------------------------------------------------------*/
+
+    function init$3(chart) {
+        if (chart.config.groups.length > 0) {
+            var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
+
+            selector.append("span").text("Group by");
+
+            var groupSelect = selector.append("select");
+
+            var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+                return m.value_col;
+            })]);
+
+            groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+                return d;
+            });
+
+            groupSelect.on("change", function () {
+                chart.config.group = this.value !== 'None' ? this.value : null;
+                chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
+                chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
+                chart.summaryTable.draw(chart);
+            });
+        }
+    }
+
+    var groups = { init: init$3 };
+
     var controls = {
         init: init$1,
-        filters: filters
+        filters: filters,
+        groups: groups
     };
 
     /*------------------------------------------------------------------------------------------------\
     intialize the summary table
     \------------------------------------------------------------------------------------------------*/
 
-    function init$3(chart) {}
+    function init$4(chart) {}
 
     /*------------------------------------------------------------------------------------------------\
       draw/update the summaryTable
@@ -156,129 +187,173 @@ var webcodebook = function () {
 
     function destroy(chart) {}
 
-    function makeOverview(d) {
-        //const aspect = 1.2;
-        var margin = { left: 100,
-            right: 25 };
-        var aspect = 3;
+    function makeHeader(d) {
+        var wrap = d3.select(this);
+
+        var title = wrap.append('div').html(function (d) {
+            return d.value_col;
+        });
+
+        //add a short summary
+        var summary_text = d.type == 'categorical' ? ' ' + d.type + ' variable with ' + d.statistics.values.length + ' levels' : ' ' + d.type + ' variable';
+        var summary_text_span = title.append('span').attr('class', 'small').text(summary_text);
+
+        if (d.type == 'categorical') {
+            var value_list = d.statistics.values.map(function (m) {
+                return m.key + ': ' + d3.format('0.1%')(m.prop_n);
+            });
+            var nValues = value_list.length;
+            value_list = value_list.slice(0, 10).join('\n');
+            value_list = nValues > 10 ? value_list + '\nAnd ' + (nValues - 10) + ' more.' : value_list;
+
+            summary_text_span.append('sup').html('?').style('cursor', 'pointer').attr('title', value_list);
+        }
+    }
+
+    function makeChart(d, group) {
+        //Common chart settings
+        var margin = { left: 155,
+            right: 30 };
+        var height = 100;
+
         if (d.type === 'categorical') {
-            //Categorical - Dot plot//
-            var data = d.statistics.values.sort(function (a, b) {
-                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).slice(0, 5);
-            var webChartContainer = d3.select(this).node();
-            var webChartSettings = { x: { column: 'prop_n',
+            // categorical outcomes
+            var chartContainer = d3.select(this).node();
+            var chartSettings = { x: { column: 'prop_n',
                     type: 'linear',
                     label: '',
                     format: '%',
-                    domain: [0, 1] },
+                    domain: [0, null] },
                 y: { column: 'key',
                     type: 'ordinal',
-                    label: '',
-                    order: data.map(function (d) {
-                        return d.key;
-                    }).reverse() },
+                    label: '' },
                 marks: [{ type: 'circle',
                     per: ['key'],
                     summarizeX: 'mean',
                     tooltip: '[key]: [n] ([prop_n])' }],
                 gridlines: 'xy',
-                resizable: true,
-                aspect: aspect,
+                resizable: false,
+                height: height,
                 margin: margin
             };
-            var webChart = new webCharts.createChart(webChartContainer, webChartSettings);
+            var chartData = d.statistics.values.sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            }).slice(0, 5);
+            chartSettings.y.order = chartData.map(function (d) {
+                return d.key;
+            }).reverse();
 
-            webChart.init(data);
-        } else {
-            //CONTINUOUS - Histogram//
-            var _data = d.values;
-            _data.forEach(function (d, i) {
-                _data[i] = { value: d };
-            });
-            var _webChartContainer = d3.select(this).node();
-            var _webChartSettings = { x: { column: 'value',
-                    type: 'linear',
-                    label: '',
-                    bin: 25 },
-                y: { column: 'value',
-                    type: 'linear',
-                    label: '',
-                    domain: [0, null] },
-                marks: [{ type: 'bar',
-                    per: ['value'],
+            if (d.groups) {
+                chartData.forEach(function (di) {
+                    return di.group = 'All';
+                });
+
+                d.groups.forEach(function (group) {
+                    group.statistics.values.filter(function (value) {
+                        return chartSettings.y.order.indexOf(value.key) > -1;
+                    }).sort(function (a, b) {
+                        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+                    }).forEach(function (value) {
+                        value.group = group.group;
+                        chartData.push(value);
+                    });
+                });
+
+                chartSettings.marks[0].per.push('group');
+                chartSettings.marks[0].values = { 'group': ['All'] };
+                chartSettings.marks[0].radius = 5;
+                chartSettings.marks.push({ type: 'circle',
+                    per: ['key', 'group'],
                     summarizeX: 'mean',
-                    summarizeY: 'count' }],
-                gridlines: 'y',
-                resizable: true,
-                aspect: aspect,
-                margin: margin
-            };
-            var _webChart = new webCharts.createChart(_webChartContainer, _webChartSettings);
+                    radius: 3,
+                    values: { 'group': d.groups.map(function (d) {
+                            return d.group;
+                        }) } });
+                chartSettings.color_by = 'group';
+                chartSettings.legend = { label: '',
+                    order: ['All'].concat(d.groups.map(function (d) {
+                        return d.group;
+                    })) };
+            }
 
-            _webChart.init(_data);
+            var chart = webCharts.createChart(chartContainer, chartSettings);
+            chart.init(chartData);
+        } else {
+            // continuous outcomes
+            var _chartContainer = d3.select(this).node();
+            var _chartSettings = { measure: ' ',
+                resizable: false,
+                height: 100,
+                margin: margin };
+            var _chartData = [];
+
+            if (d.groups) {
+                _chartSettings.panel = 'group';
+                d.groups.forEach(function (group) {
+                    group.values.forEach(function (value) {
+                        _chartData.push({ group: group.group, ' ': value });
+                    });
+                });
+            } else {
+                d.values.forEach(function (d) {
+                    _chartData.push({ ' ': d });
+                });
+            }
+
+            var _chart = spikeHistogram(_chartContainer, _chartSettings);
+            _chart.init(_chartData);
         }
     }
 
     function makeDetails(d) {
         var wrap = d3.select(this);
 
-        var title = wrap.append("div").html(function (d) {
-            return d.value_col;
-        });
-
-        //add a short summary
-        var summary_text = d.type == "categorical" ? " " + d.type + " variable with " + d.statistics.values.length + " levels" : " " + d.type + " variable";
-        var summary_text_span = title.append("span").attr("class", "small").text(summary_text);
-
-        if (d.type == "categorical") {
-            var value_list = d.statistics.values.map(function (m) {
-                return m.key + ": " + d3.format("0.1%")(m.prop_n);
-            });
-            var nValues = value_list.length;
-            value_list = value_list.slice(0, 10).join("\n");
-            value_list = nValues > 10 ? value_list + "\nAnd " + (nValues - 10) + " more." : value_list;
-
-            summary_text_span.append("sup").html("?").style("cursor", "pointer").attr("title", value_list);
-        }
-
         //Render Summary Stats
-        var stats_div = wrap.append("div").attr("class", "stat-row");
+        var stats_div = wrap.append('div').attr('class', 'stat-row');
         var statNames = Object.keys(d.statistics).filter(function (f) {
-            return f != "values";
+            return f != 'values';
         });
         var statList = statNames.map(function (stat) {
-            return { key: stat, value: d.statistics[stat] };
+            return {
+                key: stat !== 'nMissing' ? stat : 'Missing',
+                value: d.statistics[stat] };
+        }).filter(function (statItem) {
+            return ['N', 'n'].indexOf(statItem.key) === -1;
         });
 
-        var stats = stats_div.selectAll("div").data(statList).enter().append("div").attr('class', "stat");
-        stats.append("div").text(function (d) {
-            return d.key;
-        }).attr("class", "label");
-        stats.append("div").text(function (d) {
-            return d.value;
-        }).attr("class", "value");
-
         //Render Values 
-
-        if (d.type == "categorical") {
-            //value table for categorical
-
-        } else if (d.type == "continuous") {
-            //min/maxes for continuous
-
+        if (d.type == 'categorical') {
+            var stats = stats_div.selectAll('div').data(statList).enter().append('div').attr('class', 'stat');
+            stats.append('div').text(function (d) {
+                return d.key;
+            }).attr('class', 'label');
+            stats.append('div').text(function (d) {
+                return d.value;
+            }).attr('class', 'value');
+        } else if (d.type === 'continuous') {
+            var stats = stats_div.selectAll('div').data(statList.filter(function (statItem) {
+                return statItem.key.indexOf('ile') === -1;
+            })).enter().append('div').attr('class', 'stat');
+            stats.append('div').text(function (d) {
+                return d.key;
+            }).attr('class', 'label');
+            stats.append('div').text(function (d) {
+                return d.value;
+            }).attr('class', 'value');
         }
     }
 
     /*------------------------------------------------------------------------------------------------\
-    intialize the summary table
+      Intialize the summary table
     \------------------------------------------------------------------------------------------------*/
 
     function renderRow(d) {
         var rowWrap = d3.select(this);
-        rowWrap.selectAll("*").remove();
-        rowWrap.append("div").attr("class", "row-overview section").each(makeOverview);
-        rowWrap.append("div").attr("class", "row-details section").each(makeDetails);
+        rowWrap.selectAll('*').remove();
+
+        rowWrap.append('div').attr('class', 'row-header section').each(makeHeader);
+        rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+        rowWrap.append('div').attr('class', 'row-details section').each(makeDetails);
     }
 
     function updateSummaryText(chart) {
@@ -296,7 +371,7 @@ var webcodebook = function () {
         chart.summaryTable.summaryText.text(tableSummary);
     }
 
-    var summaryTable = { init: init$3,
+    var summaryTable = { init: init$4,
         draw: draw,
         destroy: destroy,
         renderRow: renderRow,
@@ -305,21 +380,28 @@ var webcodebook = function () {
 
     var defaultSettings = {
         filters: [],
-        autofilter: 10
-    };
+        groups: [],
+        autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
+        autofilter: 10 };
 
     function setDefaults(chart) {
 
+        /********************* Filter Settings *********************/
         chart.config.filters = chart.config.filters || defaultSettings.filters;
 
         //autofilter - don't use automatic filter if user specifies filters object
         chart.config.autofilter = chart.config.filters.length > 0 ? false : chart.config.autofilter == null ? defaultSettings.autofilter : chart.config.autofilter;
+
+        /********************* Group Settings *********************/
+        chart.config.groups = chart.config.groups || defaultSettings.groups;
+
+        //autogroups - don't use automatic groups if user specifies groups object
+        chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings.autogroups : chart.config.autogroups;
     }
 
     function makeAutomaticFilters(chart) {
-        //make filters for all categorical variables with less than
-        if (chart.config.autofilter > 0) {
-            console.log(chart.data.summary);
+        //make filters for all categorical variables with less than autofilter levels
+        if (chart.config.autofilter > 1) {
             var autofilters = chart.data.summary.filter(function (f) {
                 return f.type == "categorical";
             }) //categorical filters only
@@ -337,20 +419,44 @@ var webcodebook = function () {
         }
     }
 
-    var util = {
-        setDefaults: setDefaults,
-        makeAutomaticFilters: makeAutomaticFilters
-
-    };
-
-    function makeSummary(data) {
-
-        function determineType(vector) {
-            var numericValues = vector.filter(function (d) {
-                return !isNaN(+d) && !/^\s*$/.test(d);
+    function makeAutomaticGroups(chart) {
+        //make groups for all categorical variables with less than autofilter levels
+        if (chart.config.autogroups > 1) {
+            var autogroups = chart.data.summary.filter(function (f) {
+                return f.type == "categorical";
+            }) //categorical filters only
+            .filter(function (f) {
+                return f.statistics.values.length <= chart.config.autogroups;
+            }) //no groups
+            .filter(function (f) {
+                return f.statistics.values.length > 1;
+            }) //no silly 1 item groups 
+            .map(function (m) {
+                return { value_col: m.value_col };
             });
 
-            return numericValues.length === vector.length && numericValues.length > 4 ? 'continuous' : 'categorical';
+            chart.config.groups = autogroups.length > 0 ? autogroups : null;
+        }
+    }
+
+    var util = {
+        setDefaults: setDefaults,
+        makeAutomaticFilters: makeAutomaticFilters,
+        makeAutomaticGroups: makeAutomaticGroups
+    };
+
+    function makeSummary(data, group) {
+
+        function determineType(vector) {
+            var nonMissingValues = vector.filter(function (d) {
+                return !/^\s*$/.test(d);
+            });
+            var numericValues = nonMissingValues.filter(function (d) {
+                return !isNaN(+d);
+            });
+            var distinctValues = d3.set(numericValues).values();
+
+            return nonMissingValues.length === numericValues.length && distinctValues.length > 10 ? 'continuous' : 'categorical';
         }
 
         var summarize = {
@@ -389,7 +495,9 @@ var webcodebook = function () {
                     return !isNaN(+d) && !/^\s*$/.test(d);
                 }).map(function (d) {
                     return +d;
-                }).sort();
+                }).sort(function (a, b) {
+                    return a - b;
+                });
                 statistics.n = nonMissing.length;
                 statistics.nMissing = vector.length - statistics.n;
                 statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
@@ -408,13 +516,39 @@ var webcodebook = function () {
         var variables = Object.keys(data[0]);
 
         variables.forEach(function (variable, i) {
+            //Define variable metadata and generate data array.
             variables[i] = { value_col: variable };
             variables[i].values = data.map(function (d) {
                 return d[variable];
-            }).sort();
+            });
             variables[i].type = determineType(variables[i].values);
 
+            //Calculate statistics.
             if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
+
+            //Handle groups.
+            if (group) {
+                variables[i].group = group;
+                variables[i].groups = d3.set(data.map(function (d) {
+                    return d[group];
+                })).values().map(function (g) {
+                    return { group: g };
+                });
+
+                variables[i].groups.forEach(function (g) {
+                    //Define variable metadata and generate data array.
+                    g.value_col = variables[i].value_col;
+                    g.values = data.filter(function (d) {
+                        return d[group] === g.group;
+                    }).map(function (d) {
+                        return d[variable];
+                    });
+                    g.type = variables[i].type;
+
+                    //Calculate statistics.
+                    if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
+                });
+            }
         });
 
         return variables;
@@ -462,7 +596,7 @@ var webcodebook = function () {
       Initialize explorer
     \------------------------------------------------------------------------------------------------*/
 
-    function init$4() {
+    function init$5() {
         var settings = this.config;
 
         //create wrapper in specified div
@@ -488,7 +622,7 @@ var webcodebook = function () {
         this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
     }
 
-    function init$5(explorer) {
+    function init$6(explorer) {
         explorer.controls.wrap.attr('onsubmit', 'return false;');
         explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -514,7 +648,7 @@ var webcodebook = function () {
     }
 
     var controls$1 = {
-        init: init$5
+        init: init$6
     };
 
     function makeCodebook(meta) {
@@ -531,7 +665,7 @@ var webcodebook = function () {
 
         var explorer = { element: element,
             config: config,
-            init: init$4,
+            init: init$5,
             layout: layout$1,
             controls: controls$1,
             makeCodebook: makeCodebook
