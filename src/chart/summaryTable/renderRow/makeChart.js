@@ -2,9 +2,7 @@ import { createHistogram } from '../../../createHistogram.js'
 
 export default function makeChart(d, group) {
   //Common chart settings
-    const margin =
-        {left: 20
-        ,right: 150};
+    const margin = {};
     const height = 100;
 
     if (d.type === 'categorical') { // categorical outcomes
@@ -19,7 +17,9 @@ export default function makeChart(d, group) {
                 ,type: 'ordinal'
                 ,label: ''}
             ,marks:
-                [   {type: 'circle'
+                [   {type: 'text'
+                    ,text:"|"
+                    ,attributes:{"font-weight":'bold', "alignment-baseline":"middle"}
                     ,per: ['key']
                     ,summarizeX: 'mean'
                     ,tooltip: '[key]: [n] ([prop_n])'}

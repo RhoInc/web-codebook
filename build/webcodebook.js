@@ -705,8 +705,7 @@ var webcodebook = function (webcharts) {
 
 	function makeChart(d, group) {
 		//Common chart settings
-		var margin = { left: 20,
-			right: 150 };
+		var margin = {};
 		var height = 100;
 
 		if (d.type === 'categorical') {
@@ -720,7 +719,9 @@ var webcodebook = function (webcharts) {
 				y: { column: 'key',
 					type: 'ordinal',
 					label: '' },
-				marks: [{ type: 'circle',
+				marks: [{ type: 'text',
+					text: "|",
+					attributes: { "font-weight": 'bold', "alignment-baseline": "middle" },
 					per: ['key'],
 					summarizeX: 'mean',
 					tooltip: '[key]: [n] ([prop_n])' }],
