@@ -3,8 +3,8 @@ import { createHistogram } from '../../../createHistogram.js'
 export default function makeChart(d, group) {
   //Common chart settings
     const margin =
-        {left: 155
-        ,right: 30};
+        {left: 20
+        ,right: 150};
     const height = 100;
 
     if (d.type === 'categorical') { // categorical outcomes
