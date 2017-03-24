@@ -27,9 +27,8 @@ export default
             ,summarizeY: 'count'}
         ]
     ,gridlines: 'y'
-    ,width:400
-    ,height:100
-    ,resizable: false
+    ,resizable: true
+    ,aspect: 12
     ,margin:
         {right: 25
         ,left: 100} // space for panel value
