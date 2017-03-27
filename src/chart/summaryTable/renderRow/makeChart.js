@@ -6,6 +6,7 @@ export default function makeChart(d, group) {
     const height = 100;
 
     if (d.type === 'categorical') { // categorical outcomes
+        console.log(d)
         const chartContainer = d3.select(this).node();
         const chartSettings =
             {x: {column: 'prop_n'
@@ -36,9 +37,9 @@ export default function makeChart(d, group) {
                     a.key < b.key ? -1 : 1)
             .slice(0,5);
         chartSettings.y.order = chartData.map(d => d.key).reverse();
-
+        console.log(d)
         if (d.groups) {
-            chartData.forEach(di => di.group = 'All');
+          chartData.forEach(di => di.group = 'All');
 
             d.groups.forEach(group => {
                 group.statistics.values
@@ -52,10 +53,9 @@ export default function makeChart(d, group) {
                         chartData.push(value);
                     });
             });
-
+            console.log(chartData)
             chartSettings.marks[0].per.push('group');
             chartSettings.marks[0].values = {'group': ['All']};
-            chartSettings.marks[0].radius = 5;
             chartSettings.marks.push(
                 {type: 'circle'
                 ,per: ['key', 'group']
@@ -64,11 +64,22 @@ export default function makeChart(d, group) {
                 ,values: {'group': d.groups.map(d => d.group)}});
             chartSettings.color_by = 'group';
             chartSettings.legend =
-                {label: ''
-                ,order: ['All'].concat(d.groups.map(d => d.group))};
+              {label: ''
+                ,order: d.groups.map(d => d.group)
+                ,mark:"circle"
+              };
+              console.log(d.groups.map(d => d.group))
         }
 
         const chart = webCharts.createChart(chartContainer, chartSettings);
+        chart.on("resize",function(){
+          var allLegend = this.wrap.select("ul.legend").select("li")
+          allLegend.select("svg").remove()
+          allLegend.select("span.legend-mark-text")
+          .text("|")
+          .style("color","black")
+          .style("font-weight","bolder")
+        })
         chart.init(chartData);
     } else { // continuous outcomes
         const chartContainer = d3.select(this).node();

@@ -710,6 +710,7 @@ var webcodebook = function (webcharts) {
 
 		if (d.type === 'categorical') {
 			// categorical outcomes
+			console.log(d);
 			var chartContainer = d3.select(this).node();
 			var chartSettings = { x: { column: 'prop_n',
 					type: 'linear',
@@ -736,7 +737,7 @@ var webcodebook = function (webcharts) {
 			chartSettings.y.order = chartData.map(function (d) {
 				return d.key;
 			}).reverse();
-
+			console.log(d);
 			if (d.groups) {
 				chartData.forEach(function (di) {
 					return di.group = 'All';
@@ -752,10 +753,9 @@ var webcodebook = function (webcharts) {
 						chartData.push(value);
 					});
 				});
-
+				console.log(chartData);
 				chartSettings.marks[0].per.push('group');
 				chartSettings.marks[0].values = { 'group': ['All'] };
-				chartSettings.marks[0].radius = 5;
 				chartSettings.marks.push({ type: 'circle',
 					per: ['key', 'group'],
 					summarizeX: 'mean',
@@ -765,12 +765,22 @@ var webcodebook = function (webcharts) {
 						}) } });
 				chartSettings.color_by = 'group';
 				chartSettings.legend = { label: '',
-					order: ['All'].concat(d.groups.map(function (d) {
+					order: d.groups.map(function (d) {
 						return d.group;
-					})) };
+					}),
+					mark: "circle"
+				};
+				console.log(d.groups.map(function (d) {
+					return d.group;
+				}));
 			}
 
 			var chart = webCharts.createChart(chartContainer, chartSettings);
+			chart.on("resize", function () {
+				var allLegend = this.wrap.select("ul.legend").select("li");
+				allLegend.select("svg").remove();
+				allLegend.select("span.legend-mark-text").text("|").style("color", "black").style("font-weight", "bolder");
+			});
 			chart.init(chartData);
 		} else {
 			// continuous outcomes
