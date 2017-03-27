@@ -1,3 +1,5 @@
+import { createHistogram } from '../../../createHistogram.js'
+
 export default function makeChart(d, group) {
   //Common chart settings
     const margin =
@@ -90,7 +92,7 @@ export default function makeChart(d, group) {
             });
         }
 
-        const chart = spikeHistogram(chartContainer, chartSettings);
+        const chart = createHistogram(chartContainer, chartSettings);
         chart.init(chartData);
     }
 }
