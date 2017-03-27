@@ -63,7 +63,6 @@
     .web-codebook .summaryTable .variable-row {
         width: 100%;
         padding-top: 1em;
-        border-top: 2px solid #ddd;
         display: inline-block;
     }
 
@@ -76,6 +75,12 @@
     \-------------------------------------------------------------------------------------------**/
         .web-codebook .summaryTable .variable-row .section {
           display:block;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-head {
+          background:#eee;
+          height:2em;
+          padding:0.4em;
         }
 
         .web-codebook .summaryTable .variable-row .row-title,
