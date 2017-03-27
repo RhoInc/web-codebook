@@ -238,7 +238,7 @@ var webcodebook = function (webcharts) {
 		chartSettings.y.order = chartData.map(function (d) {
 			return d.key;
 		}).reverse();
-		console.log(d);
+
 		if (d.groups) {
 			chartData.forEach(function (di) {
 				return di.group = 'All';
@@ -271,17 +271,33 @@ var webcodebook = function (webcharts) {
 				}),
 				mark: "circle"
 			};
-			console.log(d.groups.map(function (d) {
-				return d.group;
-			}));
 		}
 
 		var chart = webCharts.createChart(chartContainer, chartSettings);
+
 		chart.on("resize", function () {
+
+			//Clean up the legend
 			var allLegend = this.wrap.select("ul.legend").select("li");
 			allLegend.select("svg").remove();
 			allLegend.select("span.legend-mark-text").text("|").style("color", "black").style("font-weight", "bolder");
+
+			//Custom labels on the right
+			console.log(this);
+			var chart = this;
+			//move y-labels to left hand side?!
+
+			var ticks = this.wrap.select("g.y.axis").selectAll("g.tick");
+
+			ticks.select("text").remove();
+			ticks.append("title").text(function (d) {
+				return d;
+			});
+			ticks.append("text").attr("text-anchor", "start").attr("alignment-baseline", "middle").attr("dx", 10).attr("x", chart.plot_width).text(function (d) {
+				return d.length < 30 ? d : d.substring(0, 30) + "...";
+			});
 		});
+
 		chart.init(chartData);
 	}
 
@@ -805,8 +821,8 @@ var webcodebook = function (webcharts) {
 
 	function makeChart(d) {
 		//Common chart settings
-		this.margin = {};
 		this.height = 100;
+		this.margin = { right: 200, left: 30 };
 
 		if (d.type === 'categorical') {
 			// categorical outcomes

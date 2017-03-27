@@ -30,7 +30,7 @@ export function makeDotPlot(this_, d){
               a.key < b.key ? -1 : 1)
       .slice(0,5);
   chartSettings.y.order = chartData.map(d => d.key).reverse();
-  console.log(d)
+
   if (d.groups) {
     chartData.forEach(di => di.group = 'All');
 
@@ -61,17 +61,40 @@ export function makeDotPlot(this_, d){
           ,order: d.groups.map(d => d.group)
           ,mark:"circle"
         };
-        console.log(d.groups.map(d => d.group))
   }
 
   const chart = webCharts.createChart(chartContainer, chartSettings);
+
   chart.on("resize",function(){
+
+    //Clean up the legend
     var allLegend = this.wrap.select("ul.legend").select("li")
     allLegend.select("svg").remove()
     allLegend.select("span.legend-mark-text")
     .text("|")
     .style("color","black")
     .style("font-weight","bolder")
+
+    //Custom labels on the right
+    console.log(this)
+    var chart = this;
+    //move y-labels to left hand side?!
+
+    var ticks = this.wrap.select("g.y.axis").selectAll("g.tick")
+
+    ticks.select("text").remove()
+    ticks.append("title").text(d=>d)
+    ticks
+    .append("text")
+    .attr("text-anchor","start")
+    .attr("alignment-baseline","middle")
+    .attr("dx",10)
+    .attr("x",chart.plot_width)
+    .text(d=>d.length < 30 ? d : d.substring(0,30)+"..." )
+
+
   })
+
+
   chart.init(chartData);
 }
