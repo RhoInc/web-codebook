@@ -180,16 +180,17 @@ export default function onResize() {
         }
 
       //Rotate y-axis labels.
+      console.log(this)
         this.svg.select('g.y.axis text.axis-title').remove();
         this.svg.select('g.y.axis')
             .insert('text', ':first-child')
             .attr(
                 {'class': 'axis-title'
-                ,'x': 0
+                ,'x': this.plot_width
                 ,'y': this.plot_height/2
-                ,'dx': '-2.5em'})
-            .style('text-anchor', 'end')
-            .text(this.config.y.label);
+                ,'dx': '1em'})
+            .style('text-anchor', 'start')
+            .text(this.group ? 'Level: '+this.config.y.label:"");
 
       //Hide legends.
         this.wrap.select('ul.legend').remove();
