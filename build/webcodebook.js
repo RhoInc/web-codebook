@@ -13,13 +13,14 @@ var webcodebook = function (webcharts) {
 
 		//save raw data
 		this.data.raw = data;
+		this.data.filtered = data; //assume no filters active on init :/
 
 		//settings and defaults
 		this.util.setDefaults(this);
 		this.layout();
 
 		//prepare the data summaries
-		this.data.summary = this.data.makeSummary(data);
+		this.data.makeSummary(this);
 
 		//draw controls
 		this.util.makeAutomaticFilters(this);
@@ -107,7 +108,7 @@ var webcodebook = function (webcharts) {
 
 			//update the chart
 			chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-			chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
+			chart.data.makeSummary(chart);
 			chart.summaryTable.draw(chart);
 		});
 	}
@@ -137,7 +138,7 @@ var webcodebook = function (webcharts) {
 			groupSelect.on("change", function () {
 				chart.config.group = this.value !== 'None' ? this.value : null;
 				chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-				chart.data.summary = chart.data.filtered.length > 0 ? chart.data.makeSummary(chart.data.filtered, chart.config.group) : [];
+				chart.data.makeSummary(chart);
 				chart.summaryTable.draw(chart);
 			});
 		}
@@ -254,7 +255,6 @@ var webcodebook = function (webcharts) {
 					chartData.push(value);
 				});
 			});
-			console.log(chartData);
 			chartSettings.marks[0].per.push('group');
 			chartSettings.marks[0].values = { 'group': ['All'] };
 			chartSettings.marks.push({ type: 'circle',
@@ -283,7 +283,6 @@ var webcodebook = function (webcharts) {
 			allLegend.select("span.legend-mark-text").text("|").style("color", "black").style("font-weight", "bolder");
 
 			//Custom labels on the right
-			console.log(this);
 			var chart = this;
 			//move y-labels to left hand side?!
 
@@ -482,8 +481,8 @@ var webcodebook = function (webcharts) {
 		panel: null,
 		measureFormat: ',.2f',
 		boxPlot: true,
+		nBins: null,
 		mean: true,
-		nBins: 100,
 		overall: false
 
 		//Webcharts settings
@@ -499,8 +498,9 @@ var webcodebook = function (webcharts) {
 			per: null // set in syncSettings()
 			, summarizeX: 'mean',
 			summarizeY: 'count',
-			attributes: { fill: "black",
-				stroke: "black" }
+			attributes: { fill: "#999",
+				stroke: "#333",
+				"stroke-width": "2px" }
 		}],
 		gridlines: 'y',
 		resizable: true,
@@ -519,7 +519,6 @@ var webcodebook = function (webcharts) {
 		syncedSettings.y.column = settings.measure;
 		syncedSettings.y.label = settings.measure;
 		syncedSettings.marks[0].per = [settings.measure];
-
 		return syncedSettings;
 	}
 
@@ -537,7 +536,6 @@ var webcodebook = function (webcharts) {
 				d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
 				d.range = format(d.rangeLow) + '-' + format(d.rangeHigh);
 				d.selector = 'bar' + i;
-				console.log(d);
 				//Define tooltips.
 				var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
 				var text = tooltip.append('text').attr({ 'id': 'text',
@@ -593,7 +591,7 @@ var webcodebook = function (webcharts) {
 							'x': this.x(quantile.quantile),
 							'y': this.plot_height,
 							'width': this.x(q3) - this.x(quantile.quantile),
-							'height': 8 }).style({ 'fill': 'blue',
+							'height': 8 }).style({ 'fill': '#7BAFD4',
 							'opacity': .25 });
 						interQ.append('title').text('Interquartile range: ' + format(quantile.quantile) + '-' + format(q3));
 					}
@@ -623,7 +621,6 @@ var webcodebook = function (webcharts) {
 			}
 
 			//Rotate y-axis labels.
-			console.log(this);
 			this.svg.select('g.y.axis text.axis-title').remove();
 			this.svg.select('g.y.axis').insert('text', ':first-child').attr({ 'class': 'axis-title',
 				'x': this.plot_width,
@@ -658,14 +655,14 @@ var webcodebook = function (webcharts) {
 					return d.distance === minimum;
 				}).filter(function (d, i) {
 					return i === 0;
-				}).select("rect").style('stroke', 'red').style('fill', 'red');
+				}).select("rect").style('fill', '#7BAFD4');
 
 				//Activate tooltip.
 				var d = closest.datum();
 				tooltips.classed('active', false);
 				context.svg.select('#' + d.selector).classed('active', true);
 			}).on('mouseout', function () {
-				bars.select("rect").style('stroke', 'black').style('fill', 'black');
+				bars.select("rect").style('fill', '#999');
 				context.svg.selectAll('g.tooltip').classed('active', false);
 			});
 		}
@@ -789,11 +786,13 @@ var webcodebook = function (webcharts) {
 	}
 
 	function makeHistogram(this_, d) {
+		console.log(d.bins);
 		var chartContainer = d3.select(this_).node();
 		var chartSettings = { measure: ' ',
 			resizable: false,
 			height: 100,
-			margin: this_.margin };
+			margin: this_.margin,
+			nBins: d.bins };
 		var chartData = [];
 
 		if (d.groups) {
@@ -905,7 +904,10 @@ var webcodebook = function (webcharts) {
 		filters: [],
 		groups: [],
 		autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
-		autofilter: 10 };
+		autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
+		autobins: true,
+		nBins: 100
+	};
 
 	function setDefaults(chart) {
 
@@ -920,6 +922,10 @@ var webcodebook = function (webcharts) {
 
 		//autogroups - don't use automatic groups if user specifies groups object
 		chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings$1.autogroups : chart.config.autogroups;
+
+		/********************* Bin Settings *********************/
+		chart.config.nBins = chart.config.nBins || defaultSettings$1.nBins;
+		chart.config.autobins = chart.config.autobins == null ? defaultSettings$1.autobins : chart.config.autobins;
 	}
 
 	function makeAutomaticFilters(chart) {
@@ -962,13 +968,57 @@ var webcodebook = function (webcharts) {
 		}
 	}
 
+	// determine the number of bins to use in the histogram based on the data.
+	// Based on an implementation of the Freedman-Diaconis
+	// See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
+	// values should be an array of numbers
+
+	function getBinCounts(codebook) {
+
+		//function to set the bin count for a single variable
+		function setBinCount(summaryData) {
+			console.log(summaryData);
+			//Freedman-Diaconis rule - returns the recommended bin size for a histogram
+			function FreedmanDiaconis(IQR, n) {
+				var cubeRootN = Math.cbrt(n);
+				return 2 * (IQR / cubeRootN);
+			}
+
+			var IQR = +summaryData.statistics["3rd quartile"] - +summaryData.statistics["1st quartile"];
+			var n = summaryData.statistics["n"];
+			var range = +summaryData.statistics["max"] - +summaryData.statistics["min"];
+			var binSize = FreedmanDiaconis(IQR, n);
+			var bins = Math.ceil(range / binSize);
+
+			return bins;
+		}
+
+		var continuousVars = codebook.data.summary.filter(function (d) {
+			return d.type == "continuous";
+		});
+		continuousVars.forEach(function (cvar) {
+			cvar.bins = codebook.config.autoBins ? codebook.config.nBins : setBinCount(cvar);
+			if (Object.keys(codebook.config).indexOf("group") > -1) {
+				console.log("Thar be groups! ");
+				//console.log(codebook.config.groups)
+				cvar.groups.forEach(function (gvar) {
+					console.log(gvar);
+					gvar.bins = codebook.config.autoBins ? codebook.config.nBins : setBinCount(gvar);
+				});
+			}
+		});
+	}
+
 	var util = {
 		setDefaults: setDefaults,
 		makeAutomaticFilters: makeAutomaticFilters,
-		makeAutomaticGroups: makeAutomaticGroups
+		makeAutomaticGroups: makeAutomaticGroups,
+		getBinCounts: getBinCounts
 	};
 
-	function makeSummary(data, group) {
+	function makeSummary(codebook) {
+		var data = codebook.data.filtered;
+		var group = codebook.config.group;
 
 		function determineType(vector) {
 			var nonMissingValues = vector.filter(function (d) {
@@ -983,7 +1033,6 @@ var webcodebook = function (webcharts) {
 		}
 
 		var summarize = {
-
 			categorical: function categorical(vector) {
 				var statistics = {};
 				statistics.N = vector.length;
@@ -1036,45 +1085,50 @@ var webcodebook = function (webcharts) {
 
 		};
 
-		var variables = Object.keys(data[0]);
-
-		variables.forEach(function (variable, i) {
-			//Define variable metadata and generate data array.
-			variables[i] = { value_col: variable };
-			variables[i].values = data.map(function (d) {
-				return d[variable];
-			});
-			variables[i].type = determineType(variables[i].values);
-
-			//Calculate statistics.
-			if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
-
-			//Handle groups.
-			if (group) {
-				variables[i].group = group;
-				variables[i].groups = d3.set(data.map(function (d) {
-					return d[group];
-				})).values().map(function (g) {
-					return { group: g };
+		if (codebook.data.filtered.length > 0) {
+			var variables = Object.keys(data[0]);
+			variables.forEach(function (variable, i) {
+				//Define variable metadata and generate data array.
+				variables[i] = { value_col: variable };
+				variables[i].values = data.map(function (d) {
+					return d[variable];
 				});
+				variables[i].type = determineType(variables[i].values);
 
-				variables[i].groups.forEach(function (g) {
-					//Define variable metadata and generate data array.
-					g.value_col = variables[i].value_col;
-					g.values = data.filter(function (d) {
-						return d[group] === g.group;
-					}).map(function (d) {
-						return d[variable];
+				//Calculate statistics.
+				if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
+
+				//Handle groups.
+				if (group) {
+					variables[i].group = group;
+					variables[i].groups = d3.set(data.map(function (d) {
+						return d[group];
+					})).values().map(function (g) {
+						return { group: g };
 					});
-					g.type = variables[i].type;
 
-					//Calculate statistics.
-					if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
-				});
-			}
-		});
+					variables[i].groups.forEach(function (g) {
+						//Define variable metadata and generate data array.
+						g.value_col = variables[i].value_col;
+						g.values = data.filter(function (d) {
+							return d[group] === g.group;
+						}).map(function (d) {
+							return d[variable];
+						});
+						g.type = variables[i].type;
 
-		return variables;
+						//Calculate statistics.
+						if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
+					});
+				}
+			});
+
+			codebook.data.summary = variables;
+			//get bin counts
+			codebook.util.getBinCounts(codebook);
+		} else {
+			codebook.data.summary = [];
+		}
 	}
 
 	function makeFiltered(data, filters) {

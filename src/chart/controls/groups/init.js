@@ -14,7 +14,7 @@ export function init(chart) {
     	var groupSelect = selector.append("select")
 
     	var groupLevels = d3.merge([["None"],chart.config.groups.map(m=>m.value_col)])
-    	
+
     	groupSelect.selectAll("option")
     	.data(groupLevels)
     	.enter()
@@ -26,9 +26,7 @@ export function init(chart) {
                 ? this.value
                 : null;
             chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
-            chart.data.summary = chart.data.filtered.length > 0
-                ? chart.data.makeSummary(chart.data.filtered, chart.config.group)
-                : [];
+            chart.data.makeSummary(chart)
             chart.summaryTable.draw(chart);
     	})
 

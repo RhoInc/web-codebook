@@ -16,7 +16,6 @@ export default function onResize() {
                 d.midpoint = (d.rangeHigh + d.rangeLow)/2;
                 d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
                 d.selector = `bar`+i;
-                console.log(d)
                 //Define tooltips.
                 const tooltip = context.svg
                     .append('g')
@@ -114,7 +113,7 @@ export default function onResize() {
                             ,'width': this.x(q3) - this.x(quantile.quantile)
                             ,'height': 8})
                         .style(
-                            {'fill': 'blue'
+                            {'fill': '#7BAFD4'
                             ,'opacity': .25});
                     interQ
                         .append('title')
@@ -164,7 +163,6 @@ export default function onResize() {
         }
 
       //Rotate y-axis labels.
-      console.log(this)
         this.svg.select('g.y.axis text.axis-title').remove();
         this.svg.select('g.y.axis')
             .insert('text', ':first-child')
@@ -207,8 +205,7 @@ export default function onResize() {
                     .filter(d => d.distance === minimum)
                     .filter((d,i) => i === 0)
                     .select("rect")
-                      .style('stroke', 'red')
-                      .style('fill','red');
+                      .style('fill','#7BAFD4');
 
               //Activate tooltip.
                 const d = closest.datum();
@@ -220,8 +217,7 @@ export default function onResize() {
             })
             .on('mouseout', function() {
                 bars.select("rect")
-                    .style('stroke', 'black')
-                    .style('fill', 'black')
+                    .style('fill', '#999')
                 context.svg
                     .selectAll('g.tooltip')
                     .classed('active', false);

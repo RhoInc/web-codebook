@@ -36,7 +36,7 @@ export function init(chart) {
     var filterLabel = filterItem
         .append('span')
         .attr('class', 'filterLabel')
-   
+
     filterLabel.append("span").html(d => d.label || d.value_col)
 
     var filterCustom = filterItem
@@ -53,7 +53,7 @@ export function init(chart) {
         .attr('selected', d=>d.selected?'selected':null);
 
   //Initialize event listeners
-    filterCustom.on('change', function() {        
+    filterCustom.on('change', function() {
         // flag the selected options in the config
         d3.select(this).selectAll('option').each(function(option_d) {
             option_d.selected = d3.select(this).property('selected')
@@ -61,9 +61,7 @@ export function init(chart) {
 
         //update the chart
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
-        chart.data.summary = chart.data.filtered.length>0?
-            chart.data.makeSummary(chart.data.filtered, chart.config.group):
-            []
+        chart.data.makeSummary(chart)       
         chart.summaryTable.draw(chart)
     });
 }

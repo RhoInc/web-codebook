@@ -1,12 +1,14 @@
 import { createHistogram } from '../../../createHistogram.js'
 
 export function makeHistogram(this_, d){
+  console.log(d.bins)
   const chartContainer = d3.select(this_).node();
   const chartSettings =
       {measure: ' '
       ,resizable: false
       ,height: 100
-      ,margin: this_.margin};
+      ,margin: this_.margin
+      ,nBins:d.bins};
   let chartData = [];
 
   if (d.groups) {

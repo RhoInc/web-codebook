@@ -6,8 +6,8 @@ export default
     ,panel: null
     ,measureFormat: ',.2f'
     ,boxPlot: true
+    ,nBins:null
     ,mean: true
-    ,nBins: 100
     ,overall: false
 
   //Webcharts settings
@@ -26,8 +26,9 @@ export default
             ,summarizeX: 'mean'
             ,summarizeY: 'count'
             ,attributes:
-              {fill:"black"
-              ,stroke:"black"}
+              {fill:"#999"
+              ,stroke:"#333"
+              ,"stroke-width":"2px"}
             }
         ]
     ,gridlines: 'y'
@@ -49,6 +50,5 @@ export function syncSettings(settings) {
     syncedSettings.y.column = settings.measure;
     syncedSettings.y.label = settings.measure;
     syncedSettings.marks[0].per = [settings.measure];
-
     return syncedSettings;
 }
