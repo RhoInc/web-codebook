@@ -89,9 +89,9 @@ export default function onResize() {
                         .attr(
                             {'class': 'statistic'
                             ,'x1': this.x(quantile.quantile)
-                            ,'y1': this.plot_height + 4
+                            ,'y1': this.plot_height + this.config.boxPlotHeight/2
                             ,'x2': this.x(rQuantile)
-                            ,'y2': this.plot_height + 4})
+                            ,'y2': this.plot_height + this.config.boxPlotHeight/2})
                         .style(
                             {'stroke': 'red'
                             ,'stroke-width': '2px'
@@ -111,7 +111,7 @@ export default function onResize() {
                             ,'x': this.x(quantile.quantile)
                             ,'y': this.plot_height
                             ,'width': this.x(q3) - this.x(quantile.quantile)
-                            ,'height': 8})
+                            ,'height': this.config.boxPlotHeight})
                         .style(
                             {'fill': '#7BAFD4'
                             ,'opacity': .25});
@@ -128,7 +128,7 @@ export default function onResize() {
                         ,'x1': this.x(quantile.quantile)
                         ,'y1': this.plot_height
                         ,'x2': this.x(quantile.quantile)
-                        ,'y2': this.plot_height + 8})
+                        ,'y2': this.plot_height + this.config.boxPlotHeight})
                     .style(
                         {'stroke': [.05,.95].indexOf(quantile.probability) > -1
                             ? 'red'
@@ -151,8 +151,8 @@ export default function onResize() {
                 .attr(
                     {'class': 'statistic'
                     ,'cx': this.x(mean)
-                    ,'cy': this.plot_height + 4
-                    ,'r': 3})
+                    ,'cy': this.plot_height + this.config.boxPlotHeight/2
+                    ,'r': (this.config.boxPlotHeight/3)})
                 .style(
                     {'fill': '#ccc'
                     ,'stroke': 'black'
@@ -178,7 +178,15 @@ export default function onResize() {
         this.wrap.select('ul.legend').remove();
 
       //Shift x-axis tick labels downward.
-        this.svg.select('.x.axis').selectAll('g.tick text').attr('dy', '1em');
+        var yticks = this.svg.select('.x.axis').selectAll('g.tick')
+         yticks.select('text').remove()
+         yticks.append('text')
+        .attr('y', context.config.boxPlotHeight)
+        .attr('dy',"1em")
+        .attr('x',0)
+        .attr('text-anchor','middle')
+        .attr('alignment-baseline','top')
+        .text(d=>d)
 
       //Add modal to nearest mark.
         const bars = this.svg.selectAll('.bar-group');
@@ -193,7 +201,6 @@ export default function onResize() {
                 let minimum;
                 let bar = {};
                 bars
-                    .style('stroke', 'black')
                     .each(function(d,i) {
                         d.distance = Math.abs(d.midpoint - x);
                         if (i === 0 || d.distance < minimum) {

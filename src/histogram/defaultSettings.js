@@ -9,6 +9,7 @@ export default
     ,nBins:null
     ,mean: true
     ,overall: false
+    ,boxPlotHeight: 20
 
   //Webcharts settings
     ,x: {column: null // set in syncSettings()
@@ -50,5 +51,6 @@ export function syncSettings(settings) {
     syncedSettings.y.column = settings.measure;
     syncedSettings.y.label = settings.measure;
     syncedSettings.marks[0].per = [settings.measure];
+    syncedSettings.margin.bottom = settings.boxPlotHeight+20
     return syncedSettings;
 }

@@ -483,7 +483,8 @@ var webcodebook = function (webcharts) {
 		boxPlot: true,
 		nBins: null,
 		mean: true,
-		overall: false
+		overall: false,
+		boxPlotHeight: 20
 
 		//Webcharts settings
 		, x: { column: null // set in syncSettings()
@@ -519,6 +520,7 @@ var webcodebook = function (webcharts) {
 		syncedSettings.y.column = settings.measure;
 		syncedSettings.y.label = settings.measure;
 		syncedSettings.marks[0].per = [settings.measure];
+		syncedSettings.margin.bottom = settings.boxPlotHeight + 20;
 		return syncedSettings;
 	}
 
@@ -576,9 +578,9 @@ var webcodebook = function (webcharts) {
 						var rQuantile = d3.quantile(this.values, rProbability);
 						var whisker = this.svg.append('line').attr({ 'class': 'statistic',
 							'x1': this.x(quantile.quantile),
-							'y1': this.plot_height + 4,
+							'y1': this.plot_height + this.config.boxPlotHeight / 2,
 							'x2': this.x(rQuantile),
-							'y2': this.plot_height + 4 }).style({ 'stroke': 'red',
+							'y2': this.plot_height + this.config.boxPlotHeight / 2 }).style({ 'stroke': 'red',
 							'stroke-width': '2px',
 							'opacity': .25 });
 						whisker.append('title').text('Q' + quantile.probability + '-Q' + rProbability + ': ' + format(quantile.quantile) + '-' + format(rQuantile));
@@ -591,7 +593,7 @@ var webcodebook = function (webcharts) {
 							'x': this.x(quantile.quantile),
 							'y': this.plot_height,
 							'width': this.x(q3) - this.x(quantile.quantile),
-							'height': 8 }).style({ 'fill': '#7BAFD4',
+							'height': this.config.boxPlotHeight }).style({ 'fill': '#7BAFD4',
 							'opacity': .25 });
 						interQ.append('title').text('Interquartile range: ' + format(quantile.quantile) + '-' + format(q3));
 					}
@@ -601,7 +603,7 @@ var webcodebook = function (webcharts) {
 						'x1': this.x(quantile.quantile),
 						'y1': this.plot_height,
 						'x2': this.x(quantile.quantile),
-						'y2': this.plot_height + 8 }).style({ 'stroke': [.05, .95].indexOf(quantile.probability) > -1 ? 'red' : [.25, .75].indexOf(quantile.probability) > -1 ? 'blue' : 'black',
+						'y2': this.plot_height + this.config.boxPlotHeight }).style({ 'stroke': [.05, .95].indexOf(quantile.probability) > -1 ? 'red' : [.25, .75].indexOf(quantile.probability) > -1 ? 'blue' : 'black',
 						'stroke-width': '3px' });
 					quantile.mark.append('title').text(quantile.label + ': ' + format(quantile.quantile));
 				}
@@ -613,8 +615,8 @@ var webcodebook = function (webcharts) {
 				var sd = d3.deviation(this.values);
 				var meanMark = this.svg.append('circle').attr({ 'class': 'statistic',
 					'cx': this.x(mean),
-					'cy': this.plot_height + 4,
-					'r': 3 }).style({ 'fill': '#ccc',
+					'cy': this.plot_height + this.config.boxPlotHeight / 2,
+					'r': this.config.boxPlotHeight / 3 }).style({ 'fill': '#ccc',
 					'stroke': 'black',
 					'stroke-width': '1px' });
 				meanMark.append('title').text('n: ' + this.values.length + '\nMean: ' + format(mean) + '\nSD: ' + format(sd));
@@ -631,7 +633,11 @@ var webcodebook = function (webcharts) {
 			this.wrap.select('ul.legend').remove();
 
 			//Shift x-axis tick labels downward.
-			this.svg.select('.x.axis').selectAll('g.tick text').attr('dy', '1em');
+			var yticks = this.svg.select('.x.axis').selectAll('g.tick');
+			yticks.select('text').remove();
+			yticks.append('text').attr('y', context.config.boxPlotHeight).attr('dy', "1em").attr('x', 0).attr('text-anchor', 'middle').attr('alignment-baseline', 'top').text(function (d) {
+				return d;
+			});
 
 			//Add modal to nearest mark.
 			var bars = this.svg.selectAll('.bar-group');
@@ -644,7 +650,7 @@ var webcodebook = function (webcharts) {
 				var y = context.y.invert(mouse[1]);
 				var minimum = void 0;
 				var bar = {};
-				bars.style('stroke', 'black').each(function (d, i) {
+				bars.each(function (d, i) {
 					d.distance = Math.abs(d.midpoint - x);
 					if (i === 0 || d.distance < minimum) {
 						minimum = d.distance;
@@ -923,7 +929,7 @@ var webcodebook = function (webcharts) {
 		//autogroups - don't use automatic groups if user specifies groups object
 		chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings$1.autogroups : chart.config.autogroups;
 
-		/********************* Bin Settings *********************/
+		/********************* Histogram Settings *********************/
 		chart.config.nBins = chart.config.nBins || defaultSettings$1.nBins;
 		chart.config.autobins = chart.config.autobins == null ? defaultSettings$1.autobins : chart.config.autobins;
 	}

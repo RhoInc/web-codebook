@@ -19,7 +19,7 @@ export function setDefaults(chart) {
     defaultSettings.autogroups :
 	  chart.config.autogroups;
 
-  /********************* Bin Settings *********************/
+  /********************* Histogram Settings *********************/
   chart.config.nBins = chart.config.nBins || defaultSettings.nBins
   chart.config.autobins = chart.config.autobins == null ?
     defaultSettings.autobins :
