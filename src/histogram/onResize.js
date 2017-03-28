@@ -7,33 +7,17 @@ export default function onResize() {
         this.wrap.style('display', 'none');
     else {
       //Clear custom marks.
-        this.svg.selectAll('rect.wc-data-mark').style('display', 'none');
-        this.svg.selectAll('line.spike').remove();
         this.svg.selectAll('g.tooltip').remove();
         this.svg.selectAll('.statistic').remove();
 
-      //Replace rects with lines.
         this.svg
             .selectAll('g.bar-group')
             .each(function(d,i) {
-              //Define spikes.
                 d.midpoint = (d.rangeHigh + d.rangeLow)/2;
                 d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
-                d.selector = `range${d.range.replace(/\./g, 'd').replace(',', '_')}`;
-                const spike = d3.select(this)
-                    .append('line')
-                    .datum(d)
-                    .attr(
-                        {'class': 'spike'
-                        ,'x1': context.x(d.midpoint)
-                        ,'y1': context.plot_height
-                        ,'x2': context.x(d.midpoint)
-                        ,'y2': context.y(d.total)})
-                    .style(
-                        {'stroke': 'black'
-                        ,'stroke-width': '3px'});
-
-              //Define tooltips.
+                d.selector = `bar`+i;
+                console.log(d)
+                //Define tooltips.
                 const tooltip = context.svg
                     .append('g')
                     .classed('tooltip', true)
@@ -199,30 +183,32 @@ export default function onResize() {
         this.svg.select('.x.axis').selectAll('g.tick text').attr('dy', '1em');
 
       //Add modal to nearest mark.
-        const spikes = this.svg.selectAll('.spike');
+        const bars = this.svg.selectAll('.bar-group');
         const tooltips = this.svg.selectAll('.tooltip');
         const statistics = this.svg.selectAll('.statistic');
         this.svg
             .on('mousemove', function() {
-              //Highlight closest spike.
+              //Highlight closest bar.
                 const mouse = d3.mouse(this);
                 const x = context.x.invert(mouse[0]);
                 const y = context.y.invert(mouse[1]);
                 let minimum;
-                let spike = {};
-                spikes
+                let bar = {};
+                bars
                     .style('stroke', 'black')
                     .each(function(d,i) {
                         d.distance = Math.abs(d.midpoint - x);
                         if (i === 0 || d.distance < minimum) {
                             minimum = d.distance;
-                            spike = d;
+                            bar = d;
                         }
                     });
-                const closest = spikes
+                const closest = bars
                     .filter(d => d.distance === minimum)
                     .filter((d,i) => i === 0)
-                    .style('stroke', 'red');
+                    .select("rect")
+                      .style('stroke', 'red')
+                      .style('fill','red');
 
               //Activate tooltip.
                 const d = closest.datum();
@@ -233,9 +219,11 @@ export default function onResize() {
                     .classed('active', true)
             })
             .on('mouseout', function() {
-                spikes
+                bars.select("rect")
                     .style('stroke', 'black')
-                tooltips
+                    .style('fill', 'black')
+                context.svg
+                    .selectAll('g.tooltip')
                     .classed('active', false);
             });
     }

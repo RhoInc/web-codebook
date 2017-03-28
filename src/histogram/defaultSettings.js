@@ -24,7 +24,11 @@ export default
             {type: 'bar'
             ,per: null // set in syncSettings()
             ,summarizeX: 'mean'
-            ,summarizeY: 'count'}
+            ,summarizeY: 'count'
+            ,attributes:
+              {fill:"black"
+              ,stroke:"black"}
+            }
         ]
     ,gridlines: 'y'
     ,resizable: true

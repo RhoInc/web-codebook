@@ -498,7 +498,10 @@ var webcodebook = function (webcharts) {
 		marks: [{ type: 'bar',
 			per: null // set in syncSettings()
 			, summarizeX: 'mean',
-			summarizeY: 'count' }],
+			summarizeY: 'count',
+			attributes: { fill: "black",
+				stroke: "black" }
+		}],
 		gridlines: 'y',
 		resizable: true,
 		aspect: 12,
@@ -527,24 +530,14 @@ var webcodebook = function (webcharts) {
 		//Hide overall plot if [settings.overall] is set to false.
 		if (!this.config.overall && !this.group) this.wrap.style('display', 'none');else {
 			//Clear custom marks.
-			this.svg.selectAll('rect.wc-data-mark').style('display', 'none');
-			this.svg.selectAll('line.spike').remove();
 			this.svg.selectAll('g.tooltip').remove();
 			this.svg.selectAll('.statistic').remove();
 
-			//Replace rects with lines.
 			this.svg.selectAll('g.bar-group').each(function (d, i) {
-				//Define spikes.
 				d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
 				d.range = format(d.rangeLow) + '-' + format(d.rangeHigh);
-				d.selector = 'range' + d.range.replace(/\./g, 'd').replace(',', '_');
-				var spike = d3.select(this).append('line').datum(d).attr({ 'class': 'spike',
-					'x1': context.x(d.midpoint),
-					'y1': context.plot_height,
-					'x2': context.x(d.midpoint),
-					'y2': context.y(d.total) }).style({ 'stroke': 'black',
-					'stroke-width': '3px' });
-
+				d.selector = 'bar' + i;
+				console.log(d);
 				//Define tooltips.
 				var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
 				var text = tooltip.append('text').attr({ 'id': 'text',
@@ -644,36 +637,36 @@ var webcodebook = function (webcharts) {
 			this.svg.select('.x.axis').selectAll('g.tick text').attr('dy', '1em');
 
 			//Add modal to nearest mark.
-			var spikes = this.svg.selectAll('.spike');
+			var bars = this.svg.selectAll('.bar-group');
 			var tooltips = this.svg.selectAll('.tooltip');
 			var statistics = this.svg.selectAll('.statistic');
 			this.svg.on('mousemove', function () {
-				//Highlight closest spike.
+				//Highlight closest bar.
 				var mouse = d3.mouse(this);
 				var x = context.x.invert(mouse[0]);
 				var y = context.y.invert(mouse[1]);
 				var minimum = void 0;
-				var spike = {};
-				spikes.style('stroke', 'black').each(function (d, i) {
+				var bar = {};
+				bars.style('stroke', 'black').each(function (d, i) {
 					d.distance = Math.abs(d.midpoint - x);
 					if (i === 0 || d.distance < minimum) {
 						minimum = d.distance;
-						spike = d;
+						bar = d;
 					}
 				});
-				var closest = spikes.filter(function (d) {
+				var closest = bars.filter(function (d) {
 					return d.distance === minimum;
 				}).filter(function (d, i) {
 					return i === 0;
-				}).style('stroke', 'red');
+				}).select("rect").style('stroke', 'red').style('fill', 'red');
 
 				//Activate tooltip.
 				var d = closest.datum();
 				tooltips.classed('active', false);
 				context.svg.select('#' + d.selector).classed('active', true);
 			}).on('mouseout', function () {
-				spikes.style('stroke', 'black');
-				tooltips.classed('active', false);
+				bars.select("rect").style('stroke', 'black').style('fill', 'black');
+				context.svg.selectAll('g.tooltip').classed('active', false);
 			});
 		}
 	}
