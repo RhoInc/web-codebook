@@ -172,7 +172,7 @@ export default function onResize() {
                 ,'y': this.plot_height/2
                 ,'dx': '1em'})
             .style('text-anchor', 'start')
-            .text(this.group ? 'Level: '+this.config.y.label:"");
+            .text(this.group ? 'Level: '+this.config.y.label+" \n(n="+this.values.length+")":"");
 
       //Hide legends.
         this.wrap.select('ul.legend').remove();

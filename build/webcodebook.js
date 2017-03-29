@@ -627,7 +627,7 @@ var webcodebook = function (webcharts) {
 			this.svg.select('g.y.axis').insert('text', ':first-child').attr({ 'class': 'axis-title',
 				'x': this.plot_width,
 				'y': this.plot_height / 2,
-				'dx': '1em' }).style('text-anchor', 'start').text(this.group ? 'Level: ' + this.config.y.label : "");
+				'dx': '1em' }).style('text-anchor', 'start').text(this.group ? 'Level: ' + this.config.y.label + " \n(n=" + this.values.length + ")" : "");
 
 			//Hide legends.
 			this.wrap.select('ul.legend').remove();
