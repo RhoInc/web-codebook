@@ -9,7 +9,6 @@ export function getBinCounts(codebook){
 
   //function to set the bin count for a single variable
   function setBinCount(summaryData){
-    console.log(summaryData)
     //Freedman-Diaconis rule - returns the recommended bin size for a histogram
     function FreedmanDiaconis(IQR, n){
       var cubeRootN = Math.cbrt(n)
@@ -28,11 +27,9 @@ export function getBinCounts(codebook){
   var continuousVars = codebook.data.summary.filter(d=> d.type=="continuous")
   continuousVars.forEach(function(cvar){
       cvar.bins = codebook.config.autoBins ?  codebook.config.nBins : setBinCount(cvar)
-      if(Object.keys(codebook.config).indexOf("group")>-1){
-        console.log("Thar be groups! ")
-        //console.log(codebook.config.groups)
+      if(Object.keys(codebook.config).indexOf("group")>-1 & codebook.config.group != null){
+        console.log(codebook.config)
         cvar.groups.forEach(function(gvar){
-            console.log(gvar)
             gvar.bins = codebook.config.autoBins ?  codebook.config.nBins : setBinCount(gvar)
         })
       }
