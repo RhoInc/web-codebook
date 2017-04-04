@@ -187,7 +187,7 @@ var webcodebook = function (webcharts) {
 
 	function destroy(chart) {}
 
-	function makeHeader(d) {
+	function makeTitle(d) {
 		var wrap = d3.select(this);
 
 		var title = wrap.append('div').html(function (d) {
@@ -208,6 +208,97 @@ var webcodebook = function (webcharts) {
 
 			summary_text_span.append('sup').html('?').style('cursor', 'pointer').attr('title', value_list);
 		}
+	}
+
+	function makeDotPlot(this_, d) {
+		var chartContainer = d3.select(this_).node();
+		var chartSettings = { x: { column: 'prop_n',
+				type: 'linear',
+				label: '',
+				format: '%',
+				domain: [0, null] },
+			y: { column: 'key',
+				type: 'ordinal',
+				label: '' },
+			marks: [{ type: 'text',
+				text: "|",
+				attributes: { "font-weight": 'bold', "alignment-baseline": "middle" },
+				per: ['key'],
+				summarizeX: 'mean',
+				tooltip: '[key]: [n] ([prop_n])' }],
+			gridlines: 'xy',
+			resizable: false,
+			height: this_.height,
+			margin: this_.margin
+		};
+
+		var chartData = d.statistics.values.sort(function (a, b) {
+			return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+		}).slice(0, 5);
+		chartSettings.y.order = chartData.map(function (d) {
+			return d.key;
+		}).reverse();
+
+		if (d.groups) {
+			chartData.forEach(function (di) {
+				return di.group = 'All';
+			});
+
+			d.groups.forEach(function (group) {
+				group.statistics.values.filter(function (value) {
+					return chartSettings.y.order.indexOf(value.key) > -1;
+				}).sort(function (a, b) {
+					return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+				}).forEach(function (value) {
+					value.group = group.group;
+					chartData.push(value);
+				});
+			});
+			console.log(chartData);
+			chartSettings.marks[0].per.push('group');
+			chartSettings.marks[0].values = { 'group': ['All'] };
+			chartSettings.marks.push({ type: 'circle',
+				per: ['key', 'group'],
+				summarizeX: 'mean',
+				radius: 3,
+				values: { 'group': d.groups.map(function (d) {
+						return d.group;
+					}) } });
+			chartSettings.color_by = 'group';
+			chartSettings.legend = { label: '',
+				order: d.groups.map(function (d) {
+					return d.group;
+				}),
+				mark: "circle"
+			};
+		}
+
+		var chart = webCharts.createChart(chartContainer, chartSettings);
+
+		chart.on("resize", function () {
+
+			//Clean up the legend
+			var allLegend = this.wrap.select("ul.legend").select("li");
+			allLegend.select("svg").remove();
+			allLegend.select("span.legend-mark-text").text("|").style("color", "black").style("font-weight", "bolder");
+
+			//Custom labels on the right
+			console.log(this);
+			var chart = this;
+			//move y-labels to left hand side?!
+
+			var ticks = this.wrap.select("g.y.axis").selectAll("g.tick");
+
+			ticks.select("text").remove();
+			ticks.append("title").text(function (d) {
+				return d;
+			});
+			ticks.append("text").attr("text-anchor", "start").attr("alignment-baseline", "middle").attr("dx", 10).attr("x", chart.plot_width).text(function (d) {
+				return d.length < 30 ? d : d.substring(0, 30) + "...";
+			});
+		});
+
+		chart.init(chartData);
 	}
 
 	if (typeof Object.assign != 'function') {
@@ -539,11 +630,12 @@ var webcodebook = function (webcharts) {
 			}
 
 			//Rotate y-axis labels.
+			console.log(this);
 			this.svg.select('g.y.axis text.axis-title').remove();
 			this.svg.select('g.y.axis').insert('text', ':first-child').attr({ 'class': 'axis-title',
-				'x': 0,
+				'x': this.plot_width,
 				'y': this.plot_height / 2,
-				'dx': '-2.5em' }).style('text-anchor', 'end').text(this.config.y.label);
+				'dx': '1em' }).style('text-anchor', 'start').text(this.group ? 'Level: ' + this.config.y.label : "");
 
 			//Hide legends.
 			this.wrap.select('ul.legend').remove();
@@ -703,98 +795,42 @@ var webcodebook = function (webcharts) {
 		return chart;
 	}
 
-	function makeChart(d, group) {
+	function makeHistogram(this_, d) {
+		var chartContainer = d3.select(this_).node();
+		var chartSettings = { measure: ' ',
+			resizable: false,
+			height: 100,
+			margin: this_.margin };
+		var chartData = [];
+
+		if (d.groups) {
+			chartSettings.panel = 'group';
+			d.groups.forEach(function (group) {
+				group.values.forEach(function (value) {
+					chartData.push({ group: group.group, ' ': value });
+				});
+			});
+		} else {
+			d.values.forEach(function (d) {
+				chartData.push({ ' ': d });
+			});
+		}
+
+		var chart = createHistogram(chartContainer, chartSettings);
+		chart.init(chartData);
+	}
+
+	function makeChart(d) {
 		//Common chart settings
-		var margin = { left: 155,
-			right: 30 };
-		var height = 100;
+		this.height = 100;
+		this.margin = { right: 200, left: 30 };
 
 		if (d.type === 'categorical') {
 			// categorical outcomes
-			var chartContainer = d3.select(this).node();
-			var chartSettings = { x: { column: 'prop_n',
-					type: 'linear',
-					label: '',
-					format: '%',
-					domain: [0, null] },
-				y: { column: 'key',
-					type: 'ordinal',
-					label: '' },
-				marks: [{ type: 'circle',
-					per: ['key'],
-					summarizeX: 'mean',
-					tooltip: '[key]: [n] ([prop_n])' }],
-				gridlines: 'xy',
-				resizable: false,
-				height: height,
-				margin: margin
-			};
-			var chartData = d.statistics.values.sort(function (a, b) {
-				return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-			}).slice(0, 5);
-			chartSettings.y.order = chartData.map(function (d) {
-				return d.key;
-			}).reverse();
-
-			if (d.groups) {
-				chartData.forEach(function (di) {
-					return di.group = 'All';
-				});
-
-				d.groups.forEach(function (group) {
-					group.statistics.values.filter(function (value) {
-						return chartSettings.y.order.indexOf(value.key) > -1;
-					}).sort(function (a, b) {
-						return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-					}).forEach(function (value) {
-						value.group = group.group;
-						chartData.push(value);
-					});
-				});
-
-				chartSettings.marks[0].per.push('group');
-				chartSettings.marks[0].values = { 'group': ['All'] };
-				chartSettings.marks[0].radius = 5;
-				chartSettings.marks.push({ type: 'circle',
-					per: ['key', 'group'],
-					summarizeX: 'mean',
-					radius: 3,
-					values: { 'group': d.groups.map(function (d) {
-							return d.group;
-						}) } });
-				chartSettings.color_by = 'group';
-				chartSettings.legend = { label: '',
-					order: ['All'].concat(d.groups.map(function (d) {
-						return d.group;
-					})) };
-			}
-
-			var chart = webCharts.createChart(chartContainer, chartSettings);
-			chart.init(chartData);
+			makeDotPlot(this, d);
 		} else {
 			// continuous outcomes
-			var _chartContainer = d3.select(this).node();
-			var _chartSettings = { measure: ' ',
-				resizable: false,
-				height: 100,
-				margin: margin };
-			var _chartData = [];
-
-			if (d.groups) {
-				_chartSettings.panel = 'group';
-				d.groups.forEach(function (group) {
-					group.values.forEach(function (value) {
-						_chartData.push({ group: group.group, ' ': value });
-					});
-				});
-			} else {
-				d.values.forEach(function (d) {
-					_chartData.push({ ' ': d });
-				});
-			}
-
-			var _chart = createHistogram(_chartContainer, _chartSettings);
-			_chart.init(_chartData);
+			makeHistogram(this, d);
 		}
 	}
 
@@ -810,11 +846,10 @@ var webcodebook = function (webcharts) {
 			return {
 				key: stat !== 'nMissing' ? stat : 'Missing',
 				value: d.statistics[stat] };
-		}).filter(function (statItem) {
-			return ['N', 'n'].indexOf(statItem.key) === -1;
 		});
+		//    .filter(statItem => ['N', 'n'].indexOf(statItem.key) === -1);
 
-		//Render Values 
+		//Render Values
 		if (d.type == 'categorical') {
 			var stats = stats_div.selectAll('div').data(statList).enter().append('div').attr('class', 'stat');
 			stats.append('div').text(function (d) {
@@ -844,9 +879,11 @@ var webcodebook = function (webcharts) {
 		var rowWrap = d3.select(this);
 		rowWrap.selectAll('*').remove();
 
-		rowWrap.append('div').attr('class', 'row-header section').each(makeHeader);
+		var rowHead = rowWrap.append("div").attr("class", "row-head section");
+		rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+		rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+
 		rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
-		rowWrap.append('div').attr('class', 'row-details section').each(makeDetails);
 	}
 
 	function updateSummaryText(chart) {

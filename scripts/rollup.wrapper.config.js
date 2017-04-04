@@ -5,8 +5,7 @@ module.exports = {
   format: 'iife',
   globals: {
     webcharts: 'webCharts',
-    d3: 'd3',
-    spikeHistogram: 'spikeHistogram'
+    d3: 'd3'
   },
   moduleName: 'webcodebook',
    plugins: [
@@ -26,5 +25,4 @@ module.exports = {
         "exclude": "node_modules/**"
       })
   ]
-}; 
-
+};

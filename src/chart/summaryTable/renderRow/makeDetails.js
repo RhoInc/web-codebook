@@ -7,12 +7,12 @@ export default function makeDetails(d) {
     var statList = statNames
         .map(stat => {
             return {
-                key: stat !== 'nMissing' ? stat : 'Missing', 
+                key: stat !== 'nMissing' ? stat : 'Missing',
                 value: d.statistics[stat]};
         })
-        .filter(statItem => ['N', 'n'].indexOf(statItem.key) === -1);
+    //    .filter(statItem => ['N', 'n'].indexOf(statItem.key) === -1);
 
-  //Render Values 
+  //Render Values
     if (d.type == 'categorical') {
         var stats = stats_div
             .selectAll('div')

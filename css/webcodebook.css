@@ -63,7 +63,6 @@
     .web-codebook .summaryTable .variable-row {
         width: 100%;
         padding-top: 1em;
-        border-top: 1px dotted #999;
         display: inline-block;
     }
 
@@ -74,20 +73,31 @@
     /**-------------------------------------------------------------------------------------------\
       Header layout
     \-------------------------------------------------------------------------------------------**/
-
-        .web-codebook .summaryTable .variable-row .row-header,
-        .web-codebook .summaryTable .variable-row .row-details {
-            width: 20%;
-            float: left;
+        .web-codebook .summaryTable .variable-row .section {
+          display:block;
         }
 
+        .web-codebook .summaryTable .variable-row .row-head {
+          background:#eee;
+          height:2em;
+          padding:0.4em;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-title,
+        .web-codebook .summaryTable .variable-row .row-details {
+            display:inline-block;
+        }
+
+        .web-codebook .summaryTable .variable-row .row-details {
+            float:right
+          }
     /**-------------------------------------------------------------------------------------------\
       Chart layout
     \-------------------------------------------------------------------------------------------**/
 
-        .web-codebook .summaryTable .variable-row .row-chart {
-            width: 80%;
-            float: right;
+        .web-codebook .summaryTable .variable-row {
+            min-width:400px;
+            max-width:800px;
         }
 
         .web-codebook .summaryTable .variable-row .row-chart .legend {
