@@ -7,33 +7,16 @@ export default function onResize() {
         this.wrap.style('display', 'none');
     else {
       //Clear custom marks.
-        this.svg.selectAll('rect.wc-data-mark').style('display', 'none');
-        this.svg.selectAll('line.spike').remove();
         this.svg.selectAll('g.tooltip').remove();
         this.svg.selectAll('.statistic').remove();
 
-      //Replace rects with lines.
         this.svg
             .selectAll('g.bar-group')
             .each(function(d,i) {
-              //Define spikes.
                 d.midpoint = (d.rangeHigh + d.rangeLow)/2;
                 d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
-                d.selector = `range${d.range.replace(/\./g, 'd').replace(',', '_')}`;
-                const spike = d3.select(this)
-                    .append('line')
-                    .datum(d)
-                    .attr(
-                        {'class': 'spike'
-                        ,'x1': context.x(d.midpoint)
-                        ,'y1': context.plot_height
-                        ,'x2': context.x(d.midpoint)
-                        ,'y2': context.y(d.total)})
-                    .style(
-                        {'stroke': 'black'
-                        ,'stroke-width': '3px'});
-
-              //Define tooltips.
+                d.selector = `bar`+i;
+                //Define tooltips.
                 const tooltip = context.svg
                     .append('g')
                     .classed('tooltip', true)
@@ -106,9 +89,9 @@ export default function onResize() {
                         .attr(
                             {'class': 'statistic'
                             ,'x1': this.x(quantile.quantile)
-                            ,'y1': this.plot_height + 4
+                            ,'y1': this.plot_height + this.config.boxPlotHeight/2
                             ,'x2': this.x(rQuantile)
-                            ,'y2': this.plot_height + 4})
+                            ,'y2': this.plot_height + this.config.boxPlotHeight/2})
                         .style(
                             {'stroke': 'red'
                             ,'stroke-width': '2px'
@@ -128,9 +111,9 @@ export default function onResize() {
                             ,'x': this.x(quantile.quantile)
                             ,'y': this.plot_height
                             ,'width': this.x(q3) - this.x(quantile.quantile)
-                            ,'height': 8})
+                            ,'height': this.config.boxPlotHeight})
                         .style(
-                            {'fill': 'blue'
+                            {'fill': '#7BAFD4'
                             ,'opacity': .25});
                     interQ
                         .append('title')
@@ -145,7 +128,7 @@ export default function onResize() {
                         ,'x1': this.x(quantile.quantile)
                         ,'y1': this.plot_height
                         ,'x2': this.x(quantile.quantile)
-                        ,'y2': this.plot_height + 8})
+                        ,'y2': this.plot_height + this.config.boxPlotHeight})
                     .style(
                         {'stroke': [.05,.95].indexOf(quantile.probability) > -1
                             ? 'red'
@@ -168,8 +151,8 @@ export default function onResize() {
                 .attr(
                     {'class': 'statistic'
                     ,'cx': this.x(mean)
-                    ,'cy': this.plot_height + 4
-                    ,'r': 3})
+                    ,'cy': this.plot_height + this.config.boxPlotHeight/2
+                    ,'r': (this.config.boxPlotHeight/3)})
                 .style(
                     {'fill': '#ccc'
                     ,'stroke': 'black'
@@ -180,7 +163,6 @@ export default function onResize() {
         }
 
       //Rotate y-axis labels.
-      console.log(this)
         this.svg.select('g.y.axis text.axis-title').remove();
         this.svg.select('g.y.axis')
             .insert('text', ':first-child')
@@ -190,39 +172,47 @@ export default function onResize() {
                 ,'y': this.plot_height/2
                 ,'dx': '1em'})
             .style('text-anchor', 'start')
-            .text(this.group ? 'Level: '+this.config.y.label:"");
+            .text(this.group ? 'Level: '+this.config.y.label+" \n(n="+this.values.length+")":"");
 
       //Hide legends.
         this.wrap.select('ul.legend').remove();
 
       //Shift x-axis tick labels downward.
-        this.svg.select('.x.axis').selectAll('g.tick text').attr('dy', '1em');
+        var yticks = this.svg.select('.x.axis').selectAll('g.tick')
+         yticks.select('text').remove()
+         yticks.append('text')
+        .attr('y', context.config.boxPlotHeight)
+        .attr('dy',"1em")
+        .attr('x',0)
+        .attr('text-anchor','middle')
+        .attr('alignment-baseline','top')
+        .text(d=>d)
 
       //Add modal to nearest mark.
-        const spikes = this.svg.selectAll('.spike');
+        const bars = this.svg.selectAll('.bar-group');
         const tooltips = this.svg.selectAll('.tooltip');
         const statistics = this.svg.selectAll('.statistic');
         this.svg
             .on('mousemove', function() {
-              //Highlight closest spike.
+              //Highlight closest bar.
                 const mouse = d3.mouse(this);
                 const x = context.x.invert(mouse[0]);
                 const y = context.y.invert(mouse[1]);
                 let minimum;
-                let spike = {};
-                spikes
-                    .style('stroke', 'black')
+                let bar = {};
+                bars
                     .each(function(d,i) {
                         d.distance = Math.abs(d.midpoint - x);
                         if (i === 0 || d.distance < minimum) {
                             minimum = d.distance;
-                            spike = d;
+                            bar = d;
                         }
                     });
-                const closest = spikes
+                const closest = bars
                     .filter(d => d.distance === minimum)
                     .filter((d,i) => i === 0)
-                    .style('stroke', 'red');
+                    .select("rect")
+                      .style('fill','#7BAFD4');
 
               //Activate tooltip.
                 const d = closest.datum();
@@ -233,9 +223,10 @@ export default function onResize() {
                     .classed('active', true)
             })
             .on('mouseout', function() {
-                spikes
-                    .style('stroke', 'black')
-                tooltips
+                bars.select("rect")
+                    .style('fill', '#999')
+                context.svg
+                    .selectAll('g.tooltip')
                     .classed('active', false);
             });
     }

@@ -1,4 +1,6 @@
-export function makeSummary(data, group) {
+export function makeSummary(codebook) {
+    var data = codebook.data.filtered
+    var group = codebook.config.group
 
     function determineType(vector) {
         const nonMissingValues = vector
@@ -13,7 +15,6 @@ export function makeSummary(data, group) {
     }
 
     const summarize = {
-
         categorical: function(vector) {
             const statistics = {};
             statistics.N = vector.length;
@@ -71,48 +72,52 @@ export function makeSummary(data, group) {
 
     }
 
-    const variables = Object.keys(data[0]);
+    if(codebook.data.filtered.length > 0){
+      const variables = Object.keys(data[0]);
+      variables
+          .forEach((variable,i) => {
+            //Define variable metadata and generate data array.
+              variables[i] = {value_col: variable};
+              variables[i].values = data
+                  .map(d => d[variable]);
+              variables[i].type = determineType(variables[i].values);
 
-    variables
-        .forEach((variable,i) => {
-          //Define variable metadata and generate data array.
-            variables[i] = {value_col: variable};
-            variables[i].values = data
-                .map(d => d[variable]);
-            variables[i].type = determineType(variables[i].values);
+            //Calculate statistics.
+              if (variables[i].type === 'categorical')
+                  variables[i].statistics = summarize.categorical(variables[i].values);
+              else
+                  variables[i].statistics = summarize.continuous(variables[i].values);
 
-          //Calculate statistics.
-            if (variables[i].type === 'categorical')
-                variables[i].statistics = summarize.categorical(variables[i].values);
-            else
-                variables[i].statistics = summarize.continuous(variables[i].values);
+            //Handle groups.
+              if (group) {
+                  variables[i].group = group;
+                  variables[i].groups = d3.set(
+                          data.map(d => d[group]))
+                      .values()
+                      .map(g => {
+                          return {group: g}; });
 
-          //Handle groups.
-            if (group) {
-                variables[i].group = group;
-                variables[i].groups = d3.set(
-                        data.map(d => d[group]))
-                    .values()
-                    .map(g => {
-                        return {group: g}; });
+                  variables[i].groups.forEach(g => {
+                    //Define variable metadata and generate data array.
+                      g.value_col = variables[i].value_col;
+                      g.values = data
+                          .filter(d => d[group] === g.group)
+                          .map(d => d[variable]);
+                      g.type = variables[i].type;
 
-                variables[i].groups
-                    .forEach(g => {
-                      //Define variable metadata and generate data array.
-                        g.value_col = variables[i].value_col;
-                        g.values = data
-                            .filter(d => d[group] === g.group)
-                            .map(d => d[variable]);
-                        g.type = variables[i].type;
+                    //Calculate statistics.
+                      if (variables[i].type === 'categorical')
+                          g.statistics = summarize.categorical(g.values);
+                      else
+                          g.statistics = summarize.continuous(g.values);
+                  });
+              }
+          });
 
-                      //Calculate statistics.
-                        if (variables[i].type === 'categorical')
-                            g.statistics = summarize.categorical(g.values);
-                        else
-                            g.statistics = summarize.continuous(g.values);
-                    });
-            }
-        });
-
-    return variables;
+          codebook.data.summary = variables
+          //get bin counts
+          codebook.util.getBinCounts(codebook)
+    } else {
+      codebook.data.summary = []
+    }
 }

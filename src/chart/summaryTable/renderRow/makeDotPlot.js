@@ -46,7 +46,6 @@ export function makeDotPlot(this_, d){
                   chartData.push(value);
               });
       });
-      console.log(chartData)
       chartSettings.marks[0].per.push('group');
       chartSettings.marks[0].values = {'group': ['All']};
       chartSettings.marks.push(
@@ -76,7 +75,6 @@ export function makeDotPlot(this_, d){
     .style("font-weight","bolder")
 
     //Custom labels on the right
-    console.log(this)
     var chart = this;
     //move y-labels to left hand side?!
 

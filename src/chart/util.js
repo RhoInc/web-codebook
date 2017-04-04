@@ -5,10 +5,12 @@
 import { setDefaults } from './util/setDefaults'
 import { makeAutomaticFilters } from './util/makeAutomaticFilters'
 import { makeAutomaticGroups } from './util/makeAutomaticGroups'
+import { getBinCounts } from './util/getBinCounts'
 
 
 export const util ={
 	setDefaults:setDefaults,
 	makeAutomaticFilters:makeAutomaticFilters,
-	makeAutomaticGroups:makeAutomaticGroups
+	makeAutomaticGroups:makeAutomaticGroups,
+	getBinCounts:getBinCounts
 };

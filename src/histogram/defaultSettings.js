@@ -6,9 +6,10 @@ export default
     ,panel: null
     ,measureFormat: ',.2f'
     ,boxPlot: true
+    ,nBins:null
     ,mean: true
-    ,nBins: 100
     ,overall: false
+    ,boxPlotHeight: 20
 
   //Webcharts settings
     ,x: {column: null // set in syncSettings()
@@ -24,7 +25,12 @@ export default
             {type: 'bar'
             ,per: null // set in syncSettings()
             ,summarizeX: 'mean'
-            ,summarizeY: 'count'}
+            ,summarizeY: 'count'
+            ,attributes:
+              {fill:"#999"
+              ,stroke:"#333"
+              ,"stroke-width":"2px"}
+            }
         ]
     ,gridlines: 'y'
     ,resizable: true
@@ -45,6 +51,6 @@ export function syncSettings(settings) {
     syncedSettings.y.column = settings.measure;
     syncedSettings.y.label = settings.measure;
     syncedSettings.marks[0].per = [settings.measure];
-
+    syncedSettings.margin.bottom = settings.boxPlotHeight+20
     return syncedSettings;
 }
