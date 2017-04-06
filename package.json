@@ -1,7 +1,7 @@
 {
   "name": "webcodebook",
   "version": "0.10.0",
-  "description": "Interactive data set summaries.",
+  "description": "Interactive data set summaries",
   "keywords": [
     "data",
     "summary",
@@ -17,13 +17,15 @@
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
   "scripts": {
-    "build": "rollup -c ./scripts/rollup.wrapper.config.js | babel > ./build/webcodebook.js"
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",
     "babel-preset-es2015-rollup": "^1.1.1",
-    "rollup": "^0.25.1",
-    "rollup-plugin-babel": "^2.4.0"
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.4.0",
+    "rollup-watch": "~3.2.2"
   },
   "dependencies": {
     "d3": "~3",
