@@ -55,6 +55,8 @@
     .web-codebook .summaryTable > * {
     }
 
+
+
     .web-codebook .summaryTable .summaryText {
         display: block;
         clear: both;
@@ -63,19 +65,19 @@
     .web-codebook .summaryTable .variable-row {
         width: 100%;
         padding-top: 1em;
-        display: inline-block;
+        display: block;
+    }
+    .web-codebook .summaryTable .variable-row .section {
+      display:block;
     }
 
-    .web-codebook .summaryTable .variable-row > * {
-        display: inline-block;
+    .web-codebook .summaryTable .variable-row .section.hidden {
+        display: none;
     }
 
     /**-------------------------------------------------------------------------------------------\
       Header layout
     \-------------------------------------------------------------------------------------------**/
-        .web-codebook .summaryTable .variable-row .section {
-          display:block;
-        }
 
         .web-codebook .summaryTable .variable-row .row-head {
           background:#eee;

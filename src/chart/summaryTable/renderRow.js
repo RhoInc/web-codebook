@@ -13,6 +13,6 @@ export function renderRow(d) {
     var rowHead = rowWrap.append("div").attr("class","row-head section")
     rowHead.append('div').attr('class','row-title').each(makeTitle);
     rowHead.append('div').attr('class','row-details').each(makeDetails);
-
-    rowWrap.append('div').attr('class','row-chart section').each(makeChart);
+    rowWrap.append('div').attr('class','row-chart section hidden').each(makeChart);
+    console.log("hidden")
 }
