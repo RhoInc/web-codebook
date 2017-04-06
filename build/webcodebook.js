@@ -49,6 +49,7 @@ var webcodebook = function (webcharts) {
 
 		//Draw filters
 		chart.controls.groups.init(chart);
+		chart.controls.chartToggle.init(chart);
 		chart.controls.filters.init(chart);
 	}
 
@@ -71,10 +72,10 @@ var webcodebook = function (webcharts) {
 		});
 
 		//Clear custom controls.
-		selector.selectAll('ul.nav').remove();
+		selector.select('ul').remove();
 
 		//Add filter controls.
-		var filterList = selector.append('ul').attr('class', 'nav');
+		var filterList = selector.append('ul');
 
 		var filterItem = filterList.selectAll('li').data(chart.config.filters).enter().append('li').attr('class', function (d) {
 			return 'custom-' + d.key + ' filterCustom';
@@ -146,17 +147,40 @@ var webcodebook = function (webcharts) {
 
 	var groups = { init: init$3 };
 
+	/*------------------------------------------------------------------------------------------------\
+   Initialize custom controls.
+ \------------------------------------------------------------------------------------------------*/
+
+	//export function init(selector, data, vars, settings) {
+	function init$4(chart) {
+		//initialize the wrapper
+		var selector = chart.controls.wrap.append('div').attr('class', 'chart-toggle');
+
+		var showAllButton = selector.append("button").text("Show All Charts").on("click", function () {
+			chart.wrap.selectAll(".variable-row").classed("hiddenChart", false);
+			chart.wrap.selectAll(".row-toggle").html("&#9660;");
+		});
+
+		var hideAllButton = selector.append("button").text("Hide All Charts").on("click", function () {
+			chart.wrap.selectAll(".variable-row").classed("hiddenChart", true);
+			chart.wrap.selectAll(".row-toggle").html("&#9658;");
+		});
+	}
+
+	var chartToggle = { init: init$4 };
+
 	var controls = {
 		init: init$1,
 		filters: filters,
-		groups: groups
+		groups: groups,
+		chartToggle: chartToggle
 	};
 
 	/*------------------------------------------------------------------------------------------------\
  intialize the summary table
  \------------------------------------------------------------------------------------------------*/
 
-	function init$4(chart) {}
+	function init$5(chart) {}
 
 	/*------------------------------------------------------------------------------------------------\
    draw/update the summaryTable
@@ -906,7 +930,7 @@ var webcodebook = function (webcharts) {
 		chart.summaryTable.summaryText.text(tableSummary);
 	}
 
-	var summaryTable = { init: init$4,
+	var summaryTable = { init: init$5,
 		draw: draw,
 		destroy: destroy,
 		renderRow: renderRow,
@@ -1183,7 +1207,7 @@ var webcodebook = function (webcharts) {
    Initialize explorer
  \------------------------------------------------------------------------------------------------*/
 
-	function init$5() {
+	function init$6() {
 		var settings = this.config;
 
 		//create wrapper in specified div
@@ -1209,7 +1233,7 @@ var webcodebook = function (webcharts) {
 		this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 	}
 
-	function init$6(explorer) {
+	function init$7(explorer) {
 		explorer.controls.wrap.attr('onsubmit', 'return false;');
 		explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -1235,7 +1259,7 @@ var webcodebook = function (webcharts) {
 	}
 
 	var controls$1 = {
-		init: init$6
+		init: init$7
 	};
 
 	function makeCodebook(meta) {
@@ -1252,7 +1276,7 @@ var webcodebook = function (webcharts) {
 
 		var explorer = { element: element,
 			config: config,
-			init: init$5,
+			init: init$6,
 			layout: layout$1,
 			controls: controls$1,
 			makeCodebook: makeCodebook

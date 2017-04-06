@@ -17,10 +17,33 @@
         padding-bottom: 1%;
     }
 
+
     .web-codebook .controls .group-select span {
         padding-right: 5px;
     }
 
+    .web-codebook .controls .group-select,
+    .web-codebook .controls .chart-toggle{
+      display: inline-block;
+      padding-right:1em;
+    }
+
+    .web-codebook .controls .chart-toggle button{
+      margin-left:0.5em;
+      background-color:white;
+      border:2px solid #008CBA;
+      border-radius: 4px;
+    }
+
+    .web-codebook .controls .chart-toggle button:hover{
+      cursor:pointer;
+      background-color:#008CBA;
+      color:white;
+    }
+    .web-codebook .controls .custom-filters ul  {
+        padding:0;
+        margin:0;
+    }
     .web-codebook .controls .custom-filters ul li {
         margin: 0 3px 5px 0;
     }
@@ -54,8 +77,6 @@
 
     .web-codebook .summaryTable > * {
     }
-
-
 
     .web-codebook .summaryTable .summaryText {
         display: block;
