@@ -15,8 +15,8 @@ export function draw(chart) {
 	//ENTER
 	varRows.enter()
 	.append("div")
-	.attr("class","variable-row")
-	
+	.attr("class","variable-row hiddenChart")
+
 	//ENTER + Update
 	varRows.each(chart.summaryTable.renderRow)
 

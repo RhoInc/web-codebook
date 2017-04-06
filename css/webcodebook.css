@@ -64,16 +64,26 @@
 
     .web-codebook .summaryTable .variable-row {
         width: 100%;
-        padding-top: 1em;
+        margin-top: 1em;
         display: block;
+        border:1px solid #eee;
     }
     .web-codebook .summaryTable .variable-row .section {
       display:block;
     }
 
-    .web-codebook .summaryTable .variable-row .section.hidden {
+    .web-codebook .summaryTable .variable-row.hiddenChart .row-chart {
         display: none;
     }
+
+      .web-codebook .summaryTable .variable-row .row-toggle{
+        font-size:0.5em;
+        cursor:pointer;
+      }
+
+      .web-codebook .summaryTable .variable-row .row-toggle:hover{
+        background:#eee;
+      }
 
     /**-------------------------------------------------------------------------------------------\
       Header layout
@@ -85,9 +95,9 @@
           padding:0.4em;
         }
 
-        .web-codebook .summaryTable .variable-row .row-title,
-        .web-codebook .summaryTable .variable-row .row-details {
+        .web-codebook .summaryTable .variable-row .row-head > * {
             display:inline-block;
+            padding-left:0.2em;
         }
 
         .web-codebook .summaryTable .variable-row .row-details {
@@ -103,7 +113,7 @@
         }
 
         .web-codebook .summaryTable .variable-row .row-chart .legend {
-            float: right;
+            margin-left:1em;
         }
 
         .web-codebook .summaryTable .variable-row .row-chart .tooltip {
