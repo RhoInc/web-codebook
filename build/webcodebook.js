@@ -49,6 +49,7 @@ var webcodebook = function (webcharts) {
 
 		//Draw filters
 		chart.controls.groups.init(chart);
+		chart.controls.chartToggle.init(chart);
 		chart.controls.filters.init(chart);
 	}
 
@@ -146,17 +147,40 @@ var webcodebook = function (webcharts) {
 
 	var groups = { init: init$3 };
 
+	/*------------------------------------------------------------------------------------------------\
+   Initialize custom controls.
+ \------------------------------------------------------------------------------------------------*/
+
+	//export function init(selector, data, vars, settings) {
+	function init$4(chart) {
+		//initialize the wrapper
+		var selector = chart.controls.wrap.append('div').attr('class', 'chart-toggle');
+
+		var showAllButton = selector.append("button").text("Show All Charts").on("click", function () {
+			chart.wrap.selectAll(".variable-row").classed("hiddenChart", false);
+			chart.wrap.selectAll(".row-toggle").html("&#9660;");
+		});
+
+		var hideAllButton = selector.append("button").text("Hide All Charts").on("click", function () {
+			chart.wrap.selectAll(".variable-row").classed("hiddenChart", true);
+			chart.wrap.selectAll(".row-toggle").html("&#9658;");
+		});
+	}
+
+	var chartToggle = { init: init$4 };
+
 	var controls = {
 		init: init$1,
 		filters: filters,
-		groups: groups
+		groups: groups,
+		chartToggle: chartToggle
 	};
 
 	/*------------------------------------------------------------------------------------------------\
  intialize the summary table
  \------------------------------------------------------------------------------------------------*/
 
-	function init$4(chart) {}
+	function init$5(chart) {}
 
 	/*------------------------------------------------------------------------------------------------\
    draw/update the summaryTable
@@ -173,7 +197,7 @@ var webcodebook = function (webcharts) {
 		});
 
 		//ENTER
-		varRows.enter().append("div").attr("class", "variable-row");
+		varRows.enter().append("div").attr("class", "variable-row hiddenChart");
 
 		//ENTER + Update
 		varRows.each(chart.summaryTable.renderRow);
@@ -190,25 +214,86 @@ var webcodebook = function (webcharts) {
 
 	function makeTitle(d) {
 		var wrap = d3.select(this);
+		var titleDiv = wrap.append('div').attr("class", "var-name");
+		var valuesList = wrap.append('ul').attr("class", "value-list");
 
-		var title = wrap.append('div').html(function (d) {
+		//Title and type
+		titleDiv.append("div").attr("class", "name").html(function (d) {
 			return d.value_col;
 		});
+		titleDiv.append("div").attr("class", "type").html(function (d) {
+			return d.type;
+		});
 
-		//add a short summary
-		var summary_text = d.type == 'categorical' ? ' ' + d.type + ' variable with ' + d.statistics.values.length + ' levels' : ' ' + d.type + ' variable';
-		var summary_text_span = title.append('span').attr('class', 'small').text(summary_text);
-
-		if (d.type == 'categorical') {
-			var value_list = d.statistics.values.map(function (m) {
-				return m.key + ': ' + d3.format('0.1%')(m.prop_n);
+		//make a list of values
+		console.log(d);
+		if (d.type == "categorical") {
+			//valuesList.append("span").text( "Values (Most Frequent):")
+			var topValues = d.statistics.values.sort(function (a, b) {
+				return b.n - a.n;
+			}).filter(function (d, i) {
+				return i < 5;
 			});
-			var nValues = value_list.length;
-			value_list = value_list.slice(0, 10).join('\n');
-			value_list = nValues > 10 ? value_list + '\nAnd ' + (nValues - 10) + ' more.' : value_list;
 
-			summary_text_span.append('sup').html('?').style('cursor', 'pointer').attr('title', value_list);
+			valuesList.selectAll("li").data(topValues).enter().append("li").text(function (d) {
+				return d.key + " (" + d3.format("0.1%")(d.prop_n) + ")";
+			}).attr("title", function (d) {
+				return "n=" + d.n;
+			}).style("cursor", "pointer");
+
+			if (d.statistics.values.length > 5) {
+				var totLength = d.statistics.values.length;
+				var extraCount = totLength - 5;
+				var extra_span = valuesList.append("span").html("and " + extraCount + " more.");
+			}
+		} else if (d.type == "continuous") {
+			//valuesList.append("span").text( "Values (Most Frequent):"
+			var sortedValues = d3.set(d.values).values() //get unique
+			.map(function (d) {
+				return +d;
+			}) //convert to numeric
+			.sort(function (a, b) {
+				return a - b;
+			}); // sort low to high
+
+			var minValues = sortedValues.filter(function (d, i) {
+				return i < 3;
+			});
+			var nValues = sortedValues.length;
+			var maxValues = sortedValues.filter(function (d, i) {
+				return i >= nValues - 3;
+			});
+			var valList = d3.merge([minValues, ["..."], maxValues]);
+
+			valuesList.selectAll("li").data(valList).enter().append("li").text(function (d) {
+				return d;
+			}).attr("title", function (d) {
+				return d == "..." ? nValues - 6 + " other values" : "";
+			}).style("cursor", function (d) {
+				return d == "..." ? "pointer" : null;
+			});
 		}
+
+		/*
+  	var summary_text = d.type == 'categorical' ? ' '+d.type + ' variable with '+d.statistics.values.length+' levels' : ' '+d.type + ' variable'
+  	var summary_text_span = title.append('span')
+  	.attr('class','small')
+  	.text(summary_text)
+  
+  	if(d.type == 'categorical'){
+  		var value_list = d.statistics.values.map(m=>m.key+': '+d3.format('0.1%')(m.prop_n))
+  		var nValues = value_list.length;
+  		value_list = value_list.slice(0,10).join('\n')
+  		value_list = nValues > 10 ?
+  			value_list + '\nAnd '+(nValues-10)+' more.':
+  			value_list
+  
+  		summary_text_span.append('sup')
+  		.html('?')
+  		.style('cursor','pointer')
+  		.attr('title',value_list)
+  	}
+  	*/
 	}
 
 	function makeDotPlot(this_, d) {
@@ -843,8 +928,9 @@ var webcodebook = function (webcharts) {
 			return {
 				key: stat !== 'nMissing' ? stat : 'Missing',
 				value: d.statistics[stat] };
+		}).filter(function (statItem) {
+			return ['min', 'max'].indexOf(statItem.key) === -1;
 		});
-		//    .filter(statItem => ['N', 'n'].indexOf(statItem.key) === -1);
 
 		//Render Values
 		if (d.type == 'categorical') {
@@ -877,9 +963,17 @@ var webcodebook = function (webcharts) {
 		rowWrap.selectAll('*').remove();
 
 		var rowHead = rowWrap.append("div").attr("class", "row-head section");
+
+		rowHead.append('div').attr('class', 'row-toggle').html("&#9658;").on("click", function () {
+			var rowDiv = d3.select(this.parentNode.parentNode);
+			var chartDiv = rowDiv.select(".row-chart");
+			var hiddenFlag = rowDiv.classed("hiddenChart");
+			rowDiv.classed("hiddenChart", !hiddenFlag);
+			d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
+		});
+
 		rowHead.append('div').attr('class', 'row-title').each(makeTitle);
 		rowHead.append('div').attr('class', 'row-details').each(makeDetails);
-
 		rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 	}
 
@@ -898,7 +992,7 @@ var webcodebook = function (webcharts) {
 		chart.summaryTable.summaryText.text(tableSummary);
 	}
 
-	var summaryTable = { init: init$4,
+	var summaryTable = { init: init$5,
 		draw: draw,
 		destroy: destroy,
 		renderRow: renderRow,
@@ -1175,7 +1269,7 @@ var webcodebook = function (webcharts) {
    Initialize explorer
  \------------------------------------------------------------------------------------------------*/
 
-	function init$5() {
+	function init$6() {
 		var settings = this.config;
 
 		//create wrapper in specified div
@@ -1201,7 +1295,7 @@ var webcodebook = function (webcharts) {
 		this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 	}
 
-	function init$6(explorer) {
+	function init$7(explorer) {
 		explorer.controls.wrap.attr('onsubmit', 'return false;');
 		explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -1227,7 +1321,7 @@ var webcodebook = function (webcharts) {
 	}
 
 	var controls$1 = {
-		init: init$6
+		init: init$7
 	};
 
 	function makeCodebook(meta) {
@@ -1244,7 +1338,7 @@ var webcodebook = function (webcharts) {
 
 		var explorer = { element: element,
 			config: config,
-			init: init$5,
+			init: init$6,
 			layout: layout$1,
 			controls: controls$1,
 			makeCodebook: makeCodebook

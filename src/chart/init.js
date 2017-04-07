@@ -18,7 +18,7 @@ export function init(data) {
 
     //prepare the data summaries
     this.data.makeSummary(this)
-    
+
     //draw controls
     this.util.makeAutomaticFilters(this)
     this.util.makeAutomaticGroups(this)
