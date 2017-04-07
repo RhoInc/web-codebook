@@ -140,7 +140,7 @@ function init$3(chart) {
         });
 
         groupSelect.on("change", function () {
-            chart.config.group = this.value !== 'None' ? this.value : null;
+            if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
             chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
             chart.data.makeSummary(chart);
             chart.summaryTable.draw(chart);
@@ -223,119 +223,6 @@ function makeTitle(d) {
 	}
 }
 
-function makeDotPlot(this_, d) {
-    var chartContainer = d3.select(this_).node();
-    var chartSettings = { x: { column: 'prop_n',
-            type: 'linear',
-            label: '',
-            format: '%',
-            domain: [0, null] },
-        y: { column: 'key',
-            type: 'ordinal',
-            label: '' },
-        marks: [{ type: 'text',
-            text: "|",
-            attributes: { "font-weight": 'bold', "alignment-baseline": "middle" },
-            per: ['key'],
-            summarizeX: 'mean',
-            tooltip: '[key]: [n] ([prop_n])' }],
-        gridlines: 'xy',
-        resizable: false,
-        height: this_.height,
-        margin: this_.margin
-    };
-
-    var chartData = d.statistics.values.sort(function (a, b) {
-        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-    }).slice(0, 5);
-    chartSettings.y.order = chartData.map(function (d) {
-        return d.key;
-    }).reverse();
-
-    if (d.groups) {
-        chartData.forEach(function (di) {
-            return di.group = 'All';
-        });
-
-        d.groups.forEach(function (group) {
-            group.statistics.values.filter(function (value) {
-                return chartSettings.y.order.indexOf(value.key) > -1;
-            }).sort(function (a, b) {
-                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).forEach(function (value) {
-                value.group = group.group;
-                chartData.push(value);
-            });
-        });
-        chartSettings.marks[0].per.push('group');
-        chartSettings.marks[0].values = { 'group': ['All'] };
-        chartSettings.marks.push({ type: 'circle',
-            per: ['key', 'group'],
-            summarizeX: 'mean',
-            radius: 3,
-            values: { 'group': d.groups.map(function (d) {
-                    return d.group;
-                }) } });
-        chartSettings.color_by = 'group';
-        chartSettings.legend = { label: '',
-            order: d.groups.map(function (d) {
-                return d.group;
-            }),
-            mark: "circle"
-        };
-    }
-
-    var chart = webCharts.createChart(chartContainer, chartSettings);
-
-    chart.on("resize", function () {
-
-        //Clean up the legend
-        var allLegend = this.wrap.select("ul.legend").select("li");
-        allLegend.select("svg").remove();
-        allLegend.select("span.legend-mark-text").text("|").style("color", "black").style("font-weight", "bolder");
-
-        //Custom labels on the right
-        var chart = this;
-        //move y-labels to left hand side?!
-
-        var ticks = this.wrap.select("g.y.axis").selectAll("g.tick");
-
-        ticks.select("text").remove();
-        ticks.append("title").text(function (d) {
-            return d;
-        });
-        ticks.append("text").attr("text-anchor", "start").attr("alignment-baseline", "middle").attr("dx", 10).attr("x", chart.plot_width).text(function (d) {
-            return d.length < 30 ? d : d.substring(0, 30) + "...";
-        });
-    });
-
-    chart.init(chartData);
-}
-
-if (typeof Object.assign != 'function') {
-    (function () {
-        Object.assign = function (target) {
-            'use strict';
-
-            if (target === undefined || target === null) throw new TypeError('Cannot convert undefined or null to object');
-
-            var output = Object(target);
-
-            for (var index = 1; index < arguments.length; index++) {
-                var source = arguments[index];
-
-                if (source !== undefined && source !== null) {
-                    for (var nextKey in source) {
-                        if (source.hasOwnProperty(nextKey)) output[nextKey] = source[nextKey];
-                    }
-                }
-            }
-
-            return output;
-        };
-    })();
-}
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
@@ -374,6 +261,157 @@ function clone(obj) {
     }
 
     throw new Error('Unable to copy [obj]! Its type is not supported.');
+}
+
+function makeBarChart(this_, d) {
+    var chartContainer = d3.select(this_).node();
+    var chartSettings = { x: { column: 'prop_n',
+            type: 'linear',
+            label: '',
+            format: '%',
+            domain: [0, null] },
+        y: { column: 'key',
+            type: 'ordinal',
+            label: '' },
+        marks: [{ type: 'bar',
+            per: ['key'],
+            summarizeX: 'mean',
+            tooltip: '[key]: [n] ([prop_n])' }],
+        gridlines: 'xy',
+        resizable: false,
+        height: this_.height,
+        margin: this_.margin,
+        value_col: d.value_col
+    };
+
+    function onInit() {
+        //Add group labels.
+        if (this.config.group) {
+            var groupTitle = this.wrap.append('p').text(this.config.group_col + ': ' + this.config.group + ' (n=' + this.config.n + ')');
+            this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+        }
+    }
+
+    function onResize() {
+        var _this = this;
+
+        //Move y-axis labels to the right.
+        var ticks = this.wrap.selectAll('g.y.axis g.tick');
+
+        ticks.select('text').remove();
+        ticks.append('title').text(function (d) {
+            return d;
+        });
+        ticks.append('text').attr({ 'text-anchor': 'start',
+            'alignment-baseline': 'middle',
+            'dx': '1em',
+            'x': this.plot_width }).text(function (d) {
+            return d.length < 30 ? d : d.substring(0, 30) + '...';
+        });
+
+        //Draw overall rates.
+        if (this.config.group) {
+            this.current_data.forEach(function (d) {
+                var overall = _this.config.overall.filter(function (di) {
+                    return di.key === d.key;
+                })[0];
+
+                if (overall) {
+                    var g = _this.svg.append('g');
+                    var x = overall.prop_n;
+                    var y = overall.key;
+
+                    //Draw line representing the overall rate of the y-axis value.
+                    var rateLine = g.append('line').attr({ 'x1': _this.x(x) + 1.5,
+                        'y1': _this.y(y),
+                        'x2': _this.x(x) + 1.5,
+                        'y2': _this.y(y) + _this.y.rangeBand() }).style({ 'stroke': 'black',
+                        'stroke-width': '3px',
+                        'stroke-opacity': '1' });
+                    rateLine.append('title').text('Overall rate: ' + d3.format('.1%')(x));
+
+                    //Draw line from group rate to overall rate of the y-axis value.
+                    var diffLine = g.append('line').attr({ 'x1': _this.x(x),
+                        'y1': _this.y(y) + _this.y.rangeBand() / 2,
+                        'x2': _this.x(d.total),
+                        'y2': _this.y(y) + _this.y.rangeBand() / 2 }).style({ 'stroke': 'black',
+                        'stroke-width': '3px',
+                        'stroke-opacity': '.25' });
+                    diffLine.append('title').text('Difference in percentage points from overall rate: ' + d3.format('.1f')((d.total - x) * 100));
+                }
+            });
+        }
+    }
+
+    if (d.groups) {
+        chartSettings.group_col = d.group;
+        chartSettings.overall = d.statistics.values;
+        //Set upper limit of x-axis domain to the maximum group rate.
+        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
+            return d3.max(di.statistics.values, function (dii) {
+                return dii.prop_n;
+            });
+        });
+
+        d.groups.forEach(function (group) {
+            //Define group-level settings.
+            group.chartSettings = clone(chartSettings);
+            group.chartSettings.group = group.group;
+            group.chartSettings.n = group.values.length;
+
+            //Sort data by descending rate and keep only the first five categories.
+            group.data = group.statistics.values.sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            }).slice(0, 5);
+            group.chartSettings.y.order = group.data.map(function (d) {
+                return d.key;
+            }).reverse();
+
+            //Define chart.
+            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+            group.chart.on('init', onInit);
+            group.chart.on('resize', onResize);
+            if (group.data.length) group.chart.init(group.data);
+        });
+    } else {
+        //Sort data by descending rate and keep only the first five categories.
+        var chartData = d.statistics.values.sort(function (a, b) {
+            return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+        }).slice(0, 5);
+        chartSettings.y.order = chartData.map(function (d) {
+            return d.key;
+        }).reverse();
+
+        //Define chart.
+        var chart = webCharts.createChart(chartContainer, chartSettings);
+        chart.on('init', onInit);
+        chart.on('resize', onResize);
+        chart.init(chartData);
+    }
+}
+
+if (typeof Object.assign != 'function') {
+    (function () {
+        Object.assign = function (target) {
+            'use strict';
+
+            if (target === undefined || target === null) throw new TypeError('Cannot convert undefined or null to object');
+
+            var output = Object(target);
+
+            for (var index = 1; index < arguments.length; index++) {
+                var source = arguments[index];
+
+                if (source !== undefined && source !== null) {
+                    for (var nextKey in source) {
+                        if (source.hasOwnProperty(nextKey)) output[nextKey] = source[nextKey];
+                    }
+                }
+            }
+
+            return output;
+        };
+    })();
 }
 
 var defaultSettings = //Custom settings
@@ -724,7 +762,8 @@ function makeChart(d) {
 
   if (d.type === 'categorical') {
     // categorical outcomes
-    makeDotPlot(this, d);
+    //makeDotPlot(this,d)
+    makeBarChart(this, d);
   } else {
     // continuous outcomes
     makeHistogram(this, d);
@@ -768,6 +807,10 @@ function makeDetails(d) {
     }
 }
 
+/*------------------------------------------------------------------------------------------------\
+  Intialize the summary table
+\------------------------------------------------------------------------------------------------*/
+
 function renderRow(d) {
     var rowWrap = d3.select(this);
     rowWrap.selectAll('*').remove();
@@ -775,7 +818,6 @@ function renderRow(d) {
     var rowHead = rowWrap.append("div").attr("class", "row-head section");
     rowHead.append('div').attr('class', 'row-title').each(makeTitle);
     rowHead.append('div').attr('class', 'row-details').each(makeDetails);
-
     rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
@@ -872,6 +914,11 @@ function makeAutomaticGroups(chart) {
 		chart.config.groups = autogroups.length > 0 ? autogroups : null;
 	}
 }
+
+// determine the number of bins to use in the histogram based on the data.
+// Based on an implementation of the Freedman-Diaconis
+// See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
+// values should be an array of numbers
 
 function getBinCounts(codebook) {
 

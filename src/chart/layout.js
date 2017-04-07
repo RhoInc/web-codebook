@@ -14,5 +14,4 @@ export function layout() {
     this.summaryTable.summaryText = this.summaryTable.wrap
     .append("strong")
     .attr("class","summaryText")
-   	 
 }

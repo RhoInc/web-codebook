@@ -8,11 +8,10 @@ import { destroy } from './summaryTable/destroy';
 import { renderRow } from './summaryTable/renderRow';
 import { updateSummaryText } from './summaryTable/updateSummaryText';
 
-
 export const summaryTable =
     {init: init
     ,draw: draw
     ,destroy: destroy
     ,renderRow:renderRow
     ,updateSummaryText:updateSummaryText
-   };
+    };

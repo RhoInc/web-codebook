@@ -1,4 +1,5 @@
 import { makeDotPlot } from './makeDotPlot.js'
+import { makeBarChart } from './makeBarChart.js'
 import { makeHistogram } from './makeHistogram.js'
 
 export default function makeChart(d) {
@@ -7,7 +8,8 @@ export default function makeChart(d) {
     this.margin = {right:200, left:30};
 
     if (d.type === 'categorical') { // categorical outcomes
-      makeDotPlot(this,d)
+      //makeDotPlot(this,d)
+      makeBarChart(this,d)
     } else { // continuous outcomes
       makeHistogram(this,d)
     }

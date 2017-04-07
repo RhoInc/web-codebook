@@ -3,7 +3,7 @@ import clone from './histogram/util/clone';
 import defaultSettings, { syncSettings }
     from './histogram/defaultSettings'
 
-import { createChart, createControls, createTable }
+import { createChart }
     from 'webcharts';
 
 import onInit from './histogram/onInit';
