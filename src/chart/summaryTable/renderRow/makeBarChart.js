@@ -24,6 +24,14 @@ export function makeBarChart(this_, d) {
         ,margin: this_.margin
         ,value_col: d.value_col
         };
+    //Sort data by descending rate and keep only the first five categories.
+    const chartData = d.statistics.values
+        .sort((a,b) =>
+            a.prop_n > b.prop_n ? -2 :
+            a.prop_n < b.prop_n ?  2 :
+                a.key < b.key ? -1 : 1)
+        .slice(0,5);
+    chartSettings.y.order = chartData.map(d => d.key).reverse();
 
     function onInit() {
       //Add group labels.
@@ -56,51 +64,82 @@ export function makeBarChart(this_, d) {
                 : d.substring(0,30)+'...');
 
       //Draw overall rates.
-        if (this.config.group) {
-            this.current_data
-                .forEach(d => {
-                    const overall = this.config.overall
-                        .filter(di => di.key === d.key)[0];
+        this.current_data
+            .forEach(d => {
+                const overall = this.config.group
+                    ? this.config.overall
+                        .filter(di => di.key === d.key)[0]
+                    : this.raw_data.filter(di => di.key === d.key)[0];
 
-                    if (overall) {
-                        const g = this.svg.append('g');
-                        const x = overall.prop_n;
-                        const y = overall.key;
+                if (overall) {
+                    const g = this.svg.append('g');
+                    const x = overall.prop_n;
+                    const y = overall.key;
 
-                      //Draw line representing the overall rate of the y-axis value.
-                        const rateLine = g
-                            .append('line')
-                            .attr(
-                                {'x1': this.x(x) + 1.5
-                                ,'y1': this.y(y)
-                                ,'x2': this.x(x) + 1.5
-                                ,'y2': this.y(y) + this.y.rangeBand()})
-                            .style(
-                                {'stroke': 'black'
-                                ,'stroke-width': '3px'
-                                ,'stroke-opacity': '1'});
-                        rateLine
-                            .append('title')
-                            .text(`Overall rate: ${d3.format('.1%')(x)}`);
+                  //Draw vertical line representing the overall rate of the y-axis value.
+                    const rateLine = g
+                        .append('line')
+                        .attr(
+                            {'x1': this.x(x)
+                            ,'y1': this.y(y)
+                            ,'x2': this.x(x)
+                            ,'y2': this.y(y) + this.y.rangeBand()})
+                        .style(
+                            {'stroke': 'black'
+                            ,'stroke-width': '2px'
+                            ,'stroke-opacity': '1'});
+                    rateLine
+                        .append('title')
+                        .text(`Overall rate: ${d3.format('.1%')(x)}`);
 
-                      //Draw line from group rate to overall rate of the y-axis value.
+                  //Draw line from group rate to overall rate of the y-axis value.
+                    if (this.config.group) {
                         const diffLine = g
                             .append('line')
                             .attr(
-                                {'x1': this.x(x)
+                                {'class': 'diffFromTotal'
+                                ,'x1': this.x(x)
                                 ,'y1': this.y(y) + this.y.rangeBand()/2
                                 ,'x2': this.x(d.total)
                                 ,'y2': this.y(y) + this.y.rangeBand()/2})
                             .style(
-                                {'stroke': 'black'
-                                ,'stroke-width': '3px'
+                                {'display': 'none'
+                                ,'stroke': 'black'
+                                ,'stroke-width': '2px'
                                 ,'stroke-opacity': '.25'});
                         diffLine
                             .append('title')
-                            .text(`Difference in percentage points from overall rate: ${d3.format('.1f')((d.total - x)*100)}`);
+                            .text(`Difference from overall rate: ${d3.format('.1f')((d.total - x)*100)}`);
+                        const diffText = g
+                            .append('text')
+                            .attr(
+                                {'class': 'diffFromTotal'
+                                ,'x': this.x(x)
+                                ,'y': this.y(y) + this.y.rangeBand()/2
+                                ,'dx': x < d.total ? '-2px' : '5px'
+                                ,'text-anchor': x < d.total ? 'end' : 'beginning'})
+                            .style(
+                                {'display': 'none'})
+                            .text(`${x < d.total ? '-' : x > d.total ? '+' : ''}${d3.format('.1f')(Math.abs(d.total - x)*100)}`);
                     }
-                });
-        }
+                }
+
+              //Display difference from total on hover.
+                if (this.config.group)
+                    this.svg
+                        .on('mouseover', () => {
+                            this.svg.selectAll('.diffFromTotal')
+                                .style('display', 'block')
+                            this.svg.selectAll('text.diffFromTotal')
+                                .each(function() {
+                                    d3.select(this)
+                                        .attr('dy', this.getBBox().height/4);
+                                });
+                        })
+                        .on('mouseout', () =>
+                            this.svg.selectAll('.diffFromTotal')
+                                .style('display', 'none'));
+            });
     }
 
     if (d.groups) {
@@ -119,12 +158,12 @@ export function makeBarChart(this_, d) {
 
           //Sort data by descending rate and keep only the first five categories.
             group.data = group.statistics.values
+                .filter(di => chartSettings.y.order.indexOf(di.key) > -1)
                 .sort((a,b) =>
                     a.prop_n > b.prop_n ? -2 :
                     a.prop_n < b.prop_n ?  2 :
                         a.key < b.key ? -1 : 1)
                 .slice(0,5);
-            group.chartSettings.y.order = group.data.map(d => d.key).reverse();
 
           //Define chart.
             group.chart = webCharts.createChart(chartContainer, group.chartSettings);
@@ -132,17 +171,16 @@ export function makeBarChart(this_, d) {
             group.chart.on('resize', onResize);
             if (group.data.length)
                 group.chart.init(group.data);
+            else {
+                d3.select(chartContainer)
+                    .append('p')
+                    .text(`${chartSettings.group_col}: ${group.chartSettings.group} (n=${group.chartSettings.n})`);
+                d3.select(chartContainer)
+                    .append('div')
+                    .html(`<em>This group does not contain any of the first 5 most prevalent levels of ${d.value_col}</em>.<br><br>`);
+            }
         });
     } else {
-      //Sort data by descending rate and keep only the first five categories.
-        const chartData = d.statistics.values
-            .sort((a,b) =>
-                a.prop_n > b.prop_n ? -2 :
-                a.prop_n < b.prop_n ?  2 :
-                    a.key < b.key ? -1 : 1)
-            .slice(0,5);
-        chartSettings.y.order = chartData.map(d => d.key).reverse();
-
       //Define chart.
         const chart = webCharts.createChart(chartContainer, chartSettings);
         chart.on('init', onInit);
