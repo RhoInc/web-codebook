@@ -263,7 +263,62 @@ function clone(obj) {
     throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
-function makeBarChart(this_, d) {
+function moveYaxis(chart) {
+    var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+    ticks.select('text').remove();
+    ticks.append('title').text(function (d) {
+        return d;
+    });
+    ticks.append('text').attr({ 'text-anchor': 'start',
+        'alignment-baseline': 'middle',
+        'dx': '1em',
+        'x': chart.plot_width }).text(function (d) {
+        return d.length < 30 ? d : d.substring(0, 30) + '...';
+    });
+}
+
+function drawOverallMark(chart) {
+    //Clear overall marks.
+    chart.svg.selectAll('.overall-mark').remove();
+
+    //For each mark draw an overall mark.
+    chart.config.overall.forEach(function (d) {
+        if (chart.config.y.order.indexOf(d.key) > -1) {
+            var g = chart.svg.append('g').classed('overall-mark', true);
+            var x = d.prop_n;
+            var y = d.key;
+
+            //Draw vertical line representing the overall rate of the current categorical value.
+            if (chart.y(y)) {
+                var rateLine = g.append('line').attr({ 'x1': chart.x(x),
+                    'y1': chart.y(y),
+                    'x2': chart.x(x),
+                    'y2': chart.y(y) + chart.y.rangeBand() }).style({ 'stroke': 'black',
+                    'stroke-width': '2px',
+                    'stroke-opacity': '1' });
+                rateLine.append('title').text('Overall rate: ' + d3.format('.1%')(x));
+            }
+        }
+    });
+}
+
+function modifyOverallLegendMark(chart) {
+    var legendItems = chart.wrap.selectAll('.legend-item'),
+        overallMark = legendItems.filter(function (d) {
+        return d.label === 'Overall';
+    }).select('svg'),
+        BBox = overallMark.node().getBBox();
+    overallMark.select('.legend-mark').remove();
+    overallMark.append('line').classed('legend-mark', true).attr({ 'x1': 3 * BBox.width / 4,
+        'y1': 0,
+        'x2': 3 * BBox.width / 4,
+        'y2': BBox.height }).style({ 'stroke': 'black',
+        'stroke-width': '2px',
+        'stroke-opacity': '1' });
+    legendItems.selectAll('circle').attr('r', '.4em');
+}
+
+function makeDotPlot(this_, d) {
     var chartContainer = d3.select(this_).node();
     var chartSettings = { x: { column: 'prop_n',
             type: 'linear',
@@ -273,7 +328,7 @@ function makeBarChart(this_, d) {
         y: { column: 'key',
             type: 'ordinal',
             label: '' },
-        marks: [{ type: 'bar',
+        marks: [{ type: 'circle',
             per: ['key'],
             summarizeX: 'mean',
             tooltip: '[key]: [n] ([prop_n])' }],
@@ -281,8 +336,11 @@ function makeBarChart(this_, d) {
         resizable: false,
         height: this_.height,
         margin: this_.margin,
-        value_col: d.value_col
+        value_col: d.value_col,
+        group_col: d.group || null,
+        overall: d.statistics.values
     };
+
     //Sort data by descending rate and keep only the first five categories.
     var chartData = d.statistics.values.sort(function (a, b) {
         return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
@@ -291,123 +349,48 @@ function makeBarChart(this_, d) {
         return d.key;
     }).reverse();
 
-    function onInit() {
-        //Add group labels.
-        if (this.config.group) {
-            var groupTitle = this.wrap.append('p').text(this.config.group_col + ': ' + this.config.group + ' (n=' + this.config.n + ')');
-            this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
-        }
-    }
-
     function onResize() {
-        var _this = this;
-
-        //Move y-axis labels to the right.
-        var ticks = this.wrap.selectAll('g.y.axis g.tick');
-
-        ticks.select('text').remove();
-        ticks.append('title').text(function (d) {
-            return d;
-        });
-        ticks.append('text').attr({ 'text-anchor': 'start',
-            'alignment-baseline': 'middle',
-            'dx': '1em',
-            'x': this.plot_width }).text(function (d) {
-            return d.length < 30 ? d : d.substring(0, 30) + '...';
-        });
-
-        //Draw overall rates.
-        this.current_data.forEach(function (d) {
-            var overall = _this.config.group ? _this.config.overall.filter(function (di) {
-                return di.key === d.key;
-            })[0] : _this.raw_data.filter(function (di) {
-                return di.key === d.key;
-            })[0];
-
-            if (overall) {
-                var g = _this.svg.append('g');
-                var x = overall.prop_n;
-                var y = overall.key;
-
-                //Draw vertical line representing the overall rate of the y-axis value.
-                var rateLine = g.append('line').attr({ 'x1': _this.x(x),
-                    'y1': _this.y(y),
-                    'x2': _this.x(x),
-                    'y2': _this.y(y) + _this.y.rangeBand() }).style({ 'stroke': 'black',
-                    'stroke-width': '2px',
-                    'stroke-opacity': '1' });
-                rateLine.append('title').text('Overall rate: ' + d3.format('.1%')(x));
-
-                //Draw line from group rate to overall rate of the y-axis value.
-                if (_this.config.group) {
-                    var diffLine = g.append('line').attr({ 'class': 'diffFromTotal',
-                        'x1': _this.x(x),
-                        'y1': _this.y(y) + _this.y.rangeBand() / 2,
-                        'x2': _this.x(d.total),
-                        'y2': _this.y(y) + _this.y.rangeBand() / 2 }).style({ 'display': 'none',
-                        'stroke': 'black',
-                        'stroke-width': '2px',
-                        'stroke-opacity': '.25' });
-                    diffLine.append('title').text('Difference from overall rate: ' + d3.format('.1f')((d.total - x) * 100));
-                    var diffText = g.append('text').attr({ 'class': 'diffFromTotal',
-                        'x': _this.x(x),
-                        'y': _this.y(y) + _this.y.rangeBand() / 2,
-                        'dx': x < d.total ? '-2px' : '5px',
-                        'text-anchor': x < d.total ? 'end' : 'beginning' }).style({ 'display': 'none' }).text('' + (x < d.total ? '-' : x > d.total ? '+' : '') + d3.format('.1f')(Math.abs(d.total - x) * 100));
-                }
-            }
-
-            //Display difference from total on hover.
-            if (_this.config.group) _this.svg.on('mouseover', function () {
-                _this.svg.selectAll('.diffFromTotal').style('display', 'block');
-                _this.svg.selectAll('text.diffFromTotal').each(function () {
-                    d3.select(this).attr('dy', this.getBBox().height / 4);
-                });
-            }).on('mouseout', function () {
-                return _this.svg.selectAll('.diffFromTotal').style('display', 'none');
-            });
-        });
+        moveYaxis(this);
+        drawOverallMark(this);
+        if (this.config.color_by) modifyOverallLegendMark(chart);
     }
 
     if (d.groups) {
-        chartSettings.group_col = d.group;
-        chartSettings.overall = d.statistics.values;
-        //Set upper limit of x-axis domain to the maximum group rate.
-        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
-            return d3.max(di.statistics.values, function (dii) {
-                return dii.prop_n;
-            });
+        chartData.forEach(function (di) {
+            return di.group = 'Overall';
         });
 
         d.groups.forEach(function (group) {
-            //Define group-level settings.
-            group.chartSettings = clone(chartSettings);
-            group.chartSettings.group = group.group;
-            group.chartSettings.n = group.values.length;
-
-            //Sort data by descending rate and keep only the first five categories.
-            group.data = group.statistics.values.filter(function (di) {
-                return chartSettings.y.order.indexOf(di.key) > -1;
+            group.statistics.values.filter(function (value) {
+                return chartSettings.y.order.indexOf(value.key) > -1;
             }).sort(function (a, b) {
                 return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).slice(0, 5);
-
-            //Define chart.
-            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-            group.chart.on('init', onInit);
-            group.chart.on('resize', onResize);
-            if (group.data.length) group.chart.init(group.data);else {
-                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group + ' (n=' + group.chartSettings.n + ')');
-                d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
-            }
+            }).forEach(function (value) {
+                value.group = group.group;
+                chartData.push(value);
+            });
         });
-    } else {
-        //Define chart.
-        var chart = webCharts.createChart(chartContainer, chartSettings);
-        chart.on('init', onInit);
-        chart.on('resize', onResize);
-        chart.init(chartData);
+        chartSettings.marks[0].per.push('group');
+        chartSettings.marks[0].values = { 'group': ['Overall'] };
+        chartSettings.marks.push({ type: 'circle',
+            per: ['key', 'group'],
+            summarizeX: 'mean',
+            radius: 3,
+            values: { 'group': d.groups.map(function (d) {
+                    return d.group;
+                }) } });
+        chartSettings.color_by = 'group';
+        chartSettings.legend = { label: '',
+            order: d.groups.map(function (d) {
+                return d.group;
+            }),
+            mark: 'circle'
+        };
     }
+
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on('resize', onResize);
+    chart.init(chartData);
 }
 
 if (typeof Object.assign != 'function') {
@@ -782,8 +765,8 @@ function makeChart(d) {
 
   if (d.type === 'categorical') {
     // categorical outcomes
-    //makeDotPlot(this,d)
-    makeBarChart(this, d);
+    makeDotPlot(this, d);
+    //makeBarChart(this,d)
   } else {
     // continuous outcomes
     makeHistogram(this, d);
@@ -826,10 +809,6 @@ function makeDetails(d) {
         }).attr('class', 'value');
     }
 }
-
-/*------------------------------------------------------------------------------------------------\
-  Intialize the summary table
-\------------------------------------------------------------------------------------------------*/
 
 function renderRow(d) {
     var rowWrap = d3.select(this);
@@ -934,11 +913,6 @@ function makeAutomaticGroups(chart) {
 		chart.config.groups = autogroups.length > 0 ? autogroups : null;
 	}
 }
-
-// determine the number of bins to use in the histogram based on the data.
-// Based on an implementation of the Freedman-Diaconis
-// See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
-// values should be an array of numbers
 
 function getBinCounts(codebook) {
 
