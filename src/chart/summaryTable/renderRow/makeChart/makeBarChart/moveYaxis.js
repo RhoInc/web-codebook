@@ -7,9 +7,9 @@ export default function moveYaxis(chart) {
             .attr(
                 {'text-anchor': 'start'
                 ,'alignment-baseline': 'middle'
-                ,'dx': '1em'
+                ,'dx': '2.5em'
                 ,'x': chart.plot_width})
-            .text(d => d.length < 30
+            .text(d => d.length < 25
                 ? d
-                : d.substring(0,30)+'...');
+                : d.substring(0,25)+'...');
 }

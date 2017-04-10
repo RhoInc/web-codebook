@@ -33,11 +33,12 @@ export default function drawDifferences(chart) {
             const diffText = g
                 .append('text')
                 .attr(
-                    {'x': chart.x(x)
+                    {'x': chart.x(d.total)
                     ,'y': chart.y(y) + chart.y.rangeBand()/2
-                    ,'dx': x < d.total ? '-2px' : '5px'
-                    ,'text-anchor': x < d.total ? 'end' : 'beginning'})
-                .text(`${x < d.total ? '-' : x > d.total ? '+' : ''}${d3.format('.1f')(Math.abs(d.total - x)*100)}`);
+                    ,'dx': x < d.total ? '5px' : '-2px'
+                    ,'text-anchor': x < d.total ? 'beginning' : 'end'
+                    ,'font-size':'0.7em'})
+                .text(`${x < d.total ? '+' : x > d.total ? '-' : ''}${d3.format('.1f')(Math.abs(d.total - x)*100)}`);
         });
 
   //Display difference from total on hover.

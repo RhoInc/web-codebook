@@ -124,28 +124,28 @@ var filters = { init: init$2 };
 \------------------------------------------------------------------------------------------------*/
 
 function init$3(chart) {
-    if (chart.config.groups.length > 0) {
-        var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
+        if (chart.config.groups.length > 0) {
+                var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
 
-        selector.append("span").text("Group by");
+                selector.append("span").text("Group by");
 
-        var groupSelect = selector.append("select");
+                var groupSelect = selector.append("select");
 
-        var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
-            return m.value_col;
-        })]);
+                var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+                        return m.value_col;
+                })]);
 
-        groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
-            return d;
-        });
+                groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+                        return d;
+                });
 
-        groupSelect.on("change", function () {
-            if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
-            chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-            chart.data.makeSummary(chart);
-            chart.summaryTable.draw(chart);
-        });
-    }
+                groupSelect.on("change", function () {
+                        if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
+                        chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
+                        chart.data.makeSummary(chart);
+                        chart.summaryTable.draw(chart);
+                });
+        }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -279,9 +279,9 @@ function moveYaxis$1(chart) {
     });
     ticks.append('text').attr({ 'text-anchor': 'start',
         'alignment-baseline': 'middle',
-        'dx': '1em',
+        'dx': '2.5em',
         'x': chart.plot_width }).text(function (d) {
-        return d.length < 30 ? d : d.substring(0, 30) + '...';
+        return d.length < 25 ? d : d.substring(0, 25) + '...';
     });
 }
 
@@ -331,10 +331,11 @@ function drawDifferences(chart) {
             'stroke-width': '2px',
             'stroke-opacity': '.25' });
         diffLine.append('title').text('Difference from overall rate: ' + d3.format('.1f')((d.total - x) * 100));
-        var diffText = g.append('text').attr({ 'x': chart.x(x),
+        var diffText = g.append('text').attr({ 'x': chart.x(d.total),
             'y': chart.y(y) + chart.y.rangeBand() / 2,
-            'dx': x < d.total ? '-2px' : '5px',
-            'text-anchor': x < d.total ? 'end' : 'beginning' }).text('' + (x < d.total ? '-' : x > d.total ? '+' : '') + d3.format('.1f')(Math.abs(d.total - x) * 100));
+            'dx': x < d.total ? '5px' : '-2px',
+            'text-anchor': x < d.total ? 'beginning' : 'end',
+            'font-size': '0.7em' }).text('' + (x < d.total ? '+' : x > d.total ? '-' : '') + d3.format('.1f')(Math.abs(d.total - x) * 100));
     });
 
     //Display difference from total on hover.
@@ -732,24 +733,24 @@ function onInit$1() {
 }
 
 function defineHistogram(element, settings) {
-    //Merge specified settings with default settings.
-    var mergedSettings = Object.assign({}, defaultSettings, settings);
+  //Merge specified settings with default settings.
+  var mergedSettings = Object.assign({}, defaultSettings, settings);
 
-    //Sync properties within merged settings.
-    var syncedSettings = syncSettings(mergedSettings);
+  //Sync properties within merged settings.
+  var syncedSettings = syncSettings(mergedSettings);
 
-    //Sync control inputs with merged settings.
-    //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
-    //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
+  //Sync control inputs with merged settings.
+  //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
+  //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
 
-    //Define chart.
-    var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-    chart.initialSettings = clone(syncedSettings);
-    chart.initialSettings.container = element;
-    chart.on('init', onInit$1);
-    chart.on('resize', onResize$2);
+  //Define chart.
+  var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
+  chart.initialSettings = clone(syncedSettings);
+  chart.initialSettings.container = element;
+  chart.on('init', onInit$1);
+  chart.on('resize', onResize$2);
 
-    return chart;
+  return chart;
 }
 
 function makeHistogram(this_, d) {
@@ -1122,8 +1123,8 @@ function makeFiltered(data, filters) {
 \------------------------------------------------------------------------------------------------*/
 
 var data = {
-    makeSummary: makeSummary,
-    makeFiltered: makeFiltered
+  makeSummary: makeSummary,
+  makeFiltered: makeFiltered
 
 };
 
