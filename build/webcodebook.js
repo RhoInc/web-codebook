@@ -500,6 +500,12 @@ function makeBarChart(this_, d) {
     }
 }
 
+function onResize$2() {
+  //remove x-axis text
+  var ticks = this.wrap.selectAll('g.x.axis g.tick');
+  ticks.select("text").remove();
+}
+
 function onInit$1() {
     //Add group labels.
     var chart = this;
@@ -509,87 +515,94 @@ function onInit$1() {
     }
 }
 
-function onResize$2() {
-  //remove x-axis text
-  var ticks = this.wrap.selectAll('g.x.axis g.tick');
-  ticks.select("text").remove();
+function axisSort(a, b, type) {
+  var alpha = a.key < b.key ? -1 : 1;
+  if (type == "alpha") {
+    return alpha;
+  } else if (type == "desc") {
+    return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : alpha;
+  } else if (type == "asc") {
+    return a.prop_n > b.prop_n ? 2 : a.prop_n < b.prop_n ? -2 : alpha;
+  }
 }
 
 function makeLevelChart(this_, d) {
-    var chartContainer = d3.select(this_).node();
-    var chartSettings = { y: { column: 'prop_n',
-            type: 'linear',
-            label: '',
-            format: '0.1%',
-            domain: [0, null] },
-        x: { column: 'key',
-            type: 'ordinal',
-            label: '' },
-        marks: [{ type: 'bar',
-            per: ['key'],
-            summarizeX: 'mean',
-            tooltip: '[key]: [n] ([prop_n_text])',
-            attributes: { stroke: null,
-                fill: "#999"
-            } }],
-        gridlines: '',
-        resizable: false,
-        height: this_.height,
-        margin: this_.margin,
-        value_col: d.value_col,
-        group_col: d.group || null,
-        overall: d.statistics.values
-    };
-    chartSettings.margin.left = 50;
-    chartSettings.margin.bottom = 10;
-    //Sort data by descending rate and keep only the first five categories.
-    var chartData = d.statistics.values.sort(function (a, b) {
-        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+  var chartContainer = d3.select(this_).node();
+  var chartSettings = { y: { column: 'prop_n',
+      type: 'linear',
+      label: '',
+      format: '0.1%',
+      domain: [0, null] },
+    x: { column: 'key',
+      type: 'ordinal',
+      label: '' },
+    marks: [{ type: 'bar',
+      per: ['key'],
+      summarizeX: 'mean',
+      tooltip: '[key]: [n] ([prop_n_text])',
+      attributes: { stroke: null,
+        fill: "#999"
+      } }],
+    gridlines: '',
+    resizable: false,
+    height: this_.height,
+    margin: this_.margin,
+    value_col: d.value_col,
+    group_col: d.group || null,
+    overall: d.statistics.values,
+    sort: 'alpha' //alpha, asc, desc
+  };
+
+  chartSettings.margin.left = 50;
+  chartSettings.margin.bottom = 10;
+
+  var chartData = d.statistics.values.sort(function (a, b) {
+    return axisSort(a, b, chartSettings.sort);
+  });
+
+  chartSettings.x.order = chartData.map(function (d) {
+    return d.key;
+  });
+  var x_dom = chartData.map(function (d) {
+    return d.key;
+  });
+
+  if (d.groups) {
+    //Set upper limit of y-axis domain to the maximum group rate.
+    chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
+      return d3.max(di.statistics.values, function (dii) {
+        return dii.prop_n;
+      });
     });
-    //  .slice(0,5);
-    chartSettings.y.order = chartData.map(function (d) {
-        return d.key;
-    }).reverse();
 
-    if (d.groups) {
-        //Set upper limit of x-axis domain to the maximum group rate.
-        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
-            return d3.max(di.statistics.values, function (dii) {
-                return dii.prop_n;
-            });
-        });
+    chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
+    d.groups.forEach(function (group) {
+      //Define group-level settings.
+      group.chartSettings = clone(chartSettings);
+      group.chartSettings.group_val = group.group;
+      group.chartSettings.n = group.values.length;
 
-        d.groups.forEach(function (group) {
-            //Define group-level settings.
-            group.chartSettings = clone(chartSettings);
-            group.chartSettings.group_val = group.group;
-            group.chartSettings.n = group.values.length;
+      //Sort data by descending rate and keep only the first five categories.
+      group.data = group.statistics.values;
 
-            //Sort data by descending rate and keep only the first five categories.
-            group.data = group.statistics.values.filter(function (di) {
-                return chartSettings.y.order.indexOf(di.key) > -1;
-            }).sort(function (a, b) {
-                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            });
-            //.slice(0,5);
+      //Define chart.
+      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart.on('init', onInit$1);
+      group.chart.on('resize', onResize$2);
 
-            //Define chart.
-            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-            group.chart.on('init', onInit$1);
-            group.chart.on('resize', onResize$2);
+      if (group.data.length) group.chart.init(group.data);else {
+        d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
 
-            if (group.data.length) group.chart.init(group.data);else {
-                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
-                d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
-            }
-        });
-    } else {
-        //Define chart.
-        var chart = webCharts.createChart(chartContainer, chartSettings);
-        //  chart.on('init', onInit);
-        chart.on('resize', onResize$2);
-        chart.init(chartData);
-    }
+        d3.select(chartContainer).append('div').html('<em>No data available for this level.</em>.<br><br>');
+      }
+    });
+  } else {
+    //Define chart.
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on('init', onInit$1);
+    chart.on('resize', onResize$2);
+    chart.init(chartData);
+  }
 }
 
 if (typeof Object.assign != 'function') {
