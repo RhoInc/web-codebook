@@ -28,7 +28,10 @@ export function makeSummary(codebook) {
                     return {
                         n: d.length,
                         prop_N: d.length/statistics.N,
-                        prop_n: d.length/statistics.n}; })
+                        prop_n: d.length/statistics.n,
+                        prop_N_text:d3.format("0.1%")(d.length/statistics.N),
+                        prop_n_text:d3.format("0.1%")(d.length/statistics.n)
+                      }; })
                 .entries(nonMissing);
 
             statistics.values

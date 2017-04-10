@@ -17,7 +17,7 @@ export function makeDotPlot(this_, d){
                 {type: 'circle'
                 ,per: ['key']
                 ,summarizeX: 'mean'
-                ,tooltip: '[key]: [n] ([prop_n])'}
+                ,tooltip: '[key]: [n] ([prop_n_text])'}
             ]
         ,gridlines: 'xy'
         ,resizable: false

@@ -18,7 +18,7 @@ export function makeBarChart(this_, d) {
                 {type: 'bar'
                 ,per: ['key']
                 ,summarizeX: 'mean'
-                ,tooltip: '[key]: [n] ([prop_n])'}
+                ,tooltip: '[key]: [n] ([prop_n_text])'}
             ]
         ,gridlines: 'xy'
         ,resizable: false
