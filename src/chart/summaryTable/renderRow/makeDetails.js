@@ -10,7 +10,7 @@ export default function makeDetails(d) {
                 key: stat !== 'nMissing' ? stat : 'Missing',
                 value: d.statistics[stat]};
         })
-    //    .filter(statItem => ['N', 'n'].indexOf(statItem.key) === -1);
+        .filter(statItem => ['min', 'max'].indexOf(statItem.key) === -1);
 
   //Render Values
     if (d.type == 'categorical') {
