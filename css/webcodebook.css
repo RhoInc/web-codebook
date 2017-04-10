@@ -215,6 +215,11 @@ Chart layout
     max-width:800px;
 }
 
+.web-codebook .summaryTable .variable-row .row-chart p.panel-label{
+  margin-top:0.2em;
+  margin-bottom:0.2em;
+}
+
 .web-codebook .summaryTable .variable-row .row-chart .legend {
     margin-left:1em;
 }

@@ -352,15 +352,7 @@ function clone(obj) {
     throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
-function onInit() {
-    //Add group labels.
-    if (this.config.group_col) {
-        var groupTitle = this.wrap.append('p').text(this.config.group_col + ': ' + this.config.group_val + ' (n=' + this.config.n + ')');
-        this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
-    }
-}
-
-function moveYaxis$1(chart) {
+function moveYaxis(chart) {
     var ticks = chart.wrap.selectAll('g.y.axis g.tick');
     ticks.select('text').remove();
     ticks.append('title').text(function (d) {
@@ -368,13 +360,13 @@ function moveYaxis$1(chart) {
     });
     ticks.append('text').attr({ 'text-anchor': 'start',
         'alignment-baseline': 'middle',
-        'dx': '2.5em',
+        'dx': '1em',
         'x': chart.plot_width }).text(function (d) {
-        return d.length < 25 ? d : d.substring(0, 25) + '...';
+        return d.length < 30 ? d : d.substring(0, 30) + '...';
     });
 }
 
-function drawOverallMark$1(chart) {
+function drawOverallMark(chart) {
     //Clear overall marks.
     chart.svg.selectAll('.overall-mark').remove();
 
@@ -399,52 +391,32 @@ function drawOverallMark$1(chart) {
     });
 }
 
-function drawDifferences(chart) {
-    //Clear difference marks and annotations.
-    chart.svg.selectAll('.difference-from-total').remove();
-
-    //For each mark draw a difference mark and annotation.
-    chart.current_data.forEach(function (d) {
-        var overall = chart.config.overall.filter(function (di) {
-            return di.key === d.key;
-        })[0],
-            g = chart.svg.append('g').classed('difference-from-total', true).style('display', 'none'),
-            x = overall.prop_n,
-            y = overall.key;
-
-        //Draw line from overall rate to group rate.
-        var diffLine = g.append('line').attr({ 'x1': chart.x(x),
-            'y1': chart.y(y) + chart.y.rangeBand() / 2,
-            'x2': chart.x(d.total),
-            'y2': chart.y(y) + chart.y.rangeBand() / 2 }).style({ 'stroke': 'black',
-            'stroke-width': '2px',
-            'stroke-opacity': '.25' });
-        diffLine.append('title').text('Difference from overall rate: ' + d3.format('.1f')((d.total - x) * 100));
-        var diffText = g.append('text').attr({ 'x': chart.x(d.total),
-            'y': chart.y(y) + chart.y.rangeBand() / 2,
-            'dx': x < d.total ? '5px' : '-2px',
-            'text-anchor': x < d.total ? 'beginning' : 'end',
-            'font-size': '0.7em' }).text('' + (x < d.total ? '+' : x > d.total ? '-' : '') + d3.format('.1f')(Math.abs(d.total - x) * 100));
-    });
-
-    //Display difference from total on hover.
-    chart.svg.on('mouseover', function () {
-        chart.svg.selectAll('.difference-from-total').style('display', 'block');
-        chart.svg.selectAll('.difference-from-total text').each(function () {
-            d3.select(this).attr('dy', this.getBBox().height / 4);
-        });
-    }).on('mouseout', function () {
-        return chart.svg.selectAll('.difference-from-total').style('display', 'none');
-    });
+function modifyOverallLegendMark(chart) {
+    var legendItems = chart.wrap.selectAll('.legend-item'),
+        overallMark = legendItems.filter(function (d) {
+        return d.label === 'Overall';
+    }).select('svg'),
+        BBox = overallMark.node().getBBox();
+    overallMark.select('.legend-mark').remove();
+    overallMark.append('line').classed('legend-mark', true).attr({ 'x1': 3 * BBox.width / 4,
+        'y1': 0,
+        'x2': 3 * BBox.width / 4,
+        'y2': BBox.height }).style({ 'stroke': 'black',
+        'stroke-width': '2px',
+        'stroke-opacity': '1' });
+    legendItems.selectAll('circle').attr('r', '.4em');
 }
 
-function onResize$1() {
-    moveYaxis$1(this);
-    drawOverallMark$1(this);
-    if (this.config.group_col) drawDifferences(this);
+function onResize() {
+    moveYaxis(this);
+    drawOverallMark(this);
+    if (this.config.color_by) modifyOverallLegendMark(this);
+
+    //Hide overall dots.
+    if (this.config.color_by) this.svg.selectAll('.Overall').remove();else this.svg.selectAll('.point').remove();
 }
 
-function makeBarChart(this_, d) {
+function makeDotPlot(this_, d) {
     var chartContainer = d3.select(this_).node();
     var chartSettings = { x: { column: 'prop_n',
             type: 'linear',
@@ -454,7 +426,7 @@ function makeBarChart(this_, d) {
         y: { column: 'key',
             type: 'ordinal',
             label: '' },
-        marks: [{ type: 'bar',
+        marks: [{ type: 'circle',
             per: ['key'],
             summarizeX: 'mean',
             tooltip: '[key]: [n] ([prop_n])' }],
@@ -476,43 +448,45 @@ function makeBarChart(this_, d) {
     }).reverse();
 
     if (d.groups) {
-        //Set upper limit of x-axis domain to the maximum group rate.
-        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
-            return d3.max(di.statistics.values, function (dii) {
-                return dii.prop_n;
+        //Define overall data.
+        chartData.forEach(function (di) {
+            return di.group = 'Overall';
+        });
+
+        //Add group data to overall data.
+        d.groups.forEach(function (group) {
+            group.statistics.values.filter(function (value) {
+                return chartSettings.y.order.indexOf(value.key) > -1;
+            }).sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            }).forEach(function (value) {
+                value.group = group.group;
+                chartData.push(value);
             });
         });
 
-        d.groups.forEach(function (group) {
-            //Define group-level settings.
-            group.chartSettings = clone(chartSettings);
-            group.chartSettings.group_val = group.group;
-            group.chartSettings.n = group.values.length;
+        //Overall mark
+        chartSettings.marks[0].per.push('group');
+        chartSettings.marks[0].values = { 'group': ['Overall'] };
 
-            //Sort data by descending rate and keep only the first five categories.
-            group.data = group.statistics.values.filter(function (di) {
-                return chartSettings.y.order.indexOf(di.key) > -1;
-            }).sort(function (a, b) {
-                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).slice(0, 5);
+        //Group marks
+        chartSettings.marks[1] = clone(chartSettings.marks[0]);
+        chartSettings.marks[1].values = { 'group': d.groups.map(function (d) {
+                return d.group;
+            }) };
 
-            //Define chart.
-            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-            group.chart.on('init', onInit);
-            group.chart.on('resize', onResize$1);
-
-            if (group.data.length) group.chart.init(group.data);else {
-                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
-                d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
-            }
-        });
-    } else {
-        //Define chart.
-        var chart = webCharts.createChart(chartContainer, chartSettings);
-        chart.on('init', onInit);
-        chart.on('resize', onResize$1);
-        chart.init(chartData);
+        chartSettings.color_by = 'group';
+        chartSettings.legend = { label: '',
+            order: d.groups.map(function (d) {
+                return d.group;
+            }),
+            mark: 'circle'
+        };
     }
+
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on('resize', onResize);
+    chart.init(chartData);
 }
 
 if (typeof Object.assign != 'function') {
@@ -875,8 +849,8 @@ function makeChart(d) {
 
   if (d.type === 'categorical') {
     // categorical outcomes
-    //makeDotPlot(this,d)
-    makeBarChart(this, d);
+    makeDotPlot(this, d);
+    //makeBarChart(this,d)
   } else {
     // continuous outcomes
     makeHistogram(this, d);
