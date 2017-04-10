@@ -333,6 +333,143 @@ function clone(obj) {
     throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
+function moveYaxis(chart) {
+    var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+    ticks.select('text').remove();
+    ticks.append('title').text(function (d) {
+        return d;
+    });
+    ticks.append('text').attr({ 'text-anchor': 'start',
+        'alignment-baseline': 'middle',
+        'dx': '1em',
+        'x': chart.plot_width }).text(function (d) {
+        return d.length < 30 ? d : d.substring(0, 30) + '...';
+    });
+}
+
+function drawOverallMark(chart) {
+    //Clear overall marks.
+    chart.svg.selectAll('.overall-mark').remove();
+
+    //For each mark draw an overall mark.
+    chart.config.overall.forEach(function (d) {
+        if (chart.config.y.order.indexOf(d.key) > -1) {
+            var g = chart.svg.append('g').classed('overall-mark', true);
+            var x = d.prop_n;
+            var y = d.key;
+
+            //Draw vertical line representing the overall rate of the current categorical value.
+            if (chart.y(y)) {
+                var rateLine = g.append('line').attr({ 'x1': chart.x(x),
+                    'y1': chart.y(y),
+                    'x2': chart.x(x),
+                    'y2': chart.y(y) + chart.y.rangeBand() }).style({ 'stroke': 'black',
+                    'stroke-width': '2px',
+                    'stroke-opacity': '1' });
+                rateLine.append('title').text('Overall rate: ' + d3.format('.1%')(x));
+            }
+        }
+    });
+}
+
+function modifyOverallLegendMark(chart) {
+    var legendItems = chart.wrap.selectAll('.legend-item'),
+        overallMark = legendItems.filter(function (d) {
+        return d.label === 'Overall';
+    }).select('svg'),
+        BBox = overallMark.node().getBBox();
+    overallMark.select('.legend-mark').remove();
+    overallMark.append('line').classed('legend-mark', true).attr({ 'x1': 3 * BBox.width / 4,
+        'y1': 0,
+        'x2': 3 * BBox.width / 4,
+        'y2': BBox.height }).style({ 'stroke': 'black',
+        'stroke-width': '2px',
+        'stroke-opacity': '1' });
+    legendItems.selectAll('circle').attr('r', '.4em');
+}
+
+function onResize() {
+    moveYaxis(this);
+    drawOverallMark(this);
+    if (this.config.color_by) modifyOverallLegendMark(this);
+
+    //Hide overall dots.
+    if (this.config.color_by) this.svg.selectAll('.Overall').remove();else this.svg.selectAll('.point').remove();
+}
+
+function makeDotPlot(this_, d) {
+    var chartContainer = d3.select(this_).node();
+    var chartSettings = { x: { column: 'prop_n',
+            type: 'linear',
+            label: '',
+            format: '%',
+            domain: [0, null] },
+        y: { column: 'key',
+            type: 'ordinal',
+            label: '' },
+        marks: [{ type: 'circle',
+            per: ['key'],
+            summarizeX: 'mean',
+            tooltip: '[key]: [n] ([prop_n_text])' }],
+        gridlines: 'xy',
+        resizable: false,
+        height: this_.height,
+        margin: this_.margin,
+        value_col: d.value_col,
+        group_col: d.group || null,
+        overall: d.statistics.values
+    };
+
+    //Sort data by descending rate and keep only the first five categories.
+    var chartData = d.statistics.values.sort(function (a, b) {
+        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+    }).slice(0, 5);
+    chartSettings.y.order = chartData.map(function (d) {
+        return d.key;
+    }).reverse();
+
+    if (d.groups) {
+        //Define overall data.
+        chartData.forEach(function (di) {
+            return di.group = 'Overall';
+        });
+
+        //Add group data to overall data.
+        d.groups.forEach(function (group) {
+            group.statistics.values.filter(function (value) {
+                return chartSettings.y.order.indexOf(value.key) > -1;
+            }).sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            }).forEach(function (value) {
+                value.group = group.group;
+                chartData.push(value);
+            });
+        });
+
+        //Overall mark
+        chartSettings.marks[0].per.push('group');
+        chartSettings.marks[0].values = { 'group': ['Overall'] };
+
+        //Group marks
+        chartSettings.marks[1] = clone(chartSettings.marks[0]);
+        chartSettings.marks[1].values = { 'group': d.groups.map(function (d) {
+                return d.group;
+            }) };
+
+        chartSettings.color_by = 'group';
+        chartSettings.legend = { label: '',
+            order: d.groups.map(function (d) {
+                return d.group;
+            }),
+            mark: 'circle'
+        };
+    }
+
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on('resize', onResize);
+    chart.init(chartData);
+}
+
 function onInit() {
     //Add group labels.
     var chart = this;
@@ -427,6 +564,11 @@ function onResize$1() {
 }
 
 function makeBarChart(this_, d) {
+    //hide the controls if the chart isn't Grouped
+    var rowSelector = d3.select(this_).node().parentNode;
+    var chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
+
+    //Chart settings
     var chartContainer = d3.select(this_).node();
     var chartSettings = { x: { column: 'prop_n',
             type: 'linear',
@@ -498,6 +640,27 @@ function makeBarChart(this_, d) {
         chart.on('resize', onResize$1);
         chart.init(chartData);
     }
+}
+
+function makeBarChartControls(this_, d) {
+  var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
+  var wrap = d3.select(this_).append("div").attr("class", "row-controls");
+  wrap.append("small").text("Display Type: ");
+  var type_control = wrap.append("select");
+  type_control.selectAll("option").data(chart_type_values).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  type_control.on("change", function () {
+    d3.select(this_).selectAll(".wc-chart").remove();
+    d3.select(this_).selectAll(".panel-label").remove();
+    console.log(this.value);
+    if (this.value == "Paneled (Bar Charts)") {
+      makeBarChart(this_, d);
+    } else {
+      makeDotPlot(this_, d);
+    }
+  });
 }
 
 function onResize$2() {
@@ -986,6 +1149,7 @@ function makeChart(d) {
     // categorical outcomes
     console.log(d);
     if (d.statistics.values.length <= 5) {
+      makeBarChartControls(this, d);
       makeBarChart(this, d);
     } else {
       makeLevelChartControls(this, d);

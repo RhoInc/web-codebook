@@ -3,6 +3,11 @@ import onInit from './makeBarChart/onInit';
 import onResize from './makeBarChart/onResize';
 
 export function makeBarChart(this_, d) {
+    //hide the controls if the chart isn't Grouped
+    const rowSelector = d3.select(this_).node().parentNode
+    const chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden",!d.groups)
+
+    //Chart settings
     const chartContainer = d3.select(this_).node();
     const chartSettings =
         {x: {column: 'prop_n'
