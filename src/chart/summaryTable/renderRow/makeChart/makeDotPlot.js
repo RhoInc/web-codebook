@@ -1,7 +1,5 @@
-import clone from '../../../histogram/util/clone';
-import moveYaxis from './util/moveYaxis';
-import drawOverallMark from './util/drawOverallMark';
-import modifyOverallLegendMark from './util/modifyOverallLegendMark';
+import clone from '../../../../util/clone';
+import onResize from './makeDotPlot/onResize';
 
 export function makeDotPlot(this_, d){
     const chartContainer = d3.select(this_).node();
@@ -39,16 +37,11 @@ export function makeDotPlot(this_, d){
         .slice(0,5);
     chartSettings.y.order = chartData.map(d => d.key).reverse();
 
-    function onResize() {
-        moveYaxis(this);
-        drawOverallMark(this);
-        if (this.config.color_by)
-            modifyOverallLegendMark(chart);
-    }
-
     if (d.groups) {
+      //Define overall data.
         chartData.forEach(di => di.group = 'Overall');
 
+      //Add group data to overall data.
         d.groups.forEach(group => {
             group.statistics.values
                 .filter(value => chartSettings.y.order.indexOf(value.key) > -1)
@@ -61,14 +54,15 @@ export function makeDotPlot(this_, d){
                     chartData.push(value);
                 });
         });
+
+      //Overall mark
         chartSettings.marks[0].per.push('group');
         chartSettings.marks[0].values = {'group': ['Overall']};
-        chartSettings.marks.push(
-            {type: 'circle'
-            ,per: ['key', 'group']
-            ,summarizeX: 'mean'
-            ,radius: 3
-            ,values: {'group': d.groups.map(d => d.group)}});
+
+      //Group marks
+        chartSettings.marks[1] = clone(chartSettings.marks[0]);
+        chartSettings.marks[1].values = {'group': d.groups.map(d => d.group)};
+
         chartSettings.color_by = 'group';
         chartSettings.legend =
           {label: ''

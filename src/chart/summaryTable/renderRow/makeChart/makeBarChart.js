@@ -1,7 +1,6 @@
-import clone from '../../../histogram/util/clone';
-import moveYaxis from './util/moveYaxis';
-import drawOverallMark from './util/drawOverallMark';
-import drawDifferences from './util/drawDifferences';
+import clone from '../../../../util/clone';
+import onInit from './makeBarChart/onInit';
+import onResize from './makeBarChart/onResize';
 
 export function makeBarChart(this_, d) {
     const chartContainer = d3.select(this_).node();
@@ -38,24 +37,6 @@ export function makeBarChart(this_, d) {
                 a.key < b.key ? -1 : 1)
         .slice(0,5);
     chartSettings.y.order = chartData.map(d => d.key).reverse();
-
-    function onInit() {
-      //Add group labels.
-        if (this.config.group_col) {
-            const groupTitle = this.wrap
-                .append('p')
-                .text(`${this.config.group_col}: ${this.config.group_val} (n=${this.config.n})`);
-            this.wrap.node().parentNode
-                .insertBefore(groupTitle.node(), this.wrap.node())
-        }
-    }
-
-    function onResize() {
-        moveYaxis(this);
-        drawOverallMark(this);
-        if (this.config.group_col)
-            drawDifferences(this);
-    }
 
     if (d.groups) {
       //Set upper limit of x-axis domain to the maximum group rate.

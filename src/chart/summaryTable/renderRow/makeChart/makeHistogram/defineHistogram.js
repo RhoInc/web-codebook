@@ -1,19 +1,15 @@
-import './histogram/util/object-assign';
-import clone from './histogram/util/clone';
+import '../../../../../util/object-assign';
+import clone from '../../../../../util/clone';
 import defaultSettings, { syncSettings }
-    from './histogram/defaultSettings'
+    from './defaultSettings';
 
 import { createChart }
     from 'webcharts';
 
-import onInit from './histogram/onInit';
-import onLayout from './histogram/onLayout';
-import onPreprocess from './histogram/onPreprocess';
-import onDataTransform from './histogram/onDataTransform';
-import onDraw from './histogram/onDraw';
-import onResize from './histogram/onResize';
+import onInit from './onInit';
+import onResize from './onResize';
 
-export function createHistogram(element, settings) {
+export function defineHistogram(element, settings) {
   //Merge specified settings with default settings.
     const mergedSettings = Object.assign({}, defaultSettings, settings);
 
@@ -29,10 +25,6 @@ export function createHistogram(element, settings) {
     chart.initialSettings = clone(syncedSettings);
     chart.initialSettings.container = element;
     chart.on('init', onInit);
-    chart.on('layout', onLayout);
-    chart.on('preprocess', onPreprocess);
-    chart.on('datatransform', onDataTransform);
-    chart.on('draw', onDraw);
     chart.on('resize', onResize);
 
     return chart;

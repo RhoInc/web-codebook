@@ -1,4 +1,4 @@
-import { createHistogram } from '../../../createHistogram.js'
+import { defineHistogram } from './makeHistogram/defineHistogram';
 
 export function makeHistogram(this_, d){
   const chartContainer = d3.select(this_).node();
@@ -23,6 +23,6 @@ export function makeHistogram(this_, d){
       });
   }
 
-  const chart = createHistogram(chartContainer, chartSettings);
+  const chart = defineHistogram(chartContainer, chartSettings);
   chart.init(chartData);
 }

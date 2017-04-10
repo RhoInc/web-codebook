@@ -263,7 +263,15 @@ function clone(obj) {
     throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
-function moveYaxis(chart) {
+function onInit() {
+    //Add group labels.
+    if (this.config.group_col) {
+        var groupTitle = this.wrap.append('p').text(this.config.group_col + ': ' + this.config.group_val + ' (n=' + this.config.n + ')');
+        this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+    }
+}
+
+function moveYaxis$1(chart) {
     var ticks = chart.wrap.selectAll('g.y.axis g.tick');
     ticks.select('text').remove();
     ticks.append('title').text(function (d) {
@@ -277,7 +285,7 @@ function moveYaxis(chart) {
     });
 }
 
-function drawOverallMark(chart) {
+function drawOverallMark$1(chart) {
     //Clear overall marks.
     chart.svg.selectAll('.overall-mark').remove();
 
@@ -302,23 +310,51 @@ function drawOverallMark(chart) {
     });
 }
 
-function modifyOverallLegendMark(chart) {
-    var legendItems = chart.wrap.selectAll('.legend-item'),
-        overallMark = legendItems.filter(function (d) {
-        return d.label === 'Overall';
-    }).select('svg'),
-        BBox = overallMark.node().getBBox();
-    overallMark.select('.legend-mark').remove();
-    overallMark.append('line').classed('legend-mark', true).attr({ 'x1': 3 * BBox.width / 4,
-        'y1': 0,
-        'x2': 3 * BBox.width / 4,
-        'y2': BBox.height }).style({ 'stroke': 'black',
-        'stroke-width': '2px',
-        'stroke-opacity': '1' });
-    legendItems.selectAll('circle').attr('r', '.4em');
+function drawDifferences(chart) {
+    //Clear difference marks and annotations.
+    chart.svg.selectAll('.difference-from-total').remove();
+
+    //For each mark draw a difference mark and annotation.
+    chart.current_data.forEach(function (d) {
+        var overall = chart.config.overall.filter(function (di) {
+            return di.key === d.key;
+        })[0],
+            g = chart.svg.append('g').classed('difference-from-total', true).style('display', 'none'),
+            x = overall.prop_n,
+            y = overall.key;
+
+        //Draw line from overall rate to group rate.
+        var diffLine = g.append('line').attr({ 'x1': chart.x(x),
+            'y1': chart.y(y) + chart.y.rangeBand() / 2,
+            'x2': chart.x(d.total),
+            'y2': chart.y(y) + chart.y.rangeBand() / 2 }).style({ 'stroke': 'black',
+            'stroke-width': '2px',
+            'stroke-opacity': '.25' });
+        diffLine.append('title').text('Difference from overall rate: ' + d3.format('.1f')((d.total - x) * 100));
+        var diffText = g.append('text').attr({ 'x': chart.x(x),
+            'y': chart.y(y) + chart.y.rangeBand() / 2,
+            'dx': x < d.total ? '-2px' : '5px',
+            'text-anchor': x < d.total ? 'end' : 'beginning' }).text('' + (x < d.total ? '-' : x > d.total ? '+' : '') + d3.format('.1f')(Math.abs(d.total - x) * 100));
+    });
+
+    //Display difference from total on hover.
+    chart.svg.on('mouseover', function () {
+        chart.svg.selectAll('.difference-from-total').style('display', 'block');
+        chart.svg.selectAll('.difference-from-total text').each(function () {
+            d3.select(this).attr('dy', this.getBBox().height / 4);
+        });
+    }).on('mouseout', function () {
+        return chart.svg.selectAll('.difference-from-total').style('display', 'none');
+    });
 }
 
-function makeDotPlot(this_, d) {
+function onResize$1() {
+    moveYaxis$1(this);
+    drawOverallMark$1(this);
+    if (this.config.group_col) drawDifferences(this);
+}
+
+function makeBarChart(this_, d) {
     var chartContainer = d3.select(this_).node();
     var chartSettings = { x: { column: 'prop_n',
             type: 'linear',
@@ -328,7 +364,7 @@ function makeDotPlot(this_, d) {
         y: { column: 'key',
             type: 'ordinal',
             label: '' },
-        marks: [{ type: 'circle',
+        marks: [{ type: 'bar',
             per: ['key'],
             summarizeX: 'mean',
             tooltip: '[key]: [n] ([prop_n])' }],
@@ -349,48 +385,44 @@ function makeDotPlot(this_, d) {
         return d.key;
     }).reverse();
 
-    function onResize() {
-        moveYaxis(this);
-        drawOverallMark(this);
-        if (this.config.color_by) modifyOverallLegendMark(chart);
-    }
-
     if (d.groups) {
-        chartData.forEach(function (di) {
-            return di.group = 'Overall';
+        //Set upper limit of x-axis domain to the maximum group rate.
+        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
+            return d3.max(di.statistics.values, function (dii) {
+                return dii.prop_n;
+            });
         });
 
         d.groups.forEach(function (group) {
-            group.statistics.values.filter(function (value) {
-                return chartSettings.y.order.indexOf(value.key) > -1;
+            //Define group-level settings.
+            group.chartSettings = clone(chartSettings);
+            group.chartSettings.group_val = group.group;
+            group.chartSettings.n = group.values.length;
+
+            //Sort data by descending rate and keep only the first five categories.
+            group.data = group.statistics.values.filter(function (di) {
+                return chartSettings.y.order.indexOf(di.key) > -1;
             }).sort(function (a, b) {
                 return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).forEach(function (value) {
-                value.group = group.group;
-                chartData.push(value);
-            });
-        });
-        chartSettings.marks[0].per.push('group');
-        chartSettings.marks[0].values = { 'group': ['Overall'] };
-        chartSettings.marks.push({ type: 'circle',
-            per: ['key', 'group'],
-            summarizeX: 'mean',
-            radius: 3,
-            values: { 'group': d.groups.map(function (d) {
-                    return d.group;
-                }) } });
-        chartSettings.color_by = 'group';
-        chartSettings.legend = { label: '',
-            order: d.groups.map(function (d) {
-                return d.group;
-            }),
-            mark: 'circle'
-        };
-    }
+            }).slice(0, 5);
 
-    var chart = webCharts.createChart(chartContainer, chartSettings);
-    chart.on('resize', onResize);
-    chart.init(chartData);
+            //Define chart.
+            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+            group.chart.on('init', onInit);
+            group.chart.on('resize', onResize$1);
+
+            if (group.data.length) group.chart.init(group.data);else {
+                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
+                d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
+            }
+        });
+    } else {
+        //Define chart.
+        var chart = webCharts.createChart(chartContainer, chartSettings);
+        chart.on('init', onInit);
+        chart.on('resize', onResize$1);
+        chart.init(chartData);
+    }
 }
 
 if (typeof Object.assign != 'function') {
@@ -465,7 +497,7 @@ function syncSettings(settings) {
     return syncedSettings;
 }
 
-function onResize() {
+function onResize$2() {
     var context = this;
     var format = d3.format(this.config.measureFormat);
 
@@ -615,7 +647,7 @@ function onResize() {
     }
 }
 
-function onInit() {
+function onInit$1() {
     var context = this;
     var config = this.initialSettings;
     var measure = config.measure;
@@ -692,22 +724,14 @@ function onInit() {
             group.webChart = new webCharts.createChart(config.container, group.settings);
             group.webChart.initialSettings = group.settings;
             group.webChart.group = group.group;
-            group.webChart.on('init', onInit);
-            group.webChart.on('resize', onResize);
+            group.webChart.on('init', onInit$1);
+            group.webChart.on('resize', onResize$2);
             group.webChart.init(group.data);
         });
     }
 }
 
-function onLayout() {}
-
-function onPreprocess() {}
-
-function onDataTransform() {}
-
-function onDraw() {}
-
-function createHistogram(element, settings) {
+function defineHistogram(element, settings) {
     //Merge specified settings with default settings.
     var mergedSettings = Object.assign({}, defaultSettings, settings);
 
@@ -722,12 +746,8 @@ function createHistogram(element, settings) {
     var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
     chart.initialSettings = clone(syncedSettings);
     chart.initialSettings.container = element;
-    chart.on('init', onInit);
-    chart.on('layout', onLayout);
-    chart.on('preprocess', onPreprocess);
-    chart.on('datatransform', onDataTransform);
-    chart.on('draw', onDraw);
-    chart.on('resize', onResize);
+    chart.on('init', onInit$1);
+    chart.on('resize', onResize$2);
 
     return chart;
 }
@@ -754,7 +774,7 @@ function makeHistogram(this_, d) {
         });
     }
 
-    var chart = createHistogram(chartContainer, chartSettings);
+    var chart = defineHistogram(chartContainer, chartSettings);
     chart.init(chartData);
 }
 
@@ -765,8 +785,8 @@ function makeChart(d) {
 
   if (d.type === 'categorical') {
     // categorical outcomes
-    makeDotPlot(this, d);
-    //makeBarChart(this,d)
+    //makeDotPlot(this,d)
+    makeBarChart(this, d);
   } else {
     // continuous outcomes
     makeHistogram(this, d);
@@ -809,6 +829,10 @@ function makeDetails(d) {
         }).attr('class', 'value');
     }
 }
+
+/*------------------------------------------------------------------------------------------------\
+  Intialize the summary table
+\------------------------------------------------------------------------------------------------*/
 
 function renderRow(d) {
     var rowWrap = d3.select(this);
@@ -913,6 +937,11 @@ function makeAutomaticGroups(chart) {
 		chart.config.groups = autogroups.length > 0 ? autogroups : null;
 	}
 }
+
+// determine the number of bins to use in the histogram based on the data.
+// Based on an implementation of the Freedman-Diaconis
+// See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
+// values should be an array of numbers
 
 function getBinCounts(codebook) {
 
@@ -1202,8 +1231,7 @@ function createExplorer() {
 
 var index = {
   createChart: createChart$1,
-  createExplorer: createExplorer,
-  createHistogram: createHistogram
+  createExplorer: createExplorer
 };
 
 return index;
