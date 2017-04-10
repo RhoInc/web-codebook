@@ -27,8 +27,8 @@ export function getBinCounts(codebook){
   var continuousVars = codebook.data.summary.filter(d=> d.type=="continuous")
   continuousVars.forEach(function(cvar){
       cvar.bins = codebook.config.autoBins ?  codebook.config.nBins : setBinCount(cvar)
-      if(Object.keys(codebook.config).indexOf("group")>-1 & codebook.config.group != null){
-        console.log(codebook.config)
+      if(Object.keys(codebook.config).indexOf("group")>-1){
+
         cvar.groups.forEach(function(gvar){
             gvar.bins = codebook.config.autoBins ?  codebook.config.nBins : setBinCount(gvar)
         })

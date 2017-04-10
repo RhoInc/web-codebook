@@ -1,14 +1,20 @@
 import babel from 'rollup-plugin-babel';
 
 module.exports = {
+  moduleName: 'webcodebook',
   entry: './src/index.js',
+  dest: './build/webcodebook.js',
   format: 'iife',
   globals: {
-    webcharts: 'webCharts',
-    d3: 'd3'
+    d3: 'd3',
+    webcharts: 'webCharts'
   },
-  moduleName: 'webcodebook',
-   plugins: [
+  external: (function() {
+    var dependencies = require('./package.json').dependencies;
+
+    return Object.keys(dependencies);
+  }()),
+  plugins: [
     babel(
       {
         "presets": [

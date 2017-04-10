@@ -12,6 +12,7 @@ export function renderRow(d) {
 
     var rowHead = rowWrap.append("div").attr("class","row-head section")
 
+
     rowHead.append('div').attr('class','row-toggle').html("&#9658;")
     .on("click",function(){
       var rowDiv = d3.select(this.parentNode.parentNode)
