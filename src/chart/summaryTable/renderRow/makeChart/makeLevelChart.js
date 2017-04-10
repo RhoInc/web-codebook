@@ -5,6 +5,9 @@ import axisSort from './makeLevelChart/axisSort';
 
 export function makeLevelChart(this_, d) {
     const chartContainer = d3.select(this_).node();
+    const rowSelector = d3.select(this_).node().parentNode
+    var sortType = d3.select(rowSelector).select(".row-controls").select("select").property('value')
+    console.log(sortType)
     const chartSettings =
         {y: {column: 'prop_n'
             ,type: 'linear'
@@ -32,7 +35,7 @@ export function makeLevelChart(this_, d) {
         ,value_col: d.value_col
         ,group_col: d.group || null
         ,overall: d.statistics.values
-        ,sort:'alpha' //alpha, asc, desc
+        ,sort:sortType //Alphabetical, Ascending, Descending
         };
 
   chartSettings.margin.left=50

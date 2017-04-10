@@ -210,9 +210,15 @@ Header - Details layout
 Chart layout
 \-------------------------------------------------------------------------------------------**/
 
-.web-codebook .summaryTable .variable-row {
+
+.web-codebook .summaryTable .row-chart .variable-row {
     min-width:400px;
     max-width:800px;
+}
+
+.web-codebook .summaryTable .variable-row .row-controls {
+  border-bottom:1px dashed #999;
+  padding:0.2em 0em 0.2em 0.4em ;
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{

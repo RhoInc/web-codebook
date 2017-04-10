@@ -1,6 +1,7 @@
 import { makeDotPlot } from './makeChart/makeDotPlot.js'
 import { makeBarChart } from './makeChart/makeBarChart.js'
 import { makeLevelChart } from './makeChart/makeLevelChart.js'
+import makeLevelChartControls from './makeChart/makeLevelChartControls.js'
 import { makeHistogram } from './makeChart/makeHistogram.js'
 
 export default function makeChart(d) {
@@ -13,7 +14,8 @@ export default function makeChart(d) {
       if(d.statistics.values.length <= 5){
         makeBarChart(this,d)
       } else {
-        makeLevelChart(this,d)
+        makeLevelChartControls(this,d);
+        makeLevelChart(this,d);
       }
     } else { // continuous outcomes
       makeHistogram(this,d)
