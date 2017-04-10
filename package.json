@@ -1,7 +1,7 @@
 {
   "name": "webcodebook",
-  "version": "0.10.0",
-  "description": "Interactive data set summaries",
+  "version": "0.11.0",
+  "description": "Interactive data set summaries.",
   "keywords": [
     "data",
     "summary",
