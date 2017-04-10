@@ -213,7 +213,9 @@ function draw(chart) {
 	});
 
 	//ENTER
-	varRows.enter().append("div").attr("class", "variable-row hiddenChart");
+	varRows.enter().append("div").attr("class", function (d) {
+		return "variable-row hiddenChart " + d.type;
+	});
 
 	//ENTER + Update
 	varRows.each(chart.summaryTable.renderRow);
@@ -437,7 +439,10 @@ function makeBarChart(this_, d) {
         marks: [{ type: 'bar',
             per: ['key'],
             summarizeX: 'mean',
-            tooltip: '[key]: [n] ([prop_n_text])' }],
+            tooltip: '[key]: [n] ([prop_n_text])',
+            attributes: { stroke: null
+            } }],
+        colors: ['#999', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
         gridlines: 'xy',
         resizable: false,
         height: this_.height,
@@ -491,6 +496,98 @@ function makeBarChart(this_, d) {
         var chart = webCharts.createChart(chartContainer, chartSettings);
         chart.on('init', onInit);
         chart.on('resize', onResize$1);
+        chart.init(chartData);
+    }
+}
+
+function onInit$1() {
+    //Add group labels.
+    var chart = this;
+    if (this.config.group_col) {
+        var groupTitle = this.wrap.append('p').attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+        this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+    }
+}
+
+function onResize$2() {
+  //remove x-axis text
+  var ticks = this.wrap.selectAll('g.x.axis g.tick');
+  ticks.select("text").remove();
+}
+
+function makeLevelChart(this_, d) {
+    var chartContainer = d3.select(this_).node();
+    var chartSettings = { y: { column: 'prop_n',
+            type: 'linear',
+            label: '',
+            format: '0.1%',
+            domain: [0, null] },
+        x: { column: 'key',
+            type: 'ordinal',
+            label: '' },
+        marks: [{ type: 'bar',
+            per: ['key'],
+            summarizeX: 'mean',
+            tooltip: '[key]: [n] ([prop_n_text])',
+            attributes: { stroke: null,
+                fill: "#999"
+            } }],
+        gridlines: '',
+        resizable: false,
+        height: this_.height,
+        margin: this_.margin,
+        value_col: d.value_col,
+        group_col: d.group || null,
+        overall: d.statistics.values
+    };
+    chartSettings.margin.left = 50;
+    chartSettings.margin.bottom = 10;
+    //Sort data by descending rate and keep only the first five categories.
+    var chartData = d.statistics.values.sort(function (a, b) {
+        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+    });
+    //  .slice(0,5);
+    chartSettings.y.order = chartData.map(function (d) {
+        return d.key;
+    }).reverse();
+
+    if (d.groups) {
+        //Set upper limit of x-axis domain to the maximum group rate.
+        chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
+            return d3.max(di.statistics.values, function (dii) {
+                return dii.prop_n;
+            });
+        });
+
+        d.groups.forEach(function (group) {
+            //Define group-level settings.
+            group.chartSettings = clone(chartSettings);
+            group.chartSettings.group_val = group.group;
+            group.chartSettings.n = group.values.length;
+
+            //Sort data by descending rate and keep only the first five categories.
+            group.data = group.statistics.values.filter(function (di) {
+                return chartSettings.y.order.indexOf(di.key) > -1;
+            }).sort(function (a, b) {
+                return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            });
+            //.slice(0,5);
+
+            //Define chart.
+            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+            group.chart.on('init', onInit$1);
+            group.chart.on('resize', onResize$2);
+
+            if (group.data.length) group.chart.init(group.data);else {
+                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
+                d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
+            }
+        });
+    } else {
+        //Define chart.
+        var chart = webCharts.createChart(chartContainer, chartSettings);
+        //  chart.on('init', onInit);
+        chart.on('resize', onResize$2);
         chart.init(chartData);
     }
 }
@@ -567,7 +664,7 @@ function syncSettings(settings) {
     return syncedSettings;
 }
 
-function onResize$2() {
+function onResize$3() {
     var context = this;
     var format = d3.format(this.config.measureFormat);
 
@@ -717,7 +814,7 @@ function onResize$2() {
     }
 }
 
-function onInit$1() {
+function onInit$2() {
     var context = this;
     var config = this.initialSettings;
     var measure = config.measure;
@@ -794,8 +891,8 @@ function onInit$1() {
             group.webChart = new webCharts.createChart(config.container, group.settings);
             group.webChart.initialSettings = group.settings;
             group.webChart.group = group.group;
-            group.webChart.on('init', onInit$1);
-            group.webChart.on('resize', onResize$2);
+            group.webChart.on('init', onInit$2);
+            group.webChart.on('resize', onResize$3);
             group.webChart.init(group.data);
         });
     }
@@ -816,8 +913,8 @@ function defineHistogram(element, settings) {
   var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
   chart.initialSettings = clone(syncedSettings);
   chart.initialSettings.container = element;
-  chart.on('init', onInit$1);
-  chart.on('resize', onResize$2);
+  chart.on('init', onInit$2);
+  chart.on('resize', onResize$3);
 
   return chart;
 }
@@ -855,8 +952,12 @@ function makeChart(d) {
 
   if (d.type === 'categorical') {
     // categorical outcomes
-    //makeDotPlot(this,d)
-    makeBarChart(this, d);
+    console.log(d);
+    if (d.statistics.values.length <= 5) {
+      makeBarChart(this, d);
+    } else {
+      makeLevelChart(this, d);
+    }
   } else {
     // continuous outcomes
     makeHistogram(this, d);

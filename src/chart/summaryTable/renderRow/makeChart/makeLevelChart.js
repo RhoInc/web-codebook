@@ -1,16 +1,16 @@
 import clone from '../../../../util/clone';
-import onInit from './makeBarChart/onInit';
-import onResize from './makeBarChart/onResize';
+import onInit from './makeLevelChart/onInit';
+import onResize from './makeLevelChart/onResize';
 
-export function makeBarChart(this_, d) {
+export function makeLevelChart(this_, d) {
     const chartContainer = d3.select(this_).node();
     const chartSettings =
-        {x: {column: 'prop_n'
+        {y: {column: 'prop_n'
             ,type: 'linear'
             ,label: ''
-            ,format: '%'
+            ,format: '0.1%'
             ,domain: [0,null]}
-        ,y: {column: 'key'
+        ,x: {column: 'key'
             ,type: 'ordinal'
             ,label: ''}
         ,marks:
@@ -21,10 +21,10 @@ export function makeBarChart(this_, d) {
                 ,tooltip: '[key]: [n] ([prop_n_text])'
                 ,attributes:
                   {stroke:null
+                  ,fill:"#999"
                 }}
             ]
-        ,colors: ['#999','#1f78b4','#b2df8a','#33a02c','#fb9a99']
-        ,gridlines: 'xy'
+        ,gridlines: ''
         ,resizable: false
         ,height: this_.height
         ,margin: this_.margin
@@ -32,14 +32,15 @@ export function makeBarChart(this_, d) {
         ,group_col: d.group || null
         ,overall: d.statistics.values
         };
-
+  chartSettings.margin.left=50
+  chartSettings.margin.bottom=10
   //Sort data by descending rate and keep only the first five categories.
     const chartData = d.statistics.values
         .sort((a,b) =>
             a.prop_n > b.prop_n ? -2 :
             a.prop_n < b.prop_n ?  2 :
                 a.key < b.key ? -1 : 1)
-        .slice(0,5);
+      //  .slice(0,5);
     chartSettings.y.order = chartData.map(d => d.key).reverse();
 
     if (d.groups) {
@@ -61,7 +62,7 @@ export function makeBarChart(this_, d) {
                     a.prop_n > b.prop_n ? -2 :
                     a.prop_n < b.prop_n ?  2 :
                         a.key < b.key ? -1 : 1)
-                .slice(0,5);
+                //.slice(0,5);
 
           //Define chart.
             group.chart = webCharts.createChart(chartContainer, group.chartSettings);
@@ -82,7 +83,7 @@ export function makeBarChart(this_, d) {
     } else {
       //Define chart.
         const chart = webCharts.createChart(chartContainer, chartSettings);
-        chart.on('init', onInit);
+      //  chart.on('init', onInit);
         chart.on('resize', onResize);
         chart.init(chartData);
     }

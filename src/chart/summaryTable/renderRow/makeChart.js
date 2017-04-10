@@ -1,5 +1,6 @@
 import { makeDotPlot } from './makeChart/makeDotPlot.js'
 import { makeBarChart } from './makeChart/makeBarChart.js'
+import { makeLevelChart } from './makeChart/makeLevelChart.js'
 import { makeHistogram } from './makeChart/makeHistogram.js'
 
 export default function makeChart(d) {
@@ -8,8 +9,12 @@ export default function makeChart(d) {
     this.margin = {right:200, left:30};
 
     if (d.type === 'categorical') { // categorical outcomes
-      //makeDotPlot(this,d)
-      makeBarChart(this,d)
+      console.log(d)
+      if(d.statistics.values.length <= 5){
+        makeBarChart(this,d)
+      } else {
+        makeLevelChart(this,d)
+      }
     } else { // continuous outcomes
       makeHistogram(this,d)
     }
