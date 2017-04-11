@@ -29,6 +29,9 @@ function init(data) {
 
     //initialize and then draw the codebook
     this.summaryTable.draw(this);
+
+    //initialize and then draw the data listing
+    this.dataListing.draw(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -38,9 +41,11 @@ function init(data) {
 function layout() {
     this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
 
-    this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable');
+    this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable').style('display', 'none');
 
     this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText");
+
+    this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing').style('display', 'block');
 }
 
 function init$1(chart) {
@@ -48,6 +53,7 @@ function init$1(chart) {
     chart.controls.wrap.selectAll('*').remove(); //Clear controls.
 
     //Draw filters
+    chart.controls.dataListingToggle.init(chart);
     chart.controls.groups.init(chart);
     chart.controls.chartToggle.init(chart);
     chart.controls.filters.init(chart);
@@ -111,6 +117,7 @@ function init$2(chart) {
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
         chart.data.makeSummary(chart);
         chart.summaryTable.draw(chart);
+        chart.dataListing.draw(chart);
     });
 }
 
@@ -125,28 +132,28 @@ var filters = { init: init$2 };
 \------------------------------------------------------------------------------------------------*/
 
 function init$3(chart) {
-        if (chart.config.groups.length > 0) {
-                var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
+    if (chart.config.groups.length > 0) {
+        var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
 
-                selector.append("span").text("Group by");
+        selector.append("span").text("Group by");
 
-                var groupSelect = selector.append("select");
+        var groupSelect = selector.append("select");
 
-                var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
-                        return m.value_col;
-                })]);
+        var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+            return m.value_col;
+        })]);
 
-                groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
-                        return d;
-                });
+        groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+            return d;
+        });
 
-                groupSelect.on("change", function () {
-                        if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
-                        chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-                        chart.data.makeSummary(chart);
-                        chart.summaryTable.draw(chart);
-                });
-        }
+        groupSelect.on("change", function () {
+            if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
+            chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
+            chart.data.makeSummary(chart);
+            chart.summaryTable.draw(chart);
+        });
+    }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -181,22 +188,51 @@ function init$4(chart) {
 
 var chartToggle = { init: init$4 };
 
+function init$5(chart) {
+    var container = chart.controls.wrap.append('div').classed('data-listing-toggle', true).style({ 'display': 'inline-block',
+        'width': '125px',
+        'cursor': 'pointer',
+        'border': '2px solid #008CBA',
+        'text-align': 'center',
+        'border-radius': '4px',
+        'padding': '4px',
+        'margin-right': '1em' }).text(chart.dataListing.wrap.style('display') === 'none' ? 'View data' : 'View codebook');
+    container.on('click', function () {
+        if (chart.dataListing.wrap.style('display') === 'none') {
+            chart.dataListing.wrap.style('display', 'block');
+            chart.summaryTable.wrap.style('display', 'none');
+            container.text('View codebook');
+        } else {
+            chart.dataListing.wrap.style('display', 'none');
+            chart.summaryTable.wrap.style('display', 'block');
+            container.text('View data');
+        }
+    });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define chart toggle object.
+\------------------------------------------------------------------------------------------------*/
+
+var dataListingToggle = { init: init$5 };
+
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
 var controls = {
-  init: init$1,
-  filters: filters,
-  groups: groups,
-  chartToggle: chartToggle
+    init: init$1,
+    filters: filters,
+    groups: groups,
+    chartToggle: chartToggle,
+    dataListingToggle: dataListingToggle
 };
 
 /*------------------------------------------------------------------------------------------------\
 intialize the summary table
 \------------------------------------------------------------------------------------------------*/
 
-function init$5(chart) {}
+function init$6(chart) {}
 
 /*------------------------------------------------------------------------------------------------\
   draw/update the summaryTable
@@ -242,7 +278,6 @@ function makeTitle(d) {
 	});
 
 	//make a list of values
-	console.log(d);
 	if (d.type == "categorical") {
 		//valuesList.append("span").text( "Values (Most Frequent):")
 		var topValues = d.statistics.values.sort(function (a, b) {
@@ -822,24 +857,24 @@ function onInit$1() {
 }
 
 function defineHistogram(element, settings) {
-  //Merge specified settings with default settings.
-  var mergedSettings = Object.assign({}, defaultSettings, settings);
+    //Merge specified settings with default settings.
+    var mergedSettings = Object.assign({}, defaultSettings, settings);
 
-  //Sync properties within merged settings.
-  var syncedSettings = syncSettings(mergedSettings);
+    //Sync properties within merged settings.
+    var syncedSettings = syncSettings(mergedSettings);
 
-  //Sync control inputs with merged settings.
-  //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
-  //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
+    //Sync control inputs with merged settings.
+    //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
+    //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
 
-  //Define chart.
-  var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-  chart.initialSettings = clone(syncedSettings);
-  chart.initialSettings.container = element;
-  chart.on('init', onInit$1);
-  chart.on('resize', onResize$2);
+    //Define chart.
+    var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
+    chart.initialSettings = clone(syncedSettings);
+    chart.initialSettings.container = element;
+    chart.on('init', onInit$1);
+    chart.on('resize', onResize$2);
 
-  return chart;
+    return chart;
 }
 
 function makeHistogram(this_, d) {
@@ -921,27 +956,23 @@ function makeDetails(d) {
     }
 }
 
-/*------------------------------------------------------------------------------------------------\
-  Intialize the summary table
-\------------------------------------------------------------------------------------------------*/
-
 function renderRow(d) {
-  var rowWrap = d3.select(this);
-  rowWrap.selectAll('*').remove();
+    var rowWrap = d3.select(this);
+    rowWrap.selectAll('*').remove();
 
-  var rowHead = rowWrap.append("div").attr("class", "row-head section");
+    var rowHead = rowWrap.append("div").attr("class", "row-head section");
 
-  rowHead.append('div').attr('class', 'row-toggle').html("&#9658;").on("click", function () {
-    var rowDiv = d3.select(this.parentNode.parentNode);
-    var chartDiv = rowDiv.select(".row-chart");
-    var hiddenFlag = rowDiv.classed("hiddenChart");
-    rowDiv.classed("hiddenChart", !hiddenFlag);
-    d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
-  });
+    rowHead.append('div').attr('class', 'row-toggle').html("&#9658;").on("click", function () {
+        var rowDiv = d3.select(this.parentNode.parentNode);
+        var chartDiv = rowDiv.select(".row-chart");
+        var hiddenFlag = rowDiv.classed("hiddenChart");
+        rowDiv.classed("hiddenChart", !hiddenFlag);
+        d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
+    });
 
-  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
-  rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+    rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+    rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+    rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
 function updateSummaryText(chart) {
@@ -963,12 +994,137 @@ function updateSummaryText(chart) {
   Define summaryTable object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var summaryTable = { init: init$5,
+var summaryTable = { init: init$6,
   draw: draw,
   destroy: destroy,
   renderRow: renderRow,
   updateSummaryText: updateSummaryText
 };
+
+function addSortFunctionality(dataListing) {
+    dataListing.sort = {};
+    dataListing.sort.wrap = dataListing.wrap.append('div').attr('id', 'sort-container');
+    dataListing.sort.wrap.append('span').classed('sort-description', true).style('font-style', 'italic').html('Click any column header to sort that column.<br>' + 'Click additional column headers to further arrange the data.<br>' + 'Click a column a second time to reverse its sort order.');
+    dataListing.sort.order = [];
+}
+
+function addSearchFunctionality(dataListing) {
+    dataListing.search = {};
+    dataListing.search.wrap = dataListing.wrap.append('div').attr('id', 'search-container');
+    dataListing.search.wrap.append('input').classed('search-box', true).attr({ 'type': 'search' }).on('input', function () {
+        var inputText = this.value.toLowerCase();
+
+        //Determine which rows contain input text.
+        dataListing.table.wrap.selectAll('tbody tr').each(function () {
+            var filtered = true;
+
+            d3.select(this).selectAll('td').each(function () {
+                if (filtered === true) {
+                    var cellText = this.textContent.toLowerCase();
+                    filtered = cellText.indexOf(inputText) === -1;
+                }
+            });
+
+            d3.select(this).style('display', filtered ? 'none' : 'table-row');
+        });
+    });
+}
+
+function sort(rows, orderArray) {
+    rows.sort(function (a, b) {
+        var order = 0;
+
+        orderArray.forEach(function (item) {
+            var acell = a.cells.filter(function (d) {
+                return d.col === item.variable;
+            })[0].text;
+            var bcell = b.cells.filter(function (d) {
+                return d.col === item.variable;
+            })[0].text;
+
+            if (order === 0) {
+                if (item.direction === 'ascending' && acell < bcell || item.direction === 'descending' && acell > bcell) order = -1;else if (item.direction === 'ascending' && acell > bcell || item.direction === 'descending' && acell < bcell) order = 1;
+            }
+        });
+
+        return order;
+    });
+}
+
+function onDraw(dataListing) {
+    dataListing.table.on('draw', function () {
+        var context = this;
+
+        //Add header sort functionality.
+        dataListing.table.wrap.selectAll('.headers th').style('cursor', 'pointer').on('click', function () {
+            var variable = this.textContent;
+            var sortItem = dataListing.sort.order.filter(function (item) {
+                return item.variable === variable;
+            })[0];
+
+            if (!sortItem) {
+                sortItem = { variable: variable,
+                    direction: 'ascending',
+                    container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort', true).style({ 'display': 'inline-block',
+                        'cursor': 'pointer',
+                        'border': '2px solid #008CBA',
+                        'border-radius': '4px',
+                        'padding': '2px',
+                        'margin-left': '3px' }).text(variable) };
+                sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
+                sortItem.container.append('span').classed('remove-sort', true).style({ 'float': 'right',
+                    'border': '1px solid gray',
+                    'padding': '1px 2px 1px 2px',
+                    'font-size': '25%' }).html('&#10060;');
+                dataListing.sort.order.push(sortItem);
+            } else {
+                sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
+                sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
+            }
+
+            sort(context.table.selectAll('tbody tr'), dataListing.sort.order);
+            dataListing.sort.wrap.select('.sort-description').html('Sorted by:');
+
+            //Add sort container deletion functionality.
+            dataListing.sort.order.forEach(function (item, i) {
+                item.container.on('click', function (d) {
+                    d3.select(this).remove();
+                    dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
+                        return d.variable;
+                    }).indexOf(d.key), 1);
+
+                    if (dataListing.sort.order.length) sort(context.table.selectAll('tbody tr'), dataListing.sort.order);else dataListing.sort.wrap.select('.sort-description').html('Click any column header to sort that column.<br>' + 'Click additional column headers to further arrange the data.<br>' + 'Click a column a second time to reverse its sort order.<br>');
+                });
+            });
+        });
+    });
+}
+
+function draw$1(codebook) {
+  var dataListing = codebook.dataListing;
+  dataListing.wrap.selectAll('*').remove();
+
+  //Add sort functionality.
+  addSortFunctionality(dataListing);
+
+  //Add search functionality.
+  addSearchFunctionality(dataListing);
+
+  //Define table.
+  dataListing.table = webcharts.createTable(codebook.dataListing.wrap.node(), {});
+
+  //Define callbacks.
+  onDraw(dataListing);
+
+  //Initialize table.
+  dataListing.table.init(codebook.data.filtered);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define dataListing object (the meat and potatoes).
+\------------------------------------------------------------------------------------------------*/
+
+var dataListing = { draw: draw$1 };
 
 var defaultSettings$1 = {
 	filters: [],
@@ -1037,11 +1193,6 @@ function makeAutomaticGroups(chart) {
 		chart.config.groups = autogroups.length > 0 ? autogroups : null;
 	}
 }
-
-// determine the number of bins to use in the histogram based on the data.
-// Based on an implementation of the Freedman-Diaconis
-// See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
-// values should be an array of numbers
 
 function getBinCounts(codebook) {
 
@@ -1223,8 +1374,8 @@ function makeFiltered(data, filters) {
 \------------------------------------------------------------------------------------------------*/
 
 var data = {
-  makeSummary: makeSummary,
-  makeFiltered: makeFiltered
+    makeSummary: makeSummary,
+    makeFiltered: makeFiltered
 
 };
 
@@ -1238,6 +1389,7 @@ function createChart$1() {
         layout: layout,
         controls: controls,
         summaryTable: summaryTable,
+        dataListing: dataListing,
         data: data,
         util: util };
 
@@ -1248,7 +1400,7 @@ function createChart$1() {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$6() {
+function init$7() {
     var settings = this.config;
 
     //create wrapper in specified div
@@ -1274,7 +1426,7 @@ function layout$1() {
     this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function init$7(explorer) {
+function init$8(explorer) {
 	explorer.controls.wrap.attr('onsubmit', 'return false;');
 	explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -1304,7 +1456,7 @@ function init$7(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$7
+  init: init$8
 };
 
 function makeCodebook(meta) {
@@ -1321,7 +1473,7 @@ function createExplorer() {
 
     var explorer = { element: element,
         config: config,
-        init: init$6,
+        init: init$7,
         layout: layout$1,
         controls: controls$1,
         makeCodebook: makeCodebook

@@ -26,4 +26,7 @@ export function init(data) {
 
     //initialize and then draw the codebook
     this.summaryTable.draw(this)
+
+    //initialize and then draw the data listing
+    this.dataListing.draw(this)
 }

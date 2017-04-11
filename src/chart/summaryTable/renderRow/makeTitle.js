@@ -8,7 +8,6 @@ export default function makeTitle(d) {
 	titleDiv.append("div").attr("class","type").html(d=>d.type)
 
 	//make a list of values
-	console.log(d)
 	if(d.type=="categorical"){
 		//valuesList.append("span").text( "Values (Most Frequent):")
 		var topValues = d.statistics.values
