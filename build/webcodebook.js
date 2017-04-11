@@ -663,10 +663,78 @@ function makeBarChartControls(this_, d) {
   });
 }
 
+function makeTooltip(d, i, context) {
+    console.log(d);
+    var format = d3.format(context.config.measureFormat);
+    d.selector = 'bar' + i;
+    //Define tooltips.
+    console.log(d);
+    var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
+    var text = tooltip.append('text').attr({ 'id': 'text',
+        'x': context.x(d.key),
+        'y': context.plot_height,
+        'dy': '-.75em',
+        'font-size': '75%',
+        'font-weight': 'bold',
+        'fill': 'white' });
+    text.append('tspan').attr({ 'x': context.x(d.key),
+        'dx': context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+        'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end' }).text('' + d.key);
+    text.append('tspan').attr({ 'x': context.x(d.key),
+        'dx': context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+        'dy': '-1.5em',
+        'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end' }).text("n=" + d.values.raw[0].n + " (" + d3.format('0.1%')(d.total) + ")");
+    var dimensions = text[0][0].getBBox();
+    var background = tooltip.append('rect').attr({ 'id': 'background',
+        'x': dimensions.x - 5,
+        'y': dimensions.y - 2,
+        'width': dimensions.width + 10,
+        'height': dimensions.height + 4 }).style({ 'fill': 'black',
+        'stroke': 'white' });
+    tooltip[0][0].insertBefore(background[0][0], text[0][0]);
+}
+
 function onResize$2() {
-  //remove x-axis text
-  var ticks = this.wrap.selectAll('g.x.axis g.tick');
-  ticks.select("text").remove();
+    var context = this;
+    //remove x-axis text
+    var ticks = this.wrap.selectAll('g.x.axis g.tick');
+    ticks.select("text").remove();
+    this.svg.selectAll('g.bar-group').each(function (d, i) {
+        makeTooltip(d, i, context);
+    });
+
+    //Add modal to nearest mark.
+    var bars = this.svg.selectAll('.bar-group');
+    var tooltips = this.svg.selectAll('.tooltip');
+    var statistics = this.svg.selectAll('.statistic');
+    this.svg.on('mousemove', function () {
+        //Highlight closest bar.
+        var mouse = d3.mouse(this);
+        var x = mouse[0];
+        var y = mouse[1];
+        var minimum = void 0;
+        var bar = {};
+        bars.each(function (d, i) {
+            d.distance = Math.abs(context.x(d.key) - x);
+            if (i === 0 || d.distance < minimum) {
+                minimum = d.distance;
+                bar = d;
+            }
+        });
+        var closest = bars.filter(function (d) {
+            return d.distance === minimum;
+        }).filter(function (d, i) {
+            return i === 0;
+        }).select("rect").style('fill', '#7BAFD4');
+
+        //Activate tooltip.
+        var d = closest.datum();
+        tooltips.classed('active', false);
+        context.svg.select('#' + d.selector).classed('active', true);
+    }).on('mouseout', function () {
+        bars.select("rect").style('fill', '#999');
+        context.svg.selectAll('g.tooltip').classed('active', false);
+    });
 }
 
 function onInit$1() {
@@ -705,7 +773,6 @@ function makeLevelChart(this_, d) {
         marks: [{ type: 'bar',
             per: ['key'],
             summarizeX: 'mean',
-            tooltip: '[key]: [n] ([prop_n_text])',
             attributes: { stroke: null,
                 fill: "#999"
             } }],
@@ -859,6 +926,37 @@ function syncSettings(settings) {
     return syncedSettings;
 }
 
+function makeTooltip$1(d, i, context) {
+    var format = d3.format(context.config.measureFormat);
+    d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
+    d.range = format(d.rangeLow) + '-' + format(d.rangeHigh);
+    d.selector = 'bar' + i;
+    //Define tooltips.
+    var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
+    var text = tooltip.append('text').attr({ 'id': 'text',
+        'x': context.x(d.midpoint),
+        'y': context.plot_height,
+        'dy': '-.75em',
+        'font-size': '75%',
+        'font-weight': 'bold',
+        'fill': 'white' });
+    text.append('tspan').attr({ 'x': context.x(d.midpoint),
+        'dx': context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+        'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end' }).text('Range: ' + d.range);
+    text.append('tspan').attr({ 'x': context.x(d.midpoint),
+        'dx': context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+        'dy': '-1.5em',
+        'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end' }).text('n: ' + d.total);
+    var dimensions = text[0][0].getBBox();
+    var background = tooltip.append('rect').attr({ 'id': 'background',
+        'x': dimensions.x - 5,
+        'y': dimensions.y - 2,
+        'width': dimensions.width + 10,
+        'height': dimensions.height + 4 }).style({ 'fill': 'black',
+        'stroke': 'white' });
+    tooltip[0][0].insertBefore(background[0][0], text[0][0]);
+}
+
 function onResize$3() {
     var context = this;
     var format = d3.format(this.config.measureFormat);
@@ -870,33 +968,7 @@ function onResize$3() {
         this.svg.selectAll('.statistic').remove();
 
         this.svg.selectAll('g.bar-group').each(function (d, i) {
-            d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
-            d.range = format(d.rangeLow) + '-' + format(d.rangeHigh);
-            d.selector = 'bar' + i;
-            //Define tooltips.
-            var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
-            var text = tooltip.append('text').attr({ 'id': 'text',
-                'x': context.x(d.midpoint),
-                'y': context.plot_height,
-                'dy': '-.75em',
-                'font-size': '75%',
-                'font-weight': 'bold',
-                'fill': 'white' });
-            text.append('tspan').attr({ 'x': context.x(d.midpoint),
-                'dx': context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
-                'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end' }).text('Range: ' + d.range);
-            text.append('tspan').attr({ 'x': context.x(d.midpoint),
-                'dx': context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
-                'dy': '-1.5em',
-                'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end' }).text('n: ' + d.total);
-            var dimensions = text[0][0].getBBox();
-            var background = tooltip.append('rect').attr({ 'id': 'background',
-                'x': dimensions.x - 5,
-                'y': dimensions.y - 2,
-                'width': dimensions.width + 10,
-                'height': dimensions.height + 4 }).style({ 'fill': 'black',
-                'stroke': 'white' });
-            tooltip[0][0].insertBefore(background[0][0], text[0][0]);
+            makeTooltip$1(d, i, context);
         });
 
         //Annotate quantiles

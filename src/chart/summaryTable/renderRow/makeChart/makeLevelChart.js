@@ -22,7 +22,6 @@ export function makeLevelChart(this_, d) {
                 {type: 'bar'
                 ,per: ['key']
                 ,summarizeX: 'mean'
-                ,tooltip: '[key]: [n] ([prop_n_text])'
                 ,attributes:
                   {stroke:null
                   ,fill:"#999"
