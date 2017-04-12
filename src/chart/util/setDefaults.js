@@ -24,4 +24,7 @@ export function setDefaults(chart) {
   chart.config.autobins = chart.config.autobins == null ?
     defaultSettings.autobins :
     chart.config.autobins;
+
+  /********************* Histogram Settings *********************/
+  chart.config.levelSplit = chart.config.levelSplit || defaultSettings.levelSplit
 }
