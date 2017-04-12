@@ -957,9 +957,25 @@ function makeTooltip$1(d, i, context) {
     tooltip[0][0].insertBefore(background[0][0], text[0][0]);
 }
 
+function moveYaxis$2(chart) {
+    var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+    ticks.select('text').remove();
+    ticks.append('title').text(function (d) {
+        return d;
+    });
+    ticks.append('text').attr({ 'text-anchor': 'start',
+        'alignment-baseline': 'middle',
+        'dx': '.5em',
+        'x': chart.plot_width }).text(function (d) {
+        return d;
+    });
+}
+
 function onResize$3() {
     var context = this;
     var format = d3.format(this.config.measureFormat);
+
+    moveYaxis$2(this);
 
     //Hide overall plot if [settings.overall] is set to false.
     if (!this.config.overall && !this.group) this.wrap.style('display', 'none');else {

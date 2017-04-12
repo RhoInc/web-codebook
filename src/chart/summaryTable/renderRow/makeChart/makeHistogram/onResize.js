@@ -1,8 +1,11 @@
 import makeTooltip from './makeTooltip.js'
+import moveYaxis from './moveYaxis';
 
 export default function onResize() {
     const context = this;
     const format = d3.format(this.config.measureFormat);
+
+    moveYaxis(this);
 
   //Hide overall plot if [settings.overall] is set to false.
     if (!this.config.overall && !this.group)
