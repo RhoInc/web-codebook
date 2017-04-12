@@ -2,7 +2,7 @@
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-import { draw } from './dataListing/draw';
+import { init } from './dataListing/init';
 
 export const dataListing =
-    {draw: draw};
+    {init: init};

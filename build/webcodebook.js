@@ -31,7 +31,7 @@ function init(data) {
     this.summaryTable.draw(this);
 
     //initialize and then draw the data listing
-    this.dataListing.draw(this);
+    this.dataListing.init(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -41,18 +41,18 @@ function init(data) {
 function layout() {
     this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
 
-    this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable').style('display', 'none');
+    this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable').classed('hidden', false);
 
     this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText");
 
-    this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing').style('display', 'block');
+    this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing').classed('hidden', true);
 }
 
 function init$1(chart) {
     chart.controls.wrap.attr('onsubmit', 'return false;');
     chart.controls.wrap.selectAll('*').remove(); //Clear controls.
 
-    //Draw filters
+    //Draw controls.
     chart.controls.dataListingToggle.init(chart);
     chart.controls.groups.init(chart);
     chart.controls.chartToggle.init(chart);
@@ -117,7 +117,7 @@ function init$2(chart) {
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
         chart.data.makeSummary(chart);
         chart.summaryTable.draw(chart);
-        chart.dataListing.draw(chart);
+        chart.dataListing.init(chart);
     });
 }
 
@@ -189,22 +189,15 @@ function init$4(chart) {
 var chartToggle = { init: init$4 };
 
 function init$5(chart) {
-    var container = chart.controls.wrap.append('div').classed('data-listing-toggle', true).style({ 'display': 'inline-block',
-        'width': '125px',
-        'cursor': 'pointer',
-        'border': '2px solid #008CBA',
-        'text-align': 'center',
-        'border-radius': '4px',
-        'padding': '4px',
-        'margin-right': '1em' }).text(chart.dataListing.wrap.style('display') === 'none' ? 'View data' : 'View codebook');
+    var container = chart.controls.wrap.append('div').classed('data-listing-toggle', true).text(chart.dataListing.wrap.style('display') === 'none' ? 'View data' : 'View codebook');
     container.on('click', function () {
         if (chart.dataListing.wrap.style('display') === 'none') {
-            chart.dataListing.wrap.style('display', 'block');
-            chart.summaryTable.wrap.style('display', 'none');
+            chart.dataListing.wrap.classed('hidden', false);
+            chart.summaryTable.wrap.classed('hidden', true);
             container.text('View codebook');
         } else {
-            chart.dataListing.wrap.style('display', 'none');
-            chart.summaryTable.wrap.style('display', 'block');
+            chart.dataListing.wrap.classed('hidden', true);
+            chart.summaryTable.wrap.classed('hidden', false);
             container.text('View data');
         }
     });
@@ -1001,40 +994,47 @@ var summaryTable = { init: init$6,
   updateSummaryText: updateSummaryText
 };
 
-function addSortFunctionality(dataListing) {
-    dataListing.sort = {};
-    dataListing.sort.wrap = dataListing.wrap.append('div').attr('id', 'sort-container');
-    dataListing.sort.wrap.append('span').classed('sort-description', true).style('font-style', 'italic').html('Click any column header to sort that column.<br>' + 'Click additional column headers to further arrange the data.<br>' + 'Click a column a second time to reverse its sort order.');
-    dataListing.sort.order = [];
+function layout$1(dataListing) {
+    //Clear data listing.
+    dataListing.wrap.selectAll('*').remove();
+
+    //Add sort container.
+    var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
+    sortContainer.append('span').classed('description', true).text('Click any column header to sort that column.');
+
+    //Add search container.
+    var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
+    searchContainer.append('span').classed('description', true).text('Search:');
+    searchContainer.append('input').attr('class', 'search-box');
+
+    //Add listing container.
+    dataListing.wrap.append('div').classed('listing-container', true);
+
+    //Add pagination container.
+    var paginationContainer = dataListing.wrap.append('div').classed('pagination-container', true);
+    paginationContainer.append('span').classed('description', true).text('Page:');
 }
 
-function addSearchFunctionality(dataListing) {
-    dataListing.search = {};
-    dataListing.search.wrap = dataListing.wrap.append('div').attr('id', 'search-container');
-    dataListing.search.wrap.append('input').classed('search-box', true).attr({ 'type': 'search' }).on('input', function () {
-        var inputText = this.value.toLowerCase();
+function updatePagination(dataListing) {
+    //Reset pagination.
+    dataListing.pagination.links.classed('active', false);
 
-        //Determine which rows contain input text.
-        dataListing.table.wrap.selectAll('tbody tr').each(function () {
-            var filtered = true;
-
-            d3.select(this).selectAll('td').each(function () {
-                if (filtered === true) {
-                    var cellText = this.textContent.toLowerCase();
-                    filtered = cellText.indexOf(inputText) === -1;
-                }
-            });
-
-            d3.select(this).style('display', filtered ? 'none' : 'table-row');
-        });
-    });
+    //Set to active the selected page link and unhide associated rows.
+    dataListing.pagination.links.filter(function (link) {
+        return +link.rel === +dataListing.pagination.activeLink;
+    }).classed('active', true);
+    dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
+    dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
+    dataListing.table.table.selectAll('tbody tr:not(.filtered)').classed('hidden', false).filter(function (d, i) {
+        return i < dataListing.pagination.startItem || i >= dataListing.pagination.endItem;
+    }).classed('hidden', true);
 }
 
-function sort(rows, orderArray) {
-    rows.sort(function (a, b) {
+function sort(dataListing) {
+    dataListing.table.table.selectAll('tbody tr').sort(function (a, b) {
         var order = 0;
 
-        orderArray.forEach(function (item) {
+        dataListing.sort.order.forEach(function (item) {
             var acell = a.cells.filter(function (d) {
                 return d.col === item.variable;
             })[0].text;
@@ -1049,71 +1049,128 @@ function sort(rows, orderArray) {
 
         return order;
     });
+
+    updatePagination(dataListing);
 }
 
-function onDraw(dataListing) {
-    dataListing.table.on('draw', function () {
-        var context = this;
+function addSort(dataListing) {
+    dataListing.sort = {};
+    dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
+    dataListing.sort.order = [];
 
-        //Add header sort functionality.
-        dataListing.table.wrap.selectAll('.headers th').style('cursor', 'pointer').on('click', function () {
-            var variable = this.textContent;
-            var sortItem = dataListing.sort.order.filter(function (item) {
-                return item.variable === variable;
-            })[0];
+    dataListing.table.wrap.selectAll('.headers th').on('click', function () {
+        var variable = this.textContent;
+        var sortItem = dataListing.sort.order.filter(function (item) {
+            return item.variable === variable;
+        })[0];
 
-            if (!sortItem) {
-                sortItem = { variable: variable,
-                    direction: 'ascending',
-                    container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort', true).style({ 'display': 'inline-block',
-                        'cursor': 'pointer',
-                        'border': '2px solid #008CBA',
-                        'border-radius': '4px',
-                        'padding': '2px',
-                        'margin-left': '3px' }).text(variable) };
-                sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
-                sortItem.container.append('span').classed('remove-sort', true).style({ 'float': 'right',
-                    'border': '1px solid gray',
-                    'padding': '1px 2px 1px 2px',
-                    'font-size': '25%' }).html('&#10060;');
-                dataListing.sort.order.push(sortItem);
-            } else {
-                sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
-                sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
-            }
+        if (!sortItem) {
+            sortItem = { variable: variable,
+                direction: 'ascending',
+                container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort-box', true).text(variable) };
+            sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
+            sortItem.container.append('span').classed('remove-sort', true).html('&#10060;');
+            dataListing.sort.order.push(sortItem);
+        } else {
+            sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
+            sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
+        }
 
-            sort(context.table.selectAll('tbody tr'), dataListing.sort.order);
-            dataListing.sort.wrap.select('.sort-description').html('Sorted by:');
+        sort(dataListing);
+        dataListing.sort.wrap.select('.description').classed('hidden', true);
 
-            //Add sort container deletion functionality.
-            dataListing.sort.order.forEach(function (item, i) {
-                item.container.on('click', function (d) {
-                    d3.select(this).remove();
-                    dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
-                        return d.variable;
-                    }).indexOf(d.key), 1);
+        //Add sort container deletion functionality.
+        dataListing.sort.order.forEach(function (item, i) {
+            item.container.on('click', function (d) {
+                d3.select(this).remove();
+                dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
+                    return d.variable;
+                }).indexOf(d.key), 1);
 
-                    if (dataListing.sort.order.length) sort(context.table.selectAll('tbody tr'), dataListing.sort.order);else dataListing.sort.wrap.select('.sort-description').html('Click any column header to sort that column.<br>' + 'Click additional column headers to further arrange the data.<br>' + 'Click a column a second time to reverse its sort order.<br>');
-                });
+                if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('hidden', false);
             });
         });
     });
 }
 
-function draw$1(codebook) {
+function addLinks(dataListing) {
+    //Count rows.
+    dataListing.pagination.rowsTotal = dataListing.table.wrap.selectAll('tbody tr:not(.filtered)')[0].length;
+
+    //Calculate number of pages needed and create a link for each page.
+    dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
+    dataListing.pagination.wrap.selectAll('a').remove();
+    for (var i = 0; i < dataListing.pagination.numPages; i++) {
+        dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({ 'href': '#',
+            'rel': i }).text(i + 1);
+    }
+    dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
+
+    //Render first page.
+    dataListing.pagination.activeLink = 0;
+    updatePagination(dataListing);
+}
+
+function addPagination(dataListing) {
+    dataListing.pagination = {};
+    dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
+    dataListing.pagination.rowsShown = 25;
+
+    //Render page links.
+    addLinks(dataListing);
+
+    //Render a different page on click.
+    dataListing.pagination.links.on('click', function () {
+        dataListing.pagination.activeLink = d3.select(this).attr('rel');
+        updatePagination(dataListing);
+    });
+}
+
+function addSearch(dataListing) {
+    dataListing.search = {};
+    dataListing.search.wrap = dataListing.wrap.select('.search-container');
+    dataListing.search.wrap.select('.search-box').on('input', function () {
+        var inputText = this.value.toLowerCase();
+
+        //Determine which rows contain input text.
+        dataListing.table.wrap.selectAll('tbody tr').each(function () {
+            var filtered = true;
+
+            d3.select(this).selectAll('td').each(function () {
+                if (filtered === true) {
+                    var cellText = this.textContent.toLowerCase();
+                    filtered = cellText.indexOf(inputText) === -1;
+                }
+            });
+
+            d3.select(this).classed('filtered', filtered);
+        });
+
+        addPagination(dataListing);
+    });
+}
+
+function onDraw(dataListing) {
+  dataListing.table.on('draw', function () {
+    //Add header sort functionality.
+    addSort(dataListing);
+
+    //Add text search functionality.
+    addSearch(dataListing);
+
+    //Add pagination functionality.
+    addPagination(dataListing);
+  });
+}
+
+function init$7(codebook) {
   var dataListing = codebook.dataListing;
-  dataListing.wrap.selectAll('*').remove();
-
-  //Add sort functionality.
-  addSortFunctionality(dataListing);
-
-  //Add search functionality.
-  addSearchFunctionality(dataListing);
+  layout$1(dataListing);
 
   //Define table.
-  dataListing.table = webcharts.createTable(codebook.dataListing.wrap.node(), {});
+  dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
 
-  //Define callbacks.
+  //Define callback.
   onDraw(dataListing);
 
   //Initialize table.
@@ -1124,7 +1181,7 @@ function draw$1(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { draw: draw$1 };
+var dataListing = { init: init$7 };
 
 var defaultSettings$1 = {
 	filters: [],
@@ -1400,7 +1457,7 @@ function createChart$1() {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$7() {
+function init$8() {
     var settings = this.config;
 
     //create wrapper in specified div
@@ -1420,13 +1477,13 @@ function init$7() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$1() {
+function layout$2() {
     this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
 
     this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function init$8(explorer) {
+function init$9(explorer) {
 	explorer.controls.wrap.attr('onsubmit', 'return false;');
 	explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
@@ -1456,7 +1513,7 @@ function init$8(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$8
+  init: init$9
 };
 
 function makeCodebook(meta) {
@@ -1473,8 +1530,8 @@ function createExplorer() {
 
     var explorer = { element: element,
         config: config,
-        init: init$7,
-        layout: layout$1,
+        init: init$8,
+        layout: layout$2,
         controls: controls$1,
         makeCodebook: makeCodebook
     };

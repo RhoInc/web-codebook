@@ -1,15 +1,14 @@
-export default function addSearchFunctionality(dataListing) {
+import addPagination from './addPagination';
+
+export default function addSearch(dataListing) {
     dataListing.search = {};
     dataListing.search.wrap = dataListing.wrap
-        .append('div')
-        .attr('id', 'search-container');
+        .select('.search-container');
     dataListing.search.wrap
-        .append('input')
-        .classed('search-box', true)
-        .attr(
-            {'type': 'search'})
+        .select('.search-box')
         .on('input', function() {
-            const inputText = this.value.toLowerCase();
+            const
+                inputText = this.value.toLowerCase();
 
           //Determine which rows contain input text.
             dataListing.table.wrap.selectAll('tbody tr')
@@ -25,7 +24,9 @@ export default function addSearchFunctionality(dataListing) {
                         });
 
                     d3.select(this)
-                        .style('display', filtered ? 'none' : 'table-row');
+                        .classed('filtered', filtered);
                 });
+
+            addPagination(dataListing);
         });
 }

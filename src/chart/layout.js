@@ -10,7 +10,7 @@ export function layout() {
     this.summaryTable.wrap = this.wrap
         .append('div')
         .attr('class', 'summaryTable')
-        .style('display', 'none');
+        .classed('hidden', false);
 
     this.summaryTable.summaryText = this.summaryTable.wrap
         .append("strong")
@@ -19,5 +19,5 @@ export function layout() {
     this.dataListing.wrap = this.wrap
         .append('div')
         .attr('class', 'dataListing')
-        .style('display', 'block');
+        .classed('hidden', true);
 }

@@ -28,5 +28,5 @@ export function init(data) {
     this.summaryTable.draw(this)
 
     //initialize and then draw the data listing
-    this.dataListing.draw(this)
+    this.dataListing.init(this)
 }
