@@ -1,4 +1,4 @@
-import makeTooltip from './makeTooltip.js'
+import makeTooltip from './makeTooltip';
 import moveYaxis from './moveYaxis';
 
 export default function onResize() {
