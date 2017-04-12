@@ -125,28 +125,28 @@ var filters = { init: init$2 };
 \------------------------------------------------------------------------------------------------*/
 
 function init$3(chart) {
-        if (chart.config.groups.length > 0) {
-                var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
+    if (chart.config.groups.length > 0) {
+        var selector = chart.controls.wrap.append('div').attr('class', 'group-select');
 
-                selector.append("span").text("Group by");
+        selector.append("span").text("Group by");
 
-                var groupSelect = selector.append("select");
+        var groupSelect = selector.append("select");
 
-                var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
-                        return m.value_col;
-                })]);
+        var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+            return m.value_col;
+        })]);
 
-                groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
-                        return d;
-                });
+        groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+            return d;
+        });
 
-                groupSelect.on("change", function () {
-                        if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
-                        chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-                        chart.data.makeSummary(chart);
-                        chart.summaryTable.draw(chart);
-                });
-        }
+        groupSelect.on("change", function () {
+            if (this.value !== 'None') chart.config.group = this.value;else delete chart.config.group;
+            chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
+            chart.data.makeSummary(chart);
+            chart.summaryTable.draw(chart);
+        });
+    }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1182,24 +1182,24 @@ function onInit$2() {
 }
 
 function defineHistogram(element, settings) {
-  //Merge specified settings with default settings.
-  var mergedSettings = Object.assign({}, defaultSettings, settings);
+    //Merge specified settings with default settings.
+    var mergedSettings = Object.assign({}, defaultSettings, settings);
 
-  //Sync properties within merged settings.
-  var syncedSettings = syncSettings(mergedSettings);
+    //Sync properties within merged settings.
+    var syncedSettings = syncSettings(mergedSettings);
 
-  //Sync control inputs with merged settings.
-  //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
-  //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
+    //Sync control inputs with merged settings.
+    //let syncedControlInputs = syncControlInputs(controlInputs, mergedSettings);
+    //let controls = createControls(element, {location: 'top', inputs: syncedControlInputs});
 
-  //Define chart.
-  var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-  chart.initialSettings = clone(syncedSettings);
-  chart.initialSettings.container = element;
-  chart.on('init', onInit$2);
-  chart.on('resize', onResize$3);
+    //Define chart.
+    var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
+    chart.initialSettings = clone(syncedSettings);
+    chart.initialSettings.container = element;
+    chart.on('init', onInit$2);
+    chart.on('resize', onResize$3);
 
-  return chart;
+    return chart;
 }
 
 function makeHistogram(this_, d) {
@@ -1290,22 +1290,22 @@ function makeDetails(d) {
 \------------------------------------------------------------------------------------------------*/
 
 function renderRow(d) {
-  var rowWrap = d3.select(this);
-  rowWrap.selectAll('*').remove();
+    var rowWrap = d3.select(this);
+    rowWrap.selectAll('*').remove();
 
-  var rowHead = rowWrap.append("div").attr("class", "row-head section");
+    var rowHead = rowWrap.append("div").attr("class", "row-head section");
 
-  rowHead.append('div').attr('class', 'row-toggle').html("&#9658;").on("click", function () {
-    var rowDiv = d3.select(this.parentNode.parentNode);
-    var chartDiv = rowDiv.select(".row-chart");
-    var hiddenFlag = rowDiv.classed("hiddenChart");
-    rowDiv.classed("hiddenChart", !hiddenFlag);
-    d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
-  });
+    rowHead.append('div').attr('class', 'row-toggle').html("&#9658;").on("click", function () {
+        var rowDiv = d3.select(this.parentNode.parentNode);
+        var chartDiv = rowDiv.select(".row-chart");
+        var hiddenFlag = rowDiv.classed("hiddenChart");
+        rowDiv.classed("hiddenChart", !hiddenFlag);
+        d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
+    });
 
-  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
-  rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+    rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+    rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+    rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
 function updateSummaryText(chart) {
@@ -1597,8 +1597,8 @@ function makeFiltered(data, filters) {
 \------------------------------------------------------------------------------------------------*/
 
 var data = {
-  makeSummary: makeSummary,
-  makeFiltered: makeFiltered
+    makeSummary: makeSummary,
+    makeFiltered: makeFiltered
 
 };
 
