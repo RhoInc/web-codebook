@@ -1,9 +1,7 @@
 export default function makeTooltip(d,i,context) {
-  console.log(d)
     const format = d3.format(context.config.measureFormat);
     d.selector = `bar`+i;
     //Define tooltips.
-    console.log(d)
     const tooltip = context.svg
         .append('g')
         .classed('tooltip', true)

@@ -244,7 +244,6 @@ function makeTitle(d) {
 	});
 
 	//make a list of values
-	console.log(d);
 	if (d.type == "categorical") {
 		//valuesList.append("span").text( "Values (Most Frequent):")
 		var topValues = d.statistics.values.sort(function (a, b) {
@@ -558,15 +557,19 @@ function drawDifferences(chart) {
 }
 
 function onResize$1() {
-    moveYaxis$1(this);
-    drawOverallMark$1(this);
-    if (this.config.group_col) drawDifferences(this);
+  console.log(this);
+  moveYaxis$1(this);
+  drawOverallMark$1(this);
+  if (this.config.group_col) drawDifferences(this);
 }
 
 function makeBarChart(this_, d) {
     //hide the controls if the chart isn't Grouped
     var rowSelector = d3.select(this_).node().parentNode;
     var chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
+
+    //let height vary based on the number of levels
+    var custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
 
     //Chart settings
     var chartContainer = d3.select(this_).node();
@@ -587,7 +590,7 @@ function makeBarChart(this_, d) {
         colors: ['#999', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
         gridlines: 'xy',
         resizable: false,
-        height: this_.height,
+        height: custom_height,
         margin: this_.margin,
         value_col: d.value_col,
         group_col: d.group || null,
@@ -597,7 +600,8 @@ function makeBarChart(this_, d) {
     //Sort data by descending rate and keep only the first five categories.
     var chartData = d.statistics.values.sort(function (a, b) {
         return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-    }).slice(0, 5);
+    });
+
     chartSettings.y.order = chartData.map(function (d) {
         return d.key;
     }).reverse();
@@ -621,7 +625,7 @@ function makeBarChart(this_, d) {
                 return chartSettings.y.order.indexOf(di.key) > -1;
             }).sort(function (a, b) {
                 return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-            }).slice(0, 5);
+            });
 
             //Define chart.
             group.chart = webCharts.createChart(chartContainer, group.chartSettings);
@@ -654,7 +658,6 @@ function makeBarChartControls(this_, d) {
   type_control.on("change", function () {
     d3.select(this_).selectAll(".wc-chart").remove();
     d3.select(this_).selectAll(".panel-label").remove();
-    console.log(this.value);
     if (this.value == "Paneled (Bar Charts)") {
       makeBarChart(this_, d);
     } else {
@@ -664,11 +667,9 @@ function makeBarChartControls(this_, d) {
 }
 
 function makeTooltip(d, i, context) {
-    console.log(d);
     var format = d3.format(context.config.measureFormat);
     d.selector = 'bar' + i;
     //Define tooltips.
-    console.log(d);
     var tooltip = context.svg.append('g').classed('tooltip', true).attr('id', d.selector);
     var text = tooltip.append('text').attr({ 'id': 'text',
         'x': context.x(d.key),
@@ -758,84 +759,83 @@ function axisSort(a, b, type) {
 }
 
 function makeLevelChart(this_, d) {
-    var chartContainer = d3.select(this_).node();
-    var rowSelector = d3.select(this_).node().parentNode;
-    var sortType = d3.select(rowSelector).select(".row-controls").select("select").property('value');
-    console.log(sortType);
-    var chartSettings = { y: { column: 'prop_n',
-            type: 'linear',
-            label: '',
-            format: '0.1%',
-            domain: [0, null] },
-        x: { column: 'key',
-            type: 'ordinal',
-            label: '' },
-        marks: [{ type: 'bar',
-            per: ['key'],
-            summarizeX: 'mean',
-            attributes: { stroke: null,
-                fill: "#999"
-            } }],
-        gridlines: '',
-        resizable: false,
-        height: this_.height,
-        margin: this_.margin,
-        value_col: d.value_col,
-        group_col: d.group || null,
-        overall: d.statistics.values,
-        sort: sortType //Alphabetical, Ascending, Descending
-    };
+  var chartContainer = d3.select(this_).node();
+  var rowSelector = d3.select(this_).node().parentNode;
+  var sortType = d3.select(rowSelector).select(".row-controls").select("select").property('value');
+  var chartSettings = { y: { column: 'prop_n',
+      type: 'linear',
+      label: '',
+      format: '0.1%',
+      domain: [0, null] },
+    x: { column: 'key',
+      type: 'ordinal',
+      label: '' },
+    marks: [{ type: 'bar',
+      per: ['key'],
+      summarizeX: 'mean',
+      attributes: { stroke: null,
+        fill: "#999"
+      } }],
+    gridlines: '',
+    resizable: false,
+    height: this_.height,
+    margin: this_.margin,
+    value_col: d.value_col,
+    group_col: d.group || null,
+    overall: d.statistics.values,
+    sort: sortType //Alphabetical, Ascending, Descending
+  };
 
-    chartSettings.margin.left = 50;
-    chartSettings.margin.bottom = 10;
+  chartSettings.margin.left = 50;
+  chartSettings.margin.bottom = 10;
 
-    var chartData = d.statistics.values.sort(function (a, b) {
-        return axisSort(a, b, chartSettings.sort);
+  var chartData = d.statistics.values.sort(function (a, b) {
+    return axisSort(a, b, chartSettings.sort);
+  });
+
+  chartSettings.x.order = chartData.map(function (d) {
+    return d.key;
+  });
+  var x_dom = chartData.map(function (d) {
+    return d.key;
+  });
+
+  if (d.groups) {
+    //Set upper limit of y-axis domain to the maximum group rate.
+    chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
+      return d3.max(di.statistics.values, function (dii) {
+        return dii.prop_n;
+      });
     });
 
-    chartSettings.x.order = chartData.map(function (d) {
-        return d.key;
+    chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
+    d.groups.forEach(function (group) {
+      //Define group-level settings.
+      group.chartSettings = clone(chartSettings);
+      group.chartSettings.group_val = group.group;
+      group.chartSettings.n = group.values.length;
+
+      //Sort data by descending rate and keep only the first five categories.
+      group.data = group.statistics.values;
+
+      //Define chart.
+      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart.on('init', onInit$1);
+      group.chart.on('resize', onResize$2);
+
+      if (group.data.length) group.chart.init(group.data);else {
+        d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
+
+        d3.select(chartContainer).append('div').html('<em>No data available for this level.</em>.<br><br>');
+      }
     });
-    var x_dom = chartData.map(function (d) {
-        return d.key;
-    });
-
-    if (d.groups) {
-        //Set upper limit of y-axis domain to the maximum group rate.
-        chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
-            return d3.max(di.statistics.values, function (dii) {
-                return dii.prop_n;
-            });
-        });
-
-        chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
-        d.groups.forEach(function (group) {
-            //Define group-level settings.
-            group.chartSettings = clone(chartSettings);
-            group.chartSettings.group_val = group.group;
-            group.chartSettings.n = group.values.length;
-
-            //Sort data by descending rate and keep only the first five categories.
-            group.data = group.statistics.values;
-
-            //Define chart.
-            group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-            group.chart.on('init', onInit$1);
-            group.chart.on('resize', onResize$2);
-
-            if (group.data.length) group.chart.init(group.data);else {
-                d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
-
-                d3.select(chartContainer).append('div').html('<em>No data available for this level.</em>.<br><br>');
-            }
-        });
-    } else {
-        //Define chart.
-        var chart = webCharts.createChart(chartContainer, chartSettings);
-        chart.on('init', onInit$1);
-        chart.on('resize', onResize$2);
-        chart.init(chartData);
-    }
+  } else {
+    //Define chart.
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on('init', onInit$1);
+    chart.on('resize', onResize$2);
+    chart.init(chartData);
+  }
 }
 
 function makeLevelChartControls(this_, d) {
@@ -1217,19 +1217,17 @@ function makeChart(d) {
   this.height = 100;
   this.margin = { right: 200, left: 30 };
 
-  if (d.type === 'categorical') {
-    // categorical outcomes
-    console.log(d);
-    if (d.statistics.values.length <= 5) {
-      makeBarChartControls(this, d);
-      makeBarChart(this, d);
-    } else {
-      makeLevelChartControls(this, d);
-      makeLevelChart(this, d);
-    }
-  } else {
+  if (d.chartType === 'barChart') {
+    makeBarChartControls(this, d);
+    makeBarChart(this, d);
+  } else if (d.chartType === 'levelChart') {
+    makeLevelChartControls(this, d);
+    makeLevelChart(this, d);
+  } else if (d.chartType === 'histogram') {
     // continuous outcomes
     makeHistogram(this, d);
+  } else {
+    console.warn('Invalid chart type for ' + d.key);
   }
 }
 
@@ -1326,7 +1324,8 @@ var defaultSettings$1 = {
 	autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
 	autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
 	autobins: true,
-	nBins: 100
+	nBins: 100,
+	levelSplit: 5 //cutpoint for # of levels to use levelPlot() renderer 
 };
 
 function setDefaults(chart) {
@@ -1346,6 +1345,9 @@ function setDefaults(chart) {
 	/********************* Histogram Settings *********************/
 	chart.config.nBins = chart.config.nBins || defaultSettings$1.nBins;
 	chart.config.autobins = chart.config.autobins == null ? defaultSettings$1.autobins : chart.config.autobins;
+
+	/********************* Histogram Settings *********************/
+	chart.config.levelSplit = chart.config.levelSplit || defaultSettings$1.levelSplit;
 }
 
 function makeAutomaticFilters(chart) {
@@ -1450,7 +1452,7 @@ function makeSummary(codebook) {
         });
         var distinctValues = d3.set(numericValues).values();
 
-        return nonMissingValues.length === numericValues.length && distinctValues.length > 10 ? 'continuous' : 'categorical';
+        return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? 'continuous' : 'categorical';
     }
 
     var summarize = {
@@ -1521,6 +1523,9 @@ function makeSummary(codebook) {
 
             //Calculate statistics.
             if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
+            //determine the renderer to use
+            console.log(codebook.config.levelSplit);
+            variables[i].chartType = variables[i].type == "continuous" ? "histogram" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "barChart" : "error";
 
             //Handle groups.
             if (group) {

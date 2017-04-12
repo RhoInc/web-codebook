@@ -9,7 +9,7 @@ export function makeSummary(codebook) {
             .filter(d => !isNaN(+d));
         const distinctValues = d3.set(numericValues).values();
 
-        return nonMissingValues.length === numericValues.length && distinctValues.length > 10
+        return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit
             ? 'continuous'
             : 'categorical';
     }
@@ -90,6 +90,13 @@ export function makeSummary(codebook) {
                   variables[i].statistics = summarize.categorical(variables[i].values);
               else
                   variables[i].statistics = summarize.continuous(variables[i].values);
+            //determine the renderer to use
+            console.log(codebook.config.levelSplit)
+              variables[i].chartType =
+                variables[i].type == "continuous" ? "histogram" :
+                variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" :
+                variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "barChart" :
+                "error"
 
             //Handle groups.
               if (group) {

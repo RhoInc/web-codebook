@@ -7,6 +7,9 @@ export function makeBarChart(this_, d) {
     const rowSelector = d3.select(this_).node().parentNode
     const chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden",!d.groups)
 
+    //let height vary based on the number of levels
+    const custom_height = (d.statistics.values.length * 20) + 35 //35 ~= top and bottom margin
+
     //Chart settings
     const chartContainer = d3.select(this_).node();
     const chartSettings =
@@ -31,7 +34,7 @@ export function makeBarChart(this_, d) {
         ,colors: ['#999','#1f78b4','#b2df8a','#33a02c','#fb9a99']
         ,gridlines: 'xy'
         ,resizable: false
-        ,height: this_.height
+        ,height: custom_height
         ,margin: this_.margin
         ,value_col: d.value_col
         ,group_col: d.group || null
@@ -44,7 +47,7 @@ export function makeBarChart(this_, d) {
             a.prop_n > b.prop_n ? -2 :
             a.prop_n < b.prop_n ?  2 :
                 a.key < b.key ? -1 : 1)
-        .slice(0,5);
+
     chartSettings.y.order = chartData.map(d => d.key).reverse();
 
     if (d.groups) {
@@ -66,7 +69,6 @@ export function makeBarChart(this_, d) {
                     a.prop_n > b.prop_n ? -2 :
                     a.prop_n < b.prop_n ?  2 :
                         a.key < b.key ? -1 : 1)
-                .slice(0,5);
 
           //Define chart.
             group.chart = webCharts.createChart(chartContainer, group.chartSettings);

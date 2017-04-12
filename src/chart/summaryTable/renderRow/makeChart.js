@@ -10,16 +10,15 @@ export default function makeChart(d) {
     this.height = 100;
     this.margin = {right:200, left:30};
 
-    if (d.type === 'categorical') { // categorical outcomes
-      console.log(d)
-      if(d.statistics.values.length <= 5){
-        makeBarChartControls(this,d);
-        makeBarChart(this,d)
-      } else {
-        makeLevelChartControls(this,d);
-        makeLevelChart(this,d);
-      }
-    } else { // continuous outcomes
+    if (d.chartType === 'barChart') {
+      makeBarChartControls(this,d);
+      makeBarChart(this,d)
+    } else  if(d.chartType === 'levelChart'){
+      makeLevelChartControls(this,d);
+      makeLevelChart(this,d);
+    } else if(d.chartType === 'histogram'){ // continuous outcomes
       makeHistogram(this,d)
+    } else {
+      console.warn('Invalid chart type for '+d.key)
     }
 }

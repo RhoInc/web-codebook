@@ -11,7 +11,6 @@ export default function makeBarChartControls(this_, d){
   type_control.on("change",function(){
     d3.select(this_).selectAll(".wc-chart").remove()
     d3.select(this_).selectAll(".panel-label").remove()
-    console.log(this.value)
     if(this.value=="Paneled (Bar Charts)"){
       makeBarChart(this_,d)
     } else {

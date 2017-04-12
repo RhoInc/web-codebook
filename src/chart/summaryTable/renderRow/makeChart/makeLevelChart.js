@@ -7,7 +7,6 @@ export function makeLevelChart(this_, d) {
     const chartContainer = d3.select(this_).node();
     const rowSelector = d3.select(this_).node().parentNode
     var sortType = d3.select(rowSelector).select(".row-controls").select("select").property('value')
-    console.log(sortType)
     const chartSettings =
         {y: {column: 'prop_n'
             ,type: 'linear'
