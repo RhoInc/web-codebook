@@ -1394,9 +1394,21 @@ function updatePagination(dataListing) {
     }).classed('active', true);
     dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
     dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
-    dataListing.table.table.selectAll('tbody tr:not(.filtered)').classed('hidden', false).filter(function (d, i) {
-        return i < dataListing.pagination.startItem || i >= dataListing.pagination.endItem;
-    }).classed('hidden', true);
+    console.log(dataListing.pagination.endItem);
+    console.log(dataListing.pagination.startItem);
+    var sub = dataListing.codebook.data.filtered.filter(function (d, i) {
+        return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
+    });
+    console.log(sub.length);
+    dataListing.table.draw(sub);
+    /*
+    dataListing.table.table.selectAll('tbody tr:not(.filtered)')
+        .classed('hidden', false)
+        .filter((d,i) =>
+            i <  dataListing.pagination.startItem ||
+            i >= dataListing.pagination.endItem)
+        .classed('hidden', true);
+    */
 }
 
 function sort(dataListing) {
@@ -1464,7 +1476,7 @@ function addSort(dataListing) {
 
 function addLinks(dataListing) {
     //Count rows.
-    dataListing.pagination.rowsTotal = dataListing.table.wrap.selectAll('tbody tr:not(.filtered)')[0].length;
+    dataListing.pagination.rowsTotal = dataListing.codebook.data.filtered.length;
 
     //Calculate number of pages needed and create a link for each page.
     dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
@@ -1477,7 +1489,7 @@ function addLinks(dataListing) {
 
     //Render first page.
     dataListing.pagination.activeLink = 0;
-    updatePagination(dataListing);
+    //updatePagination(dataListing);
 }
 
 function addPagination(dataListing) {
@@ -1543,7 +1555,12 @@ function init$7(codebook) {
   onDraw(dataListing);
 
   //Initialize table.
-  dataListing.table.init(codebook.data.filtered);
+  dataListing.codebook = codebook;
+  var sub = codebook.data.filtered.filter(function (d, i) {
+    return i < 25;
+  });
+  console.log(sub.length);
+  dataListing.table.init(sub);
 }
 
 /*------------------------------------------------------------------------------------------------\

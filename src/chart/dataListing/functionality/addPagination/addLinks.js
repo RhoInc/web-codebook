@@ -2,9 +2,7 @@ import updatePagination from './updatePagination';
 
 export default function addLinks(dataListing) {
   //Count rows.
-    dataListing.pagination.rowsTotal = dataListing.table.wrap
-        .selectAll('tbody tr:not(.filtered)')[0]
-        .length;
+    dataListing.pagination.rowsTotal = dataListing.codebook.data.filtered.length;
 
   //Calculate number of pages needed and create a link for each page.
     dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal/dataListing.pagination.rowsShown);
@@ -23,5 +21,5 @@ export default function addLinks(dataListing) {
 
   //Render first page.
     dataListing.pagination.activeLink = 0;
-    updatePagination(dataListing);
+    //updatePagination(dataListing);
 }

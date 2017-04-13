@@ -14,5 +14,11 @@ export function init(codebook) {
     onDraw(dataListing);
 
   //Initialize table.
-    dataListing.table.init(codebook.data.filtered);
+    dataListing.codebook = codebook
+    var sub = codebook.data.filtered
+    .filter(function(d,i){
+      return  i<25
+    })
+    console.log(sub.length)
+    dataListing.table.init(sub);
 }
