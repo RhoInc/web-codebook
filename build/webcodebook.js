@@ -1385,60 +1385,39 @@ function layout$1(dataListing) {
 }
 
 function updatePagination(dataListing) {
-    //Reset pagination.
-    dataListing.pagination.links.classed('active', false);
+  //Reset pagination.
+  dataListing.pagination.links.classed('active', false);
 
-    //Set to active the selected page link and unhide associated rows.
-    dataListing.pagination.links.filter(function (link) {
-        return +link.rel === +dataListing.pagination.activeLink;
-    }).classed('active', true);
-    dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
-    dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
-    console.log(dataListing.pagination.endItem);
-    console.log(dataListing.pagination.startItem);
-    var sub = dataListing.codebook.data.filtered.filter(function (d, i) {
-        return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
-    });
-    console.log(sub.length);
-    dataListing.table.draw(sub);
-    /*
-    dataListing.table.table.selectAll('tbody tr:not(.filtered)')
-        .classed('hidden', false)
-        .filter((d,i) =>
-            i <  dataListing.pagination.startItem ||
-            i >= dataListing.pagination.endItem)
-        .classed('hidden', true);
-    */
+  //Set to active the selected page link and unhide associated rows.
+  dataListing.pagination.links.filter(function (link) {
+    return +link.rel === +dataListing.pagination.activeLink;
+  }).classed('active', true);
+  dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
+  dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
+  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
+    return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
+  });
+  dataListing.table.draw(sub);
 }
 
 function sort(dataListing) {
-    dataListing.table.table.selectAll('tbody tr').sort(function (a, b) {
+    dataListing.sorted_raw_data = dataListing.sorted_raw_data.sort(function (a, b) {
         var order = 0;
 
         dataListing.sort.order.forEach(function (item) {
-            var acell = a.cells.filter(function (d) {
-                return d.col === item.variable;
-            })[0].text;
-            var bcell = b.cells.filter(function (d) {
-                return d.col === item.variable;
-            })[0].text;
+            var acell = a[item.variable];
+            var bcell = b[item.variable];
 
             if (order === 0) {
                 if (item.direction === 'ascending' && acell < bcell || item.direction === 'descending' && acell > bcell) order = -1;else if (item.direction === 'ascending' && acell > bcell || item.direction === 'descending' && acell < bcell) order = 1;
             }
         });
-
         return order;
     });
-
     updatePagination(dataListing);
 }
 
 function addSort(dataListing) {
-    dataListing.sort = {};
-    dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
-    dataListing.sort.order = [];
-
     dataListing.table.wrap.selectAll('.headers th').on('click', function () {
         var variable = this.textContent;
         var sortItem = dataListing.sort.order.filter(function (item) {
@@ -1476,7 +1455,7 @@ function addSort(dataListing) {
 
 function addLinks(dataListing) {
     //Count rows.
-    dataListing.pagination.rowsTotal = dataListing.codebook.data.filtered.length;
+    dataListing.pagination.rowsTotal = dataListing.sorted_raw_data.length;
 
     //Calculate number of pages needed and create a link for each page.
     dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
@@ -1489,7 +1468,6 @@ function addLinks(dataListing) {
 
     //Render first page.
     dataListing.pagination.activeLink = 0;
-    //updatePagination(dataListing);
 }
 
 function addPagination(dataListing) {
@@ -1548,6 +1526,10 @@ function init$7(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
 
+  dataListing.sort = {};
+  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
+  dataListing.sort.order = [];
+
   //Define table.
   dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
 
@@ -1555,11 +1537,11 @@ function init$7(codebook) {
   onDraw(dataListing);
 
   //Initialize table.
-  dataListing.codebook = codebook;
-  var sub = codebook.data.filtered.filter(function (d, i) {
+  dataListing.super_raw_data = codebook.data.filtered;
+  dataListing.sorted_raw_data = codebook.data.filtered;
+  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
     return i < 25;
   });
-  console.log(sub.length);
   dataListing.table.init(sub);
 }
 

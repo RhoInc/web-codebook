@@ -9,20 +9,9 @@ export default function updatePagination(dataListing) {
         .classed('active', true);
     dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
     dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
-    console.log(dataListing.pagination.endItem)
-    console.log(dataListing.pagination.startItem)
-    var sub = dataListing.codebook.data.filtered
+    var sub = dataListing.sorted_raw_data
     .filter(function(d,i){
       return i >=  dataListing.pagination.startItem & i < dataListing.pagination.endItem;
     })
-    console.log(sub.length)
     dataListing.table.draw(sub)
-    /*
-    dataListing.table.table.selectAll('tbody tr:not(.filtered)')
-        .classed('hidden', false)
-        .filter((d,i) =>
-            i <  dataListing.pagination.startItem ||
-            i >= dataListing.pagination.endItem)
-        .classed('hidden', true);
-    */
 }

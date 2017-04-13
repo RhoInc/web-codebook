@@ -1,16 +1,9 @@
 import sort from './addSort/sort';
 
 export default function addSort(dataListing) {
-    dataListing.sort = {};
-    dataListing.sort.wrap = dataListing.wrap
-        .select('.sort-container');
-    dataListing.sort.order = [];
-
-    dataListing.table.wrap
-        .selectAll('.headers th')
+    dataListing.table.wrap.selectAll('.headers th')
         .on('click', function() {
-            const
-                variable = this.textContent;
+            const variable = this.textContent;
             let sortItem = dataListing.sort.order
                 .filter(item => item.variable === variable)[0];
 
@@ -65,5 +58,6 @@ export default function addSort(dataListing) {
                                     .classed('hidden', false);
                         });
                 });
+
         });
 }
