@@ -1385,6 +1385,7 @@ function layout$1(dataListing) {
 }
 
 function updatePagination(dataListing) {
+  console.log(dataListing);
   //Reset pagination.
   dataListing.pagination.links.classed('active', false);
 
@@ -1462,27 +1463,23 @@ function addLinks(dataListing) {
     dataListing.pagination.wrap.selectAll('a').remove();
     for (var i = 0; i < dataListing.pagination.numPages; i++) {
         dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({ 'href': '#',
-            'rel': i }).text(i + 1);
+            'rel': i }).text(i + 1).classed("active", function (d) {
+            return d.rel == dataListing.pagination.activeLink;
+        });
     }
     dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
-
-    //Render first page.
-    dataListing.pagination.activeLink = 0;
 }
 
 function addPagination(dataListing) {
-    dataListing.pagination = {};
-    dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
-    dataListing.pagination.rowsShown = 25;
 
-    //Render page links.
-    addLinks(dataListing);
+  //Render page links.
+  addLinks(dataListing);
 
-    //Render a different page on click.
-    dataListing.pagination.links.on('click', function () {
-        dataListing.pagination.activeLink = d3.select(this).attr('rel');
-        updatePagination(dataListing);
-    });
+  //Render a different page on click.
+  dataListing.pagination.links.on('click', function () {
+    dataListing.pagination.activeLink = d3.select(this).attr('rel');
+    updatePagination(dataListing);
+  });
 }
 
 function addSearch(dataListing) {
@@ -1525,10 +1522,15 @@ function onDraw(dataListing) {
 function init$7(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
-
+  //sort config
   dataListing.sort = {};
   dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
   dataListing.sort.order = [];
+  //pagination config
+  dataListing.pagination = {};
+  dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
+  dataListing.pagination.rowsShown = 25;
+  dataListing.pagination.activeLink = 0;
 
   //Define table.
   dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});

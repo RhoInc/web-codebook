@@ -6,11 +6,18 @@ export function init(codebook) {
     const
         dataListing = codebook.dataListing;
         layout(dataListing);
-
+  //sort config
   dataListing.sort = {};
   dataListing.sort.wrap = dataListing.wrap
       .select('.sort-container');
   dataListing.sort.order = [];
+  //pagination config
+  dataListing.pagination = {};
+  dataListing.pagination.wrap = dataListing.wrap
+      .select('.pagination-container');
+  dataListing.pagination.rowsShown = 25;
+  dataListing.pagination.activeLink = 0;
+
 
   //Define table.
     dataListing.table = createTable('.web-codebook .dataListing .listing-container', {});

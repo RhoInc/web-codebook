@@ -14,11 +14,9 @@ export default function addLinks(dataListing) {
             .attr(
                 {'href': '#'
                 ,'rel': i})
-            .text(i + 1);
+            .text(i + 1)
+            .classed("active",d=>d.rel == dataListing.pagination.activeLink);
     }
     dataListing.pagination.links = dataListing.pagination.wrap
         .selectAll('a');
-
-  //Render first page.
-    dataListing.pagination.activeLink = 0;
 }

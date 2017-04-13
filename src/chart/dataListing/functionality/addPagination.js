@@ -2,11 +2,7 @@ import addLinks from './addPagination/addLinks';
 import updatePagination from './addPagination/updatePagination';
 
 export default function addPagination(dataListing) {
-    dataListing.pagination = {};
-    dataListing.pagination.wrap = dataListing.wrap
-        .select('.pagination-container');
-    dataListing.pagination.rowsShown = 25;
-
+  
   //Render page links.
     addLinks(dataListing);
 
