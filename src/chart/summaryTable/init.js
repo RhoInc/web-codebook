@@ -2,6 +2,4 @@
 intialize the summary table
 \------------------------------------------------------------------------------------------------*/
 
-export function init(chart) {
-  
-}
+export function init(chart) {}

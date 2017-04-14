@@ -2,7 +2,6 @@
   Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './groups/init';
+import { init } from "./groups/init";
 
-export const groups =
-    {init: init};
+export const groups = { init: init };

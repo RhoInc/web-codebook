@@ -2,14 +2,8 @@
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-export function layout() {  
-    this.controls.wrap = this.wrap
-        .append('div')
-        .attr('class', 'controls');
+export function layout() {
+  this.controls.wrap = this.wrap.append("div").attr("class", "controls");
 
-    this.codebookWrap = this.wrap
-        .append('div')
-        .attr('class', 'codebookWrap');
-
-   	 
+  this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }

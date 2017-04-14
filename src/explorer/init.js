@@ -3,17 +3,20 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function init() {
-    var settings = this.config;
+  var settings = this.config;
 
-    //create wrapper in specified div
-    this.wrap = d3.select(this.element).append('div').attr("class","web-codebook-explorer")
+  //create wrapper in specified div
+  this.wrap = d3
+    .select(this.element)
+    .append("div")
+    .attr("class", "web-codebook-explorer");
 
-    //layout the divs
-    this.layout(this)
+  //layout the divs
+  this.layout(this);
 
-    //draw controls
-    this.controls.init(this)
+  //draw controls
+  this.controls.init(this);
 
-    //draw first codebook
-    this.makeCodebook(this.config.files[0])
+  //draw first codebook
+  this.makeCodebook(this.config.files[0]);
 }

@@ -17,15 +17,17 @@
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -c -w"
+    "format": "prettier --write 'src/**/*.js'",
+    "build": "npm run format && rollup -c",
+    "watch": "npm run format && rollup -c -w"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.4.0",
-    "rollup-watch": "~3.2.2"
+    "rollup-watch": "~3.2.2",
+    "prettier":"~1"
   },
   "dependencies": {
     "d3": "~3",

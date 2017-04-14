@@ -2,9 +2,8 @@
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './controls/init';
+import { init } from "./controls/init";
 
-export const controls =
-    {
-    	init: init
-   };
+export const controls = {
+  init: init
+};

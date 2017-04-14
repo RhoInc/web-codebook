@@ -2,7 +2,6 @@
   Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './filters/init';
+import { init } from "./filters/init";
 
-export const filters =
-    {init: init};
+export const filters = { init: init };

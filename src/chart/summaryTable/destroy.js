@@ -2,6 +2,4 @@
   destroy the summary table
 \------------------------------------------------------------------------------------------------*/
 
-export function destroy(chart) {
-
-}
+export function destroy(chart) {}
