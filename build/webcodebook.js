@@ -586,10 +586,9 @@ function drawDifferences(chart) {
 }
 
 function onResize$1() {
-  console.log(this);
-  moveYaxis$1(this);
-  drawOverallMark$1(this);
-  if (this.config.group_col) drawDifferences(this);
+    moveYaxis$1(this);
+    drawOverallMark$1(this);
+    if (this.config.group_col) drawDifferences(this);
 }
 
 function makeBarChart(this_, d) {
@@ -1385,7 +1384,6 @@ function layout$1(dataListing) {
 }
 
 function updatePagination(dataListing) {
-  console.log(dataListing);
   //Reset pagination.
   dataListing.pagination.links.classed('active', false);
 
@@ -1454,6 +1452,40 @@ function addSort(dataListing) {
     });
 }
 
+function addSearch(dataListing) {
+    dataListing.search = {};
+    dataListing.search.wrap = dataListing.wrap.select('.search-container');
+    dataListing.search.wrap.select('.search-box').on('input', function () {
+        var inputText = this.value.toLowerCase();
+        //Determine which rows contain input text.
+        dataListing.sorted_raw_data = dataListing.super_raw_data.filter(function (d) {
+            var match = false;
+            var vars = Object.keys(d);
+            vars.forEach(function (var_name) {
+                if (match === false) {
+                    var cellText = "" + d[var_name];
+                    match = cellText.toLowerCase().indexOf(inputText) > -1;
+                }
+            });
+            return match;
+        });
+        //render the chart
+        var sub = dataListing.sorted_raw_data.filter(function (d, i) {
+            return i < 25;
+        });
+        //discard the sort
+        dataListing.sort.order.forEach(function (item) {
+            item.container.remove();
+        });
+        dataListing.sort.order = [];
+        dataListing.sort.wrap.select('.description').classed('hidden', false);
+
+        //reset to first page
+        dataListing.pagination.activeLink = 0;
+        updatePagination(dataListing);
+    });
+}
+
 function addLinks(dataListing) {
     //Count rows.
     dataListing.pagination.rowsTotal = dataListing.sorted_raw_data.length;
@@ -1480,30 +1512,6 @@ function addPagination(dataListing) {
     dataListing.pagination.activeLink = d3.select(this).attr('rel');
     updatePagination(dataListing);
   });
-}
-
-function addSearch(dataListing) {
-    dataListing.search = {};
-    dataListing.search.wrap = dataListing.wrap.select('.search-container');
-    dataListing.search.wrap.select('.search-box').on('input', function () {
-        var inputText = this.value.toLowerCase();
-
-        //Determine which rows contain input text.
-        dataListing.table.wrap.selectAll('tbody tr').each(function () {
-            var filtered = true;
-
-            d3.select(this).selectAll('td').each(function () {
-                if (filtered === true) {
-                    var cellText = this.textContent.toLowerCase();
-                    filtered = cellText.indexOf(inputText) === -1;
-                }
-            });
-
-            d3.select(this).classed('filtered', filtered);
-        });
-
-        addPagination(dataListing);
-    });
 }
 
 function onDraw(dataListing) {
@@ -1759,7 +1767,6 @@ function makeSummary(codebook) {
             //Calculate statistics.
             if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
             //determine the renderer to use
-            console.log(codebook.config.levelSplit);
             variables[i].chartType = variables[i].type == "continuous" ? "histogram" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "barChart" : "error";
 
             //Handle groups.

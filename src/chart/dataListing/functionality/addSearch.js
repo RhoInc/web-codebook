@@ -1,4 +1,4 @@
-import addPagination from './addPagination';
+import updatePagination from './addPagination/updatePagination';
 
 export default function addSearch(dataListing) {
     dataListing.search = {};
@@ -7,26 +7,33 @@ export default function addSearch(dataListing) {
     dataListing.search.wrap
         .select('.search-box')
         .on('input', function() {
-            const
-                inputText = this.value.toLowerCase();
-
+            const inputText = this.value.toLowerCase();
           //Determine which rows contain input text.
-            dataListing.table.wrap.selectAll('tbody tr')
-                .each(function() {
-                    let filtered = true;
+          dataListing.sorted_raw_data = dataListing.super_raw_data.filter(function(d){
+              let match = false;
+              let vars = Object.keys(d)
+              vars.forEach(function(var_name){
+                if (match === false) {
+                    const cellText = ""+d[var_name];
+                    match = cellText.toLowerCase().indexOf(inputText) > -1;
+                }
+              })
+              return match
+          })
+          //render the chart
+          var sub = dataListing.sorted_raw_data
+          .filter(function(d,i){
+            return  i<25
+          })
+          //discard the sort
+          dataListing.sort.order.forEach(function(item){
+            item.container.remove()
+          })
+          dataListing.sort.order = [];
+          dataListing.sort.wrap.select('.description').classed('hidden', false);
 
-                    d3.select(this).selectAll('td')
-                        .each(function() {
-                            if (filtered === true) {
-                                const cellText = this.textContent.toLowerCase();
-                                filtered = cellText.indexOf(inputText) === -1;
-                            }
-                        });
-
-                    d3.select(this)
-                        .classed('filtered', filtered);
-                });
-
-            addPagination(dataListing);
+          //reset to first page
+          dataListing.pagination.activeLink = 0;
+          updatePagination(dataListing)
         });
 }

@@ -1,5 +1,4 @@
 export default function updatePagination(dataListing) {
-  console.log(dataListing)
   //Reset pagination.
     dataListing.pagination.links
         .classed('active', false);
