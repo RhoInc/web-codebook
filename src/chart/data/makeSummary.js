@@ -91,7 +91,6 @@ export function makeSummary(codebook) {
               else
                   variables[i].statistics = summarize.continuous(variables[i].values);
             //determine the renderer to use
-            console.log(codebook.config.levelSplit)
               variables[i].chartType =
                 variables[i].type == "continuous" ? "histogram" :
                 variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" :
