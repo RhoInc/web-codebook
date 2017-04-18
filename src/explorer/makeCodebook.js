@@ -1,6 +1,6 @@
 export function makeCodebook(meta) {
   this.codebookWrap.selectAll("*").remove();
-  var codebook = webcodebook.createChart(
+  var codebook = webcodebook.createCodebook(
     ".web-codebook-explorer .codebookWrap",
     meta.settings
   );

@@ -3,9 +3,9 @@
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-export function init(chart) {
+export function init(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap
+  var selector = codebook.controls.wrap
     .append("div")
     .attr("class", "chart-toggle");
 
@@ -13,15 +13,15 @@ export function init(chart) {
     .append("button")
     .text("Show All Charts")
     .on("click", function() {
-      chart.wrap.selectAll(".variable-row").classed("hiddenChart", false);
-      chart.wrap.selectAll(".row-toggle").html("&#9660;");
+      codebook.wrap.selectAll(".variable-row").classed("hiddenChart", false);
+      codebook.wrap.selectAll(".row-toggle").html("&#9660;");
     });
 
   var hideAllButton = selector
     .append("button")
     .text("Hide All Charts")
     .on("click", function() {
-      chart.wrap.selectAll(".variable-row").classed("hiddenChart", true);
-      chart.wrap.selectAll(".row-toggle").html("&#9658;");
+      codebook.wrap.selectAll(".variable-row").classed("hiddenChart", true);
+      codebook.wrap.selectAll(".row-toggle").html("&#9658;");
     });
 }

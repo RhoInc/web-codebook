@@ -2,15 +2,15 @@
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
 
-export function draw(chart) {
+export function draw(codebook) {
   //update Summary Text
-  chart.summaryTable.updateSummaryText(chart);
+  codebook.summaryTable.updateSummaryText(codebook);
 
   //enter/update/exit for variableDivs
   //BIND the newest data
-  var varRows = chart.summaryTable.wrap
+  var varRows = codebook.summaryTable.wrap
     .selectAll("div.variable-row")
-    .data(chart.data.summary, d => d.value_col);
+    .data(codebook.data.summary, d => d.value_col);
 
   //ENTER
   varRows.enter().append("div").attr("class", function(d) {
@@ -18,7 +18,7 @@ export function draw(chart) {
   });
 
   //ENTER + Update
-  varRows.each(chart.summaryTable.renderRow);
+  varRows.each(codebook.summaryTable.renderRow);
 
   //EXIT
   varRows.exit().remove();

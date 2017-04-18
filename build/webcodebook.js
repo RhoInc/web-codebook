@@ -48,15 +48,15 @@ function layout() {
   this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing").classed("hidden", true);
 }
 
-function init$1(chart) {
-  chart.controls.wrap.attr("onsubmit", "return false;");
-  chart.controls.wrap.selectAll("*").remove(); //Clear controls.
+function init$1(codebook) {
+  codebook.controls.wrap.attr("onsubmit", "return false;");
+  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
 
   //Draw controls.
-  chart.controls.dataListingToggle.init(chart);
-  chart.controls.groups.init(chart);
-  chart.controls.chartToggle.init(chart);
-  chart.controls.filters.init(chart);
+  codebook.controls.dataListingToggle.init(codebook);
+  codebook.controls.groups.init(codebook);
+  codebook.controls.chartToggle.init(codebook);
+  codebook.controls.filters.init(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -64,15 +64,15 @@ function init$1(chart) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$2(chart) {
+function init$2(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap.append("div").attr("class", "custom-filters");
+  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters");
 
   //add a list of values to each filter object
-  chart.config.filters.forEach(function (e) {
+  codebook.config.filters.forEach(function (e) {
     e.values = d3.nest().key(function (d) {
       return d[e.value_col];
-    }).entries(chart.data.raw).map(function (d) {
+    }).entries(codebook.data.raw).map(function (d) {
       return { value: d.key, selected: true };
     });
   });
@@ -83,7 +83,7 @@ function init$2(chart) {
   //Add filter controls.
   var filterList = selector.append("ul").attr("class", "nav");
 
-  var filterItem = filterList.selectAll("li").data(chart.config.filters).enter().append("li").attr("class", function (d) {
+  var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
     return "custom-" + d.key + " filterCustom";
   });
 
@@ -113,11 +113,11 @@ function init$2(chart) {
       option_d.selected = d3.select(this).property("selected");
     });
 
-    //update the chart
-    chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-    chart.data.makeSummary(chart);
-    chart.summaryTable.draw(chart);
-    chart.dataListing.init(chart);
+    //update the codebook
+    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
   });
 }
 
@@ -131,15 +131,15 @@ var filters = { init: init$2 };
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
-function init$3(chart) {
-  if (chart.config.groups.length > 0) {
-    var selector = chart.controls.wrap.append("div").attr("class", "group-select");
+function init$3(codebook) {
+  if (codebook.config.groups.length > 0) {
+    var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
 
     selector.append("span").text("Group by");
 
     var groupSelect = selector.append("select");
 
-    var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+    var groupLevels = d3.merge([["None"], codebook.config.groups.map(function (m) {
       return m.value_col;
     })]);
 
@@ -148,10 +148,10 @@ function init$3(chart) {
     });
 
     groupSelect.on("change", function () {
-      if (this.value !== "None") chart.config.group = this.value;else delete chart.config.group;
-      chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-      chart.data.makeSummary(chart);
-      chart.summaryTable.draw(chart);
+      if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
     });
   }
 }
@@ -167,18 +167,18 @@ var groups = { init: init$3 };
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$4(chart) {
+function init$4(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap.append("div").attr("class", "chart-toggle");
+  var selector = codebook.controls.wrap.append("div").attr("class", "chart-toggle");
 
   var showAllButton = selector.append("button").text("Show All Charts").on("click", function () {
-    chart.wrap.selectAll(".variable-row").classed("hiddenChart", false);
-    chart.wrap.selectAll(".row-toggle").html("&#9660;");
+    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", false);
+    codebook.wrap.selectAll(".row-toggle").html("&#9660;");
   });
 
   var hideAllButton = selector.append("button").text("Hide All Charts").on("click", function () {
-    chart.wrap.selectAll(".variable-row").classed("hiddenChart", true);
-    chart.wrap.selectAll(".row-toggle").html("&#9658;");
+    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", true);
+    codebook.wrap.selectAll(".row-toggle").html("&#9658;");
   });
 }
 
@@ -188,16 +188,16 @@ function init$4(chart) {
 
 var chartToggle = { init: init$4 };
 
-function init$5(chart) {
-  var container = chart.controls.wrap.append("div").classed("data-listing-toggle", true).text(chart.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
+function init$5(codebook) {
+  var container = codebook.controls.wrap.append("div").classed("data-listing-toggle", true).text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
   container.on("click", function () {
-    if (chart.dataListing.wrap.style("display") === "none") {
-      chart.dataListing.wrap.classed("hidden", false);
-      chart.summaryTable.wrap.classed("hidden", true);
+    if (codebook.dataListing.wrap.style("display") === "none") {
+      codebook.dataListing.wrap.classed("hidden", false);
+      codebook.summaryTable.wrap.classed("hidden", true);
       container.text("View codebook");
     } else {
-      chart.dataListing.wrap.classed("hidden", true);
-      chart.summaryTable.wrap.classed("hidden", false);
+      codebook.dataListing.wrap.classed("hidden", true);
+      codebook.summaryTable.wrap.classed("hidden", false);
       container.text("View data");
     }
   });
@@ -222,22 +222,16 @@ var controls = {
 };
 
 /*------------------------------------------------------------------------------------------------\
-intialize the summary table
-\------------------------------------------------------------------------------------------------*/
-
-function init$6(chart) {}
-
-/*------------------------------------------------------------------------------------------------\
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
 
-function draw(chart) {
+function draw(codebook) {
   //update Summary Text
-  chart.summaryTable.updateSummaryText(chart);
+  codebook.summaryTable.updateSummaryText(codebook);
 
   //enter/update/exit for variableDivs
   //BIND the newest data
-  var varRows = chart.summaryTable.wrap.selectAll("div.variable-row").data(chart.data.summary, function (d) {
+  var varRows = codebook.summaryTable.wrap.selectAll("div.variable-row").data(codebook.data.summary, function (d) {
     return d.value_col;
   });
 
@@ -247,17 +241,11 @@ function draw(chart) {
   });
 
   //ENTER + Update
-  varRows.each(chart.summaryTable.renderRow);
+  varRows.each(codebook.summaryTable.renderRow);
 
   //EXIT
   varRows.exit().remove();
 }
-
-/*------------------------------------------------------------------------------------------------\
-  destroy the summary table
-\------------------------------------------------------------------------------------------------*/
-
-function destroy(chart) {}
 
 function makeTitle(d) {
   var wrap = d3.select(this);
@@ -1435,29 +1423,26 @@ function renderRow(d) {
   rowWrap.append("div").attr("class", "row-chart section").each(makeChart);
 }
 
-function updateSummaryText(chart) {
+function updateSummaryText(codebook) {
   //Chart Summary Span
-  if (chart.data.summary.length > 0) {
-    var nCols = chart.data.summary.length;
-    var nShown = chart.data.summary[0].statistics.N;
-    var nTot = chart.data.raw.length;
+  if (codebook.data.summary.length > 0) {
+    var nCols = codebook.data.summary.length;
+    var nShown = codebook.data.summary[0].statistics.N;
+    var nTot = codebook.data.raw.length;
     var percent = d3.format("0.1%")(nShown / nTot);
     var tableSummary = "Data summary for " + nCols + " columns and " + nShown + " of " + nTot + " (" + percent + ") rows shown below.";
   } else {
     tableSummary = "No values selected. Update the filters above or load a different data set.";
   }
 
-  chart.summaryTable.summaryText.text(tableSummary);
+  codebook.summaryTable.summaryText.text(tableSummary);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define summaryTable object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
-
 var summaryTable = {
-  init: init$6,
   draw: draw,
-  destroy: destroy,
   renderRow: renderRow,
   updateSummaryText: updateSummaryText
 };
@@ -1571,7 +1556,7 @@ function addSearch(dataListing) {
       });
       return match;
     });
-    //render the chart
+    //render the codebook
     var sub = dataListing.sorted_raw_data.filter(function (d, i) {
       return i < 25;
     });
@@ -1630,7 +1615,7 @@ function onDraw(dataListing) {
   });
 }
 
-function init$7(codebook) {
+function init$6(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
   //sort config
@@ -1662,7 +1647,7 @@ function init$7(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { init: init$7 };
+var dataListing = { init: init$6 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -1674,35 +1659,35 @@ var defaultSettings$1 = {
   levelSplit: 5 //cutpoint for # of levels to use levelPlot() renderer
 };
 
-function setDefaults(chart) {
+function setDefaults(codebook) {
   /********************* Filter Settings *********************/
-  chart.config.filters = chart.config.filters || defaultSettings$1.filters;
+  codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
 
   //autofilter - don't use automatic filter if user specifies filters object
-  chart.config.autofilter = chart.config.filters.length > 0 ? false : chart.config.autofilter == null ? defaultSettings$1.autofilter : chart.config.autofilter;
+  codebook.config.autofilter = codebook.config.filters.length > 0 ? false : codebook.config.autofilter == null ? defaultSettings$1.autofilter : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
-  chart.config.groups = chart.config.groups || defaultSettings$1.groups;
+  codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
 
   //autogroups - don't use automatic groups if user specifies groups object
-  chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings$1.autogroups : chart.config.autogroups;
+  codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
 
   /********************* Histogram Settings *********************/
-  chart.config.nBins = chart.config.nBins || defaultSettings$1.nBins;
-  chart.config.autobins = chart.config.autobins == null ? defaultSettings$1.autobins : chart.config.autobins;
+  codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
+  codebook.config.autobins = codebook.config.autobins == null ? defaultSettings$1.autobins : codebook.config.autobins;
 
   /********************* Histogram Settings *********************/
-  chart.config.levelSplit = chart.config.levelSplit || defaultSettings$1.levelSplit;
+  codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
 }
 
-function makeAutomaticFilters(chart) {
+function makeAutomaticFilters(codebook) {
   //make filters for all categorical variables with less than autofilter levels
-  if (chart.config.autofilter > 1) {
-    var autofilters = chart.data.summary.filter(function (f) {
+  if (codebook.config.autofilter > 1) {
+    var autofilters = codebook.data.summary.filter(function (f) {
       return f.type == "categorical";
     }) //categorical filters only
     .filter(function (f) {
-      return f.statistics.values.length <= chart.config.autofilter;
+      return f.statistics.values.length <= codebook.config.autofilter;
     }) //no huge filters
     .filter(function (f) {
       return f.statistics.values.length > 1;
@@ -1711,18 +1696,18 @@ function makeAutomaticFilters(chart) {
       return { value_col: m.value_col };
     });
 
-    chart.config.filters = autofilters.length > 0 ? autofilters : null;
+    codebook.config.filters = autofilters.length > 0 ? autofilters : null;
   }
 }
 
-function makeAutomaticGroups(chart) {
+function makeAutomaticGroups(codebook) {
   //make groups for all categorical variables with less than autofilter levels
-  if (chart.config.autogroups > 1) {
-    var autogroups = chart.data.summary.filter(function (f) {
+  if (codebook.config.autogroups > 1) {
+    var autogroups = codebook.data.summary.filter(function (f) {
       return f.type == "categorical";
     }) //categorical filters only
     .filter(function (f) {
-      return f.statistics.values.length <= chart.config.autogroups;
+      return f.statistics.values.length <= codebook.config.autogroups;
     }) //no groups
     .filter(function (f) {
       return f.statistics.values.length > 1;
@@ -1731,7 +1716,7 @@ function makeAutomaticGroups(chart) {
       return { value_col: m.value_col };
     });
 
-    chart.config.groups = autogroups.length > 0 ? autogroups : null;
+    codebook.config.groups = autogroups.length > 0 ? autogroups : null;
   }
 }
 
@@ -1926,11 +1911,11 @@ var data = {
   makeFiltered: makeFiltered
 };
 
-function createChart$1() {
+function createCodebook() {
   var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
   var config = arguments[1];
 
-  var chart = {
+  var codebook = {
     element: element,
     config: config,
     init: init,
@@ -1942,14 +1927,14 @@ function createChart$1() {
     util: util
   };
 
-  return chart;
+  return codebook;
 }
 
 /*------------------------------------------------------------------------------------------------\
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$8() {
+function init$7() {
   var settings = this.config;
 
   //create wrapper in specified div
@@ -1975,7 +1960,7 @@ function layout$2() {
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }
 
-function init$9(explorer) {
+function init$8(explorer) {
   explorer.controls.wrap.attr("onsubmit", "return false;");
   explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
 
@@ -2005,12 +1990,12 @@ function init$9(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$9
+  init: init$8
 };
 
 function makeCodebook(meta) {
   this.codebookWrap.selectAll("*").remove();
-  var codebook = webcodebook.createChart(".web-codebook-explorer .codebookWrap", meta.settings);
+  var codebook = webcodebook.createCodebook(".web-codebook-explorer .codebookWrap", meta.settings);
   d3.csv(meta.path, function (error, data) {
     codebook.init(data);
   });
@@ -2023,7 +2008,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$8,
+    init: init$7,
     layout: layout$2,
     controls: controls$1,
     makeCodebook: makeCodebook
@@ -2033,7 +2018,7 @@ function createExplorer() {
 }
 
 var index = {
-  createChart: createChart$1,
+  createCodebook: createCodebook,
   createExplorer: createExplorer
 };
 

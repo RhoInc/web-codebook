@@ -19,7 +19,7 @@ export default function addSearch(dataListing) {
       });
       return match;
     });
-    //render the chart
+    //render the codebook
     var sub = dataListing.sorted_raw_data.filter(function(d, i) {
       return i < 25;
     });

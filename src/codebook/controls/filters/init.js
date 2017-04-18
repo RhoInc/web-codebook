@@ -3,20 +3,20 @@
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-export function init(chart) {
+export function init(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap
+  var selector = codebook.controls.wrap
     .append("div")
     .attr("class", "custom-filters");
 
   //add a list of values to each filter object
-  chart.config.filters.forEach(function(e) {
+  codebook.config.filters.forEach(function(e) {
     e.values = d3
       .nest()
       .key(function(d) {
         return d[e.value_col];
       })
-      .entries(chart.data.raw)
+      .entries(codebook.data.raw)
       .map(function(d) {
         return { value: d.key, selected: true };
       });
@@ -30,7 +30,7 @@ export function init(chart) {
 
   var filterItem = filterList
     .selectAll("li")
-    .data(chart.config.filters)
+    .data(codebook.config.filters)
     .enter()
     .append("li")
     .attr("class", function(d) {
@@ -66,13 +66,13 @@ export function init(chart) {
       option_d.selected = d3.select(this).property("selected");
     });
 
-    //update the chart
-    chart.data.filtered = chart.data.makeFiltered(
-      chart.data.raw,
-      chart.config.filters
+    //update the codebook
+    codebook.data.filtered = codebook.data.makeFiltered(
+      codebook.data.raw,
+      codebook.config.filters
     );
-    chart.data.makeSummary(chart);
-    chart.summaryTable.draw(chart);
-    chart.dataListing.init(chart);
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
   });
 }

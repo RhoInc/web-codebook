@@ -2,9 +2,9 @@
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
-export function init(chart) {
-  if (chart.config.groups.length > 0) {
-    var selector = chart.controls.wrap
+export function init(codebook) {
+  if (codebook.config.groups.length > 0) {
+    var selector = codebook.controls.wrap
       .append("div")
       .attr("class", "group-select");
 
@@ -14,7 +14,7 @@ export function init(chart) {
 
     var groupLevels = d3.merge([
       ["None"],
-      chart.config.groups.map(m => m.value_col)
+      codebook.config.groups.map(m => m.value_col)
     ]);
 
     groupSelect
@@ -25,14 +25,14 @@ export function init(chart) {
       .text(d => d);
 
     groupSelect.on("change", function() {
-      if (this.value !== "None") chart.config.group = this.value;
-      else delete chart.config.group;
-      chart.data.filtered = chart.data.makeFiltered(
-        chart.data.raw,
-        chart.config.filters
+      if (this.value !== "None") codebook.config.group = this.value;
+      else delete codebook.config.group;
+      codebook.data.filtered = codebook.data.makeFiltered(
+        codebook.data.raw,
+        codebook.config.filters
       );
-      chart.data.makeSummary(chart);
-      chart.summaryTable.draw(chart);
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
     });
   }
 }
