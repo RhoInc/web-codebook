@@ -1,9 +1,4 @@
-import { makeDotPlot } from "./makeChart/makeDotPlot.js";
-import { makeBarChart } from "./makeChart/makeBarChart.js";
-import makeBarChartControls from "./makeChart/makeBarChartControls.js";
-import { makeLevelChart } from "./makeChart/makeLevelChart.js";
-import makeLevelChartControls from "./makeChart/makeLevelChartControls.js";
-import { makeHistogram } from "./makeChart/makeHistogram.js";
+import { charts } from "../../../charts";
 
 export default function makeChart(d) {
   //Common chart settings
@@ -11,14 +6,14 @@ export default function makeChart(d) {
   this.margin = { right: 200, left: 30 };
 
   if (d.chartType === "barChart") {
-    makeBarChartControls(this, d);
-    makeBarChart(this, d);
+    charts.createHorizontalBarsControls(this, d);
+    charts.createHorizontalBars(this, d);
   } else if (d.chartType === "levelChart") {
-    makeLevelChartControls(this, d);
-    makeLevelChart(this, d);
+    charts.createVerticalBarsControls(this, d);
+    charts.createVerticalBars(this, d);
   } else if (d.chartType === "histogram") {
     // continuous outcomes
-    makeHistogram(this, d);
+    charts.createHistogramBoxPlot(this, d);
   } else {
     console.warn("Invalid chart type for " + d.key);
   }

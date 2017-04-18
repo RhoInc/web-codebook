@@ -1,8 +1,8 @@
-import clone from "../../../../util/clone";
-import onInit from "./makeBarChart/onInit";
-import onResize from "./makeBarChart/onResize";
+import clone from "../util/clone";
+import onInit from "./horizontalBars/onInit";
+import onResize from "./horizontalBars/onResize";
 
-export function makeBarChart(this_, d) {
+export function createHorizontalBars(this_, d) {
   //hide the controls if the chart isn't Grouped
   const rowSelector = d3.select(this_).node().parentNode;
   const chartControls = d3

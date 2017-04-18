@@ -1,7 +1,7 @@
-import clone from "../../../../util/clone";
-import onResize from "./makeDotPlot/onResize";
+import clone from "../util/clone";
+import onResize from "./dotPlot/onResize";
 
-export function makeDotPlot(this_, d) {
+export function createDotPlot(this_, d) {
   const chartContainer = d3.select(this_).node();
   const chartSettings = {
     x: {

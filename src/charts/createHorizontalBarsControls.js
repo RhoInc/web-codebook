@@ -1,7 +1,7 @@
-import { makeBarChart } from "./makeBarChart.js";
-import { makeDotPlot } from "./makeDotPlot.js";
+import { createHorizontalBars } from "./createHorizontalBars.js";
+import { createDotPlot } from "./createDotPlot.js";
 
-export default function makeBarChartControls(this_, d) {
+export function createHorizontalBarsControls(this_, d) {
   var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
   var wrap = d3.select(this_).append("div").attr("class", "row-controls");
   wrap.append("small").text("Display Type: ");
@@ -17,9 +17,9 @@ export default function makeBarChartControls(this_, d) {
     d3.select(this_).selectAll(".wc-chart").remove();
     d3.select(this_).selectAll(".panel-label").remove();
     if (this.value == "Paneled (Bar Charts)") {
-      makeBarChart(this_, d);
+      createHorizontalBars(this_, d);
     } else {
-      makeDotPlot(this_, d);
+      createDotPlot(this_, d);
     }
   });
 }

@@ -1,4 +1,4 @@
-import clone from "../../../../../util/clone";
+import clone from "../../util/clone";
 import onResize from "./onResize";
 
 export default function onInit() {

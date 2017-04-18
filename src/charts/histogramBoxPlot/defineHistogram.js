@@ -1,5 +1,5 @@
-import "../../../../../util/object-assign";
-import clone from "../../../../../util/clone";
+import "../../util/object-assign";
+import clone from "../../util/clone";
 import defaultSettings, { syncSettings } from "./defaultSettings";
 
 import { createChart } from "webcharts";

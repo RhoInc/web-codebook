@@ -1,6 +1,6 @@
-import { makeLevelChart } from "./makeLevelChart.js";
+import { createVerticalBars } from "./createVerticalBars.js";
 
-export default function makeLevelChartControls(this_, d) {
+export function createVerticalBarsControls(this_, d) {
   var sort_values = ["Alphabetical", "Ascending", "Descending"];
   var wrap = d3.select(this_).append("div").attr("class", "row-controls");
   wrap.append("small").text("Sort levels: ");
@@ -15,6 +15,6 @@ export default function makeLevelChartControls(this_, d) {
   x_sort.on("change", function() {
     d3.select(this_).selectAll(".wc-chart").remove();
     d3.select(this_).selectAll(".panel-label").remove();
-    makeLevelChart(this_, d);
+    createVerticalBars(this_, d);
   });
 }

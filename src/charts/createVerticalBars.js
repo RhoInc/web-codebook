@@ -1,9 +1,9 @@
-import clone from "../../../../util/clone";
-import onResize from "./makeLevelChart/onResize";
-import onInit from "./makeLevelChart/onInit";
-import axisSort from "./makeLevelChart/axisSort";
+import clone from "../util/clone";
+import onResize from "./verticalBars/onResize";
+import onInit from "./verticalBars/onInit";
+import axisSort from "./verticalBars/axisSort";
 
-export function makeLevelChart(this_, d) {
+export function createVerticalBars(this_, d) {
   const chartContainer = d3.select(this_).node();
   const rowSelector = d3.select(this_).node().parentNode;
   var sortType = d3

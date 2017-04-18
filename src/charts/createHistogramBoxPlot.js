@@ -1,6 +1,6 @@
-import { defineHistogram } from "./makeHistogram/defineHistogram";
+import { defineHistogram } from "./histogramBoxPlot/defineHistogram";
 
-export function makeHistogram(this_, d) {
+export function createHistogramBoxPlot(this_, d) {
   const chartContainer = d3.select(this_).node();
   const chartSettings = {
     measure: " ",
