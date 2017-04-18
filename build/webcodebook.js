@@ -1329,7 +1329,7 @@ function createHistogramBoxPlot(this_, d) {
     chartSettings.panel = "group";
     d.groups.forEach(function (group) {
       group.values.forEach(function (value) {
-        chartData.push({ group: group.group, " ": value });
+        chartData.push({ group: group.group || "<no value>", " ": value });
       });
     });
   } else {
