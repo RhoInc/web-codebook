@@ -1360,13 +1360,13 @@ function makeChart(d) {
   this.height = 100;
   this.margin = { right: 200, left: 30 };
 
-  if (d.chartType === "barChart") {
+  if (d.chartType === "horizontalBars") {
     charts.createHorizontalBarsControls(this, d);
     charts.createHorizontalBars(this, d);
-  } else if (d.chartType === "levelChart") {
+  } else if (d.chartType === "verticalBars") {
     charts.createVerticalBarsControls(this, d);
     charts.createVerticalBars(this, d);
-  } else if (d.chartType === "histogram") {
+  } else if (d.chartType === "histogramBoxPlot") {
     // continuous outcomes
     charts.createHistogramBoxPlot(this, d);
   } else {
@@ -1864,7 +1864,7 @@ function makeSummary(codebook) {
       //Calculate statistics.
       if (variables[i].type === "categorical") variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
       //determine the renderer to use
-      variables[i].chartType = variables[i].type == "continuous" ? "histogram" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "barChart" : "error";
+      variables[i].chartType = variables[i].type == "continuous" ? "histogramBoxPlot" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "verticalBars" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "horizontalBars" : "error";
 
       //Handle groups.
       if (group) {

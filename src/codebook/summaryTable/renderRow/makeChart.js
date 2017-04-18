@@ -5,13 +5,13 @@ export default function makeChart(d) {
   this.height = 100;
   this.margin = { right: 200, left: 30 };
 
-  if (d.chartType === "barChart") {
+  if (d.chartType === "horizontalBars") {
     charts.createHorizontalBarsControls(this, d);
     charts.createHorizontalBars(this, d);
-  } else if (d.chartType === "levelChart") {
+  } else if (d.chartType === "verticalBars") {
     charts.createVerticalBarsControls(this, d);
     charts.createVerticalBars(this, d);
-  } else if (d.chartType === "histogram") {
+  } else if (d.chartType === "histogramBoxPlot") {
     // continuous outcomes
     charts.createHistogramBoxPlot(this, d);
   } else {

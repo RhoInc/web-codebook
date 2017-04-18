@@ -89,14 +89,14 @@ export function makeSummary(codebook) {
       else variables[i].statistics = summarize.continuous(variables[i].values);
       //determine the renderer to use
       variables[i].chartType = variables[i].type == "continuous"
-        ? "histogram"
+        ? "histogramBoxPlot"
         : (variables[i].type == "categorical") &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-            ? "levelChart"
+            ? "verticalBars"
             : (variables[i].type == "categorical") &
                 (variables[i].statistics.values.length <=
                   codebook.config.levelSplit)
-                ? "barChart"
+                ? "horizontalBars"
                 : "error";
 
       //Handle groups.
