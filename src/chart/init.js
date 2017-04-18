@@ -18,7 +18,7 @@ export function init(data) {
 
     //prepare the data summaries
     this.data.makeSummary(this)
-    
+
     //draw controls
     this.util.makeAutomaticFilters(this)
     this.util.makeAutomaticGroups(this)
@@ -26,4 +26,7 @@ export function init(data) {
 
     //initialize and then draw the codebook
     this.summaryTable.draw(this)
+
+    //initialize and then draw the data listing
+    this.dataListing.init(this)
 }

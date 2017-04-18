@@ -61,7 +61,8 @@ export function init(chart) {
 
         //update the chart
         chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters)
-        chart.data.makeSummary(chart)       
+        chart.data.makeSummary(chart)
         chart.summaryTable.draw(chart)
+        chart.dataListing.init(chart)
     });
 }

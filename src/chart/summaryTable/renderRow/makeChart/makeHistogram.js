@@ -1,7 +1,6 @@
-import { createHistogram } from '../../../createHistogram.js'
+import { defineHistogram } from './makeHistogram/defineHistogram';
 
 export function makeHistogram(this_, d){
-  console.log(d.bins)
   const chartContainer = d3.select(this_).node();
   const chartSettings =
       {measure: ' '
@@ -24,6 +23,6 @@ export function makeHistogram(this_, d){
       });
   }
 
-  const chart = createHistogram(chartContainer, chartSettings);
+  const chart = defineHistogram(chartContainer, chartSettings);
   chart.init(chartData);
 }
