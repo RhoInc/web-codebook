@@ -10,7 +10,7 @@ export function getBinCounts(codebook) {
   function setBinCount(summaryData) {
     //Freedman-Diaconis rule - returns the recommended bin size for a histogram
     function FreedmanDiaconis(IQR, n) {
-      var cubeRootN = Math.cbrt(n);
+      var cubeRootN = Math.pow(n, 1.0 / 3.0);
       return 2 * (IQR / cubeRootN);
     }
 
