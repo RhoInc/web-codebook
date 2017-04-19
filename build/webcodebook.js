@@ -48,15 +48,15 @@ function layout() {
   this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing").classed("hidden", true);
 }
 
-function init$1(chart) {
-  chart.controls.wrap.attr("onsubmit", "return false;");
-  chart.controls.wrap.selectAll("*").remove(); //Clear controls.
+function init$1(codebook) {
+  codebook.controls.wrap.attr("onsubmit", "return false;");
+  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
 
   //Draw controls.
-  chart.controls.dataListingToggle.init(chart);
-  chart.controls.groups.init(chart);
-  chart.controls.chartToggle.init(chart);
-  chart.controls.filters.init(chart);
+  codebook.controls.dataListingToggle.init(codebook);
+  codebook.controls.groups.init(codebook);
+  codebook.controls.chartToggle.init(codebook);
+  codebook.controls.filters.init(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -64,15 +64,15 @@ function init$1(chart) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$2(chart) {
+function init$2(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap.append("div").attr("class", "custom-filters");
+  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters");
 
   //add a list of values to each filter object
-  chart.config.filters.forEach(function (e) {
+  codebook.config.filters.forEach(function (e) {
     e.values = d3.nest().key(function (d) {
       return d[e.value_col];
-    }).entries(chart.data.raw).map(function (d) {
+    }).entries(codebook.data.raw).map(function (d) {
       return { value: d.key, selected: true };
     });
   });
@@ -83,7 +83,7 @@ function init$2(chart) {
   //Add filter controls.
   var filterList = selector.append("ul").attr("class", "nav");
 
-  var filterItem = filterList.selectAll("li").data(chart.config.filters).enter().append("li").attr("class", function (d) {
+  var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
     return "custom-" + d.key + " filterCustom";
   });
 
@@ -113,11 +113,11 @@ function init$2(chart) {
       option_d.selected = d3.select(this).property("selected");
     });
 
-    //update the chart
-    chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-    chart.data.makeSummary(chart);
-    chart.summaryTable.draw(chart);
-    chart.dataListing.init(chart);
+    //update the codebook
+    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
   });
 }
 
@@ -131,15 +131,15 @@ var filters = { init: init$2 };
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
-function init$3(chart) {
-  if (chart.config.groups.length > 0) {
-    var selector = chart.controls.wrap.append("div").attr("class", "group-select");
+function init$3(codebook) {
+  if (codebook.config.groups.length > 0) {
+    var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
 
     selector.append("span").text("Group by");
 
     var groupSelect = selector.append("select");
 
-    var groupLevels = d3.merge([["None"], chart.config.groups.map(function (m) {
+    var groupLevels = d3.merge([["None"], codebook.config.groups.map(function (m) {
       return m.value_col;
     })]);
 
@@ -148,10 +148,10 @@ function init$3(chart) {
     });
 
     groupSelect.on("change", function () {
-      if (this.value !== "None") chart.config.group = this.value;else delete chart.config.group;
-      chart.data.filtered = chart.data.makeFiltered(chart.data.raw, chart.config.filters);
-      chart.data.makeSummary(chart);
-      chart.summaryTable.draw(chart);
+      if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
     });
   }
 }
@@ -167,18 +167,18 @@ var groups = { init: init$3 };
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$4(chart) {
+function init$4(codebook) {
   //initialize the wrapper
-  var selector = chart.controls.wrap.append("div").attr("class", "chart-toggle");
+  var selector = codebook.controls.wrap.append("div").attr("class", "chart-toggle");
 
   var showAllButton = selector.append("button").text("Show All Charts").on("click", function () {
-    chart.wrap.selectAll(".variable-row").classed("hiddenChart", false);
-    chart.wrap.selectAll(".row-toggle").html("&#9660;");
+    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", false);
+    codebook.wrap.selectAll(".row-toggle").html("&#9660;");
   });
 
   var hideAllButton = selector.append("button").text("Hide All Charts").on("click", function () {
-    chart.wrap.selectAll(".variable-row").classed("hiddenChart", true);
-    chart.wrap.selectAll(".row-toggle").html("&#9658;");
+    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", true);
+    codebook.wrap.selectAll(".row-toggle").html("&#9658;");
   });
 }
 
@@ -188,16 +188,16 @@ function init$4(chart) {
 
 var chartToggle = { init: init$4 };
 
-function init$5(chart) {
-  var container = chart.controls.wrap.append("div").classed("data-listing-toggle", true).text(chart.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
+function init$5(codebook) {
+  var container = codebook.controls.wrap.append("div").classed("data-listing-toggle", true).text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
   container.on("click", function () {
-    if (chart.dataListing.wrap.style("display") === "none") {
-      chart.dataListing.wrap.classed("hidden", false);
-      chart.summaryTable.wrap.classed("hidden", true);
+    if (codebook.dataListing.wrap.style("display") === "none") {
+      codebook.dataListing.wrap.classed("hidden", false);
+      codebook.summaryTable.wrap.classed("hidden", true);
       container.text("View codebook");
     } else {
-      chart.dataListing.wrap.classed("hidden", true);
-      chart.summaryTable.wrap.classed("hidden", false);
+      codebook.dataListing.wrap.classed("hidden", true);
+      codebook.summaryTable.wrap.classed("hidden", false);
       container.text("View data");
     }
   });
@@ -222,22 +222,16 @@ var controls = {
 };
 
 /*------------------------------------------------------------------------------------------------\
-intialize the summary table
-\------------------------------------------------------------------------------------------------*/
-
-function init$6(chart) {}
-
-/*------------------------------------------------------------------------------------------------\
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
 
-function draw(chart) {
+function draw(codebook) {
   //update Summary Text
-  chart.summaryTable.updateSummaryText(chart);
+  codebook.summaryTable.updateSummaryText(codebook);
 
   //enter/update/exit for variableDivs
   //BIND the newest data
-  var varRows = chart.summaryTable.wrap.selectAll("div.variable-row").data(chart.data.summary, function (d) {
+  var varRows = codebook.summaryTable.wrap.selectAll("div.variable-row").data(codebook.data.summary, function (d) {
     return d.value_col;
   });
 
@@ -247,17 +241,11 @@ function draw(chart) {
   });
 
   //ENTER + Update
-  varRows.each(chart.summaryTable.renderRow);
+  varRows.each(codebook.summaryTable.renderRow);
 
   //EXIT
   varRows.exit().remove();
 }
-
-/*------------------------------------------------------------------------------------------------\
-  destroy the summary table
-\------------------------------------------------------------------------------------------------*/
-
-function destroy(chart) {}
 
 function makeTitle(d) {
   var wrap = d3.select(this);
@@ -361,7 +349,409 @@ function clone(obj) {
   throw new Error("Unable to copy [obj]! Its type is not supported.");
 }
 
+function makeTooltip(d, i, context) {
+  var format = d3.format(context.config.measureFormat);
+  d.selector = "bar" + i;
+  //Define tooltips.
+  var tooltip = context.svg.append("g").classed("tooltip", true).attr("id", d.selector);
+  var text = tooltip.append("text").attr({
+    id: "text",
+    x: context.x(d.key),
+    y: context.plot_height,
+    dy: "-.75em",
+    "font-size": "75%",
+    "font-weight": "bold",
+    fill: "white"
+  });
+  text.append("tspan").attr({
+    x: context.x(d.key),
+    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
+    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
+  }).text("" + d.key);
+  text.append("tspan").attr({
+    x: context.x(d.key),
+    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
+    dy: "-1.5em",
+    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
+  }).text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
+  var dimensions = text[0][0].getBBox();
+  var background = tooltip.append("rect").attr({
+    id: "background",
+    x: dimensions.x - 5,
+    y: dimensions.y - 2,
+    width: dimensions.width + 10,
+    height: dimensions.height + 4
+  }).style({
+    fill: "black",
+    stroke: "white"
+  });
+  tooltip[0][0].insertBefore(background[0][0], text[0][0]);
+}
+
+function onResize() {
+  var context = this;
+  //remove x-axis text
+  var ticks = this.wrap.selectAll("g.x.axis g.tick");
+  ticks.select("text").remove();
+  this.svg.selectAll("g.bar-group").each(function (d, i) {
+    makeTooltip(d, i, context);
+  });
+
+  //Add modal to nearest mark.
+  var bars = this.svg.selectAll(".bar-group");
+  var tooltips = this.svg.selectAll(".tooltip");
+  var statistics = this.svg.selectAll(".statistic");
+  this.svg.on("mousemove", function () {
+    //Highlight closest bar.
+    var mouse = d3.mouse(this);
+    var x = mouse[0];
+    var y = mouse[1];
+    var minimum = void 0;
+    var bar = {};
+    bars.each(function (d, i) {
+      d.distance = Math.abs(context.x(d.key) - x);
+      if (i === 0 || d.distance < minimum) {
+        minimum = d.distance;
+        bar = d;
+      }
+    });
+    var closest = bars.filter(function (d) {
+      return d.distance === minimum;
+    }).filter(function (d, i) {
+      return i === 0;
+    }).select("rect").style("fill", "#7BAFD4");
+
+    //Activate tooltip.
+    var d = closest.datum();
+    tooltips.classed("active", false);
+    context.svg.select("#" + d.selector).classed("active", true);
+  }).on("mouseout", function () {
+    bars.select("rect").style("fill", "#999");
+    context.svg.selectAll("g.tooltip").classed("active", false);
+  });
+}
+
+function onInit() {
+  //Add group labels.
+  var chart = this;
+  if (this.config.group_col) {
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+  }
+}
+
+function axisSort(a, b, type) {
+  var alpha = a.key < b.key ? -1 : 1;
+  if (type == "Alphabetical") {
+    return alpha;
+  } else if (type == "Descending") {
+    return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : alpha;
+  } else if (type == "Ascending") {
+    return a.prop_n > b.prop_n ? 2 : a.prop_n < b.prop_n ? -2 : alpha;
+  }
+}
+
+function createVerticalBars(this_, d) {
+  var chartContainer = d3.select(this_).node();
+  var rowSelector = d3.select(this_).node().parentNode;
+  var sortType = d3.select(rowSelector).select(".row-controls").select("select").property("value");
+  var chartSettings = {
+    y: {
+      column: "prop_n",
+      type: "linear",
+      label: "",
+      format: "0.1%",
+      domain: [0, null]
+    },
+    x: {
+      column: "key",
+      type: "ordinal",
+      label: ""
+    },
+    marks: [{
+      type: "bar",
+      per: ["key"],
+      summarizeX: "mean",
+      attributes: {
+        stroke: null,
+        fill: "#999"
+      }
+    }],
+    gridlines: "",
+    resizable: false,
+    height: this_.height,
+    margin: this_.margin,
+    value_col: d.value_col,
+    group_col: d.group || null,
+    overall: d.statistics.values,
+    sort: sortType //Alphabetical, Ascending, Descending
+  };
+
+  chartSettings.margin.left = 50;
+  chartSettings.margin.bottom = 10;
+
+  var chartData = d.statistics.values.sort(function (a, b) {
+    return axisSort(a, b, chartSettings.sort);
+  });
+
+  chartSettings.x.order = chartData.map(function (d) {
+    return d.key;
+  });
+  var x_dom = chartData.map(function (d) {
+    return d.key;
+  });
+
+  if (d.groups) {
+    //Set upper limit of y-axis domain to the maximum group rate.
+    chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
+      return d3.max(di.statistics.values, function (dii) {
+        return dii.prop_n;
+      });
+    });
+
+    chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
+    d.groups.forEach(function (group) {
+      //Define group-level settings.
+      group.chartSettings = clone(chartSettings);
+      group.chartSettings.group_val = group.group;
+      group.chartSettings.n = group.values.length;
+
+      //Sort data by descending rate and keep only the first five categories.
+      group.data = group.statistics.values;
+
+      //Define chart.
+      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart.on("init", onInit);
+      group.chart.on("resize", onResize);
+
+      if (group.data.length) group.chart.init(group.data);else {
+        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
+
+        d3.select(chartContainer).append("div").html("<em>No data available for this level.</em>.<br><br>");
+      }
+    });
+  } else {
+    //Define chart.
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on("init", onInit);
+    chart.on("resize", onResize);
+    chart.init(chartData);
+  }
+}
+
+function createVerticalBarsControls(this_, d) {
+  var sort_values = ["Alphabetical", "Ascending", "Descending"];
+  var wrap = d3.select(this_).append("div").attr("class", "row-controls");
+  wrap.append("small").text("Sort levels: ");
+  var x_sort = wrap.append("select");
+  x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  x_sort.on("change", function () {
+    d3.select(this_).selectAll(".wc-chart").remove();
+    d3.select(this_).selectAll(".panel-label").remove();
+    createVerticalBars(this_, d);
+  });
+}
+
+function onInit$1() {
+  //Add group labels.
+  var chart = this;
+  if (this.config.group_col) {
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+  }
+}
+
 function moveYaxis(chart) {
+  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
+  ticks.select("text").remove();
+  ticks.append("title").text(function (d) {
+    return d;
+  });
+  ticks.append("text").attr({
+    "text-anchor": "start",
+    "alignment-baseline": "middle",
+    dx: "2.5em",
+    x: chart.plot_width
+  }).text(function (d) {
+    return d.length < 25 ? d : d.substring(0, 25) + "...";
+  });
+}
+
+function drawOverallMark(chart) {
+  //Clear overall marks.
+  chart.svg.selectAll(".overall-mark").remove();
+
+  //For each mark draw an overall mark.
+  chart.config.overall.forEach(function (d) {
+    if (chart.config.y.order.indexOf(d.key) > -1) {
+      var g = chart.svg.append("g").classed("overall-mark", true);
+      var x = d.prop_n;
+      var y = d.key;
+
+      //Draw vertical line representing the overall rate of the current categorical value.
+      if (chart.y(y)) {
+        var rateLine = g.append("line").attr({
+          x1: chart.x(x),
+          y1: chart.y(y),
+          x2: chart.x(x),
+          y2: chart.y(y) + chart.y.rangeBand()
+        }).style({
+          stroke: "black",
+          "stroke-width": "2px",
+          "stroke-opacity": "1"
+        });
+        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
+      }
+    }
+  });
+}
+
+function drawDifferences(chart) {
+  //Clear difference marks and annotations.
+  chart.svg.selectAll(".difference-from-total").remove();
+
+  //For each mark draw a difference mark and annotation.
+  chart.current_data.forEach(function (d) {
+    var overall = chart.config.overall.filter(function (di) {
+      return di.key === d.key;
+    })[0],
+        g = chart.svg.append("g").classed("difference-from-total", true).style("display", "none"),
+        x = overall.prop_n,
+        y = overall.key;
+
+    //Draw line from overall rate to group rate.
+    var diffLine = g.append("line").attr({
+      x1: chart.x(x),
+      y1: chart.y(y) + chart.y.rangeBand() / 2,
+      x2: chart.x(d.total),
+      y2: chart.y(y) + chart.y.rangeBand() / 2
+    }).style({
+      stroke: "black",
+      "stroke-width": "2px",
+      "stroke-opacity": ".25"
+    });
+    diffLine.append("title").text("Difference from overall rate: " + d3.format(".1f")((d.total - x) * 100));
+    var diffText = g.append("text").attr({
+      x: chart.x(d.total),
+      y: chart.y(y) + chart.y.rangeBand() / 2,
+      dx: x < d.total ? "5px" : "-2px",
+      "text-anchor": x < d.total ? "beginning" : "end",
+      "font-size": "0.7em"
+    }).text("" + (x < d.total ? "+" : x > d.total ? "-" : "") + d3.format(".1f")(Math.abs(d.total - x) * 100));
+  });
+
+  //Display difference from total on hover.
+  chart.svg.on("mouseover", function () {
+    chart.svg.selectAll(".difference-from-total").style("display", "block");
+    chart.svg.selectAll(".difference-from-total text").each(function () {
+      d3.select(this).attr("dy", this.getBBox().height / 4);
+    });
+  }).on("mouseout", function () {
+    return chart.svg.selectAll(".difference-from-total").style("display", "none");
+  });
+}
+
+function onResize$1() {
+  moveYaxis(this);
+  drawOverallMark(this);
+  if (this.config.group_col) drawDifferences(this);
+}
+
+function createHorizontalBars(this_, d) {
+  //hide the controls if the chart isn't Grouped
+  var rowSelector = d3.select(this_).node().parentNode;
+  var chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
+
+  //let height vary based on the number of levels
+  var custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
+
+  //Chart settings
+  var chartContainer = d3.select(this_).node();
+  var chartSettings = {
+    x: {
+      column: "prop_n",
+      type: "linear",
+      label: "",
+      format: "%",
+      domain: [0, null]
+    },
+    y: {
+      column: "key",
+      type: "ordinal",
+      label: ""
+    },
+    marks: [{
+      type: "bar",
+      per: ["key"],
+      summarizeX: "mean",
+      tooltip: "[key]: [n] ([prop_n_text])",
+      attributes: {
+        stroke: null
+      }
+    }],
+    colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
+    gridlines: "xy",
+    resizable: false,
+    height: custom_height,
+    margin: this_.margin,
+    value_col: d.value_col,
+    group_col: d.group || null,
+    overall: d.statistics.values
+  };
+
+  //Sort data by descending rate and keep only the first five categories.
+  var chartData = d.statistics.values.sort(function (a, b) {
+    return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+  });
+
+  chartSettings.y.order = chartData.map(function (d) {
+    return d.key;
+  }).reverse();
+
+  if (d.groups) {
+    //Set upper limit of x-axis domain to the maximum group rate.
+    chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
+      return d3.max(di.statistics.values, function (dii) {
+        return dii.prop_n;
+      });
+    });
+
+    d.groups.forEach(function (group) {
+      //Define group-level settings.
+      group.chartSettings = clone(chartSettings);
+      group.chartSettings.group_val = group.group;
+      group.chartSettings.n = group.values.length;
+
+      //Sort data by descending rate and keep only the first five categories.
+      group.data = group.statistics.values.filter(function (di) {
+        return chartSettings.y.order.indexOf(di.key) > -1;
+      }).sort(function (a, b) {
+        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+      });
+
+      //Define chart.
+      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart.on("init", onInit$1);
+      group.chart.on("resize", onResize$1);
+
+      if (group.data.length) group.chart.init(group.data);else {
+        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
+        d3.select(chartContainer).append("div").html("<em>This group does not contain any of the first 5 most prevalent levels of " + d.value_col + "</em>.<br><br>");
+      }
+    });
+  } else {
+    //Define chart.
+    var chart = webCharts.createChart(chartContainer, chartSettings);
+    chart.on("init", onInit$1);
+    chart.on("resize", onResize$1);
+    chart.init(chartData);
+  }
+}
+
+function moveYaxis$1(chart) {
   var ticks = chart.wrap.selectAll("g.y.axis g.tick");
   ticks.select("text").remove();
   ticks.append("title").text(function (d) {
@@ -377,7 +767,7 @@ function moveYaxis(chart) {
   });
 }
 
-function drawOverallMark(chart) {
+function drawOverallMark$1(chart) {
   //Clear overall marks.
   chart.svg.selectAll(".overall-mark").remove();
 
@@ -426,16 +816,16 @@ function modifyOverallLegendMark(chart) {
   legendItems.selectAll("circle").attr("r", ".4em");
 }
 
-function onResize() {
-  moveYaxis(this);
-  drawOverallMark(this);
+function onResize$2() {
+  moveYaxis$1(this);
+  drawOverallMark$1(this);
   if (this.config.color_by) modifyOverallLegendMark(this);
 
   //Hide overall dots.
   if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
 }
 
-function makeDotPlot(this_, d) {
+function createDotPlot(this_, d) {
   var chartContainer = d3.select(this_).node();
   var chartSettings = {
     x: {
@@ -512,207 +902,11 @@ function makeDotPlot(this_, d) {
   }
 
   var chart = webCharts.createChart(chartContainer, chartSettings);
-  chart.on("resize", onResize);
+  chart.on("resize", onResize$2);
   chart.init(chartData);
 }
 
-function onInit() {
-  //Add group labels.
-  var chart = this;
-  if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
-    this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
-  }
-}
-
-function moveYaxis$1(chart) {
-  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
-  ticks.select("text").remove();
-  ticks.append("title").text(function (d) {
-    return d;
-  });
-  ticks.append("text").attr({
-    "text-anchor": "start",
-    "alignment-baseline": "middle",
-    dx: "2.5em",
-    x: chart.plot_width
-  }).text(function (d) {
-    return d.length < 25 ? d : d.substring(0, 25) + "...";
-  });
-}
-
-function drawOverallMark$1(chart) {
-  //Clear overall marks.
-  chart.svg.selectAll(".overall-mark").remove();
-
-  //For each mark draw an overall mark.
-  chart.config.overall.forEach(function (d) {
-    if (chart.config.y.order.indexOf(d.key) > -1) {
-      var g = chart.svg.append("g").classed("overall-mark", true);
-      var x = d.prop_n;
-      var y = d.key;
-
-      //Draw vertical line representing the overall rate of the current categorical value.
-      if (chart.y(y)) {
-        var rateLine = g.append("line").attr({
-          x1: chart.x(x),
-          y1: chart.y(y),
-          x2: chart.x(x),
-          y2: chart.y(y) + chart.y.rangeBand()
-        }).style({
-          stroke: "black",
-          "stroke-width": "2px",
-          "stroke-opacity": "1"
-        });
-        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
-      }
-    }
-  });
-}
-
-function drawDifferences(chart) {
-  //Clear difference marks and annotations.
-  chart.svg.selectAll(".difference-from-total").remove();
-
-  //For each mark draw a difference mark and annotation.
-  chart.current_data.forEach(function (d) {
-    var overall = chart.config.overall.filter(function (di) {
-      return di.key === d.key;
-    })[0],
-        g = chart.svg.append("g").classed("difference-from-total", true).style("display", "none"),
-        x = overall.prop_n,
-        y = overall.key;
-
-    //Draw line from overall rate to group rate.
-    var diffLine = g.append("line").attr({
-      x1: chart.x(x),
-      y1: chart.y(y) + chart.y.rangeBand() / 2,
-      x2: chart.x(d.total),
-      y2: chart.y(y) + chart.y.rangeBand() / 2
-    }).style({
-      stroke: "black",
-      "stroke-width": "2px",
-      "stroke-opacity": ".25"
-    });
-    diffLine.append("title").text("Difference from overall rate: " + d3.format(".1f")((d.total - x) * 100));
-    var diffText = g.append("text").attr({
-      x: chart.x(d.total),
-      y: chart.y(y) + chart.y.rangeBand() / 2,
-      dx: x < d.total ? "5px" : "-2px",
-      "text-anchor": x < d.total ? "beginning" : "end",
-      "font-size": "0.7em"
-    }).text("" + (x < d.total ? "+" : x > d.total ? "-" : "") + d3.format(".1f")(Math.abs(d.total - x) * 100));
-  });
-
-  //Display difference from total on hover.
-  chart.svg.on("mouseover", function () {
-    chart.svg.selectAll(".difference-from-total").style("display", "block");
-    chart.svg.selectAll(".difference-from-total text").each(function () {
-      d3.select(this).attr("dy", this.getBBox().height / 4);
-    });
-  }).on("mouseout", function () {
-    return chart.svg.selectAll(".difference-from-total").style("display", "none");
-  });
-}
-
-function onResize$1() {
-  moveYaxis$1(this);
-  drawOverallMark$1(this);
-  if (this.config.group_col) drawDifferences(this);
-}
-
-function makeBarChart(this_, d) {
-  //hide the controls if the chart isn't Grouped
-  var rowSelector = d3.select(this_).node().parentNode;
-  var chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
-
-  //let height vary based on the number of levels
-  var custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
-
-  //Chart settings
-  var chartContainer = d3.select(this_).node();
-  var chartSettings = {
-    x: {
-      column: "prop_n",
-      type: "linear",
-      label: "",
-      format: "%",
-      domain: [0, null]
-    },
-    y: {
-      column: "key",
-      type: "ordinal",
-      label: ""
-    },
-    marks: [{
-      type: "bar",
-      per: ["key"],
-      summarizeX: "mean",
-      tooltip: "[key]: [n] ([prop_n_text])",
-      attributes: {
-        stroke: null
-      }
-    }],
-    colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
-    gridlines: "xy",
-    resizable: false,
-    height: custom_height,
-    margin: this_.margin,
-    value_col: d.value_col,
-    group_col: d.group || null,
-    overall: d.statistics.values
-  };
-
-  //Sort data by descending rate and keep only the first five categories.
-  var chartData = d.statistics.values.sort(function (a, b) {
-    return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-  });
-
-  chartSettings.y.order = chartData.map(function (d) {
-    return d.key;
-  }).reverse();
-
-  if (d.groups) {
-    //Set upper limit of x-axis domain to the maximum group rate.
-    chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
-      return d3.max(di.statistics.values, function (dii) {
-        return dii.prop_n;
-      });
-    });
-
-    d.groups.forEach(function (group) {
-      //Define group-level settings.
-      group.chartSettings = clone(chartSettings);
-      group.chartSettings.group_val = group.group;
-      group.chartSettings.n = group.values.length;
-
-      //Sort data by descending rate and keep only the first five categories.
-      group.data = group.statistics.values.filter(function (di) {
-        return chartSettings.y.order.indexOf(di.key) > -1;
-      }).sort(function (a, b) {
-        return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-      });
-
-      //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-      group.chart.on("init", onInit);
-      group.chart.on("resize", onResize$1);
-
-      if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
-        d3.select(chartContainer).append("div").html("<em>This group does not contain any of the first 5 most prevalent levels of " + d.value_col + "</em>.<br><br>");
-      }
-    });
-  } else {
-    //Define chart.
-    var chart = webCharts.createChart(chartContainer, chartSettings);
-    chart.on("init", onInit);
-    chart.on("resize", onResize$1);
-    chart.init(chartData);
-  }
-}
-
-function makeBarChartControls(this_, d) {
+function createHorizontalBarsControls(this_, d) {
   var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
   var wrap = d3.select(this_).append("div").attr("class", "row-controls");
   wrap.append("small").text("Display Type: ");
@@ -725,216 +919,10 @@ function makeBarChartControls(this_, d) {
     d3.select(this_).selectAll(".wc-chart").remove();
     d3.select(this_).selectAll(".panel-label").remove();
     if (this.value == "Paneled (Bar Charts)") {
-      makeBarChart(this_, d);
+      createHorizontalBars(this_, d);
     } else {
-      makeDotPlot(this_, d);
+      createDotPlot(this_, d);
     }
-  });
-}
-
-function makeTooltip(d, i, context) {
-  var format = d3.format(context.config.measureFormat);
-  d.selector = "bar" + i;
-  //Define tooltips.
-  var tooltip = context.svg.append("g").classed("tooltip", true).attr("id", d.selector);
-  var text = tooltip.append("text").attr({
-    id: "text",
-    x: context.x(d.key),
-    y: context.plot_height,
-    dy: "-.75em",
-    "font-size": "75%",
-    "font-weight": "bold",
-    fill: "white"
-  });
-  text.append("tspan").attr({
-    x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
-    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
-  }).text("" + d.key);
-  text.append("tspan").attr({
-    x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
-    dy: "-1.5em",
-    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
-  }).text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
-  var dimensions = text[0][0].getBBox();
-  var background = tooltip.append("rect").attr({
-    id: "background",
-    x: dimensions.x - 5,
-    y: dimensions.y - 2,
-    width: dimensions.width + 10,
-    height: dimensions.height + 4
-  }).style({
-    fill: "black",
-    stroke: "white"
-  });
-  tooltip[0][0].insertBefore(background[0][0], text[0][0]);
-}
-
-function onResize$2() {
-  var context = this;
-  //remove x-axis text
-  var ticks = this.wrap.selectAll("g.x.axis g.tick");
-  ticks.select("text").remove();
-  this.svg.selectAll("g.bar-group").each(function (d, i) {
-    makeTooltip(d, i, context);
-  });
-
-  //Add modal to nearest mark.
-  var bars = this.svg.selectAll(".bar-group");
-  var tooltips = this.svg.selectAll(".tooltip");
-  var statistics = this.svg.selectAll(".statistic");
-  this.svg.on("mousemove", function () {
-    //Highlight closest bar.
-    var mouse = d3.mouse(this);
-    var x = mouse[0];
-    var y = mouse[1];
-    var minimum = void 0;
-    var bar = {};
-    bars.each(function (d, i) {
-      d.distance = Math.abs(context.x(d.key) - x);
-      if (i === 0 || d.distance < minimum) {
-        minimum = d.distance;
-        bar = d;
-      }
-    });
-    var closest = bars.filter(function (d) {
-      return d.distance === minimum;
-    }).filter(function (d, i) {
-      return i === 0;
-    }).select("rect").style("fill", "#7BAFD4");
-
-    //Activate tooltip.
-    var d = closest.datum();
-    tooltips.classed("active", false);
-    context.svg.select("#" + d.selector).classed("active", true);
-  }).on("mouseout", function () {
-    bars.select("rect").style("fill", "#999");
-    context.svg.selectAll("g.tooltip").classed("active", false);
-  });
-}
-
-function onInit$1() {
-  //Add group labels.
-  var chart = this;
-  if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
-    this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
-  }
-}
-
-function axisSort(a, b, type) {
-  var alpha = a.key < b.key ? -1 : 1;
-  if (type == "Alphabetical") {
-    return alpha;
-  } else if (type == "Descending") {
-    return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : alpha;
-  } else if (type == "Ascending") {
-    return a.prop_n > b.prop_n ? 2 : a.prop_n < b.prop_n ? -2 : alpha;
-  }
-}
-
-function makeLevelChart(this_, d) {
-  var chartContainer = d3.select(this_).node();
-  var rowSelector = d3.select(this_).node().parentNode;
-  var sortType = d3.select(rowSelector).select(".row-controls").select("select").property("value");
-  var chartSettings = {
-    y: {
-      column: "prop_n",
-      type: "linear",
-      label: "",
-      format: "0.1%",
-      domain: [0, null]
-    },
-    x: {
-      column: "key",
-      type: "ordinal",
-      label: ""
-    },
-    marks: [{
-      type: "bar",
-      per: ["key"],
-      summarizeX: "mean",
-      attributes: {
-        stroke: null,
-        fill: "#999"
-      }
-    }],
-    gridlines: "",
-    resizable: false,
-    height: this_.height,
-    margin: this_.margin,
-    value_col: d.value_col,
-    group_col: d.group || null,
-    overall: d.statistics.values,
-    sort: sortType //Alphabetical, Ascending, Descending
-  };
-
-  chartSettings.margin.left = 50;
-  chartSettings.margin.bottom = 10;
-
-  var chartData = d.statistics.values.sort(function (a, b) {
-    return axisSort(a, b, chartSettings.sort);
-  });
-
-  chartSettings.x.order = chartData.map(function (d) {
-    return d.key;
-  });
-  var x_dom = chartData.map(function (d) {
-    return d.key;
-  });
-
-  if (d.groups) {
-    //Set upper limit of y-axis domain to the maximum group rate.
-    chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
-      return d3.max(di.statistics.values, function (dii) {
-        return dii.prop_n;
-      });
-    });
-
-    chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
-    d.groups.forEach(function (group) {
-      //Define group-level settings.
-      group.chartSettings = clone(chartSettings);
-      group.chartSettings.group_val = group.group;
-      group.chartSettings.n = group.values.length;
-
-      //Sort data by descending rate and keep only the first five categories.
-      group.data = group.statistics.values;
-
-      //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
-      group.chart.on("init", onInit$1);
-      group.chart.on("resize", onResize$2);
-
-      if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
-
-        d3.select(chartContainer).append("div").html("<em>No data available for this level.</em>.<br><br>");
-      }
-    });
-  } else {
-    //Define chart.
-    var chart = webCharts.createChart(chartContainer, chartSettings);
-    chart.on("init", onInit$1);
-    chart.on("resize", onResize$2);
-    chart.init(chartData);
-  }
-}
-
-function makeLevelChartControls(this_, d) {
-  var sort_values = ["Alphabetical", "Ascending", "Descending"];
-  var wrap = d3.select(this_).append("div").attr("class", "row-controls");
-  wrap.append("small").text("Sort levels: ");
-  var x_sort = wrap.append("select");
-  x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
-    return d;
-  });
-
-  x_sort.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
-    makeLevelChart(this_, d);
   });
 }
 
@@ -1326,7 +1314,7 @@ function defineHistogram(element, settings) {
   return chart;
 }
 
-function makeHistogram(this_, d) {
+function createHistogramBoxPlot(this_, d) {
   var chartContainer = d3.select(this_).node();
   var chartSettings = {
     measure: " ",
@@ -1354,20 +1342,33 @@ function makeHistogram(this_, d) {
   chart.init(chartData);
 }
 
+/*------------------------------------------------------------------------------------------------\
+  Define controls object.
+\------------------------------------------------------------------------------------------------*/
+
+var charts = {
+  createVerticalBars: createVerticalBars,
+  createVerticalBarsControls: createVerticalBarsControls,
+  createHorizontalBars: createHorizontalBars,
+  createHorizontalBarsControls: createHorizontalBarsControls,
+  createHistogramBoxPlot: createHistogramBoxPlot,
+  createDotPlot: createDotPlot
+};
+
 function makeChart(d) {
   //Common chart settings
   this.height = 100;
   this.margin = { right: 200, left: 30 };
 
-  if (d.chartType === "barChart") {
-    makeBarChartControls(this, d);
-    makeBarChart(this, d);
-  } else if (d.chartType === "levelChart") {
-    makeLevelChartControls(this, d);
-    makeLevelChart(this, d);
-  } else if (d.chartType === "histogram") {
+  if (d.chartType === "horizontalBars") {
+    charts.createHorizontalBarsControls(this, d);
+    charts.createHorizontalBars(this, d);
+  } else if (d.chartType === "verticalBars") {
+    charts.createVerticalBarsControls(this, d);
+    charts.createVerticalBars(this, d);
+  } else if (d.chartType === "histogramBoxPlot") {
     // continuous outcomes
-    makeHistogram(this, d);
+    charts.createHistogramBoxPlot(this, d);
   } else {
     console.warn("Invalid chart type for " + d.key);
   }
@@ -1435,29 +1436,26 @@ function renderRow(d) {
   rowWrap.append("div").attr("class", "row-chart section").each(makeChart);
 }
 
-function updateSummaryText(chart) {
+function updateSummaryText(codebook) {
   //Chart Summary Span
-  if (chart.data.summary.length > 0) {
-    var nCols = chart.data.summary.length;
-    var nShown = chart.data.summary[0].statistics.N;
-    var nTot = chart.data.raw.length;
+  if (codebook.data.summary.length > 0) {
+    var nCols = codebook.data.summary.length;
+    var nShown = codebook.data.summary[0].statistics.N;
+    var nTot = codebook.data.raw.length;
     var percent = d3.format("0.1%")(nShown / nTot);
     var tableSummary = "Data summary for " + nCols + " columns and " + nShown + " of " + nTot + " (" + percent + ") rows shown below.";
   } else {
     tableSummary = "No values selected. Update the filters above or load a different data set.";
   }
 
-  chart.summaryTable.summaryText.text(tableSummary);
+  codebook.summaryTable.summaryText.text(tableSummary);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define summaryTable object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
-
 var summaryTable = {
-  init: init$6,
   draw: draw,
-  destroy: destroy,
   renderRow: renderRow,
   updateSummaryText: updateSummaryText
 };
@@ -1571,7 +1569,7 @@ function addSearch(dataListing) {
       });
       return match;
     });
-    //render the chart
+    //render the codebook
     var sub = dataListing.sorted_raw_data.filter(function (d, i) {
       return i < 25;
     });
@@ -1630,7 +1628,7 @@ function onDraw(dataListing) {
   });
 }
 
-function init$7(codebook) {
+function init$6(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
   //sort config
@@ -1662,7 +1660,7 @@ function init$7(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { init: init$7 };
+var dataListing = { init: init$6 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -1674,35 +1672,35 @@ var defaultSettings$1 = {
   levelSplit: 5 //cutpoint for # of levels to use levelPlot() renderer
 };
 
-function setDefaults(chart) {
+function setDefaults(codebook) {
   /********************* Filter Settings *********************/
-  chart.config.filters = chart.config.filters || defaultSettings$1.filters;
+  codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
 
   //autofilter - don't use automatic filter if user specifies filters object
-  chart.config.autofilter = chart.config.filters.length > 0 ? false : chart.config.autofilter == null ? defaultSettings$1.autofilter : chart.config.autofilter;
+  codebook.config.autofilter = codebook.config.filters.length > 0 ? false : codebook.config.autofilter == null ? defaultSettings$1.autofilter : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
-  chart.config.groups = chart.config.groups || defaultSettings$1.groups;
+  codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
 
   //autogroups - don't use automatic groups if user specifies groups object
-  chart.config.autogroups = chart.config.groups.length > 0 ? false : chart.config.autogroups == null ? defaultSettings$1.autogroups : chart.config.autogroups;
+  codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
 
   /********************* Histogram Settings *********************/
-  chart.config.nBins = chart.config.nBins || defaultSettings$1.nBins;
-  chart.config.autobins = chart.config.autobins == null ? defaultSettings$1.autobins : chart.config.autobins;
+  codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
+  codebook.config.autobins = codebook.config.autobins == null ? defaultSettings$1.autobins : codebook.config.autobins;
 
   /********************* Histogram Settings *********************/
-  chart.config.levelSplit = chart.config.levelSplit || defaultSettings$1.levelSplit;
+  codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
 }
 
-function makeAutomaticFilters(chart) {
+function makeAutomaticFilters(codebook) {
   //make filters for all categorical variables with less than autofilter levels
-  if (chart.config.autofilter > 1) {
-    var autofilters = chart.data.summary.filter(function (f) {
+  if (codebook.config.autofilter > 1) {
+    var autofilters = codebook.data.summary.filter(function (f) {
       return f.type == "categorical";
     }) //categorical filters only
     .filter(function (f) {
-      return f.statistics.values.length <= chart.config.autofilter;
+      return f.statistics.values.length <= codebook.config.autofilter;
     }) //no huge filters
     .filter(function (f) {
       return f.statistics.values.length > 1;
@@ -1711,18 +1709,18 @@ function makeAutomaticFilters(chart) {
       return { value_col: m.value_col };
     });
 
-    chart.config.filters = autofilters.length > 0 ? autofilters : null;
+    codebook.config.filters = autofilters.length > 0 ? autofilters : null;
   }
 }
 
-function makeAutomaticGroups(chart) {
+function makeAutomaticGroups(codebook) {
   //make groups for all categorical variables with less than autofilter levels
-  if (chart.config.autogroups > 1) {
-    var autogroups = chart.data.summary.filter(function (f) {
+  if (codebook.config.autogroups > 1) {
+    var autogroups = codebook.data.summary.filter(function (f) {
       return f.type == "categorical";
     }) //categorical filters only
     .filter(function (f) {
-      return f.statistics.values.length <= chart.config.autogroups;
+      return f.statistics.values.length <= codebook.config.autogroups;
     }) //no groups
     .filter(function (f) {
       return f.statistics.values.length > 1;
@@ -1731,7 +1729,7 @@ function makeAutomaticGroups(chart) {
       return { value_col: m.value_col };
     });
 
-    chart.config.groups = autogroups.length > 0 ? autogroups : null;
+    codebook.config.groups = autogroups.length > 0 ? autogroups : null;
   }
 }
 
@@ -1866,7 +1864,7 @@ function makeSummary(codebook) {
       //Calculate statistics.
       if (variables[i].type === "categorical") variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
       //determine the renderer to use
-      variables[i].chartType = variables[i].type == "continuous" ? "histogram" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "levelChart" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "barChart" : "error";
+      variables[i].chartType = variables[i].type == "continuous" ? "histogramBoxPlot" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "verticalBars" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "horizontalBars" : "error";
 
       //Handle groups.
       if (group) {
@@ -1926,11 +1924,11 @@ var data = {
   makeFiltered: makeFiltered
 };
 
-function createChart$1() {
+function createCodebook() {
   var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
   var config = arguments[1];
 
-  var chart = {
+  var codebook = {
     element: element,
     config: config,
     init: init,
@@ -1942,14 +1940,14 @@ function createChart$1() {
     util: util
   };
 
-  return chart;
+  return codebook;
 }
 
 /*------------------------------------------------------------------------------------------------\
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$8() {
+function init$7() {
   var settings = this.config;
 
   //create wrapper in specified div
@@ -1975,7 +1973,7 @@ function layout$2() {
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }
 
-function init$9(explorer) {
+function init$8(explorer) {
   explorer.controls.wrap.attr("onsubmit", "return false;");
   explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
 
@@ -2005,12 +2003,12 @@ function init$9(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$9
+  init: init$8
 };
 
 function makeCodebook(meta) {
   this.codebookWrap.selectAll("*").remove();
-  var codebook = webcodebook.createChart(".web-codebook-explorer .codebookWrap", meta.settings);
+  var codebook = webcodebook.createCodebook(".web-codebook-explorer .codebookWrap", meta.settings);
   d3.csv(meta.path, function (error, data) {
     codebook.init(data);
   });
@@ -2023,7 +2021,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$8,
+    init: init$7,
     layout: layout$2,
     controls: controls$1,
     makeCodebook: makeCodebook
@@ -2033,8 +2031,10 @@ function createExplorer() {
 }
 
 var index = {
-  createChart: createChart$1,
-  createExplorer: createExplorer
+  createCodebook: createCodebook,
+  createChart: createCodebook,
+  createExplorer: createExplorer,
+  charts: charts
 };
 
 return index;
