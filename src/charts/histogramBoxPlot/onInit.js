@@ -7,6 +7,19 @@ export default function onInit() {
   const measure = config.measure;
   const panel = config.panel;
 
+  //Add a label
+  console.log(this);
+  if (this.group) {
+    const groupTitle = this.wrap
+      .append("p")
+      .attr("class", "panel-label")
+      .style("margin-left", context.config.margin.left + "px")
+      .text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+    this.wrap
+      .node()
+      .parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+  }
+
   //Remove non-numeric and missing values.
   if (!this.group) {
     this.initialSettings.unfilteredData = this.raw_data;
