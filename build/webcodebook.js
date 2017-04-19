@@ -2032,6 +2032,7 @@ function createExplorer() {
 
 var index = {
   createCodebook: createCodebook,
+  createChart: createCodebook,
   createExplorer: createExplorer,
   charts: charts
 };
