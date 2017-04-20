@@ -1160,14 +1160,29 @@ function onResize$3() {
     }
 
     //Rotate y-axis labels.
-    this.svg.select("g.y.axis text.axis-title").remove();
-    this.svg.select("g.y.axis").insert("text", ":first-child").attr({
-      class: "axis-title",
-      x: this.plot_width,
-      y: this.plot_height / 2,
-      dx: "1em"
-    }).style("text-anchor", "start").text(this.group ? "Level: " + this.config.y.label + " \n(n=" + this.values.length + ")" : "");
 
+    this.svg.select("g.y.axis text.axis-title").remove();
+    /*
+    this.svg
+      .select("g.y.axis")
+      .insert("text", ":first-child")
+      .attr({
+        class: "axis-title",
+        x: this.plot_width,
+        y: this.plot_height / 2,
+        dx: "1em"
+      })
+      .style("text-anchor", "start")
+      .text(
+        this.group
+          ? "Level: " +
+              this.config.y.label +
+              " \n(n=" +
+              this.values.length +
+              ")"
+          : ""
+      );
+    */
     //Hide legends.
     this.wrap.select("ul.legend").remove();
 
@@ -1218,6 +1233,13 @@ function onInit$2() {
   var config = this.initialSettings;
   var measure = config.measure;
   var panel = config.panel;
+
+  //Add a label
+  console.log(this);
+  if (this.group) {
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+    this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
+  }
 
   //Remove non-numeric and missing values.
   if (!this.group) {

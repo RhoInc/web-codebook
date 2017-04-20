@@ -129,7 +129,9 @@ export default function onResize() {
     }
 
     //Rotate y-axis labels.
+
     this.svg.select("g.y.axis text.axis-title").remove();
+    /*
     this.svg
       .select("g.y.axis")
       .insert("text", ":first-child")
@@ -149,7 +151,7 @@ export default function onResize() {
               ")"
           : ""
       );
-
+*/
     //Hide legends.
     this.wrap.select("ul.legend").remove();
 
