@@ -1679,12 +1679,18 @@ var defaultSettings$1 = {
 function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
+  codebook.config.filters = codebook.config.filters.map(function (d) {
+    if (typeof d == "string") return { value_col: d };else return d;
+  });
 
   //autofilter - don't use automatic filter if user specifies filters object
   codebook.config.autofilter = codebook.config.filters.length > 0 ? false : codebook.config.autofilter == null ? defaultSettings$1.autofilter : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
+  codebook.config.groups = codebook.config.groups.map(function (d) {
+    if (typeof d == "string") return { value_col: d };else return d;
+  });
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;

@@ -2,6 +2,10 @@ import defaultSettings from "../defaultSettings";
 export function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
+  codebook.config.filters = codebook.config.filters.map(function(d) {
+    if (typeof d == "string") return { value_col: d };
+    else return d;
+  });
 
   //autofilter - don't use automatic filter if user specifies filters object
   codebook.config.autofilter = codebook.config.filters.length > 0
@@ -12,6 +16,10 @@ export function setDefaults(codebook) {
 
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
+  codebook.config.groups = codebook.config.groups.map(function(d) {
+    if (typeof d == "string") return { value_col: d };
+    else return d;
+  });
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
