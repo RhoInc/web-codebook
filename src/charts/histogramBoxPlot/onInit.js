@@ -8,7 +8,6 @@ export default function onInit() {
   const panel = config.panel;
 
   //Add a label
-  console.log(this);
   if (this.group) {
     const groupTitle = this.wrap
       .append("p")

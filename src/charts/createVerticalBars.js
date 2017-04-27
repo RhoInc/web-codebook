@@ -45,7 +45,6 @@ export function createVerticalBars(this_, d) {
     sort: sortType //Alphabetical, Ascending, Descending
   };
 
-  chartSettings.margin.left = 50;
   chartSettings.margin.bottom = 10;
 
   const chartData = d.statistics.values.sort(function(a, b) {
