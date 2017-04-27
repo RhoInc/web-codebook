@@ -19,7 +19,7 @@
   "scripts": {
     "format": "prettier --write 'src/**/*.js'",
     "build": "npm run format && rollup -c",
-    "watch": "npm run format && rollup -c -w"
+    "watch": "rollup -c -w"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",

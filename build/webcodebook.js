@@ -349,6 +349,22 @@ function clone(obj) {
   throw new Error("Unable to copy [obj]! Its type is not supported.");
 }
 
+function moveYaxis(chart) {
+  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
+  ticks.select("text").remove();
+  ticks.append("title").text(function (d) {
+    return d;
+  });
+  ticks.append("text").attr({
+    "text-anchor": "start",
+    "alignment-baseline": "middle",
+    dx: ".5em",
+    x: chart.plot_width
+  }).text(function (d) {
+    return d3.format('%')(d);
+  });
+}
+
 function makeTooltip(d, i, context) {
   var format = d3.format(context.config.measureFormat);
   d.selector = "bar" + i;
@@ -392,6 +408,8 @@ function makeTooltip(d, i, context) {
 
 function onResize() {
   var context = this;
+
+  moveYaxis(this);
   //remove x-axis text
   var ticks = this.wrap.selectAll("g.x.axis g.tick");
   ticks.select("text").remove();
@@ -489,7 +507,6 @@ function createVerticalBars(this_, d) {
     sort: sortType //Alphabetical, Ascending, Descending
   };
 
-  chartSettings.margin.left = 50;
   chartSettings.margin.bottom = 10;
 
   var chartData = d.statistics.values.sort(function (a, b) {
@@ -566,7 +583,7 @@ function onInit$1() {
   }
 }
 
-function moveYaxis(chart) {
+function moveYaxis$1(chart) {
   var ticks = chart.wrap.selectAll("g.y.axis g.tick");
   ticks.select("text").remove();
   ticks.append("title").text(function (d) {
@@ -657,7 +674,7 @@ function drawDifferences(chart) {
 }
 
 function onResize$1() {
-  moveYaxis(this);
+  moveYaxis$1(this);
   drawOverallMark(this);
   if (this.config.group_col) drawDifferences(this);
 }
@@ -753,7 +770,7 @@ function createHorizontalBars(this_, d) {
   }
 }
 
-function moveYaxis$1(chart) {
+function moveYaxis$2(chart) {
   var ticks = chart.wrap.selectAll("g.y.axis g.tick");
   ticks.select("text").remove();
   ticks.append("title").text(function (d) {
@@ -819,7 +836,7 @@ function modifyOverallLegendMark(chart) {
 }
 
 function onResize$2() {
-  moveYaxis$1(this);
+  moveYaxis$2(this);
   drawOverallMark$1(this);
   if (this.config.color_by) modifyOverallLegendMark(this);
 
@@ -1053,7 +1070,7 @@ function makeTooltip$1(d, i, context) {
   tooltip[0][0].insertBefore(background[0][0], text[0][0]);
 }
 
-function moveYaxis$2(chart) {
+function moveYaxis$3(chart) {
   var ticks = chart.wrap.selectAll("g.y.axis g.tick");
   ticks.select("text").remove();
   ticks.append("title").text(function (d) {
@@ -1073,7 +1090,7 @@ function onResize$3() {
   var context = this;
   var format = d3.format(this.config.measureFormat);
 
-  moveYaxis$2(this);
+  moveYaxis$3(this);
 
   //Hide overall plot if [settings.overall] is set to false.
   if (!this.config.overall && !this.group) this.wrap.style("display", "none");else {
@@ -1235,7 +1252,6 @@ function onInit$2() {
   var panel = config.panel;
 
   //Add a label
-  console.log(this);
   if (this.group) {
     var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
