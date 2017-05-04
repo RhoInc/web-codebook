@@ -1,11 +1,3 @@
 # Web-based Codebook
-A web-based companion to the [SAS Codebook](https://github.com/RhoInc/sas-codebook), which generates a concise summary of every variable in a dataset.
-This repo contains JS code for producing summary of each variable in a dataset. Each variable summary is confined to a tall strip, allowing for 9 variables to be summarized on a page.
 
-Metadata is provided for each variable in bold text. This metadata includes the variable's name, label, type, and (if applicable) format.
-
-Below the metadata are the number of non-missing values, the number of missing values, and the number of unique values.
-
-Continuous variables are summarized graphically using a combination histogram/boxplot. Continuous variables are also summarized tabularly using the mean, standard deviation, min, max, median, and quartiles.
-
-
+The web codebook is a javascript library that provides a concise summary of every variable in a dataset. The codebook includes interactive features such as real-time filters and requires minimal user configuration. More detail is available in the [wiki](https://github.com/RhoInc/web-codebook/wiki) and a working example is available [here](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html).

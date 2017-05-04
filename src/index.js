@@ -1,7 +1,10 @@
-import { createChart } from './createChart';
-import { createExplorer } from './createExplorer';
+import { createCodebook } from "./createCodebook";
+import { createExplorer } from "./createExplorer";
+import { charts } from "./charts";
 
 export default {
-  createChart:createChart,
-  createExplorer:createExplorer
+  createCodebook: createCodebook,
+  createChart: createCodebook,
+  createExplorer: createExplorer,
+  charts: charts
 };

@@ -2,7 +2,6 @@
 General
 \------------------------------------------------------------------------------------------------*/
 .web-codebook > * {
-    width: 100%;
     display: block;
 }
 
@@ -113,7 +112,7 @@ Row layout
 }
 
 .web-codebook .summaryTable .variable-row {
-  width: 100%;
+  width:1024px;
   margin-top: 0.3em;
   display: block;
   border:1px solid #999;
@@ -134,7 +133,6 @@ Header layout
 .web-codebook .summaryTable .variable-row .row-head {
   background:#eee;
   padding:0.4em;
-  height:100%;
 }
 
 .web-codebook .summaryTable .variable-row .row-head > * {
@@ -231,12 +229,6 @@ Header - Details layout
 Chart layout
 \-------------------------------------------------------------------------------------------**/
 
-
-.web-codebook .summaryTable .row-chart .variable-row {
-    min-width:400px;
-    max-width:800px;
-}
-
 .web-codebook .summaryTable .variable-row .row-controls {
   border-bottom:1px dashed #999;
   padding:0.2em 0em 0.2em 0.4em ;
@@ -270,7 +262,7 @@ Chart layout
 \------------------------------------------------------------------------------------------------*/
 
     .web-codebook .dataListing {
-        
+
     }
 
     .web-codebook .dataListing .description {
