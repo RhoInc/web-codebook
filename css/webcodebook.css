@@ -249,11 +249,11 @@ Chart layout
     margin-left:1em;
 }
 
-.web-codebook .summaryTable .variable-row .row-chart .tooltip {
+.web-codebook .summaryTable .variable-row .row-chart .svg-tooltip {
     display: none;
 }
 
-.web-codebook .summaryTable .variable-row .row-chart .tooltip.active {
+.web-codebook .summaryTable .variable-row .row-chart .svg-tooltip.active {
     display: block;
 }
 

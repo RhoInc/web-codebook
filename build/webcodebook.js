@@ -391,7 +391,7 @@ function makeTooltip(d, i, context) {
     "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
   }).text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
   var background = tooltip.append("rect").attr({
     id: "background",
@@ -1055,7 +1055,7 @@ function makeTooltip$1(d, i, context) {
     "text-anchor": context.x(d.midpoint) < context.plot_width / 2 ? "start" : "end"
   }).text("n: " + d.total);
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
   var background = tooltip.append("rect").attr({
     id: "background",
