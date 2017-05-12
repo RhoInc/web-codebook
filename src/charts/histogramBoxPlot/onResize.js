@@ -11,7 +11,7 @@ export default function onResize() {
   if (!this.config.overall && !this.group) this.wrap.style("display", "none");
   else {
     //Clear custom marks.
-    this.svg.selectAll("g.tooltip").remove();
+    this.svg.selectAll("g.svg-tooltip").remove();
     this.svg.selectAll(".statistic").remove();
 
     this.svg.selectAll("g.bar-group").each(function(d, i) {
@@ -169,7 +169,7 @@ export default function onResize() {
 
     //Add modal to nearest mark.
     const bars = this.svg.selectAll(".bar-group");
-    const tooltips = this.svg.selectAll(".tooltip");
+    const tooltips = this.svg.selectAll(".svg-tooltip");
     const statistics = this.svg.selectAll(".statistic");
     this.svg
       .on("mousemove", function() {
@@ -199,7 +199,7 @@ export default function onResize() {
       })
       .on("mouseout", function() {
         bars.select("rect").style("fill", "#999");
-        context.svg.selectAll("g.tooltip").classed("active", false);
+        context.svg.selectAll("g.svg-tooltip").classed("active", false);
       });
   }
 }
