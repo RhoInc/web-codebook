@@ -36,7 +36,7 @@ export default function makeTooltip(d, i, context) {
     })
     .text(`n: ${d.total}`);
   const dimensions = text[0][0].getBBox();
-  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed("tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
   const background = tooltip
     .append("rect")
