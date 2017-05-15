@@ -391,7 +391,7 @@ function makeTooltip(d, i, context) {
     "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
   }).text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed("tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
   var background = tooltip.append("rect").attr({
     id: "background",
@@ -419,7 +419,7 @@ function onResize() {
 
   //Add modal to nearest mark.
   var bars = this.svg.selectAll(".bar-group");
-  var tooltips = this.svg.selectAll(".svg-tooltip");
+  var tooltips = this.svg.selectAll(".tooltip");
   var statistics = this.svg.selectAll(".statistic");
   this.svg.on("mousemove", function () {
     //Highlight closest bar.
@@ -447,7 +447,7 @@ function onResize() {
     context.svg.select("#" + d.selector).classed("active", true);
   }).on("mouseout", function () {
     bars.select("rect").style("fill", "#999");
-    context.svg.selectAll("g.svg-tooltip").classed("active", false);
+    context.svg.selectAll("g.tooltip").classed("active", false);
   });
 }
 
@@ -1055,7 +1055,7 @@ function makeTooltip$1(d, i, context) {
     "text-anchor": context.x(d.midpoint) < context.plot_width / 2 ? "start" : "end"
   }).text("n: " + d.total);
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed("tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
   var background = tooltip.append("rect").attr({
     id: "background",
@@ -1095,7 +1095,7 @@ function onResize$3() {
   //Hide overall plot if [settings.overall] is set to false.
   if (!this.config.overall && !this.group) this.wrap.style("display", "none");else {
     //Clear custom marks.
-    this.svg.selectAll("g.svg-tooltip").remove();
+    this.svg.selectAll("g.tooltip").remove();
     this.svg.selectAll(".statistic").remove();
 
     this.svg.selectAll("g.bar-group").each(function (d, i) {
@@ -1212,7 +1212,7 @@ function onResize$3() {
 
     //Add modal to nearest mark.
     var bars = this.svg.selectAll(".bar-group");
-    var tooltips = this.svg.selectAll(".svg-tooltip");
+    var tooltips = this.svg.selectAll(".tooltip");
     var statistics = this.svg.selectAll(".statistic");
     this.svg.on("mousemove", function () {
       //Highlight closest bar.
@@ -1240,7 +1240,7 @@ function onResize$3() {
       context.svg.select("#" + d.selector).classed("active", true);
     }).on("mouseout", function () {
       bars.select("rect").style("fill", "#999");
-      context.svg.selectAll("g.svg-tooltip").classed("active", false);
+      context.svg.selectAll("g.tooltip").classed("active", false);
     });
   }
 }
