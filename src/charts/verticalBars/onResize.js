@@ -14,7 +14,7 @@ export default function onResize() {
 
   //Add modal to nearest mark.
   const bars = this.svg.selectAll(".bar-group");
-  const tooltips = this.svg.selectAll(".tooltip");
+  const tooltips = this.svg.selectAll(".svg-tooltip");
   const statistics = this.svg.selectAll(".statistic");
   this.svg
     .on("mousemove", function() {
@@ -44,6 +44,6 @@ export default function onResize() {
     })
     .on("mouseout", function() {
       bars.select("rect").style("fill", "#999");
-      context.svg.selectAll("g.tooltip").classed("active", false);
+      context.svg.selectAll("g.svg-tooltip").classed("active", false);
     });
 }
