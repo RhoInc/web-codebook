@@ -361,7 +361,7 @@ function moveYaxis(chart) {
     dx: ".5em",
     x: chart.plot_width
   }).text(function (d) {
-    return d3.format('%')(d);
+    return d3.format("%")(d);
   });
 }
 

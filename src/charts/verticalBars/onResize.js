@@ -4,7 +4,7 @@ import makeTooltip from "./makeTooltip.js";
 export default function onResize() {
   const context = this;
 
-    moveYaxis(this);
+  moveYaxis(this);
   //remove x-axis text
   var ticks = this.wrap.selectAll("g.x.axis g.tick");
   ticks.select("text").remove();
