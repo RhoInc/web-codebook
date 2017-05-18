@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -17,7 +17,7 @@
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
   "scripts": {
-    "format": "prettier --write 'src/**/*.js'",
+    "format": "prettier --write src/**/*.js",
     "build": "npm run format && rollup -c",
     "watch": "rollup -c -w"
   },
