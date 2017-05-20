@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -11,7 +11,7 @@
   "homepage": "https://github.com/rhoinc/web-codebook",
   "license": "MIT",
   "author": "Rho, Inc.",
-  "main": "build/codebook.js",
+  "main": "build/webcodebook.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/rhoinc/web-codebook.git"
