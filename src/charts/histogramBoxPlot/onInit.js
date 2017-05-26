@@ -1,6 +1,8 @@
 import clone from "../../util/clone";
 import onResize from "./onResize";
 
+import { createChart } from "webcharts";
+
 export default function onInit() {
   const context = this;
   const config = this.initialSettings;
@@ -77,10 +79,7 @@ export default function onInit() {
       group.settings.y.label = group.group;
       group.settings.y.domain = [0, max];
       group.data = context.raw_data.filter(d => d[panel] === group.group);
-      group.webChart = new webCharts.createChart(
-        config.container,
-        group.settings
-      );
+      group.webChart = new createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
       group.webChart.on("init", onInit);

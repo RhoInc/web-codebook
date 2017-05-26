@@ -1,5 +1,8 @@
-var webcodebook = (function (webcharts) {
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('webcharts'), require('d3')) :
+	typeof define === 'function' && define.amd ? define(['webcharts', 'd3'], factory) :
+	(global.webcodebook = factory(global.webCharts,global.d3));
+}(this, (function (webcharts,d3$1) { 'use strict';
 
 /*------------------------------------------------------------------------------------------------\
   Initialize codebook
@@ -366,7 +369,7 @@ function moveYaxis(chart) {
 }
 
 function makeTooltip(d, i, context) {
-  var format = d3.format(context.config.measureFormat);
+  var format$$1 = d3.format(context.config.measureFormat);
   d.selector = "bar" + i;
   //Define tooltips.
   var tooltip = context.svg.append("g").attr("id", d.selector);
@@ -539,7 +542,7 @@ function createVerticalBars(this_, d) {
       group.data = group.statistics.values;
 
       //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart = webcharts.createChart(chartContainer, group.chartSettings);
       group.chart.on("init", onInit);
       group.chart.on("resize", onResize);
 
@@ -551,7 +554,7 @@ function createVerticalBars(this_, d) {
     });
   } else {
     //Define chart.
-    var chart = webCharts.createChart(chartContainer, chartSettings);
+    var chart = webcharts.createChart(chartContainer, chartSettings);
     chart.on("init", onInit);
     chart.on("resize", onResize);
     chart.init(chartData);
@@ -752,7 +755,7 @@ function createHorizontalBars(this_, d) {
       });
 
       //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart = webcharts.createChart(chartContainer, group.chartSettings);
       group.chart.on("init", onInit$1);
       group.chart.on("resize", onResize$1);
 
@@ -763,7 +766,7 @@ function createHorizontalBars(this_, d) {
     });
   } else {
     //Define chart.
-    var chart = webCharts.createChart(chartContainer, chartSettings);
+    var chart = webcharts.createChart(chartContainer, chartSettings);
     chart.on("init", onInit$1);
     chart.on("resize", onResize$1);
     chart.init(chartData);
@@ -809,7 +812,7 @@ function drawOverallMark$1(chart) {
           "stroke-width": "2px",
           "stroke-opacity": "1"
         });
-        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
+        rateLine.append("title").text("Overall rate: " + d3$1.format(".1%")(x));
       }
     }
   });
@@ -920,7 +923,7 @@ function createDotPlot(this_, d) {
     };
   }
 
-  var chart = webCharts.createChart(chartContainer, chartSettings);
+  var chart = webcharts.createChart(chartContainer, chartSettings);
   chart.on("resize", onResize$2);
   chart.init(chartData);
 }
@@ -1028,9 +1031,9 @@ function syncSettings(settings) {
 }
 
 function makeTooltip$1(d, i, context) {
-  var format = d3.format(context.config.measureFormat);
+  var format$$1 = d3.format(context.config.measureFormat);
   d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
-  d.range = format(d.rangeLow) + "-" + format(d.rangeHigh);
+  d.range = format$$1(d.rangeLow) + "-" + format$$1(d.rangeHigh);
   d.selector = "bar" + i;
   //Define tooltips.
   var tooltip = context.svg.append("g").attr("id", d.selector);
@@ -1088,7 +1091,7 @@ function moveYaxis$3(chart) {
 
 function onResize$3() {
   var context = this;
-  var format = d3.format(this.config.measureFormat);
+  var format$$1 = d3.format(this.config.measureFormat);
 
   moveYaxis$3(this);
 
@@ -1125,7 +1128,7 @@ function onResize$3() {
             "stroke-width": "2px",
             opacity: 0.25
           });
-          whisker.append("title").text("Q" + quantile.probability + "-Q" + rProbability + ": " + format(quantile.quantile) + "-" + format(rQuantile));
+          whisker.append("title").text("Q" + quantile.probability + "-Q" + rProbability + ": " + format$$1(quantile.quantile) + "-" + format$$1(rQuantile));
         }
 
         //Box
@@ -1141,7 +1144,7 @@ function onResize$3() {
             fill: "#7BAFD4",
             opacity: 0.25
           });
-          interQ.append("title").text("Interquartile range: " + format(quantile.quantile) + "-" + format(q3));
+          interQ.append("title").text("Interquartile range: " + format$$1(quantile.quantile) + "-" + format$$1(q3));
         }
 
         //Vertical lines
@@ -1155,7 +1158,7 @@ function onResize$3() {
           stroke: [0.05, 0.95].indexOf(quantile.probability) > -1 ? "red" : [0.25, 0.75].indexOf(quantile.probability) > -1 ? "blue" : "black",
           "stroke-width": "3px"
         });
-        quantile.mark.append("title").text(quantile.label + ": " + format(quantile.quantile));
+        quantile.mark.append("title").text(quantile.label + ": " + format$$1(quantile.quantile));
       }
     }
 
@@ -1173,7 +1176,7 @@ function onResize$3() {
         stroke: "black",
         "stroke-width": "1px"
       });
-      meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format(mean) + "\nSD: " + format(sd));
+      meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format$$1(mean) + "\nSD: " + format$$1(sd));
     }
 
     //Rotate y-axis labels.
@@ -1325,7 +1328,7 @@ function onInit$2() {
       group.data = context.raw_data.filter(function (d) {
         return d[panel] === group.group;
       });
-      group.webChart = new webCharts.createChart(config.container, group.settings);
+      group.webChart = new webcharts.createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
       group.webChart.on("init", onInit$2);
@@ -2087,4 +2090,4 @@ var index = {
 
 return index;
 
-}(webCharts));
+})));

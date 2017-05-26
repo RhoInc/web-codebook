@@ -1,6 +1,7 @@
 import clone from "../util/clone";
 import onInit from "./horizontalBars/onInit";
 import onResize from "./horizontalBars/onResize";
+import { createChart } from "webcharts";
 
 export function createHorizontalBars(this_, d) {
   //hide the controls if the chart isn't Grouped
@@ -52,9 +53,9 @@ export function createHorizontalBars(this_, d) {
   //Sort data by descending rate and keep only the first five categories.
   const chartData = d.statistics.values.sort(
     (a, b) =>
-      (a.prop_n > b.prop_n
+      a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
   );
 
   chartSettings.y.order = chartData.map(d => d.key).reverse();
@@ -76,13 +77,13 @@ export function createHorizontalBars(this_, d) {
         .filter(di => chartSettings.y.order.indexOf(di.key) > -1)
         .sort(
           (a, b) =>
-            (a.prop_n > b.prop_n
+            a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         );
 
       //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart = createChart(chartContainer, group.chartSettings);
       group.chart.on("init", onInit);
       group.chart.on("resize", onResize);
 
@@ -104,7 +105,7 @@ export function createHorizontalBars(this_, d) {
     });
   } else {
     //Define chart.
-    const chart = webCharts.createChart(chartContainer, chartSettings);
+    const chart = createChart(chartContainer, chartSettings);
     chart.on("init", onInit);
     chart.on("resize", onResize);
     chart.init(chartData);

@@ -4,7 +4,7 @@ module.exports = {
   moduleName: 'webcodebook',
   entry: './src/index.js',
   dest: './build/webcodebook.js',
-  format: 'iife',
+  format: 'umd',
   globals: {
     d3: 'd3',
     webcharts: 'webCharts'

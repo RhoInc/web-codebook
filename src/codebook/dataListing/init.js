@@ -1,6 +1,6 @@
 import layout from "./layout";
-import { createTable } from "webcharts";
 import onDraw from "./onDraw";
+import { createTable } from "webcharts";
 
 export function init(codebook) {
   const dataListing = codebook.dataListing;

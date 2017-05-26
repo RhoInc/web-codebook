@@ -1,3 +1,5 @@
+import { format } from 'd3';
+
 export default function drawOverallMark(chart) {
   //Clear overall marks.
   chart.svg.selectAll(".overall-mark").remove();
@@ -24,7 +26,7 @@ export default function drawOverallMark(chart) {
             "stroke-width": "2px",
             "stroke-opacity": "1"
           });
-        rateLine.append("title").text(`Overall rate: ${d3.format(".1%")(x)}`);
+        rateLine.append("title").text(`Overall rate: ${format(".1%")(x)}`);
       }
     }
   });

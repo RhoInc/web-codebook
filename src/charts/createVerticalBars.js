@@ -2,6 +2,7 @@ import clone from "../util/clone";
 import onResize from "./verticalBars/onResize";
 import onInit from "./verticalBars/onInit";
 import axisSort from "./verticalBars/axisSort";
+import { createChart } from "webcharts";
 
 export function createVerticalBars(this_, d) {
   const chartContainer = d3.select(this_).node();
@@ -71,7 +72,7 @@ export function createVerticalBars(this_, d) {
       group.data = group.statistics.values;
 
       //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart = createChart(chartContainer, group.chartSettings);
       group.chart.on("init", onInit);
       group.chart.on("resize", onResize);
 
@@ -92,7 +93,7 @@ export function createVerticalBars(this_, d) {
     });
   } else {
     //Define chart.
-    const chart = webCharts.createChart(chartContainer, chartSettings);
+    const chart = createChart(chartContainer, chartSettings);
     chart.on("init", onInit);
     chart.on("resize", onResize);
     chart.init(chartData);
