@@ -1,5 +1,7 @@
+import { select as d3select } from "d3";
+
 export default function makeDetails(d) {
-  var wrap = d3.select(this);
+  var wrap = d3select(this);
 
   //Render Summary Stats
   var stats_div = wrap.append("div").attr("class", "stat-row");

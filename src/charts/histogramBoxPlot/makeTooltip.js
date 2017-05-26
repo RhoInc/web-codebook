@@ -1,5 +1,7 @@
+import { format as d3format } from "d3";
+
 export default function makeTooltip(d, i, context) {
-  const format = d3.format(context.config.measureFormat);
+  const format = d3format(context.config.measureFormat);
   d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
   d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
   d.selector = `bar` + i;

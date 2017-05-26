@@ -1,3 +1,12 @@
+import {
+  set as d3set,
+  nest as d3nest,
+  format as d3format,
+  mean as d3mean,
+  deviation as d3deviation,
+  quantile as d3quantile
+} from "d3";
+
 export function makeSummary(codebook) {
   var data = codebook.data.filtered;
   var group = codebook.config.group;
@@ -5,7 +14,7 @@ export function makeSummary(codebook) {
   function determineType(vector) {
     const nonMissingValues = vector.filter(d => !/^\s*$/.test(d));
     const numericValues = nonMissingValues.filter(d => !isNaN(+d));
-    const distinctValues = d3.set(numericValues).values();
+    const distinctValues = d3set(numericValues).values();
 
     return nonMissingValues.length === numericValues.length &&
       distinctValues.length > codebook.config.levelSplit
@@ -20,16 +29,15 @@ export function makeSummary(codebook) {
       const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== "NA");
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.values = d3
-        .nest()
+      statistics.values = d3nest()
         .key(d => d)
         .rollup(d => {
           return {
             n: d.length,
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
-            prop_N_text: d3.format("0.1%")(d.length / statistics.N),
-            prop_n_text: d3.format("0.1%")(d.length / statistics.n)
+            prop_N_text: d3format("0.1%")(d.length / statistics.N),
+            prop_n_text: d3format("0.1%")(d.length / statistics.n)
           };
         })
         .entries(nonMissing);
@@ -53,8 +61,8 @@ export function makeSummary(codebook) {
         .sort((a, b) => a - b);
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3.format("0.2f")(d3.mean(nonMissing));
-      statistics.SD = d3.format("0.2f")(d3.deviation(nonMissing));
+      statistics.mean = d3format("0.2f")(d3mean(nonMissing));
+      statistics.SD = d3format("0.2f")(d3deviation(nonMissing));
       const quantiles = [
         ["min", 0],
         ["5th percentile", 0.05],
@@ -66,8 +74,8 @@ export function makeSummary(codebook) {
       ];
       quantiles.forEach(quantile => {
         let statistic = quantile[0];
-        statistics[statistic] = d3.format("0.1f")(
-          d3.quantile(nonMissing, quantile[1])
+        statistics[statistic] = d3format("0.1f")(
+          d3quantile(nonMissing, quantile[1])
         );
       });
 
@@ -102,12 +110,9 @@ export function makeSummary(codebook) {
       //Handle groups.
       if (group) {
         variables[i].group = group;
-        variables[i].groups = d3
-          .set(data.map(d => d[group]))
-          .values()
-          .map(g => {
-            return { group: g };
-          });
+        variables[i].groups = d3set(data.map(d => d[group])).values().map(g => {
+          return { group: g };
+        });
 
         variables[i].groups.forEach(g => {
           //Define variable metadata and generate data array.

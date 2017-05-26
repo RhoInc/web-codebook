@@ -2,6 +2,8 @@
   Initialize custom controls.
 \------------------------------------------------------------------------------------------------*/
 
+import { nest as d3nest, select as d3select } from "d3";
+
 //export function init(selector, data, vars, settings) {
 export function init(codebook) {
   //initialize the wrapper
@@ -11,8 +13,7 @@ export function init(codebook) {
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function(e) {
-    e.values = d3
-      .nest()
+    e.values = d3nest()
       .key(function(d) {
         return d[e.value_col];
       })
@@ -62,8 +63,8 @@ export function init(codebook) {
   //Initialize event listeners
   filterCustom.on("change", function() {
     // flag the selected options in the config
-    d3.select(this).selectAll("option").each(function(option_d) {
-      option_d.selected = d3.select(this).property("selected");
+    d3select(this).selectAll("option").each(function(option_d) {
+      option_d.selected = d3select(this).property("selected");
     });
 
     //update the codebook

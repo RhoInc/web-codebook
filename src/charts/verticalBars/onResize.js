@@ -1,5 +1,6 @@
 import moveYaxis from "./moveYaxis";
 import makeTooltip from "./makeTooltip.js";
+import { mouse as d3mouse } from "d3";
 
 export default function onResize() {
   const context = this;
@@ -19,7 +20,7 @@ export default function onResize() {
   this.svg
     .on("mousemove", function() {
       //Highlight closest bar.
-      const mouse = d3.mouse(this);
+      const mouse = d3mouse(this);
       const x = mouse[0];
       const y = mouse[1];
       let minimum;

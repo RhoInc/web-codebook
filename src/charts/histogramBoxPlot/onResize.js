@@ -1,9 +1,16 @@
 import makeTooltip from "./makeTooltip";
 import moveYaxis from "./moveYaxis";
+import {
+  format as d3format,
+  quantile as d3quantile,
+  mean as d3mean,
+  deviation as d3deviation,
+  mouse as d3mouse
+} from "d3";
 
 export default function onResize() {
   const context = this;
-  const format = d3.format(this.config.measureFormat);
+  const format = d3format(this.config.measureFormat);
 
   moveYaxis(this);
 
@@ -30,12 +37,12 @@ export default function onResize() {
 
       for (const item in quantiles) {
         const quantile = quantiles[item];
-        quantile.quantile = d3.quantile(this.values, quantile.probability);
+        quantile.quantile = d3quantile(this.values, quantile.probability);
 
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile.probability) > -1) {
           const rProbability = quantiles[+item + 1].probability;
-          const rQuantile = d3.quantile(this.values, rProbability);
+          const rQuantile = d3quantile(this.values, rProbability);
           const whisker = this.svg
             .append("line")
             .attr({
@@ -59,7 +66,7 @@ export default function onResize() {
 
         //Box
         if (quantile.probability === 0.25) {
-          const q3 = d3.quantile(this.values, 0.75);
+          const q3 = d3quantile(this.values, 0.75);
           const interQ = this.svg
             .append("rect")
             .attr({
@@ -106,8 +113,8 @@ export default function onResize() {
 
     //Annotate mean.
     if (this.config.mean) {
-      const mean = d3.mean(this.values);
-      const sd = d3.deviation(this.values);
+      const mean = d3mean(this.values);
+      const sd = d3deviation(this.values);
       const meanMark = this.svg
         .append("circle")
         .attr({
@@ -174,7 +181,7 @@ export default function onResize() {
     this.svg
       .on("mousemove", function() {
         //Highlight closest bar.
-        const mouse = d3.mouse(this);
+        const mouse = d3mouse(this);
         const x = context.x.invert(mouse[0]);
         const y = context.y.invert(mouse[1]);
         let minimum;

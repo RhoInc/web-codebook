@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('webcharts'), require('d3')) :
-	typeof define === 'function' && define.amd ? define(['webcharts', 'd3'], factory) :
-	(global.webcodebook = factory(global.webCharts,global.d3));
-}(this, (function (webcharts,d3$1) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3'), require('webcharts')) :
+	typeof define === 'function' && define.amd ? define(['d3', 'webcharts'], factory) :
+	(global.webcodebook = factory(global.d3,global.webCharts));
+}(this, (function (d3,webcharts) { 'use strict';
 
 /*------------------------------------------------------------------------------------------------\
   Initialize codebook
@@ -426,9 +426,9 @@ function onResize() {
   var statistics = this.svg.selectAll(".statistic");
   this.svg.on("mousemove", function () {
     //Highlight closest bar.
-    var mouse = d3.mouse(this);
-    var x = mouse[0];
-    var y = mouse[1];
+    var mouse$$1 = d3.mouse(this);
+    var x = mouse$$1[0];
+    var y = mouse$$1[1];
     var minimum = void 0;
     var bar = {};
     bars.each(function (d, i) {
@@ -812,7 +812,7 @@ function drawOverallMark$1(chart) {
           "stroke-width": "2px",
           "stroke-opacity": "1"
         });
-        rateLine.append("title").text("Overall rate: " + d3$1.format(".1%")(x));
+        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
       }
     }
   });
@@ -1110,16 +1110,16 @@ function onResize$3() {
       var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.50, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
 
       for (var item in quantiles) {
-        var quantile = quantiles[item];
-        quantile.quantile = d3.quantile(this.values, quantile.probability);
+        var quantile$$1 = quantiles[item];
+        quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
 
         //Horizontal lines
-        if ([0.05, 0.75].indexOf(quantile.probability) > -1) {
+        if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
           var rProbability = quantiles[+item + 1].probability;
           var rQuantile = d3.quantile(this.values, rProbability);
           var whisker = this.svg.append("line").attr({
             class: "statistic",
-            x1: this.x(quantile.quantile),
+            x1: this.x(quantile$$1.quantile),
             y1: this.plot_height + this.config.boxPlotHeight / 2,
             x2: this.x(rQuantile),
             y2: this.plot_height + this.config.boxPlotHeight / 2
@@ -1128,47 +1128,47 @@ function onResize$3() {
             "stroke-width": "2px",
             opacity: 0.25
           });
-          whisker.append("title").text("Q" + quantile.probability + "-Q" + rProbability + ": " + format$$1(quantile.quantile) + "-" + format$$1(rQuantile));
+          whisker.append("title").text("Q" + quantile$$1.probability + "-Q" + rProbability + ": " + format$$1(quantile$$1.quantile) + "-" + format$$1(rQuantile));
         }
 
         //Box
-        if (quantile.probability === 0.25) {
+        if (quantile$$1.probability === 0.25) {
           var q3 = d3.quantile(this.values, 0.75);
           var interQ = this.svg.append("rect").attr({
             class: "statistic",
-            x: this.x(quantile.quantile),
+            x: this.x(quantile$$1.quantile),
             y: this.plot_height,
-            width: this.x(q3) - this.x(quantile.quantile),
+            width: this.x(q3) - this.x(quantile$$1.quantile),
             height: this.config.boxPlotHeight
           }).style({
             fill: "#7BAFD4",
             opacity: 0.25
           });
-          interQ.append("title").text("Interquartile range: " + format$$1(quantile.quantile) + "-" + format$$1(q3));
+          interQ.append("title").text("Interquartile range: " + format$$1(quantile$$1.quantile) + "-" + format$$1(q3));
         }
 
         //Vertical lines
-        quantile.mark = this.svg.append("line").attr({
+        quantile$$1.mark = this.svg.append("line").attr({
           class: "statistic",
-          x1: this.x(quantile.quantile),
+          x1: this.x(quantile$$1.quantile),
           y1: this.plot_height,
-          x2: this.x(quantile.quantile),
+          x2: this.x(quantile$$1.quantile),
           y2: this.plot_height + this.config.boxPlotHeight
         }).style({
-          stroke: [0.05, 0.95].indexOf(quantile.probability) > -1 ? "red" : [0.25, 0.75].indexOf(quantile.probability) > -1 ? "blue" : "black",
+          stroke: [0.05, 0.95].indexOf(quantile$$1.probability) > -1 ? "red" : [0.25, 0.75].indexOf(quantile$$1.probability) > -1 ? "blue" : "black",
           "stroke-width": "3px"
         });
-        quantile.mark.append("title").text(quantile.label + ": " + format$$1(quantile.quantile));
+        quantile$$1.mark.append("title").text(quantile$$1.label + ": " + format$$1(quantile$$1.quantile));
       }
     }
 
     //Annotate mean.
     if (this.config.mean) {
-      var mean = d3.mean(this.values);
+      var mean$$1 = d3.mean(this.values);
       var sd = d3.deviation(this.values);
       var meanMark = this.svg.append("circle").attr({
         class: "statistic",
-        cx: this.x(mean),
+        cx: this.x(mean$$1),
         cy: this.plot_height + this.config.boxPlotHeight / 2,
         r: this.config.boxPlotHeight / 3
       }).style({
@@ -1176,7 +1176,7 @@ function onResize$3() {
         stroke: "black",
         "stroke-width": "1px"
       });
-      meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format$$1(mean) + "\nSD: " + format$$1(sd));
+      meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format$$1(mean$$1) + "\nSD: " + format$$1(sd));
     }
 
     //Rotate y-axis labels.
@@ -1219,9 +1219,9 @@ function onResize$3() {
     var statistics = this.svg.selectAll(".statistic");
     this.svg.on("mousemove", function () {
       //Highlight closest bar.
-      var mouse = d3.mouse(this);
-      var x = context.x.invert(mouse[0]);
-      var y = context.y.invert(mouse[1]);
+      var mouse$$1 = d3.mouse(this);
+      var x = context.x.invert(mouse$$1[0]);
+      var y = context.y.invert(mouse$$1[1]);
       var minimum = void 0;
       var bar = {};
       bars.each(function (d, i) {
@@ -1289,7 +1289,7 @@ function onInit$2() {
   if (panel && !this.group) {
     //Nest data by paneling variable to efine y-axis domain as the maximum number of observations
     //in a single bin within a subgrouping.
-    var max = 0;
+    var max$$1 = 0;
     if (!config.y.domain[1]) {
       var nestedData = d3.nest().key(function (d) {
         return d[panel];
@@ -1307,7 +1307,7 @@ function onInit$2() {
         }).rollup(function (d) {
           return d.length;
         }).entries(group.values);
-        max = Math.max(max, d3.max(bins, function (d) {
+        max$$1 = Math.max(max$$1, d3.max(bins, function (d) {
           return d.values;
         }));
       });
@@ -1324,7 +1324,7 @@ function onInit$2() {
     groups.forEach(function (group, i) {
       group.settings = clone(config);
       group.settings.y.label = group.group;
-      group.settings.y.domain = [0, max];
+      group.settings.y.domain = [0, max$$1];
       group.data = context.raw_data.filter(function (d) {
         return d[panel] === group.group;
       });
@@ -1893,9 +1893,9 @@ function makeSummary(codebook) {
       statistics.mean = d3.format("0.2f")(d3.mean(nonMissing));
       statistics.SD = d3.format("0.2f")(d3.deviation(nonMissing));
       var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
-      quantiles.forEach(function (quantile) {
-        var statistic = quantile[0];
-        statistics[statistic] = d3.format("0.1f")(d3.quantile(nonMissing, quantile[1]));
+      quantiles.forEach(function (quantile$$1) {
+        var statistic = quantile$$1[0];
+        statistics[statistic] = d3.format("0.1f")(d3.quantile(nonMissing, quantile$$1[1]));
       });
 
       return statistics;
@@ -2034,13 +2034,13 @@ function init$8(explorer) {
 
   file_select_wrap.append("span").text("Pick a file: ");
 
-  var select = file_select_wrap.append("select");
+  var select$$1 = file_select_wrap.append("select");
 
-  select.selectAll("option").data(explorer.config.files).enter().append("option").text(function (d) {
+  select$$1.selectAll("option").data(explorer.config.files).enter().append("option").text(function (d) {
     return d.label;
   });
 
-  select.on("change", function (d) {
+  select$$1.on("change", function (d) {
     var current_text = this.value;
     var current_obj = explorer.config.files.filter(function (f) {
       return f.label == current_text;

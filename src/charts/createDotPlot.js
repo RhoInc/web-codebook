@@ -1,9 +1,10 @@
 import clone from "../util/clone";
 import onResize from "./dotPlot/onResize";
 import { createChart } from "webcharts";
+import { select as d3select } from "d3";
 
 export function createDotPlot(this_, d) {
-  const chartContainer = d3.select(this_).node();
+  const chartContainer = d3select(this_).node();
   const chartSettings = {
     x: {
       column: "prop_n",

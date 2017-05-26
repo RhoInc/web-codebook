@@ -18,7 +18,7 @@
   },
   "scripts": {
     "format": "prettier --write src/**/*.js",
-    "build": "rollup -c",
+    "build": "npm run format && rollup -c",
     "watch": "rollup -c -w"
   },
   "devDependencies": {

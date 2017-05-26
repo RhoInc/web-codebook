@@ -1,3 +1,5 @@
+import { format as d3format } from "d3";
+
 export default function moveYaxis(chart) {
   const ticks = chart.wrap.selectAll("g.y.axis g.tick");
   ticks.select("text").remove();
@@ -10,5 +12,5 @@ export default function moveYaxis(chart) {
       dx: ".5em",
       x: chart.plot_width
     })
-    .text(d => d3.format("%")(d));
+    .text(d => d3format("%")(d));
 }

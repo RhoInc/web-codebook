@@ -1,10 +1,12 @@
+import { format as d3format } from "d3";
+
 export function updateSummaryText(codebook) {
   //Chart Summary Span
   if (codebook.data.summary.length > 0) {
     var nCols = codebook.data.summary.length;
     var nShown = codebook.data.summary[0].statistics.N;
     var nTot = codebook.data.raw.length;
-    var percent = d3.format("0.1%")(nShown / nTot);
+    var percent = d3format("0.1%")(nShown / nTot);
     var tableSummary =
       "Data summary for " +
       nCols +

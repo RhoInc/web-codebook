@@ -1,7 +1,8 @@
 import { defineHistogram } from "./histogramBoxPlot/defineHistogram";
+import { select as d3select } from "d3";
 
 export function createHistogramBoxPlot(this_, d) {
-  const chartContainer = d3.select(this_).node();
+  const chartContainer = d3select(this_).node();
   const chartSettings = {
     measure: " ",
     resizable: false,

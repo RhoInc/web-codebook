@@ -1,9 +1,9 @@
-import defaultSettings from "../defaultSettings";
-
 // determine the number of bins to use in the histogram based on the data.
 // Based on an implementation of the Freedman-Diaconis
 // See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
 // values should be an array of numbers
+
+import defaultSettings from "../defaultSettings";
 
 export function getBinCounts(codebook) {
   //function to set the bin count for a single variable

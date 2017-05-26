@@ -1,3 +1,5 @@
+import { format as d3format, select as d3select } from "d3";
+
 export default function drawDifferences(chart) {
   //Clear difference marks and annotations.
   chart.svg.selectAll(".difference-from-total").remove();
@@ -29,7 +31,7 @@ export default function drawDifferences(chart) {
     diffLine
       .append("title")
       .text(
-        `Difference from overall rate: ${d3.format(".1f")((d.total - x) * 100)}`
+        `Difference from overall rate: ${d3format(".1f")((d.total - x) * 100)}`
       );
     const diffText = g
       .append("text")
@@ -41,7 +43,7 @@ export default function drawDifferences(chart) {
         "font-size": "0.7em"
       })
       .text(
-        `${x < d.total ? "+" : x > d.total ? "-" : ""}${d3.format(".1f")(Math.abs(d.total - x) * 100)}`
+        `${x < d.total ? "+" : x > d.total ? "-" : ""}${d3format(".1f")(Math.abs(d.total - x) * 100)}`
       );
   });
 
@@ -50,7 +52,7 @@ export default function drawDifferences(chart) {
     .on("mouseover", () => {
       chart.svg.selectAll(".difference-from-total").style("display", "block");
       chart.svg.selectAll(".difference-from-total text").each(function() {
-        d3.select(this).attr("dy", this.getBBox().height / 4);
+        d3select(this).attr("dy", this.getBBox().height / 4);
       });
     })
     .on("mouseout", () =>
