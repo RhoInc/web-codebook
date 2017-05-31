@@ -1,5 +1,7 @@
+import { format as d3format } from "d3";
+
 export default function makeTooltip(d, i, context) {
-  const format = d3.format(context.config.measureFormat);
+  const format = d3format(context.config.measureFormat);
   d.selector = `bar` + i;
   //Define tooltips.
   const tooltip = context.svg.append("g").attr("id", d.selector);
@@ -28,7 +30,7 @@ export default function makeTooltip(d, i, context) {
       dy: "-1.5em",
       "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
     })
-    .text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
+    .text("n=" + d.values.raw[0].n + " (" + d3format("0.1%")(d.total) + ")");
   const dimensions = text[0][0].getBBox();
   tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 

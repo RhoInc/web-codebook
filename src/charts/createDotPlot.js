@@ -1,8 +1,10 @@
 import clone from "../util/clone";
 import onResize from "./dotPlot/onResize";
+import { createChart } from "webcharts";
+import { select as d3select } from "d3";
 
 export function createDotPlot(this_, d) {
-  const chartContainer = d3.select(this_).node();
+  const chartContainer = d3select(this_).node();
   const chartSettings = {
     x: {
       column: "prop_n",
@@ -37,16 +39,16 @@ export function createDotPlot(this_, d) {
   const chartData = d.statistics.values
     .sort(
       (a, b) =>
-        (a.prop_n > b.prop_n
+        a.prop_n > b.prop_n
           ? -2
-          : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+          : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
     )
     .slice(0, 5);
   chartSettings.y.order = chartData.map(d => d.key).reverse();
 
   if (d.groups) {
     //Define overall data.
-    chartData.forEach(di => di.group = "Overall");
+    chartData.forEach(di => (di.group = "Overall"));
 
     //Add group data to overall data.
     d.groups.forEach(group => {
@@ -54,9 +56,9 @@ export function createDotPlot(this_, d) {
         .filter(value => chartSettings.y.order.indexOf(value.key) > -1)
         .sort(
           (a, b) =>
-            (a.prop_n > b.prop_n
+            a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         )
         .forEach(value => {
           value.group = group.group;
@@ -80,7 +82,7 @@ export function createDotPlot(this_, d) {
     };
   }
 
-  const chart = webCharts.createChart(chartContainer, chartSettings);
+  const chart = createChart(chartContainer, chartSettings);
   chart.on("resize", onResize);
   chart.init(chartData);
 }

@@ -1,4 +1,5 @@
 import sort from "./addSort/sort";
+import { select as d3select } from "d3";
 
 export default function addSort(dataListing) {
   dataListing.table.wrap.selectAll(".headers th").on("click", function() {
@@ -41,7 +42,7 @@ export default function addSort(dataListing) {
     //Add sort container deletion functionality.
     dataListing.sort.order.forEach((item, i) => {
       item.container.on("click", function(d) {
-        d3.select(this).remove();
+        d3select(this).remove();
         dataListing.sort.order.splice(
           dataListing.sort.order.map(d => d.variable).indexOf(d.key),
           1

@@ -1,5 +1,12 @@
+import {
+  select as d3select,
+  format as d3format,
+  set as d3set,
+  merge as d3merge
+} from "d3";
+
 export default function makeTitle(d) {
-  var wrap = d3.select(this);
+  var wrap = d3select(this);
   var titleDiv = wrap.append("div").attr("class", "var-name");
   var valuesList = wrap.append("ul").attr("class", "value-list");
 
@@ -23,7 +30,7 @@ export default function makeTitle(d) {
       .data(topValues)
       .enter()
       .append("li")
-      .text(d => d.key + " (" + d3.format("0.1%")(d.prop_n) + ")")
+      .text(d => d.key + " (" + d3format("0.1%")(d.prop_n) + ")")
       .attr("title", d => "n=" + d.n)
       .style("cursor", "help");
 
@@ -36,8 +43,7 @@ export default function makeTitle(d) {
     }
   } else if (d.type == "continuous") {
     //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3
-      .set(d.values)
+    var sortedValues = d3set(d.values)
       .values() //get unique
       .map(d => +d) //convert to numeric
       .sort(function(a, b) {
@@ -51,7 +57,7 @@ export default function makeTitle(d) {
     var maxValues = sortedValues.filter(function(d, i) {
       return i >= nValues - 3;
     });
-    var valList = d3.merge([minValues, ["..."], maxValues]);
+    var valList = d3merge([minValues, ["..."], maxValues]);
 
     valuesList
       .selectAll("li")

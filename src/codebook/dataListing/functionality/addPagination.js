@@ -1,5 +1,6 @@
 import addLinks from "./addPagination/addLinks";
 import updatePagination from "./addPagination/updatePagination";
+import { select as d3select } from "d3";
 
 export default function addPagination(dataListing) {
   //Render page links.
@@ -7,7 +8,7 @@ export default function addPagination(dataListing) {
 
   //Render a different page on click.
   dataListing.pagination.links.on("click", function() {
-    dataListing.pagination.activeLink = d3.select(this).attr("rel");
+    dataListing.pagination.activeLink = d3select(this).attr("rel");
     updatePagination(dataListing);
   });
 }

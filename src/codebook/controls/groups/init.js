@@ -2,6 +2,8 @@
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
+import { merge as d3merge } from "d3";
+
 export function init(codebook) {
   if (codebook.config.groups.length > 0) {
     var selector = codebook.controls.wrap
@@ -12,7 +14,7 @@ export function init(codebook) {
 
     var groupSelect = selector.append("select");
 
-    var groupLevels = d3.merge([
+    var groupLevels = d3merge([
       ["None"],
       codebook.config.groups.map(m => m.value_col)
     ]);

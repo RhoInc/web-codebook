@@ -1,12 +1,13 @@
 import clone from "../util/clone";
 import onInit from "./horizontalBars/onInit";
 import onResize from "./horizontalBars/onResize";
+import { createChart } from "webcharts";
+import { select as d3select, max as d3max } from "d3";
 
 export function createHorizontalBars(this_, d) {
   //hide the controls if the chart isn't Grouped
-  const rowSelector = d3.select(this_).node().parentNode;
-  const chartControls = d3
-    .select(rowSelector)
+  const rowSelector = d3select(this_).node().parentNode;
+  const chartControls = d3select(rowSelector)
     .select(".row-controls")
     .classed("hidden", !d.groups);
 
@@ -14,7 +15,7 @@ export function createHorizontalBars(this_, d) {
   const custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
 
   //Chart settings
-  const chartContainer = d3.select(this_).node();
+  const chartContainer = d3select(this_).node();
   const chartSettings = {
     x: {
       column: "prop_n",
@@ -52,17 +53,17 @@ export function createHorizontalBars(this_, d) {
   //Sort data by descending rate and keep only the first five categories.
   const chartData = d.statistics.values.sort(
     (a, b) =>
-      (a.prop_n > b.prop_n
+      a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
   );
 
   chartSettings.y.order = chartData.map(d => d.key).reverse();
 
   if (d.groups) {
     //Set upper limit of x-axis domain to the maximum group rate.
-    chartSettings.x.domain[1] = d3.max(d.groups, di =>
-      d3.max(di.statistics.values, dii => dii.prop_n)
+    chartSettings.x.domain[1] = d3max(d.groups, di =>
+      d3max(di.statistics.values, dii => dii.prop_n)
     );
 
     d.groups.forEach(group => {
@@ -76,26 +77,24 @@ export function createHorizontalBars(this_, d) {
         .filter(di => chartSettings.y.order.indexOf(di.key) > -1)
         .sort(
           (a, b) =>
-            (a.prop_n > b.prop_n
+            a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         );
 
       //Define chart.
-      group.chart = webCharts.createChart(chartContainer, group.chartSettings);
+      group.chart = createChart(chartContainer, group.chartSettings);
       group.chart.on("init", onInit);
       group.chart.on("resize", onResize);
 
       if (group.data.length) group.chart.init(group.data);
       else {
-        d3
-          .select(chartContainer)
+        d3select(chartContainer)
           .append("p")
           .text(
             `${chartSettings.group_col}: ${group.chartSettings.group_val} (n=${group.chartSettings.n})`
           );
-        d3
-          .select(chartContainer)
+        d3select(chartContainer)
           .append("div")
           .html(
             `<em>This group does not contain any of the first 5 most prevalent levels of ${d.value_col}</em>.<br><br>`
@@ -104,7 +103,7 @@ export function createHorizontalBars(this_, d) {
     });
   } else {
     //Define chart.
-    const chart = webCharts.createChart(chartContainer, chartSettings);
+    const chart = createChart(chartContainer, chartSettings);
     chart.on("init", onInit);
     chart.on("resize", onResize);
     chart.init(chartData);

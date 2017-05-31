@@ -1,5 +1,12 @@
 import clone from "../../util/clone";
 import onResize from "./onResize";
+import { createChart } from "webcharts";
+import {
+  extent as d3extent,
+  nest as d3nest,
+  max as d3max,
+  set as d3set
+} from "d3";
 
 export default function onInit() {
   const context = this;
@@ -32,7 +39,7 @@ export default function onInit() {
 
   //Define x-axis domain as the range of the measure, regardless of subgrouping.
   if (!this.initialSettings.xDomain) {
-    this.initialSettings.xDomain = d3.extent(this.values);
+    this.initialSettings.xDomain = d3extent(this.values);
     config.xDomain = this.initialSettings.xDomain;
   }
   this.config.x.domain = this.initialSettings.xDomain;
@@ -46,27 +53,25 @@ export default function onInit() {
     //in a single bin within a subgrouping.
     let max = 0;
     if (!config.y.domain[1]) {
-      const nestedData = d3.nest().key(d => d[panel]).entries(context.raw_data);
+      const nestedData = d3nest().key(d => d[panel]).entries(context.raw_data);
       nestedData.forEach(group => {
-        const domain = d3.extent(group.values, d => +d[measure]);
+        const domain = d3extent(group.values, d => +d[measure]);
         const binWidth = (domain[1] - domain[0]) / config.nBins;
         group.values.forEach(d => {
           d.bin =
             Math.floor((+d[measure] - domain[0]) / binWidth) -
             (+d[measure] === domain[1]) * 1;
         });
-        const bins = d3
-          .nest()
+        const bins = d3nest()
           .key(d => d.bin)
           .rollup(d => d.length)
           .entries(group.values);
-        max = Math.max(max, d3.max(bins, d => d.values));
+        max = Math.max(max, d3max(bins, d => d.values));
       });
     }
 
     //Plot the chart for each group.
-    const groups = d3
-      .set(context.raw_data.map(d => d[panel]))
+    const groups = d3set(context.raw_data.map(d => d[panel]))
       .values()
       .map(d => {
         return { group: d };
@@ -77,10 +82,7 @@ export default function onInit() {
       group.settings.y.label = group.group;
       group.settings.y.domain = [0, max];
       group.data = context.raw_data.filter(d => d[panel] === group.group);
-      group.webChart = new webCharts.createChart(
-        config.container,
-        group.settings
-      );
+      group.webChart = new createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
       group.webChart.on("init", onInit);

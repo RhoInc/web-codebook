@@ -2,12 +2,13 @@
   Initialize codebook
 \------------------------------------------------------------------------------------------------*/
 
+import { select as d3select } from "d3";
+
 export function init(data) {
   var settings = this.config;
 
   //create chart wrapper in specified div
-  this.wrap = d3
-    .select(this.element)
+  this.wrap = d3select(this.element)
     .append("div")
     .attr("class", "web-codebook");
 

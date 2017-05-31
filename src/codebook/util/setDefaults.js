@@ -1,4 +1,5 @@
 import defaultSettings from "../defaultSettings";
+
 export function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
