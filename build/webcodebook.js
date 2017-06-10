@@ -196,7 +196,7 @@ function init$4(codebook) {
 var chartToggle = { init: init$4 };
 
 function init$5(codebook) {
-  var container = codebook.controls.wrap.append("div").classed("data-listing-toggle", true).text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
+  var container = codebook.controls.wrap.append("button").attr("class", "data-listing-toggle").text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
   container.on("click", function () {
     if (codebook.dataListing.wrap.style("display") === "none") {
       codebook.dataListing.wrap.classed("hidden", false);
@@ -240,9 +240,11 @@ function set$1(codebook) {
   console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
+  codebook.controls.wrap.attr("class", "controls " + codebook.config.controlVisibility);
 
   //hide the controls if controlVisibility isn't "visible" ...
   codebook.controls.wrap.selectAll("*").classed("hidden", !(codebook.config.controlVisibility == "visible"));
+
   // but show the title and the toggle ...
   codebook.controls.wrap.select("div.controls-title").classed("hidden", false);
   codebook.controls.wrap.select("button.control-toggle").classed("hidden", false);

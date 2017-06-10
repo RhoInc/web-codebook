@@ -1,7 +1,7 @@
 export function init(codebook) {
   const container = codebook.controls.wrap
-    .append("div")
-    .classed("data-listing-toggle", true)
+    .append("button")
+    .attr("class","data-listing-toggle")
     .text(
       codebook.dataListing.wrap.style("display") === "none"
         ? "View data"
