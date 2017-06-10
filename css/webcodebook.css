@@ -22,16 +22,26 @@ General
 .web-codebook .hidden{
   display: none;
 }
+
 /*------------------------------------------------------------------------------------------------\
 Controls layout
 \------------------------------------------------------------------------------------------------*/
 
+
 .web-codebook .controls {
+  position: relative;
   display: inline-block;
   vertical-align: top;
-  padding-right: 10px;
+  width:1024px;
+  border: 1px dashed #ccc;
+  padding:0.5em 0.5em 1em 0.5em;
+  margin: 0.5em 0 0.5em 0;
+
 }
 
+.web-codebook .controls .controls-title{
+  font-weight:bold;
+}
 .web-codebook .controls > * {
   clear: both;
   padding-bottom: 1%;
@@ -48,6 +58,9 @@ Controls layout
     margin-right: 1em;
 }
 
+.web-codebook .controls .data-listing-toggle.hidden {
+  display:none;
+}
 .web-codebook .controls .group-select span {
   padding-right: 5px;
 }
@@ -58,7 +71,9 @@ Controls layout
   padding-right:1em;
 }
 
-.web-codebook .controls .chart-toggle button{
+.web-codebook .controls .chart-toggle button,
+.web-codebook .controls button.control-toggle
+{
   margin-left:0.5em;
   background-color:white;
   border:2px solid #008CBA;
@@ -66,10 +81,18 @@ Controls layout
 }
 
 .web-codebook .controls .data-listing-toggle:hover,
-.web-codebook .controls .chart-toggle button:hover{
+.web-codebook .controls .chart-toggle button:hover,
+.web-codebook .controls button.control-toggle:hover{
   cursor:pointer;
   background-color:#008CBA;
   color:white;
+}
+
+.web-codebook .controls button.control-toggle
+{
+  position:absolute;
+  top:0.5em;
+  right:0.5em;
 }
 
 .web-codebook .controls .custom-filters ul li {
@@ -98,6 +121,9 @@ Controls layout
 .web-codebook .controls .custom-filters ul li.filterCustom span.filterLabel * {
   display: inline-block;
 }
+
+
+
 
 /*------------------------------------------------------------------------------------------------\
 Row layout

@@ -5,7 +5,8 @@ const defaultSettings = {
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
   nBins: 100,
-  levelSplit: 5 //cutpoint for # of levels to use levelPlot() renderer
+  levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
+  controlVisibility: "visible"
 };
 
 export default defaultSettings;

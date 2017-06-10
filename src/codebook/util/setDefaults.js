@@ -38,4 +38,9 @@ export function setDefaults(codebook) {
   /********************* Histogram Settings *********************/
   codebook.config.levelSplit =
     codebook.config.levelSplit || defaultSettings.levelSplit;
+
+  /********************* Histogram Settings *********************/
+codebook.config.controlVisibility =
+  codebook.config.controlVisibility || defaultSettings.controlVisibility;
+
 }
