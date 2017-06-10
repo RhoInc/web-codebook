@@ -38,6 +38,10 @@ Controls layout
   margin-bottom:0.5em;
 }
 
+.web-codebook .controls.hidden {
+  display:none;
+}
+
 .web-codebook .controls.minimized {
   height:28px;
 }
