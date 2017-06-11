@@ -17,7 +17,7 @@ export function init(codebook) {
 
   //set the active tabs
   codebook.nav.tabs.forEach(function(t){
-    t.active = t.label == codebook.config.defaultTab
+    t.active = t.key == codebook.config.defaultTab
     t.wrap.classed("hidden",!t.active)
   })
 

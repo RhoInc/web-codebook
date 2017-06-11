@@ -274,7 +274,7 @@ function init$6(codebook) {
 
   //set the active tabs
   codebook.nav.tabs.forEach(function (t) {
-    t.active = t.label == codebook.config.defaultTab;
+    t.active = t.key == codebook.config.defaultTab;
     t.wrap.classed("hidden", !t.active);
   });
 
@@ -1827,15 +1827,14 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: "visible",
-  tabs: ["codebook", "listing"],
-  defaultTab: ["Codebook"]
+  tabs: ["codebook", "listing"]
 };
 
 function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
   codebook.config.filters = codebook.config.filters.map(function (d) {
-    if (typeof d == "string") return { value_col: d };else return d;
+    if (typeof d == 'string') return { value_col: d };else return d;
   });
 
   //autofilter - don't use automatic filter if user specifies filters object
@@ -1844,7 +1843,7 @@ function setDefaults(codebook) {
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
   codebook.config.groups = codebook.config.groups.map(function (d) {
-    if (typeof d == "string") return { value_col: d };else return d;
+    if (typeof d == 'string') return { value_col: d };else return d;
   });
 
   //autogroups - don't use automatic groups if user specifies groups object
@@ -1862,7 +1861,11 @@ function setDefaults(codebook) {
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
-  codebook.config.defaultTab = codebook.config.defaultTab || defaultSettings$1.defaultTab;
+  codebook.config.defaultTab = codebook.config.defaultTab || codebook.config.tabs[0];
+  if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
+    console.warn("Invalid starting tab of '" + codebook.config.defaultTab + "' specified. Using '" + codebook.config.tabs[0] + "' instead.");
+    codebook.config.defaultTab = codebook.config.tabs[0];
+  }
 }
 
 function makeAutomaticFilters(codebook) {
