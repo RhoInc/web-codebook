@@ -24,10 +24,10 @@ export function init(codebook) {
   });
 
   //Clear custom controls.
-  selector.selectAll("ul.nav").remove();
+  selector.selectAll("ul.filter-list").remove();
 
   //Add filter controls.
-  var filterList = selector.append("ul").attr("class", "nav");
+  var filterList = selector.append("ul").attr("class", "filter-list");
 
   var filterItem = filterList
     .selectAll("li")
