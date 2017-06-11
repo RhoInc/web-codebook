@@ -1,10 +1,10 @@
-import defaultSettings from "../defaultSettings";
+import defaultSettings from '../defaultSettings';
 
 export function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
   codebook.config.filters = codebook.config.filters.map(function(d) {
-    if (typeof d == "string") return { value_col: d };
+    if (typeof d == 'string') return { value_col: d };
     else return d;
   });
 
@@ -18,7 +18,7 @@ export function setDefaults(codebook) {
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
   codebook.config.groups = codebook.config.groups.map(function(d) {
-    if (typeof d == "string") return { value_col: d };
+    if (typeof d == 'string') return { value_col: d };
     else return d;
   });
 
@@ -40,7 +40,15 @@ export function setDefaults(codebook) {
     codebook.config.levelSplit || defaultSettings.levelSplit;
 
   /********************* Histogram Settings *********************/
-codebook.config.controlVisibility =
-  codebook.config.controlVisibility || defaultSettings.controlVisibility;
+  codebook.config.controlVisibility =
+    codebook.config.controlVisibility || defaultSettings.controlVisibility;
 
+  /********************* Nav Settings *********************/
+  codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
+  codebook.config.defaultTab =
+    codebook.config.defaultTab || codebook.config.tabs[0];
+  if(codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
+    console.warn("Invalid starting tab of '"+codebook.config.defaultTab+"' specified. Using '"+codebook.config.tabs[0]+"' instead.")
+    codebook.config.defaultTab =  codebook.config.tabs[0];
+  }
 }

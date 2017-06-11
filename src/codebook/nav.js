@@ -1,7 +1,9 @@
 /*------------------------------------------------------------------------------------------------\
-  Define chart toggle object.
+  Define nav object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from "./dataListingToggle/init";
+import { init } from "./nav/init";
 
-export const dataListingToggle = { init: init };
+export const nav = {
+  init: init
+};

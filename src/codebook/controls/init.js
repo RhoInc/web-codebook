@@ -9,7 +9,6 @@ export function init(codebook) {
   .text("Codebook Controls")
 
   //Draw controls.
-  codebook.controls.dataListingToggle.init(codebook);
   codebook.controls.groups.init(codebook);
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
