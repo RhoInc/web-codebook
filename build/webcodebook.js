@@ -89,9 +89,8 @@ function init$2(codebook) {
 
   //Add filter controls.
   var filterList = selector.append("ul").attr("class", "filter-list");
-
   var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
-    return "custom-" + d.key + " filterCustom";
+    return "custom-" + d.value_col + " filterCustom";
   });
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
