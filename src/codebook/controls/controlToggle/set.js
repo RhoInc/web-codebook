@@ -2,8 +2,8 @@ export function set(codebook) {
   console.log(codebook.config.controlVisibility)
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show")
-  codebook.controls.wrap.attr("class","controls "+codebook.config.controlVisibility)
-  
+  codebook.controls.wrap.attr("class","controls section "+codebook.config.controlVisibility)
+
   //hide the controls if controlVisibility isn't "visible" ...
   codebook.controls.wrap.selectAll("*").classed("hidden", !(codebook.config.controlVisibility == "visible"))
 

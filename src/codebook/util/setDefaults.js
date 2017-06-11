@@ -43,4 +43,8 @@ export function setDefaults(codebook) {
 codebook.config.controlVisibility =
   codebook.config.controlVisibility || defaultSettings.controlVisibility;
 
+/********************* Nav Settings *********************/
+codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
+codebook.config.defaultTab = codebook.config.defaultTab || defaultSettings.defaultTab;
+
 }

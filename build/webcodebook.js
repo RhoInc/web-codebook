@@ -30,6 +30,9 @@ function init(data) {
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
 
+  //initialize nav
+  this.nav.init(this);
+
   //initialize and then draw the codebook
   this.summaryTable.draw(this);
 
@@ -42,14 +45,14 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
-  this.controls.wrap = this.wrap.append("div").attr("class", "controls");
-  this.nav.wrap = this.wrap.append("div").attr("class", "nav");
+  this.nav.wrap = this.wrap.append("div").attr("class", "nav section");
+  this.controls.wrap = this.wrap.append("div").attr("class", "controls section");
 
-  this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable").classed("hidden", false);
+  this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable section").classed("hidden", false);
 
-  this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText");
+  this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText section");
 
-  this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing").classed("hidden", true);
+  this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing section").classed("hidden", true);
 }
 
 function init$1(codebook) {
@@ -218,7 +221,7 @@ function set$1(codebook) {
   console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
-  codebook.controls.wrap.attr("class", "controls " + codebook.config.controlVisibility);
+  codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
 
   //hide the controls if controlVisibility isn't "visible" ...
   codebook.controls.wrap.selectAll("*").classed("hidden", !(codebook.config.controlVisibility == "visible"));
@@ -252,19 +255,76 @@ var controls = {
   controlToggle: controlToggle
 };
 
+var availableTabs = [{ key: "codebook", label: "Codebook", selector: ".web-codebook .summaryTable" }, { key: "listing", label: "Data Listing", selector: ".web-codebook .dataListing" }];
+
 function init$6(codebook) {
-  var container = codebook.nav.wrap.append("button").attr("class", "data-listing-toggle").text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
-  container.on("click", function () {
-    if (codebook.dataListing.wrap.style("display") === "none") {
-      codebook.dataListing.wrap.classed("hidden", false);
-      codebook.summaryTable.wrap.classed("hidden", true);
-      container.text("View codebook");
-    } else {
-      codebook.dataListing.wrap.classed("hidden", true);
-      codebook.summaryTable.wrap.classed("hidden", false);
-      container.text("View data");
+
+  codebook.nav.wrap.selectAll("*").remove();
+  console.log(codebook.config);
+  //permanently hide the codebook sections that aren't included
+  availableTabs.forEach(function (tab) {
+    tab.wrap = d3$1.select(tab.selector);
+    tab.wrap.classed("hidden", codebook.config.tabs.indexOf(tab.key) == -1);
+  });
+
+  //get the tabs for the current codebook
+  codebook.nav.tabs = availableTabs.filter(function (tab) {
+    return codebook.config.tabs.indexOf(tab.key) > -1;
+  });
+
+  //set the active tabs
+  codebook.nav.tabs.forEach(function (t) {
+    t.active = t.label == codebook.config.defaultTab;
+    t.wrap.classed("hidden", !t.active);
+  });
+
+  //draw the nav
+  var chartNav = codebook.nav.wrap.append("ul").attr("class", "nav nav-tabs");
+  var navItems = chartNav.selectAll("li").data(codebook.nav.tabs) //make this a setting
+  .enter().append("li").classed("active", function (d, i) {
+    return d.active; //make this a setting
+  });
+
+  navItems.append("a").text(function (d) {
+    return d.label;
+  });
+
+  //event listener for nav clicks
+  navItems.on("click", function (d) {
+    console.log("clicked on " + d.label);
+    if (!d.active) {
+      codebook.nav.tabs.forEach(function (t) {
+        t.active = d.label == t.label; //set the clicked tab to active
+        navItems.filter(function (f) {
+          return f == t;
+        }).classed("active", t.active); //style the active nav element
+        t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
+      });
+      console.log(codebook.nav.tabs);
     }
   });
+
+  /*
+    const container = codebook.nav.wrap
+      .append("button")
+      .attr("class","data-listing-toggle")
+      .text(
+        codebook.dataListing.wrap.style("display") === "none"
+          ? "View data"
+          : "View codebook"
+      );
+    container.on("click", function() {
+      if (codebook.dataListing.wrap.style("display") === "none") {
+        codebook.dataListing.wrap.classed("hidden", false);
+        codebook.summaryTable.wrap.classed("hidden", true);
+        container.text("View codebook");
+      } else {
+        codebook.dataListing.wrap.classed("hidden", true);
+        codebook.summaryTable.wrap.classed("hidden", false);
+        container.text("View data");
+      }
+    });
+    */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1766,7 +1826,9 @@ var defaultSettings$1 = {
   autobins: true,
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
-  controlVisibility: "visible"
+  controlVisibility: "visible",
+  tabs: ["codebook", "listing"],
+  defaultTab: ["Codebook"]
 };
 
 function setDefaults(codebook) {
@@ -1797,6 +1859,10 @@ function setDefaults(codebook) {
 
   /********************* Histogram Settings *********************/
   codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
+
+  /********************* Nav Settings *********************/
+  codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
+  codebook.config.defaultTab = codebook.config.defaultTab || defaultSettings$1.defaultTab;
 }
 
 function makeAutomaticFilters(codebook) {
