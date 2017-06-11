@@ -4,6 +4,7 @@
 
 export function layout() {
   this.controls.wrap = this.wrap.append("div").attr("class", "controls");
+  this.nav.wrap = this.wrap.append("div").attr("class", "nav");
 
   this.summaryTable.wrap = this.wrap
     .append("div")

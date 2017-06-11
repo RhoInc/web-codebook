@@ -43,6 +43,7 @@ function init(data) {
 
 function layout() {
   this.controls.wrap = this.wrap.append("div").attr("class", "controls");
+  this.nav.wrap = this.wrap.append("div").attr("class", "nav");
 
   this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable").classed("hidden", false);
 
@@ -59,7 +60,6 @@ function init$1(codebook) {
   codebook.controls.wrap.append("div").attr("class", "controls-title").text("Codebook Controls");
 
   //Draw controls.
-  codebook.controls.dataListingToggle.init(codebook);
   codebook.controls.groups.init(codebook);
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
@@ -195,32 +195,11 @@ function init$4(codebook) {
 
 var chartToggle = { init: init$4 };
 
-function init$5(codebook) {
-  var container = codebook.controls.wrap.append("button").attr("class", "data-listing-toggle").text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
-  container.on("click", function () {
-    if (codebook.dataListing.wrap.style("display") === "none") {
-      codebook.dataListing.wrap.classed("hidden", false);
-      codebook.summaryTable.wrap.classed("hidden", true);
-      container.text("View codebook");
-    } else {
-      codebook.dataListing.wrap.classed("hidden", true);
-      codebook.summaryTable.wrap.classed("hidden", false);
-      container.text("View data");
-    }
-  });
-}
-
-/*------------------------------------------------------------------------------------------------\
-  Define chart toggle object.
-\------------------------------------------------------------------------------------------------*/
-
-var dataListingToggle = { init: init$5 };
-
 /*------------------------------------------------------------------------------------------------\
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
-function init$6(codebook) {
+function init$5(codebook) {
   //render the control
   var controlToggle = codebook.controls.wrap.append('button').attr('class', 'control-toggle');
 
@@ -258,7 +237,7 @@ function set$1(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var controlToggle = {
-  init: init$6,
+  init: init$5,
   set: set$1
 };
 
@@ -271,8 +250,30 @@ var controls = {
   filters: filters,
   groups: groups,
   chartToggle: chartToggle,
-  dataListingToggle: dataListingToggle,
   controlToggle: controlToggle
+};
+
+function init$6(codebook) {
+  var container = codebook.nav.wrap.append("button").attr("class", "data-listing-toggle").text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
+  container.on("click", function () {
+    if (codebook.dataListing.wrap.style("display") === "none") {
+      codebook.dataListing.wrap.classed("hidden", false);
+      codebook.summaryTable.wrap.classed("hidden", true);
+      container.text("View codebook");
+    } else {
+      codebook.dataListing.wrap.classed("hidden", true);
+      codebook.summaryTable.wrap.classed("hidden", false);
+      container.text("View data");
+    }
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define nav object.
+\------------------------------------------------------------------------------------------------*/
+
+var nav = {
+  init: init$6
 };
 
 /*------------------------------------------------------------------------------------------------\
@@ -2040,6 +2041,7 @@ function createCodebook() {
     init: init,
     layout: layout,
     controls: controls,
+    nav: nav,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
