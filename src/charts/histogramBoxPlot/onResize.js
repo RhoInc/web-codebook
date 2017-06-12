@@ -39,6 +39,16 @@ export default function onResize() {
         const quantile = quantiles[item];
         quantile.quantile = d3quantile(this.values, quantile.probability);
 
+		// Label lower & upper whiskers for future use in plotting outliers
+		//-----------------------------------------------------------------
+		if ( quantile.probability == 0.05 ){
+			const lower_whisker = this.values;
+		}
+		else if (quantile.probability == 0.95){
+			const upper_whisker = this.values;
+		}
+		//-----------------------------------------------------------------
+		
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile.probability) > -1) {
           const rProbability = quantiles[+item + 1].probability;
@@ -53,7 +63,7 @@ export default function onResize() {
               y2: this.plot_height + this.config.boxPlotHeight / 2
             })
             .style({
-              stroke: "red",
+              stroke: "black",
               "stroke-width": "2px",
               opacity: 0.25
             });
@@ -77,7 +87,7 @@ export default function onResize() {
               height: this.config.boxPlotHeight
             })
             .style({
-              fill: "#7BAFD4",
+              fill: "#ffffff",
               opacity: 0.25
             });
           interQ
@@ -99,9 +109,9 @@ export default function onResize() {
           })
           .style({
             stroke: [0.05, 0.95].indexOf(quantile.probability) > -1
-              ? "red"
+              ? "black"
               : [0.25, 0.75].indexOf(quantile.probability) > -1
-                  ? "blue"
+                  ? "black"
                   : "black",
             "stroke-width": "3px"
           });
@@ -124,7 +134,7 @@ export default function onResize() {
           r: this.config.boxPlotHeight / 3
         })
         .style({
-          fill: "#ccc",
+          fill: "#000000",
           stroke: "black",
           "stroke-width": "1px"
         });
@@ -134,6 +144,43 @@ export default function onResize() {
           `n: ${this.values.length}\nMean: ${format(mean)}\nSD: ${format(sd)}`
         );
     }
+
+	//Mark Outliers
+	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Loop through all data points
+	for( points in this.values ){
+		// if the data point is below the lower whisker (0.5)
+		if( points < lower_whisker ){
+			// plot as outlier
+			.append("circle")
+			.attr({
+				class: "statistic",
+				cy: this.plot_height + this.config.boxPlotHeight / 2,
+				r: this.config.boxPlotHeight / 3
+			})
+				.style({
+					fill: "#000000",
+					stroke: "black",
+					"stroke-width": "1px"
+				});
+		}
+		// if the data point is above the upper whister (0.95)
+		if( points > upper_whisker ){
+			// plot as outlier
+			.append("circle")
+			.attr({
+				class: "statistic",
+				cy: this.plot_height + this.config.boxPlotHeight / 2,
+				r: this.config.boxPlotHeight / 3
+			})
+				.style({
+					fill: "#000000",
+					stroke: "black",
+					"stroke-width": "1px"
+				});
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Rotate y-axis labels.
 
@@ -197,7 +244,7 @@ export default function onResize() {
           .filter(d => d.distance === minimum)
           .filter((d, i) => i === 0)
           .select("rect")
-          .style("fill", "#7BAFD4");
+          .style("fill", "#000000");
 
         //Activate tooltip.
         const d = closest.datum();
