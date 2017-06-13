@@ -5,11 +5,9 @@
 import { nest as d3nest, select as d3select } from "d3";
 
 //export function init(selector, data, vars, settings) {
-export function init(codebook) {
+export function update(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap
-    .append("div")
-    .attr("class", "custom-filters");
+  var selector = codebook.controls.wrap.select("div.custom-filters");
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function(e) {
@@ -23,19 +21,18 @@ export function init(codebook) {
       });
   });
 
-  //Clear custom controls.
-  selector.selectAll("ul.filter-list").remove();
-
   //Add filter controls.
-  var filterList = selector.append("ul").attr("class", "filter-list");
-  var filterItem = filterList
+  var filterList = selector.select("ul.filter-list");
+  var allFilterItem = filterList
     .selectAll("li")
-    .data(codebook.config.filters, d => d.value_col)
+    .data(codebook.config.filters, d => d.value_col);
+  var filterItem = allFilterItem
     .enter()
     .append("li")
     .attr("class", function(d) {
       return "custom-" + d.value_col + " filterCustom";
     });
+  allFilterItem.exit().remove();
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 

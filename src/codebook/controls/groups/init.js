@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------\
-  Initialize group controls.
+  Initialize group control.
 \------------------------------------------------------------------------------------------------*/
 
 import { merge as d3merge } from "d3";
@@ -21,7 +21,7 @@ export function init(codebook) {
 
     groupSelect
       .selectAll("option")
-      .data(groupLevels)
+      .data(groupLevels, d => d)
       .enter()
       .append("option")
       .text(d => d);
