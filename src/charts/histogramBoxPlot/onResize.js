@@ -42,10 +42,10 @@ export default function onResize() {
 		// Label lower & upper whiskers for future use in plotting outliers
 		//-----------------------------------------------------------------
 		if ( quantile.probability == 0.05 ){
-			const lower_whisker = this.values;
+			const lower_whisker =  quantile.quantile;
 		}
 		else if (quantile.probability == 0.95){
-			const upper_whisker = this.values;
+			const upper_whisker = quantile.quantile;
 		}
 		//-----------------------------------------------------------------
 		
@@ -148,36 +148,38 @@ export default function onResize() {
 	//Mark Outliers
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Loop through all data points
-	for( points in this.values ){
+	for( point in this.values ){
 		// if the data point is below the lower whisker (0.5)
-		if( points < lower_whisker ){
+		if( point < lower_whisker ){
 			// plot as outlier
 			.append("circle")
 			.attr({
 				class: "statistic",
+				cx: point,				
 				cy: this.plot_height + this.config.boxPlotHeight / 2,
 				r: this.config.boxPlotHeight / 3
 			})
-				.style({
-					fill: "#000000",
-					stroke: "black",
-					"stroke-width": "1px"
-				});
+			.style({
+				fill: "#000000",
+				stroke: "black",
+				"stroke-width": "1px"
+			});
 		}
 		// if the data point is above the upper whister (0.95)
-		if( points > upper_whisker ){
+		if( point > upper_whisker ){
 			// plot as outlier
 			.append("circle")
 			.attr({
 				class: "statistic",
+				cx: point,
 				cy: this.plot_height + this.config.boxPlotHeight / 2,
 				r: this.config.boxPlotHeight / 3
 			})
-				.style({
-					fill: "#000000",
-					stroke: "black",
-					"stroke-width": "1px"
-				});
+			.style({
+				fill: "#000000",
+				stroke: "black",
+				"stroke-width": "1px"
+			});
 		}
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
