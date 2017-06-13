@@ -1113,6 +1113,16 @@ function onResize$3() {
         var quantile$$1 = quantiles[item];
         quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
 
+		// Label lower & upper whiskers for future use in plotting outliers
+		//-----------------------------------------------------------------
+		if ( quantile.probability == 0.05 ){
+			const lower_whisker =  quantile.quantile;
+		}
+		else if (quantile.probability == 0.95){
+			const upper_whisker = quantile.quantile;
+		}
+		//-----------------------------------------------------------------
+
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
           var rProbability = quantiles[+item + 1].probability;
@@ -1178,6 +1188,34 @@ function onResize$3() {
       });
       meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format$$1(mean$$1) + "\nSD: " + format$$1(sd));
     }
+
+	
+	//Mark Outliers
+	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Loop through all data points
+	for( point in this.values ){
+		// if the data point is outside the whiskers, then it is an outlier
+		if(( point < lower_whisker ) || ( point > upper_whisker ){
+			// plot as circle
+			.append("circle")
+			.attr({
+				class: "statistic",
+				// plot at x location (this.values)
+				cx: point,
+				// plot at y location (same y coordinate as mean circle)
+				cy: this.plot_height + this.config.boxPlotHeight / 2,
+				// plot with radius (same radius as mean circle)
+				r: this.config.boxPlotHeight / 3
+			})
+			.style({
+				// Inherit same style as mean circle
+				fill: "#000000",
+				stroke: "black",
+				"stroke-width": "1px"
+			});
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Rotate y-axis labels.
 
