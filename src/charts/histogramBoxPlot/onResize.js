@@ -149,33 +149,21 @@ export default function onResize() {
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Loop through all data points
 	for( point in this.values ){
-		// if the data point is below the lower whisker (0.5)
-		if( point < lower_whisker ){
-			// plot as outlier
+		// if the data point is below the lower whisker (0.5) or above the upper whisker (0.95)
+		if(( point < lower_whisker ) || ( point > upper_whisker ){
+			// plot as circle
 			.append("circle")
 			.attr({
 				class: "statistic",
-				cx: point,				
-				cy: this.plot_height + this.config.boxPlotHeight / 2,
-				r: this.config.boxPlotHeight / 3
-			})
-			.style({
-				fill: "#000000",
-				stroke: "black",
-				"stroke-width": "1px"
-			});
-		}
-		// if the data point is above the upper whister (0.95)
-		if( point > upper_whisker ){
-			// plot as outlier
-			.append("circle")
-			.attr({
-				class: "statistic",
+				// plot at x location (this.values)
 				cx: point,
+				// plot at y location (same y coordinate as mean circle)
 				cy: this.plot_height + this.config.boxPlotHeight / 2,
+				// plot with radius (same radius as mean circle)
 				r: this.config.boxPlotHeight / 3
 			})
 			.style({
+				// Inherit same style as mean circle
 				fill: "#000000",
 				stroke: "black",
 				"stroke-width": "1px"
