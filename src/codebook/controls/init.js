@@ -4,14 +4,13 @@ export function init(codebook) {
 
   //Draw title
   codebook.controls.wrap
-  .append("div")
-  .attr("class","controls-title")
-  .text("Codebook Controls")
+    .append("div")
+    .attr("class", "controls-title")
+    .text("Codebook Controls");
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
-
 }

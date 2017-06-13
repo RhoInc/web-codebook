@@ -53,9 +53,9 @@ export function createHorizontalBars(this_, d) {
   //Sort data by descending rate and keep only the first five categories.
   const chartData = d.statistics.values.sort(
     (a, b) =>
-      (a.prop_n > b.prop_n
+      a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
   );
 
   chartSettings.y.order = chartData.map(d => d.key).reverse();
@@ -77,9 +77,9 @@ export function createHorizontalBars(this_, d) {
         .filter(di => chartSettings.y.order.indexOf(di.key) > -1)
         .sort(
           (a, b) =>
-            (a.prop_n > b.prop_n
+            a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1)
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         );
 
       //Define chart.

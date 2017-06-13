@@ -203,15 +203,15 @@ var chartToggle = { init: init$4 };
 
 function init$5(codebook) {
   //render the control
-  var controlToggle = codebook.controls.wrap.append('button').attr('class', 'control-toggle');
+  var controlToggle = codebook.controls.wrap.append("button").attr("class", "control-toggle");
 
   //set the initial
   codebook.controls.controlToggle.set(codebook);
 
-  controlToggle.on('click', function () {
+  controlToggle.on("click", function () {
     console.log(d3.select(this).text());
-    codebook.config.controlVisibility = d3.select(this).text() == "Hide" ? "minimized" : //click "-" to minimize controls
-    "visible"; // click "+" to show controls
+    codebook.config.controlVisibility = d3.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
+    : "visible"; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
   });
@@ -255,10 +255,17 @@ var controls = {
   controlToggle: controlToggle
 };
 
-var availableTabs = [{ key: "codebook", label: "Codebook", selector: ".web-codebook .summaryTable" }, { key: "listing", label: "Data Listing", selector: ".web-codebook .dataListing" }];
+var availableTabs = [{
+  key: "codebook",
+  label: "Codebook",
+  selector: ".web-codebook .summaryTable"
+}, {
+  key: "listing",
+  label: "Data Listing",
+  selector: ".web-codebook .dataListing"
+}];
 
 function init$6(codebook) {
-
   codebook.nav.wrap.selectAll("*").remove();
   console.log(codebook.config);
   //permanently hide the codebook sections that aren't included
@@ -305,26 +312,26 @@ function init$6(codebook) {
   });
 
   /*
-    const container = codebook.nav.wrap
-      .append("button")
-      .attr("class","data-listing-toggle")
-      .text(
-        codebook.dataListing.wrap.style("display") === "none"
-          ? "View data"
-          : "View codebook"
-      );
-    container.on("click", function() {
-      if (codebook.dataListing.wrap.style("display") === "none") {
-        codebook.dataListing.wrap.classed("hidden", false);
-        codebook.summaryTable.wrap.classed("hidden", true);
-        container.text("View codebook");
-      } else {
-        codebook.dataListing.wrap.classed("hidden", true);
-        codebook.summaryTable.wrap.classed("hidden", false);
-        container.text("View data");
-      }
-    });
-    */
+  const container = codebook.nav.wrap
+    .append("button")
+    .attr("class","data-listing-toggle")
+    .text(
+      codebook.dataListing.wrap.style("display") === "none"
+        ? "View data"
+        : "View codebook"
+    );
+  container.on("click", function() {
+    if (codebook.dataListing.wrap.style("display") === "none") {
+      codebook.dataListing.wrap.classed("hidden", false);
+      codebook.summaryTable.wrap.classed("hidden", true);
+      container.text("View codebook");
+    } else {
+      codebook.dataListing.wrap.classed("hidden", true);
+      codebook.summaryTable.wrap.classed("hidden", false);
+      container.text("View data");
+    }
+  });
+  */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1834,7 +1841,7 @@ function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
   codebook.config.filters = codebook.config.filters.map(function (d) {
-    if (typeof d == 'string') return { value_col: d };else return d;
+    if (typeof d == "string") return { value_col: d };else return d;
   });
 
   //autofilter - don't use automatic filter if user specifies filters object
@@ -1843,7 +1850,7 @@ function setDefaults(codebook) {
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
   codebook.config.groups = codebook.config.groups.map(function (d) {
-    if (typeof d == 'string') return { value_col: d };else return d;
+    if (typeof d == "string") return { value_col: d };else return d;
   });
 
   //autogroups - don't use automatic groups if user specifies groups object
@@ -2077,6 +2084,7 @@ function makeSummary(codebook) {
 function makeFiltered(data, filters) {
   var filtered = data;
   filters.forEach(function (filter_d) {
+    console.log(filter_d);
     //remove the filtered values from the data based on the filters
     filtered = filtered.filter(function (rowData) {
       var currentValues = filter_d.values.filter(function (f) {
@@ -2084,7 +2092,7 @@ function makeFiltered(data, filters) {
       }).map(function (m) {
         return m.value;
       });
-      return currentValues.indexOf(rowData[filter_d.value_col]) > -1;
+      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
     });
   });
   return filtered;
