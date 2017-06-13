@@ -36,4 +36,7 @@ export function init(data) {
 
   //initialize and then draw the data listing
   this.dataListing.init(this);
+
+  //initialize and then draw the data listing
+  this.settings.init(this);
 }

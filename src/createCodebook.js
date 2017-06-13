@@ -6,6 +6,7 @@ import { summaryTable } from "./codebook/summaryTable";
 import { dataListing } from "./codebook/dataListing";
 import { util } from "./codebook/util";
 import { data } from "./codebook/data";
+import { settings } from "./codebook/settings";
 
 export function createCodebook(element = "body", config) {
   let codebook = {
@@ -18,7 +19,8 @@ export function createCodebook(element = "body", config) {
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
-    util: util
+    util: util,
+    settings: settings
   };
 
   return codebook;

@@ -38,6 +38,9 @@ function init(data) {
 
   //initialize and then draw the data listing
   this.dataListing.init(this);
+
+  //initialize and then draw the data listing
+  //this.settings.init(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -53,6 +56,8 @@ function layout() {
   this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText section");
 
   this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing section").classed("hidden", true);
+
+  this.settings.wrap = this.wrap.append("div").attr("class", "settings section").classed("hidden", true);
 }
 
 function init$1(codebook) {
@@ -165,11 +170,25 @@ function init$3(codebook) {
   }
 }
 
+function update(codebook) {
+    var groupControl = codebook.controls.wrap.select('div.group-select'),
+        groupSelect = groupControl.select('select'),
+        groupLevels = d3$1.merge([['None'], codebook.config.groups.map(function (m) {
+        return m.value_col;
+    })]);
+    groupSelect.selectAll('option').remove();
+    groupSelect.selectAll('option').data(groupLevels).enter().append('option').text(function (d) {
+        return d;
+    });
+}
+
 /*------------------------------------------------------------------------------------------------\
   Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var groups = { init: init$3 };
+var groups = {
+  init: init$3,
+  update: update };
 
 /*------------------------------------------------------------------------------------------------\
   Initialize custom controls.
@@ -218,7 +237,6 @@ function init$5(codebook) {
 }
 
 function set$1(codebook) {
-  console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
   codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
@@ -255,12 +273,11 @@ var controls = {
   controlToggle: controlToggle
 };
 
-var availableTabs = [{ key: "codebook", label: "Codebook", selector: ".web-codebook .summaryTable" }, { key: "listing", label: "Data Listing", selector: ".web-codebook .dataListing" }];
+var availableTabs = [{ key: "codebook", label: "Codebook", selector: ".web-codebook .summaryTable" }, { key: "listing", label: "Data Listing", selector: ".web-codebook .dataListing" }, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
 
 function init$6(codebook) {
 
   codebook.nav.wrap.selectAll("*").remove();
-  console.log(codebook.config);
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
@@ -281,17 +298,18 @@ function init$6(codebook) {
   //draw the nav
   var chartNav = codebook.nav.wrap.append("ul").attr("class", "nav nav-tabs");
   var navItems = chartNav.selectAll("li").data(codebook.nav.tabs) //make this a setting
-  .enter().append("li").classed("active", function (d, i) {
+  .enter().append("li").attr('class', function (d) {
+    return d.key;
+  }).classed("active", function (d, i) {
     return d.active; //make this a setting
   });
 
-  navItems.append("a").text(function (d) {
+  navItems.append("a").html(function (d) {
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
-    console.log("clicked on " + d.label);
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -300,7 +318,6 @@ function init$6(codebook) {
         }).classed("active", t.active); //style the active nav element
         t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
       });
-      console.log(codebook.nav.tabs);
     }
   });
 
@@ -1827,7 +1844,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: "visible",
-  tabs: ["codebook", "listing"]
+  tabs: ["codebook", "listing", 'settings']
 };
 
 function setDefaults(codebook) {
@@ -2099,6 +2116,75 @@ var data = {
   makeFiltered: makeFiltered
 };
 
+function init$8(codebook) {
+    console.log(codebook);
+    //Add control to update groups.
+    var updateGroups = codebook.settings.wrap.append('div').classed('update-groups update-control', true).text('Select group variables:'),
+        groupList = updateGroups.append('ul'),
+        groupItems = groupList.selectAll('li').data(Object.keys(codebook.data.raw[0])).enter().append('li');
+    groupItems.each(function (d) {
+        d3.select(this).html('<input type = "checkbox"> ' + d);
+        d3.select(this).select('input').property('checked', codebook.config.groups.map(function (group) {
+            return group.value_col;
+        }).indexOf(d) > -1);
+    });
+    groupItems.each(function (d) {
+        d3.select(this).select('input').on('click', function () {
+            d3.select(this).property('checked', !d3.select(this).property('checked'));
+        });
+    });
+    groupItems.on('click', function () {
+        var li = d3.select(this),
+            input = li.select('input'),
+            checked = input.property('checked');
+        input.property('checked', !checked);
+        var groups = groupItems.filter(function () {
+            return d3.select(this).select('input').property('checked');
+        }).data();
+        codebook.config.groups = groups.map(function (d) {
+            return { value_col: d };
+        });
+        codebook.controls.groups.update(codebook);
+    });
+
+    //Add control to update filters.
+    var updateFilters = codebook.settings.wrap.append('div').classed('update-filters update-control', true).text('Select filter variables:'),
+        filterList = updateFilters.append('ul'),
+        filterItems = filterList.selectAll('li').data(Object.keys(codebook.data.raw[0])).enter().append('li');
+    filterItems.each(function (d) {
+        d3.select(this).html('<input type = "checkbox"> ' + d);
+        d3.select(this).select('input').property('checked', codebook.config.filters.map(function (filter) {
+            return filter.value_col;
+        }).indexOf(d) > -1);
+    });
+    filterItems.each(function (d) {
+        d3.select(this).select('input').on('click', function () {
+            d3.select(this).property('checked', !d3.select(this).property('checked'));
+        });
+    });
+    filterItems.on('click', function () {
+        var li = d3.select(this),
+            input = li.select('input'),
+            checked = input.property('checked');
+        input.property('checked', !checked);
+        var filters = filterItems.filter(function () {
+            return d3.select(this).select('input').property('checked');
+        }).data();
+        codebook.config.filters = filters.map(function (d) {
+            return { value_col: d };
+        });
+        codebook.controls.filters.init(codebook);
+    });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define settings object.
+\------------------------------------------------------------------------------------------------*/
+
+var settings = {
+  init: init$8
+};
+
 function createCodebook() {
   var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
   var config = arguments[1];
@@ -2113,7 +2199,8 @@ function createCodebook() {
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
-    util: util
+    util: util,
+    settings: settings
   };
 
   return codebook;
@@ -2123,7 +2210,7 @@ function createCodebook() {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$8() {
+function init$9() {
   var settings = this.config;
 
   //create wrapper in specified div
@@ -2149,7 +2236,7 @@ function layout$2() {
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }
 
-function init$9(explorer) {
+function init$10(explorer) {
   explorer.controls.wrap.attr("onsubmit", "return false;");
   explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
 
@@ -2179,7 +2266,7 @@ function init$9(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$9
+  init: init$10
 };
 
 function makeCodebook(meta) {
@@ -2197,7 +2284,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$8,
+    init: init$9,
     layout: layout$2,
     controls: controls$1,
     makeCodebook: makeCodebook

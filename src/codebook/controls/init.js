@@ -13,5 +13,4 @@ export function init(codebook) {
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
-
 }

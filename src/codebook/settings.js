@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------------------------------------\
-  Define filter controls object.
+  Define settings object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from "./groups/init";
-import { update } from "./groups/update";
+import { init } from "./settings/init";
 
-export const groups = {
-    init: init,
-    update: update};
+export const settings = {
+  init: init
+};
