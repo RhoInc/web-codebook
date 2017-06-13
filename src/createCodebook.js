@@ -1,6 +1,7 @@
 import { init } from "./codebook/init";
 import { layout } from "./codebook/layout";
 import { controls } from "./codebook/controls";
+import { nav } from "./codebook/nav";
 import { summaryTable } from "./codebook/summaryTable";
 import { dataListing } from "./codebook/dataListing";
 import { util } from "./codebook/util";
@@ -13,6 +14,7 @@ export function createCodebook(element = "body", config) {
     init: init,
     layout: layout,
     controls: controls,
+    nav: nav,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
