@@ -432,7 +432,7 @@ Chart layout
         float: left;
         cursor:pointer;
         border:2px solid black;
-        font-size: 16px;
+        font-size: 24px;
     }
 
     .web-codebook .nav ul.nav-tabs li a {
@@ -449,12 +449,10 @@ Chart layout
     }
 
     .web-codebook .nav ul.nav-tabs li.settings {
-        font-size: 24px;
         float: right;
     }
 
     .web-codebook .nav ul.nav-tabs li.settings a {
-        padding: 10.5px 16px;
     }
 
     .web-codebook .nav ul.nav-tabs li.active, ul.nav-tabs li.active:hover {
@@ -471,21 +469,32 @@ Chart layout
   Settings
 \------------------------------------------------------------------------------------------------*/
 
-    .web-codebook .settings .update-control {
-        display: inline-block;
-        border: 1px dashed #ccc;
-        padding: 1em;
-        margin-right: 1em;
-        font-weight: bold;
+    .web-codebook .settings table.column-table {
+        border-collapse: collapse;
     }
 
-    .web-codebook .settings .update-control ul {
-        list-style: none;
-        font-weight: normal;
-        padding-top: .5em;
+    .web-codebook .settings table.column-table thead tr {
+        border-bottom: 2px solid black;
     }
 
-    .web-codebook .settings .update-control ul li,
-    .web-codebook .settings .update-control ul li input {
-        cursor: pointer;
+    .web-codebook .settings table.column-table tbody tr {
+        border-bottom: 1px dotted #ccc;
+    }
+
+    .web-codebook .settings table.column-table th {
+        text-align: center;
+        padding: 2px 10px;
+    }
+
+    .web-codebook .settings table.column-table th.Column {
+        text-align: right;
+    }
+
+    .web-codebook .settings table.column-table td {
+        text-align: center;
+        padding: 2px 10px;
+    }
+
+    .web-codebook .settings table.column-table td.Column {
+        text-align: right;
     }

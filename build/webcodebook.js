@@ -305,8 +305,7 @@ function init$5(codebook) {
   codebook.controls.controlToggle.set(codebook);
 
   controlToggle.on("click", function () {
-    console.log(d3.select(this).text());
-    codebook.config.controlVisibility = d3.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
+    codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
     : "visible"; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
@@ -386,6 +385,8 @@ function init$6(codebook) {
     return d.key;
   }).classed("active", function (d, i) {
     return d.active; //make this a setting
+  }).attr("title", function (d) {
+    return "View " + d.key;
   });
 
   navItems.append("a").html(function (d) {
@@ -2201,107 +2202,132 @@ var data = {
 };
 
 function init$8(codebook) {
-  /**-------------------------------------------------------------------------------------------\
-      Add control to update groups.
-    \-------------------------------------------------------------------------------------------**/
+  codebook.settings.layout(codebook);
+  for (var funk in codebook.settings.functionality) {
+    codebook.settings.functionality[funk](codebook);
+  }
+}
 
-  //Create list of fields in the data file.
-  var updateGroups = codebook.settings.wrap.append("div").classed("update-groups update-control", true).text("Select group variables:"),
-      groupList = updateGroups.append("ul"),
-      groupItems = groupList.selectAll("li").data(Object.keys(codebook.data.raw[0])).enter().append("li");
+function layout$2(codebook) {
+  //Create list of columns in the data file.
+  var columns = Object.keys(codebook.data.raw[0]),
+      groupColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      filterColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      columnTableColumns = ["Column", "Group", "Filter"],
+      //, 'Visibility', 'Label'],
+  columnMetadata = columns.map(function (column) {
+    var columnDatum = {
+      Column: column,
+      Group: {
+        type: "checkbox",
+        checked: groupColumns.indexOf(column) > -1
+      },
+      Filter: {
+        type: "checkbox",
+        checked: filterColumns.indexOf(column) > -1
+      }
+      /*,'Visibility':
+                          {type: 'checkbox'
+                          ,checked: true}
+                      ,'Label':
+                          {type: 'text'
+                          ,checked: filterColumns.indexOf(column) > -1}*/
+    };
 
-  //Append a checkbox to each list item, setting the 'checked' property to true for those whose
-  //field name is already an option in the group control.
-  groupItems.each(function (d) {
-    d3.select(this).html("<input type = \"checkbox\"> " + d);
-    d3.select(this).select("input").property("checked", codebook.config.groups.map(function (group) {
-      return group.value_col;
-    }).indexOf(d) > -1);
+    return columnDatum;
+  }),
+      columnTable = codebook.settings.wrap.append("table").classed("column-table", true),
+      columnTableHeader = columnTable.append("thead").append("tr"),
+      columnTableHeaders = columnTableHeader.selectAll("th").data(columnTableColumns).enter().append("th").attr("class", function (d) {
+    return d;
+  }).text(function (d) {
+    return d;
+  }),
+      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr");
+  columnTableRows.each(function (rowDatum) {
+    var row = d3.select(this),
+        dataColumn = rowDatum.Column;
+
+    for (var rowProperty in rowDatum) {
+      var cell = row.append("td").classed(rowProperty, true),
+          cellDatum = rowDatum[rowProperty];
+      console.log(cell);
+      console.log(cellDatum);
+      if (_typeof(rowDatum[rowProperty]) !== "object") cell.text(cellDatum);else {
+        cell.attr("title", (cellDatum.checked ? "Remove" : "Add") + " " + dataColumn + " " + (cellDatum.checked ? "from" : "to") + " " + rowProperty.toLowerCase() + " list");
+        cell.append("input").attr("type", cellDatum.type).property("checked", cellDatum.checked);
+      }
+    }
   });
 
-  //Alter the checkbox functionality so the user can click anywhere in the list item to update
-  //the group control.
-  groupItems.each(function (d) {
-    d3.select(this).select("input").on("click", function () {
-      d3.select(this).property("checked", !d3.select(this).property("checked"));
-    });
-  });
+  //Add descriptive footnote.
+  columnTable.select("tbody").append("tr").style("border-bottom", "none").append("td").attr("colspan", "5").text("This interactive table allows users to modify each column's metadata.");
+}
+
+function updateGroups(codebook) {
+  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table .Group input");
 
   //Add click functionality to each list item.
-  groupItems.on("click", function () {
-    var li = d3.select(this),
-        input = li.select("input"),
-        checked = input.property("checked");
-    input.property("checked", !checked);
-    var groups = groupItems.filter(function () {
-      return d3.select(this).select("input").property("checked");
-    }).data();
+  groupCheckBoxes.on("change", function () {
+    var groups = groupCheckBoxes.filter(function () {
+      return d3.select(this).property("checked");
+    }).data().map(function (d) {
+      return d.Column;
+    });
     codebook.config.groups = groups.map(function (d) {
       return { value_col: d };
     });
     codebook.controls.groups.update(codebook);
-    if (groups.indexOf(codebook.config.group) === -1) {
+
+    //Redraw codebook if currently grouped by former group column.
+    if (codebook.config.group && groups.indexOf(codebook.config.group) === -1) {
       delete codebook.config.group;
       codebook.data.makeSummary(codebook);
       codebook.summaryTable.draw(codebook);
-      codebook.dataListing.init(codebook);
     }
   });
+}
 
-  /**-------------------------------------------------------------------------------------------\
-      Add control to update filters.
-    \-------------------------------------------------------------------------------------------**/
-
-  //Create list of fields in the data file.
-  var updateFilters = codebook.settings.wrap.append("div").classed("update-filters update-control", true).text("Select filter variables:"),
-      filterList = updateFilters.append("ul"),
-      filterItems = filterList.selectAll("li").data(Object.keys(codebook.data.raw[0])).enter().append("li");
-
-  //Append a checkbox to each list item, setting the 'checked' property to true for those whose
-  //field name is already an option in the filter control.
-  filterItems.each(function (d) {
-    d3.select(this).html("<input type = \"checkbox\"> " + d);
-    d3.select(this).select("input").property("checked", codebook.config.filters.map(function (filter) {
-      return filter.value_col;
-    }).indexOf(d) > -1);
-  });
-
-  //Alter the checkbox functionality so the user can click anywhere in the list item to update
-  //the filter control.
-  filterItems.each(function (d) {
-    d3.select(this).select("input").on("click", function () {
-      d3.select(this).property("checked", !d3.select(this).property("checked"));
-    });
-  });
+function updateFilters(codebook) {
+  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table .Filter input");
 
   //Add click functionality to each list item.
-  filterItems.on("click", function () {
-    var li = d3.select(this),
-        input = li.select("input"),
-        checked = input.property("checked");
-    input.property("checked", !checked);
-    var filters = filterItems.filter(function () {
-      return d3.select(this).select("input").property("checked");
-    }).data();
+  filterCheckBoxes.on("change", function () {
+    var filters = filterCheckBoxes.filter(function () {
+      return d3.select(this).property("checked");
+    }).data().map(function (d) {
+      return d.Column;
+    });
     codebook.config.filters = filters.map(function (d) {
       return { value_col: d };
     });
     codebook.controls.filters.update(codebook);
+
+    //Update filtered data and redraw codebook.
     codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-    if (filters.indexOf(codebook.config.filter) === -1) {
-      codebook.data.makeSummary(codebook);
-      codebook.summaryTable.draw(codebook);
-      codebook.dataListing.init(codebook);
-    }
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
   });
 }
+
+var functionality = {
+  updateGroups: updateGroups,
+  updateFilters: updateFilters
+};
 
 /*------------------------------------------------------------------------------------------------\
   Define settings object.
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$8
+  init: init$8,
+  layout: layout$2,
+  functionality: functionality
 };
 
 function createCodebook() {
@@ -2349,7 +2375,7 @@ function init$9() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$2() {
+function layout$3() {
   this.controls.wrap = this.wrap.append("div").attr("class", "controls");
 
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
@@ -2404,7 +2430,7 @@ function createExplorer() {
     element: element,
     config: config,
     init: init$9,
-    layout: layout$2,
+    layout: layout$3,
     controls: controls$1,
     makeCodebook: makeCodebook
   };

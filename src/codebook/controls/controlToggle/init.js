@@ -2,6 +2,8 @@
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
+import { select as d3select } from "d3";
+
 export function init(codebook) {
   //render the control
   var controlToggle = codebook.controls.wrap
@@ -12,8 +14,7 @@ export function init(codebook) {
   codebook.controls.controlToggle.set(codebook);
 
   controlToggle.on("click", function() {
-    console.log(d3.select(this).text());
-    codebook.config.controlVisibility = d3.select(this).text() == "Hide"
+    codebook.config.controlVisibility = d3select(this).text() == "Hide"
       ? "minimized" //click "-" to minimize controls
       : "visible"; // click "+" to show controls
 

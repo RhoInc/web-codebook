@@ -30,7 +30,8 @@ export function init(codebook) {
     .attr("class", d => d.key)
     .classed("active", function(d, i) {
       return d.active; //make this a setting
-    });
+    })
+    .attr("title", d => `View ${d.key}`);
 
   navItems.append("a").html(function(d) {
     return d.label;
