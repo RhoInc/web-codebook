@@ -44,6 +44,7 @@ export function createVerticalBars(this_, d) {
     value_col: d.value_col,
     group_col: d.group || null,
     overall: d.statistics.values,
+    gridlines: "y",
     sort: sortType //Alphabetical, Ascending, Descending
   };
 
@@ -59,7 +60,7 @@ export function createVerticalBars(this_, d) {
   if (d.groups) {
     //Set upper limit of y-axis domain to the maximum group rate.
     chartSettings.y.domain[1] = d3max(d.groups, di =>
-      d3max(di.statistics.values, dii => dii[chartSettings.y.colunn])
+      d3max(di.statistics.values, dii => dii[chartSettings.y.column])
     );
 
     chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts

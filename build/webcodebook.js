@@ -436,6 +436,39 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+};
+
 function clone(obj) {
   var copy = void 0;
 
@@ -593,11 +626,13 @@ function axisSort(a, b, type) {
 }
 
 function createVerticalBars(this_, d) {
+  var _chartSettings;
+
   var chartContainer = d3$1.select(this_).node();
   var rowSelector = d3$1.select(this_).node().parentNode;
   var sortType = d3$1.select(rowSelector).select(".row-controls .x-axis-sort select").property("value");
   var outcome = d3$1.select(rowSelector).select(".row-controls .y-axis-outcome select").property("value");
-  var chartSettings = {
+  var chartSettings = (_chartSettings = {
     y: {
       column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
@@ -624,9 +659,8 @@ function createVerticalBars(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
-    overall: d.statistics.values,
-    sort: sortType //Alphabetical, Ascending, Descending
-  };
+    overall: d.statistics.values
+  }, defineProperty(_chartSettings, "gridlines", "y"), defineProperty(_chartSettings, "sort", sortType), _chartSettings);
 
   chartSettings.margin.bottom = 10;
 
@@ -645,7 +679,7 @@ function createVerticalBars(this_, d) {
     //Set upper limit of y-axis domain to the maximum group rate.
     chartSettings.y.domain[1] = d3$1.max(d.groups, function (di) {
       return d3$1.max(di.statistics.values, function (dii) {
-        return dii[chartSettings.y.colunn];
+        return dii[chartSettings.y.column];
       });
     });
 
@@ -682,21 +716,6 @@ function createVerticalBars(this_, d) {
 function createVerticalBarsControls(this_, d) {
   var controlsContainer = d3$1.select(this_).append("div").classed("row-controls", true);
 
-  //add control that changes x-axis order
-  var sort_values = ["Alphabetical", "Ascending", "Descending"];
-  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
-  sortWrap.append("small").text("Sort levels: ");
-  var x_sort = sortWrap.append("select");
-  x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
-    return d;
-  });
-
-  x_sort.on("change", function () {
-    d3$1.select(this_).selectAll(".wc-chart").remove();
-    d3$1.select(this_).selectAll(".panel-label").remove();
-    createVerticalBars(this_, d);
-  });
-
   //add control that changes y-axis scale
   var outcomes = ["rate", "frequency"];
   var outcomeWrap = controlsContainer.append("div").classed("y-axis-outcome", true);
@@ -707,6 +726,21 @@ function createVerticalBarsControls(this_, d) {
   });
 
   outcomeSelect.on("change", function () {
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
+    createVerticalBars(this_, d);
+  });
+
+  //add control that changes x-axis order
+  var sort_values = ["Alphabetical", "Ascending", "Descending"];
+  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
+  sortWrap.append("small").text("Sort levels: ");
+  var x_sort = sortWrap.append("select");
+  x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  x_sort.on("change", function () {
     d3$1.select(this_).selectAll(".wc-chart").remove();
     d3$1.select(this_).selectAll(".panel-label").remove();
     createVerticalBars(this_, d);
@@ -746,8 +780,9 @@ function drawOverallMark(chart) {
   chart.config.overall.forEach(function (d) {
     if (chart.config.y.order.indexOf(d.key) > -1) {
       var g = chart.svg.append("g").classed("overall-mark", true);
-      var x = d.prop_n;
+      var x = d[chart.config.x.column];
       var y = d.key;
+      console.log(x);
 
       //Draw vertical line representing the overall rate of the current categorical value.
       if (chart.y(y)) {
@@ -761,7 +796,7 @@ function drawOverallMark(chart) {
           "stroke-width": "2px",
           "stroke-opacity": "1"
         });
-        rateLine.append("title").text("Overall rate: " + d3$1.format(".1%")(x));
+        rateLine.append("title").text("Overall rate: " + d3$1.format(chart.config.x.format)(x));
       }
     }
   });
@@ -777,7 +812,7 @@ function drawDifferences(chart) {
       return di.key === d.key;
     })[0],
         g = chart.svg.append("g").classed("difference-from-total", true).style("display", "none"),
-        x = overall.prop_n,
+        x = overall[chart.config.x.column],
         y = overall.key;
 
     //Draw line from overall rate to group rate.
@@ -814,26 +849,25 @@ function drawDifferences(chart) {
 
 function onResize$1() {
   moveYaxis$1(this);
-  drawOverallMark(this);
-  if (this.config.group_col) drawDifferences(this);
+  if (this.config.x.column === "prop_n") {
+    drawOverallMark(this);
+
+    if (this.config.group_col) drawDifferences(this);
+  }
 }
 
 function createHorizontalBars(this_, d) {
-  //hide the controls if the chart isn't Grouped
-  var rowSelector = d3$1.select(this_).node().parentNode;
-  var chartControls = d3$1.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
-
-  //let height vary based on the number of levels
-  var custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
-
-  //Chart settings
-  var chartContainer = d3$1.select(this_).node();
-  var chartSettings = {
+  var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      custom_height = d.statistics.values.length * 20 + 35,
+      // let height vary based on the number of levels; 35 ~= top and bottom margin
+  chartContainer = d3$1.select(this_).node(),
+      chartSettings = {
     x: {
-      column: "prop_n",
+      column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
       label: "",
-      format: "%",
+      format: outcome === "rate" ? "%" : "d",
       domain: [0, null]
     },
     y: {
@@ -844,26 +878,23 @@ function createHorizontalBars(this_, d) {
     marks: [{
       type: "bar",
       per: ["key"],
-      summarizeX: "mean",
       tooltip: "[key]: [n] ([prop_n_text])",
       attributes: {
         stroke: null
       }
     }],
     colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
-    gridlines: "xy",
+    gridlines: "x",
     resizable: false,
     height: custom_height,
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
     overall: d.statistics.values
-  };
-
-  //Sort data by descending rate and keep only the first five categories.
-  var chartData = d.statistics.values.sort(function (a, b) {
+  },
+      chartData = d.statistics.values.sort(function (a, b) {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-  });
+  }); // sort data by descending rate and keep only the first five categories.
 
   chartSettings.y.order = chartData.map(function (d) {
     return d.key;
@@ -873,7 +904,7 @@ function createHorizontalBars(this_, d) {
     //Set upper limit of x-axis domain to the maximum group rate.
     chartSettings.x.domain[1] = d3$1.max(d.groups, function (di) {
       return d3$1.max(di.statistics.values, function (dii) {
-        return dii.prop_n;
+        return dii[chartSettings.x.column];
       });
     });
 
@@ -1065,10 +1096,32 @@ function createDotPlot(this_, d) {
 }
 
 function createHorizontalBarsControls(this_, d) {
+  var controlsContainer = d3$1.select(this_).append("div").classed("row-controls", true);
+
+  //add control that changes y-axis scale
+  var outcomes = ["rate", "frequency"];
+  var outcomeWrap = controlsContainer.append("div").classed("x-axis-outcome", true);
+  outcomeWrap.append("small").text("Summarize by: ");
+  var outcomeSelect = outcomeWrap.append("select");
+  outcomeSelect.selectAll("option").data(outcomes).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  outcomeSelect.on("change", function () {
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
+    if (type_control.property("value") === "Paneled (Bar Charts)") {
+      createHorizontalBars(this_, d);
+    } else {
+      createDotPlot(this_, d);
+    }
+  });
+
+  //add control that change chart type
   var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
-  var wrap = d3$1.select(this_).append("div").attr("class", "row-controls");
-  wrap.append("small").text("Display Type: ");
-  var type_control = wrap.append("select");
+  var chartTypeWrap = controlsContainer.append("div").classed("chart-type", true).classed("hidden", !d.groups); // hide the controls if the chart isn't Grouped
+  chartTypeWrap.append("small").text("Display Type: ");
+  var type_control = chartTypeWrap.append("select");
   type_control.selectAll("option").data(chart_type_values).enter().append("option").text(function (d) {
     return d;
   });

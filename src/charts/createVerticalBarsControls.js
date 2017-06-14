@@ -6,24 +6,6 @@ export function createVerticalBarsControls(this_, d) {
     .append("div")
     .classed("row-controls", true);
 
-  //add control that changes x-axis order
-  var sort_values = ["Alphabetical", "Ascending", "Descending"];
-  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
-  sortWrap.append("small").text("Sort levels: ");
-  var x_sort = sortWrap.append("select");
-  x_sort
-    .selectAll("option")
-    .data(sort_values)
-    .enter()
-    .append("option")
-    .text(d => d);
-
-  x_sort.on("change", function() {
-    d3select(this_).selectAll(".wc-chart").remove();
-    d3select(this_).selectAll(".panel-label").remove();
-    createVerticalBars(this_, d);
-  });
-
   //add control that changes y-axis scale
   var outcomes = ["rate", "frequency"];
   var outcomeWrap = controlsContainer
@@ -39,6 +21,24 @@ export function createVerticalBarsControls(this_, d) {
     .text(d => d);
 
   outcomeSelect.on("change", function() {
+    d3select(this_).selectAll(".wc-chart").remove();
+    d3select(this_).selectAll(".panel-label").remove();
+    createVerticalBars(this_, d);
+  });
+
+  //add control that changes x-axis order
+  var sort_values = ["Alphabetical", "Ascending", "Descending"];
+  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
+  sortWrap.append("small").text("Sort levels: ");
+  var x_sort = sortWrap.append("select");
+  x_sort
+    .selectAll("option")
+    .data(sort_values)
+    .enter()
+    .append("option")
+    .text(d => d);
+
+  x_sort.on("change", function() {
     d3select(this_).selectAll(".wc-chart").remove();
     d3select(this_).selectAll(".panel-label").remove();
     createVerticalBars(this_, d);

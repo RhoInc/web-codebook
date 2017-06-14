@@ -9,10 +9,6 @@ General
 .web-codebook > .section {
   margin-top:1em;
 }
-.web-codebook .hidden {
-    display: none;
-}
-
 
 .web-codebook .small {
   font-size: 0.8em;
@@ -261,6 +257,10 @@ Chart layout
 .web-codebook .summaryTable .variable-row .row-controls > * {
     display: inline-block;
     margin-right: .5em;
+}
+
+.web-codebook .summaryTable .variable-row .row-controls > *.hidden {
+    display: none;
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
