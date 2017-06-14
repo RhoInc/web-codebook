@@ -1197,6 +1197,8 @@ function onResize$3() {
 		// if the data point is outside the whiskers, then it is an outlier
 		if(( point < lower_whisker ) || ( point > upper_whisker )){
 			// plot as circle
+			const sd = d3deviation(this.values);
+			const meanMark = this.svg
 			.append("circle")
 			.attr({
 				class: "statistic",
