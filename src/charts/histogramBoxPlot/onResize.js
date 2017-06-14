@@ -150,7 +150,7 @@ export default function onResize() {
 	//Loop through all data points
 	for( point in this.values ){
 		// if the data point is outside the whiskers, then it is an outlier
-		if(( point < lower_whisker ) || ( point > upper_whisker ){
+		if(( point < lower_whisker ) || ( point > upper_whisker )){
 			// plot as circle
 			.append("circle")
 			.attr({
