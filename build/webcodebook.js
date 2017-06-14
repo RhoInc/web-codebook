@@ -782,7 +782,6 @@ function drawOverallMark(chart) {
       var g = chart.svg.append("g").classed("overall-mark", true);
       var x = d[chart.config.x.column];
       var y = d.key;
-      console.log(x);
 
       //Draw vertical line representing the overall rate of the current categorical value.
       if (chart.y(y)) {
@@ -1007,21 +1006,25 @@ function modifyOverallLegendMark(chart) {
 
 function onResize$2() {
   moveYaxis$2(this);
-  drawOverallMark$1(this);
-  if (this.config.color_by) modifyOverallLegendMark(this);
+  if (this.config.x.column === "prop_n") {
+    drawOverallMark$1(this);
+    if (this.config.color_by) modifyOverallLegendMark(this);
 
-  //Hide overall dots.
-  if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
+    //Hide overall dots.
+    if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
+  }
 }
 
 function createDotPlot(this_, d) {
-  var chartContainer = d3$1.select(this_).node();
-  var chartSettings = {
+  var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      chartContainer = d3$1.select(this_).node(),
+      chartSettings = {
     x: {
-      column: "prop_n",
+      column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
       label: "",
-      format: "%",
+      format: outcome === "rate" ? "%" : "d",
       domain: [0, null]
     },
     y: {
@@ -1042,12 +1045,11 @@ function createDotPlot(this_, d) {
     value_col: d.value_col,
     group_col: d.group || null,
     overall: d.statistics.values
-  };
-
-  //Sort data by descending rate and keep only the first five categories.
-  var chartData = d.statistics.values.sort(function (a, b) {
+  },
+      chartData = d.statistics.values.sort(function (a, b) {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-  }).slice(0, 5);
+  }).slice(0, 5); // sort data by descending rate and keep only the first five categories.
+
   chartSettings.y.order = chartData.map(function (d) {
     return d.key;
   }).reverse();
@@ -1070,15 +1072,18 @@ function createDotPlot(this_, d) {
       });
     });
 
-    //Overall mark
     chartSettings.marks[0].per.push("group");
-    chartSettings.marks[0].values = { group: ["Overall"] };
 
-    //Group marks
-    chartSettings.marks[1] = clone(chartSettings.marks[0]);
-    chartSettings.marks[1].values = { group: d.groups.map(function (d) {
-        return d.group;
-      }) };
+    //Overall mark
+    if (outcome === "rate") {
+      chartSettings.marks[0].values = { group: ["Overall"] };
+
+      //Group marks
+      chartSettings.marks[1] = clone(chartSettings.marks[0]);
+      chartSettings.marks[1].values = { group: d.groups.map(function (d) {
+          return d.group;
+        }) };
+    }
 
     chartSettings.color_by = "group";
     chartSettings.legend = {
@@ -1092,7 +1097,9 @@ function createDotPlot(this_, d) {
 
   var chart = webcharts.createChart(chartContainer, chartSettings);
   chart.on("resize", onResize$2);
-  chart.init(chartData);
+  chart.init(chartData.filter(function (d) {
+    return !(outcome === "frequency" && d.group === "Overall");
+  }));
 }
 
 function createHorizontalBarsControls(this_, d) {

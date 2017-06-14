@@ -74,6 +74,7 @@ Controls layout
   background-color:white;
   border:2px solid #008CBA;
   border-radius: 4px;
+  padding:2px 4px;
 }
 
 .web-codebook .controls button:hover{

@@ -10,7 +10,6 @@ export default function drawOverallMark(chart) {
       const g = chart.svg.append("g").classed("overall-mark", true);
       const x = d[chart.config.x.column];
       const y = d.key;
-      console.log(x);
 
       //Draw vertical line representing the overall rate of the current categorical value.
       if (chart.y(y)) {
