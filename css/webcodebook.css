@@ -255,7 +255,12 @@ Chart layout
 
 .web-codebook .summaryTable .variable-row .row-controls {
   border-bottom:1px dashed #999;
-  padding:0.2em 0em 0.2em 0.4em ;
+  padding:0.2em 0em 0.2em 0.4em;
+}
+
+.web-codebook .summaryTable .variable-row .row-controls > * {
+    display: inline-block;
+    margin-right: .5em;
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
