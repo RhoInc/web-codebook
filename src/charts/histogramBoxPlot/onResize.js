@@ -39,16 +39,60 @@ export default function onResize() {
         const quantile = quantiles[item];
         quantile.quantile = d3quantile(this.values, quantile.probability);
 
-		// Label lower & upper whiskers for future use in plotting outliers
-		//-----------------------------------------------------------------
-		if ( quantile.probability == 0.05 ){
-			const lower_whisker =  quantile.quantile;
+		// PLOT OUTLIERS
+		//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		if ( quantile$$1.probability == 0.05 ){
+			// probability of 0.05 corresponds to the lower whisker
+			var lower_whisker =  quantile$$1.quantile;
+			//Loop through all data points
+			for( var point in this.values ){
+				// if the data point is below the lower whisker, then it is an outlier
+				if( point < lower_whisker ){
+					console.log(point);
+					// plot as circle
+					const meanMark = this.svg
+					.append("circle")
+					.attr({
+						class: "statistic",
+						cx: this.x(point),
+						cy: this.plot_height + this.config.boxPlotHeight / 2,
+						r: this.config.boxPlotHeight / 10
+					})
+					.style({
+						fill: "#000000",
+						stroke: "black",
+						"stroke-width": "1px"
+					});
+				}
+			}
 		}
-		else if (quantile.probability == 0.95){
-			const upper_whisker = quantile.quantile;
+		else if (quantile$$1.probability == 0.95){
+			// probability of 0.95 corresponds to the upper whisker
+			var upper_whisker = quantile$$1.quantile;
+			//Loop through all data points
+			console.log(upper_whisker);
+			for( var point in this.values ){
+				// if the data point is above the upper whisker, then it is an outlier
+				if( point > upper_whisker ){
+					// plot as circle
+					const meanMark = this.svg
+					.append("circle")
+					.attr({
+						class: "statistic",
+						cx: this.x(point),
+						cy: this.plot_height + this.config.boxPlotHeight / 2,
+						r: this.config.boxPlotHeight / 10
+					})
+					.style({
+						fill: "#000000",
+						stroke: "black",
+						"stroke-width": "1px"
+					});
+				}
+			}
 		}
-		//-----------------------------------------------------------------
-		
+		//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile.probability) > -1) {
           const rProbability = quantiles[+item + 1].probability;
@@ -144,35 +188,6 @@ export default function onResize() {
           `n: ${this.values.length}\nMean: ${format(mean)}\nSD: ${format(sd)}`
         );
     }
-
-	//Mark Outliers
-	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	//Loop through all data points
-	for( point in this.values ){
-		// if the data point is outside the whiskers, then it is an outlier
-		if(( point < lower_whisker ) || ( point > upper_whisker )){
-			// plot as circle
-			const sd = d3deviation(this.values);
-			const meanMark = this.svg
-			.append("circle")
-			.attr({
-				class: "statistic",
-				// plot at x location (this.values)
-				cx: point,
-				// plot at y location (same y coordinate as mean circle)
-				cy: this.plot_height + this.config.boxPlotHeight / 2,
-				// plot with radius (same radius as mean circle)
-				r: this.config.boxPlotHeight / 3
-			})
-			.style({
-				// Inherit same style as mean circle
-				fill: "#000000",
-				stroke: "black",
-				"stroke-width": "1px"
-			});
-		}
-	}
-	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Rotate y-axis labels.
 
