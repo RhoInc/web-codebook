@@ -1121,17 +1121,16 @@ function onResize$3() {
 			//Loop through all data points
 			for( var point in this.values ){
 				// if the data point is below the lower whisker, then it is an outlier
-				if( point < lower_whisker ){
-					console.log(point);
-					// plot as circle
+				if( this.values[point] < lower_whisker ){
+					// plot outliers as vertical lines
 					const meanMark = this.svg
 					.append("line")
 					.attr({
 						class: "statistic",
-						x1: this.x(point),
-						y1: this.plot_height,
-						x2: this.x(point),
-						y2: this.plot_height + this.config.boxPlotHeight
+						x1: this.x(this.values[point]),
+						y1: this.plot_height * 1.07,
+						x2: this.x(this.values[point]),
+						y2: (this.plot_height + this.config.boxPlotHeight) / 1.07
 					})
 					.style({
 						fill: "#000000",
@@ -1148,16 +1147,16 @@ function onResize$3() {
 			console.log(upper_whisker);
 			for( var point in this.values ){
 				// if the data point is above the upper whisker, then it is an outlier
-				if( point > upper_whisker ){
+				if( this.values[point] > upper_whisker ){
 					// plot outliers as vertical lines
 					const meanMark = this.svg
 					.append("line")
 					.attr({
 						class: "statistic",
-						x1: this.x(point),
-						y1: this.plot_height,
-						x2: this.x(point),
-						y2: this.plot_height + this.config.boxPlotHeight
+						x1: this.x(this.values[point]),
+						y1: this.plot_height * 1.07,
+						x2: this.x(this.values[point]),
+						y2: (this.plot_height + this.config.boxPlotHeight) / 1.07
 					})
 					.style({
 						fill: "#000000",
