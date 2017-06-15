@@ -51,12 +51,13 @@ export default function onResize() {
 					console.log(point);
 					// plot as circle
 					const meanMark = this.svg
-					.append("circle")
+					.append("line")
 					.attr({
 						class: "statistic",
-						cx: this.x(point),
-						cy: this.plot_height + this.config.boxPlotHeight / 2,
-						r: this.config.boxPlotHeight / 10
+						x1: this.x(point),
+						y1: this.plot_height,
+						x2: this.x(point),
+						y2: this.plot_height + this.config.boxPlotHeight
 					})
 					.style({
 						fill: "#000000",
@@ -76,12 +77,13 @@ export default function onResize() {
 				if( point > upper_whisker ){
 					// plot as circle
 					const meanMark = this.svg
-					.append("circle")
+					.append("line")
 					.attr({
 						class: "statistic",
-						cx: this.x(point),
-						cy: this.plot_height + this.config.boxPlotHeight / 2,
-						r: this.config.boxPlotHeight / 10
+						x1: this.x(point),
+						y1: this.plot_height,
+						x2: this.x(point),
+						y2: this.plot_height + this.config.boxPlotHeight
 					})
 					.style({
 						fill: "#000000",

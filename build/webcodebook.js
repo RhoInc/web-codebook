@@ -1125,12 +1125,13 @@ function onResize$3() {
 					console.log(point);
 					// plot as circle
 					const meanMark = this.svg
-					.append("circle")
+					.append("line")
 					.attr({
 						class: "statistic",
-						cx: this.x(point),
-						cy: this.plot_height + this.config.boxPlotHeight / 2,
-						r: this.config.boxPlotHeight / 10
+						x1: this.x(point),
+						y1: this.plot_height,
+						x2: this.x(point),
+						y2: this.plot_height + this.config.boxPlotHeight
 					})
 					.style({
 						fill: "#000000",
@@ -1148,14 +1149,15 @@ function onResize$3() {
 			for( var point in this.values ){
 				// if the data point is above the upper whisker, then it is an outlier
 				if( point > upper_whisker ){
-					// plot as circle
+					// plot outliers as vertical lines
 					const meanMark = this.svg
-					.append("circle")
+					.append("line")
 					.attr({
 						class: "statistic",
-						cx: this.x(point),
-						cy: this.plot_height + this.config.boxPlotHeight / 2,
-						r: this.config.boxPlotHeight / 10
+						x1: this.x(point),
+						y1: this.plot_height,
+						x2: this.x(point),
+						y2: this.plot_height + this.config.boxPlotHeight
 					})
 					.style({
 						fill: "#000000",
