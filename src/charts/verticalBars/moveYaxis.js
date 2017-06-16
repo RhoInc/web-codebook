@@ -12,5 +12,5 @@ export default function moveYaxis(chart) {
       dx: ".5em",
       x: chart.plot_width
     })
-    .text(d => d3format("%")(d));
+    .text(d => d3format(chart.config.y.format)(d));
 }
