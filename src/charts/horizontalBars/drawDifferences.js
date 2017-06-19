@@ -11,7 +11,7 @@ export default function drawDifferences(chart) {
         .append("g")
         .classed("difference-from-total", true)
         .style("display", "none"),
-      x = overall.prop_n,
+      x = overall[chart.config.x.column],
       y = overall.key;
 
     //Draw line from overall rate to group rate.
