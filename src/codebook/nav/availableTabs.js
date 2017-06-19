@@ -10,6 +10,7 @@ const availableTabs = [
     selector: ".web-codebook .dataListing"
   },
   { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }
+
 ];
 
 export default availableTabs;

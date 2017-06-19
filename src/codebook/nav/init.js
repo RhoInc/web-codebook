@@ -3,6 +3,7 @@ import { select as d3select } from "d3";
 
 export function init(codebook) {
   codebook.nav.wrap.selectAll("*").remove();
+
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function(tab) {
     tab.wrap = d3select(tab.selector);
@@ -34,11 +35,13 @@ export function init(codebook) {
     .attr("title", d => `View ${d.key}`);
 
   navItems.append("a").html(function(d) {
+
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function(d) {
+
     if (!d.active) {
       codebook.nav.tabs.forEach(function(t) {
         t.active = d.label == t.label; //set the clicked tab to active

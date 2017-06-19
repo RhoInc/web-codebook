@@ -9,10 +9,6 @@ General
 .web-codebook > .section {
   margin-top:1em;
 }
-.web-codebook .hidden {
-    display: none;
-}
-
 
 .web-codebook .small {
   font-size: 0.8em;
@@ -78,6 +74,7 @@ Controls layout
   background-color:white;
   border:2px solid #008CBA;
   border-radius: 4px;
+  padding:2px 4px;
 }
 
 .web-codebook .controls button:hover{
@@ -271,7 +268,16 @@ Chart layout
 
 .web-codebook .summaryTable .variable-row .row-controls {
   border-bottom:1px dashed #999;
-  padding:0.2em 0em 0.2em 0.4em ;
+  padding:0.2em 0em 0.2em 0.4em;
+}
+
+.web-codebook .summaryTable .variable-row .row-controls > * {
+    display: inline-block;
+    margin-right: .5em;
+}
+
+.web-codebook .summaryTable .variable-row .row-controls > *.hidden {
+    display: none;
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
