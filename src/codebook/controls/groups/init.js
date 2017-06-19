@@ -24,6 +24,10 @@ export function init(codebook) {
       .data(groupLevels)
       .enter()
       .append("option")
+      .style(
+        "display",
+        d => (codebook.config.hiddenVariables.indexOf(d) > -1 ? "none" : null)
+      ) // hide hidden variables
       .text(d => d);
 
     groupSelect.on("change", function() {
