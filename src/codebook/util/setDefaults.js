@@ -22,6 +22,10 @@ export function setDefaults(codebook) {
     else return d;
   });
 
+  /********************* Hidden Variable Settings *********************/
+  codebook.config.hiddenVariables =
+    codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
+
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
     ? false

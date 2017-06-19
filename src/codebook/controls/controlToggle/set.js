@@ -1,5 +1,4 @@
 export function set(codebook) {
-  console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap
     .select("button.control-toggle")

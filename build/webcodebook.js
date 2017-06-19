@@ -94,7 +94,9 @@ function init$2(codebook) {
   var filterList = selector.append("ul").attr("class", "filter-list");
   var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
     return "custom-" + d.value_col + " filterCustom";
-  });
+  }).style("display", function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1 ? "none" : null;
+  }); // hide hidden variables
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 
@@ -152,7 +154,10 @@ function init$3(codebook) {
       return m.value_col;
     })]);
 
-    groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
+    groupSelect.selectAll("option").data(groupLevels).enter().append("option").style("display", function (d) {
+      return codebook.config.hiddenVariables.indexOf(d) > -1 ? "none" : null;
+    }) // hide hidden variables
+    .text(function (d) {
       return d;
     });
 
@@ -218,7 +223,6 @@ function init$5(codebook) {
 }
 
 function set$1(codebook) {
-  console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
   codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
@@ -267,7 +271,6 @@ var availableTabs = [{
 
 function init$6(codebook) {
   codebook.nav.wrap.selectAll("*").remove();
-  console.log(codebook.config);
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
@@ -298,7 +301,6 @@ function init$6(codebook) {
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
-    console.log("clicked on " + d.label);
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -307,7 +309,6 @@ function init$6(codebook) {
         }).classed("active", t.active); //style the active nav element
         t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
       });
-      console.log(codebook.nav.tabs);
     }
   });
 
@@ -359,7 +360,9 @@ function draw(codebook) {
   //ENTER
   varRows.enter().append("div").attr("class", function (d) {
     return "variable-row hiddenChart " + d.type;
-  });
+  }).classed("hidden", function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+  }); // hide hidden variables
 
   //ENTER + Update
   varRows.each(codebook.summaryTable.renderRow);
@@ -1866,12 +1869,18 @@ function onDraw(dataListing) {
 
     //Add pagination functionality.
     addPagination(dataListing);
+
+    //hide hidden variables
+    this.table.selectAll("th,td").classed("hidden", function (d) {
+      return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
+    });
   });
 }
 
 function init$7(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
+  dataListing.config = codebook.config;
   //sort config
   dataListing.sort = {};
   dataListing.sort.wrap = dataListing.wrap.select(".sort-container");
@@ -1906,6 +1915,7 @@ var dataListing = { init: init$7 };
 var defaultSettings$1 = {
   filters: [],
   groups: [],
+  hiddenVariables: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
@@ -1930,6 +1940,9 @@ function setDefaults(codebook) {
   codebook.config.groups = codebook.config.groups.map(function (d) {
     if (typeof d == "string") return { value_col: d };else return d;
   });
+
+  /********************* Hidden Variable Settings *********************/
+  codebook.config.hiddenVariables = codebook.config.hiddenVariables || defaultSettings$1.hiddenVariables;
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
@@ -2162,7 +2175,6 @@ function makeSummary(codebook) {
 function makeFiltered(data, filters) {
   var filtered = data;
   filters.forEach(function (filter_d) {
-    console.log(filter_d);
     //remove the filtered values from the data based on the filters
     filtered = filtered.filter(function (rowData) {
       var currentValues = filter_d.values.filter(function (f) {

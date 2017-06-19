@@ -5,6 +5,7 @@ import { createTable } from "webcharts";
 export function init(codebook) {
   const dataListing = codebook.dataListing;
   layout(dataListing);
+  dataListing.config = codebook.config;
   //sort config
   dataListing.sort = {};
   dataListing.sort.wrap = dataListing.wrap.select(".sort-container");

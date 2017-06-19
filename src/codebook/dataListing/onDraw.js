@@ -12,5 +12,13 @@ export default function onDraw(dataListing) {
 
     //Add pagination functionality.
     addPagination(dataListing);
+
+    //hide hidden variables
+    this.table
+      .selectAll("th,td")
+      .classed(
+        "hidden",
+        d => dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1
+      );
   });
 }

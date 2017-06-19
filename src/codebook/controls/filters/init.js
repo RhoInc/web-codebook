@@ -35,7 +35,14 @@ export function init(codebook) {
     .append("li")
     .attr("class", function(d) {
       return "custom-" + d.value_col + " filterCustom";
-    });
+    })
+    .style(
+      "display",
+      d =>
+        codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+          ? "none"
+          : null
+    ); // hide hidden variables
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 
