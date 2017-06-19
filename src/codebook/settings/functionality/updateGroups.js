@@ -2,17 +2,17 @@ import { select as d3select } from "d3";
 
 export default function updateGroups(codebook) {
   const groupCheckBoxes = codebook.settings.wrap.selectAll(
-    ".column-table .Group input"
+    ".column-table td.Group"
   );
 
   //Add click functionality to each list item.
   groupCheckBoxes.on("change", function() {
     const groups = groupCheckBoxes
       .filter(function() {
-        return d3.select(this).property("checked");
+        return d3.select(this).select("input").property("checked");
       })
       .data()
-      .map(d => d.Column);
+      .map(d => d.column);
     codebook.config.groups = groups.map(d => {
       return { value_col: d };
     });

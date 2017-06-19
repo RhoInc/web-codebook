@@ -2,17 +2,17 @@ import { select as d3select } from "d3";
 
 export default function updateFilters(codebook) {
   const filterCheckBoxes = codebook.settings.wrap.selectAll(
-    ".column-table .Filter input"
+    ".column-table td.Filter"
   );
 
   //Add click functionality to each list item.
   filterCheckBoxes.on("change", function() {
     const filters = filterCheckBoxes
       .filter(function() {
-        return d3.select(this).property("checked");
+        return d3.select(this).select("input").property("checked");
       })
       .data()
-      .map(d => d.Column);
+      .map(d => d.column);
     codebook.config.filters = filters.map(d => {
       return { value_col: d };
     });

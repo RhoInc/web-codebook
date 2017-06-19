@@ -1,6 +1,6 @@
 export function layout(codebook) {
   //Create list of columns in the data file.
-  const columns = Object.keys(codebook.data.raw[0]),
+  const columns = codebook.data.summary.map(d => d.value_col),
     groupColumns = codebook.config.groups.map(d => d.value_col),
     filterColumns = codebook.config.groups.map(d => d.value_col),
     columnTableColumns = ["Column", "Group", "Filter"], //, 'Visibility', 'Label'],
@@ -41,26 +41,35 @@ export function layout(codebook) {
       .selectAll("tr")
       .data(columnMetadata)
       .enter()
-      .append("tr");
-  columnTableRows.each(function(rowDatum) {
-    const row = d3.select(this), dataColumn = rowDatum.Column;
+      .append("tr"),
+    columnTableCells = columnTableRows
+      .selectAll("td")
+      .data(d =>
+        Object.keys(d).map(di => {
+          return { column: d.Column, key: di, value: d[di] };
+        })
+      )
+      .enter()
+      .append("td")
+      .attr("class", d => d.key)
+      .each(function(d, i) {
+        const cell = d3.select(this);
 
-    for (const rowProperty in rowDatum) {
-      const cell = row.append("td").classed(rowProperty, true),
-        cellDatum = rowDatum[rowProperty];
-      if (typeof rowDatum[rowProperty] !== "object") cell.text(cellDatum);
-      else {
-        cell.attr(
-          "title",
-          `${cellDatum.checked ? "Remove" : "Add"} ${dataColumn} ${cellDatum.checked ? "from" : "to"} ${rowProperty.toLowerCase()} list`
-        );
-        cell
-          .append("input")
-          .attr("type", cellDatum.type)
-          .property("checked", cellDatum.checked);
-      }
-    }
-  });
+        switch (d.key) {
+          case "Column":
+            cell.text(d.value);
+            break;
+          default:
+            cell.attr(
+              "title",
+              `${d.value.checked ? "Remove" : "Add"} ${d.column} ${d.value.checked ? "from" : "to"} ${d.key.toLowerCase()} list`
+            );
+            cell
+              .append("input")
+              .attr("type", d.value.type)
+              .property("checked", d.value.checked);
+        }
+      });
 
   //Add descriptive footnote.
   columnTable

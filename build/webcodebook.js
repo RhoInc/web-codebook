@@ -2131,7 +2131,9 @@ function init$8(codebook) {
 
 function layout$2(codebook) {
   //Create list of columns in the data file.
-  var columns = Object.keys(codebook.data.raw[0]),
+  var columns = codebook.data.summary.map(function (d) {
+    return d.value_col;
+  }),
       groupColumns = codebook.config.groups.map(function (d) {
     return d.value_col;
   }),
@@ -2168,18 +2170,23 @@ function layout$2(codebook) {
   }).text(function (d) {
     return d;
   }),
-      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr");
-  columnTableRows.each(function (rowDatum) {
-    var row = d3.select(this),
-        dataColumn = rowDatum.Column;
+      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr"),
+      columnTableCells = columnTableRows.selectAll("td").data(function (d) {
+    return Object.keys(d).map(function (di) {
+      return { column: d.Column, key: di, value: d[di] };
+    });
+  }).enter().append("td").attr("class", function (d) {
+    return d.key;
+  }).each(function (d, i) {
+    var cell = d3.select(this);
 
-    for (var rowProperty in rowDatum) {
-      var cell = row.append("td").classed(rowProperty, true),
-          cellDatum = rowDatum[rowProperty];
-      if (_typeof(rowDatum[rowProperty]) !== "object") cell.text(cellDatum);else {
-        cell.attr("title", (cellDatum.checked ? "Remove" : "Add") + " " + dataColumn + " " + (cellDatum.checked ? "from" : "to") + " " + rowProperty.toLowerCase() + " list");
-        cell.append("input").attr("type", cellDatum.type).property("checked", cellDatum.checked);
-      }
+    switch (d.key) {
+      case "Column":
+        cell.text(d.value);
+        break;
+      default:
+        cell.attr("title", (d.value.checked ? "Remove" : "Add") + " " + d.column + " " + (d.value.checked ? "from" : "to") + " " + d.key.toLowerCase() + " list");
+        cell.append("input").attr("type", d.value.type).property("checked", d.value.checked);
     }
   });
 
@@ -2188,14 +2195,14 @@ function layout$2(codebook) {
 }
 
 function updateGroups(codebook) {
-  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table .Group input");
+  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Group");
 
   //Add click functionality to each list item.
   groupCheckBoxes.on("change", function () {
     var groups = groupCheckBoxes.filter(function () {
-      return d3.select(this).property("checked");
+      return d3.select(this).select("input").property("checked");
     }).data().map(function (d) {
-      return d.Column;
+      return d.column;
     });
     codebook.config.groups = groups.map(function (d) {
       return { value_col: d };
@@ -2212,14 +2219,14 @@ function updateGroups(codebook) {
 }
 
 function updateFilters(codebook) {
-  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table .Filter input");
+  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Filter");
 
   //Add click functionality to each list item.
   filterCheckBoxes.on("change", function () {
     var filters = filterCheckBoxes.filter(function () {
-      return d3.select(this).property("checked");
+      return d3.select(this).select("input").property("checked");
     }).data().map(function (d) {
-      return d.Column;
+      return d.column;
     });
     codebook.config.filters = filters.map(function (d) {
       return { value_col: d };
