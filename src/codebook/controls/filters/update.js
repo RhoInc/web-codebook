@@ -1,13 +1,12 @@
 /*------------------------------------------------------------------------------------------------\
-  Initialize filters.
+  Update filters.
 \------------------------------------------------------------------------------------------------*/
 
 import { nest as d3nest, select as d3select } from "d3";
 
-//export function init(selector, data, vars, settings) {
 export function update(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.select("div.custom-filters");
+  const selector = codebook.controls.wrap.select("div.custom-filters"),
+    filterList = selector.select("ul.filter-list");
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function(e) {
@@ -22,10 +21,10 @@ export function update(codebook) {
   });
 
   //Add filter controls.
-  var filterList = selector.select("ul.filter-list");
   var allFilterItem = filterList
     .selectAll("li")
     .data(codebook.config.filters, d => d.value_col);
+  var columns = Object.keys(codebook.data.raw[0]);
   var filterItem = allFilterItem
     .enter()
     .append("li")
@@ -33,6 +32,11 @@ export function update(codebook) {
       return "custom-" + d.value_col + " filterCustom";
     });
   allFilterItem.exit().remove();
+  allFilterItem.sort((a, b) => {
+    const aSort = columns.indexOf(a.value_col),
+      bSort = columns.indexOf(b.value_col);
+    return aSort - bSort;
+  });
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 

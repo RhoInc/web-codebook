@@ -75,13 +75,12 @@ function init$1(codebook) {
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize filters.
+  Update filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
-function init$2(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters");
+function update(codebook) {
+  var selector = codebook.controls.wrap.select("div.custom-filters"),
+      filterList = selector.select("ul.filter-list");
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
@@ -92,15 +91,19 @@ function init$2(codebook) {
     });
   });
 
-  //Clear custom controls.
-  selector.selectAll("ul.filter-list").remove();
-
   //Add filter controls.
-  var filterList = selector.append("ul").attr("class", "filter-list");
-  var filterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
+  var allFilterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
     return d.value_col;
-  }).enter().append("li").attr("class", function (d) {
+  });
+  var columns = Object.keys(codebook.data.raw[0]);
+  var filterItem = allFilterItem.enter().append("li").attr("class", function (d) {
     return "custom-" + d.value_col + " filterCustom";
+  });
+  allFilterItem.exit().remove();
+  allFilterItem.sort(function (a, b) {
+    var aSort = columns.indexOf(a.value_col),
+        bSort = columns.indexOf(b.value_col);
+    return aSort - bSort;
   });
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
@@ -142,61 +145,12 @@ function init$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function update(codebook) {
+function init$2(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap.select("div.custom-filters");
+  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
+      filterList = selector.append("ul").attr("class", "filter-list");
 
-  //add a list of values to each filter object
-  codebook.config.filters.forEach(function (e) {
-    e.values = d3$1.nest().key(function (d) {
-      return d[e.value_col];
-    }).entries(codebook.data.raw).map(function (d) {
-      return { value: d.key, selected: true };
-    });
-  });
-
-  //Add filter controls.
-  var filterList = selector.select("ul.filter-list");
-  var allFilterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
-    return d.value_col;
-  });
-  var filterItem = allFilterItem.enter().append("li").attr("class", function (d) {
-    return "custom-" + d.value_col + " filterCustom";
-  });
-  allFilterItem.exit().remove();
-
-  var filterLabel = filterItem.append("span").attr("class", "filterLabel");
-
-  filterLabel.append("span").html(function (d) {
-    return d.label || d.value_col;
-  });
-
-  var filterCustom = filterItem.append("select").attr("multiple", true);
-
-  //Add data-driven filter options.
-  var filterItems = filterCustom.selectAll("option").data(function (d) {
-    return d.values;
-  }).enter().append("option").html(function (d) {
-    return d.value;
-  }).attr("value", function (d) {
-    return d.value;
-  }).attr("selected", function (d) {
-    return d.selected ? "selected" : null;
-  });
-
-  //Initialize event listeners
-  filterCustom.on("change", function () {
-    // flag the selected options in the config
-    d3$1.select(this).selectAll("option").each(function (option_d) {
-      option_d.selected = d3$1.select(this).property("selected");
-    });
-
-    //update the codebook
-    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-    codebook.data.makeSummary(codebook);
-    codebook.summaryTable.draw(codebook);
-    codebook.dataListing.init(codebook);
-  });
+  update(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -209,43 +163,13 @@ var filters = {
 };
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize group control.
-\------------------------------------------------------------------------------------------------*/
-
-function init$3(codebook) {
-  if (codebook.config.groups.length > 0) {
-    var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
-
-    selector.append("span").text("Group by");
-
-    var groupSelect = selector.append("select");
-
-    var groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
-      return m.value_col;
-    })]);
-
-    groupSelect.selectAll("option").data(groupLevels, function (d) {
-      return d;
-    }).enter().append("option").text(function (d) {
-      return d;
-    });
-
-    groupSelect.on("change", function () {
-      if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
-      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-      codebook.data.makeSummary(codebook);
-      codebook.summaryTable.draw(codebook);
-    });
-  }
-}
-
-/*------------------------------------------------------------------------------------------------\
   Update group control.
 \------------------------------------------------------------------------------------------------*/
 
 function update$1(codebook) {
   var groupControl = codebook.controls.wrap.select("div.group-select"),
       groupSelect = groupControl.select("select"),
+      columns = Object.keys(codebook.data.raw[0]),
       groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
     return m.value_col;
   })]),
@@ -256,6 +180,25 @@ function update$1(codebook) {
     return d;
   });
   groupOptions.exit().remove();
+  groupOptions.sort(function (a, b) {
+    return columns.indexOf(a) - columns.indexOf(b);
+  });
+  groupSelect.on("change", function () {
+    if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize group control.
+\------------------------------------------------------------------------------------------------*/
+
+function init$3(codebook) {
+  var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
+  selector.append("span").text("Group by");
+  var groupSelect = selector.append("select");
+  update$1(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -405,28 +348,6 @@ function init$6(codebook) {
       });
     }
   });
-
-  /*
-  const container = codebook.nav.wrap
-    .append("button")
-    .attr("class","data-listing-toggle")
-    .text(
-      codebook.dataListing.wrap.style("display") === "none"
-        ? "View data"
-        : "View codebook"
-    );
-  container.on("click", function() {
-    if (codebook.dataListing.wrap.style("display") === "none") {
-      codebook.dataListing.wrap.classed("hidden", false);
-      codebook.summaryTable.wrap.classed("hidden", true);
-      container.text("View codebook");
-    } else {
-      codebook.dataListing.wrap.classed("hidden", true);
-      codebook.summaryTable.wrap.classed("hidden", false);
-      container.text("View data");
-    }
-  });
-  */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2255,8 +2176,6 @@ function layout$2(codebook) {
     for (var rowProperty in rowDatum) {
       var cell = row.append("td").classed(rowProperty, true),
           cellDatum = rowDatum[rowProperty];
-      console.log(cell);
-      console.log(cellDatum);
       if (_typeof(rowDatum[rowProperty]) !== "object") cell.text(cellDatum);else {
         cell.attr("title", (cellDatum.checked ? "Remove" : "Add") + " " + dataColumn + " " + (cellDatum.checked ? "from" : "to") + " " + rowProperty.toLowerCase() + " list");
         cell.append("input").attr("type", cellDatum.type).property("checked", cellDatum.checked);

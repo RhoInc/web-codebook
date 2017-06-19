@@ -48,8 +48,6 @@ export function layout(codebook) {
     for (const rowProperty in rowDatum) {
       const cell = row.append("td").classed(rowProperty, true),
         cellDatum = rowDatum[rowProperty];
-      console.log(cell);
-      console.log(cellDatum);
       if (typeof rowDatum[rowProperty] !== "object") cell.text(cellDatum);
       else {
         cell.attr(
