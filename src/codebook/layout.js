@@ -21,4 +21,9 @@ export function layout() {
     .append("div")
     .attr("class", "dataListing section")
     .classed("hidden", true);
+
+  this.settings.wrap = this.wrap
+    .append("div")
+    .attr("class", "settings section")
+    .classed("hidden", true);
 }

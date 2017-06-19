@@ -38,6 +38,9 @@ function init(data) {
 
   //initialize and then draw the data listing
   this.dataListing.init(this);
+
+  //initialize and then draw the data listing
+  this.settings.init(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -53,6 +56,8 @@ function layout() {
   this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText section");
 
   this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing section").classed("hidden", true);
+
+  this.settings.wrap = this.wrap.append("div").attr("class", "settings section").classed("hidden", true);
 }
 
 function init$1(codebook) {
@@ -70,13 +75,12 @@ function init$1(codebook) {
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize custom controls.
+  Update filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
-function init$2(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters");
+function update(codebook) {
+  var selector = codebook.controls.wrap.select("div.custom-filters"),
+      filterList = selector.select("ul.filter-list");
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
@@ -87,13 +91,19 @@ function init$2(codebook) {
     });
   });
 
-  //Clear custom controls.
-  selector.selectAll("ul.filter-list").remove();
-
   //Add filter controls.
-  var filterList = selector.append("ul").attr("class", "filter-list");
-  var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
+  var allFilterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
+    return d.value_col;
+  });
+  var columns = Object.keys(codebook.data.raw[0]);
+  var filterItem = allFilterItem.enter().append("li").attr("class", function (d) {
     return "custom-" + d.value_col + " filterCustom";
+  });
+  allFilterItem.exit().remove();
+  allFilterItem.sort(function (a, b) {
+    var aSort = columns.indexOf(a.value_col),
+        bSort = columns.indexOf(b.value_col);
+    return aSort - bSort;
   });
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
@@ -131,45 +141,74 @@ function init$2(codebook) {
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Define filter controls object.
+  Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-var filters = { init: init$2 };
+//export function init(selector, data, vars, settings) {
+function init$2(codebook) {
+  //initialize the wrapper
+  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
+      filterList = selector.append("ul").attr("class", "filter-list");
 
-/*------------------------------------------------------------------------------------------------\
-  Initialize group controls.
-\------------------------------------------------------------------------------------------------*/
-
-function init$3(codebook) {
-  if (codebook.config.groups.length > 0) {
-    var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
-
-    selector.append("span").text("Group by");
-
-    var groupSelect = selector.append("select");
-
-    var groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
-      return m.value_col;
-    })]);
-
-    groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
-      return d;
-    });
-
-    groupSelect.on("change", function () {
-      if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
-      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-      codebook.data.makeSummary(codebook);
-      codebook.summaryTable.draw(codebook);
-    });
-  }
+  update(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var groups = { init: init$3 };
+var filters = {
+  init: init$2,
+  update: update
+};
+
+/*------------------------------------------------------------------------------------------------\
+  Update group control.
+\------------------------------------------------------------------------------------------------*/
+
+function update$1(codebook) {
+  var groupControl = codebook.controls.wrap.select("div.group-select"),
+      groupSelect = groupControl.select("select"),
+      columns = Object.keys(codebook.data.raw[0]),
+      groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
+    return m.value_col;
+  })]),
+      groupOptions = groupSelect.selectAll("option").data(groupLevels, function (d) {
+    return d;
+  });
+  groupOptions.enter().append("option").text(function (d) {
+    return d;
+  });
+  groupOptions.exit().remove();
+  groupOptions.sort(function (a, b) {
+    return columns.indexOf(a) - columns.indexOf(b);
+  });
+  groupSelect.on("change", function () {
+    if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize group control.
+\------------------------------------------------------------------------------------------------*/
+
+function init$3(codebook) {
+  var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
+  selector.append("span").text("Group by");
+  var groupSelect = selector.append("select");
+  update$1(codebook);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define filter controls object.
+\------------------------------------------------------------------------------------------------*/
+
+var groups = {
+  init: init$3,
+  update: update$1
+};
 
 /*------------------------------------------------------------------------------------------------\
   Initialize custom controls.
@@ -209,8 +248,8 @@ function init$5(codebook) {
   codebook.controls.controlToggle.set(codebook);
 
   controlToggle.on("click", function () {
-    console.log(d3.select(this).text());
-    codebook.config.controlVisibility = d3.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
+    codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
+
     : "visible"; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
@@ -218,7 +257,6 @@ function init$5(codebook) {
 }
 
 function set$1(codebook) {
-  console.log(codebook.config.controlVisibility);
   //update toggle text
   codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
   codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
@@ -263,11 +301,11 @@ var availableTabs = [{
   key: "listing",
   label: "Data Listing",
   selector: ".web-codebook .dataListing"
-}];
+}, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
+
 
 function init$6(codebook) {
   codebook.nav.wrap.selectAll("*").remove();
-  console.log(codebook.config);
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
@@ -288,17 +326,20 @@ function init$6(codebook) {
   //draw the nav
   var chartNav = codebook.nav.wrap.append("ul").attr("class", "nav nav-tabs");
   var navItems = chartNav.selectAll("li").data(codebook.nav.tabs) //make this a setting
-  .enter().append("li").classed("active", function (d, i) {
+  .enter().append("li").attr("class", function (d) {
+    return d.key;
+  }).classed("active", function (d, i) {
     return d.active; //make this a setting
+  }).attr("title", function (d) {
+    return "View " + d.key;
   });
 
-  navItems.append("a").text(function (d) {
+  navItems.append("a").html(function (d) {
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
-    console.log("clicked on " + d.label);
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -307,31 +348,9 @@ function init$6(codebook) {
         }).classed("active", t.active); //style the active nav element
         t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
       });
-      console.log(codebook.nav.tabs);
     }
   });
 
-  /*
-  const container = codebook.nav.wrap
-    .append("button")
-    .attr("class","data-listing-toggle")
-    .text(
-      codebook.dataListing.wrap.style("display") === "none"
-        ? "View data"
-        : "View codebook"
-    );
-  container.on("click", function() {
-    if (codebook.dataListing.wrap.style("display") === "none") {
-      codebook.dataListing.wrap.classed("hidden", false);
-      codebook.summaryTable.wrap.classed("hidden", true);
-      container.text("View codebook");
-    } else {
-      codebook.dataListing.wrap.classed("hidden", true);
-      codebook.summaryTable.wrap.classed("hidden", false);
-      container.text("View data");
-    }
-  });
-  */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1912,7 +1931,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: "visible",
-  tabs: ["codebook", "listing"]
+  tabs: ["codebook", "listing", "settings"]
 };
 
 function setDefaults(codebook) {
@@ -2185,6 +2204,140 @@ var data = {
   makeFiltered: makeFiltered
 };
 
+function init$8(codebook) {
+  codebook.settings.layout(codebook);
+  for (var funk in codebook.settings.functionality) {
+    codebook.settings.functionality[funk](codebook);
+  }
+}
+
+function layout$2(codebook) {
+  //Create list of columns in the data file.
+  var columns = codebook.data.summary.map(function (d) {
+    return d.value_col;
+  }),
+      groupColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      filterColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      columnTableColumns = ["Column", "Group", "Filter"],
+      //, 'Visibility', 'Label'],
+  columnMetadata = columns.map(function (column) {
+    var columnDatum = {
+      Column: column,
+      Group: {
+        type: "checkbox",
+        checked: groupColumns.indexOf(column) > -1
+      },
+      Filter: {
+        type: "checkbox",
+        checked: filterColumns.indexOf(column) > -1
+      }
+      /*,'Visibility':
+                          {type: 'checkbox'
+                          ,checked: true}
+                      ,'Label':
+                          {type: 'text'
+                          ,checked: filterColumns.indexOf(column) > -1}*/
+    };
+
+    return columnDatum;
+  }),
+      columnTable = codebook.settings.wrap.append("table").classed("column-table", true),
+      columnTableHeader = columnTable.append("thead").append("tr"),
+      columnTableHeaders = columnTableHeader.selectAll("th").data(columnTableColumns).enter().append("th").attr("class", function (d) {
+    return d;
+  }).text(function (d) {
+    return d;
+  }),
+      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr"),
+      columnTableCells = columnTableRows.selectAll("td").data(function (d) {
+    return Object.keys(d).map(function (di) {
+      return { column: d.Column, key: di, value: d[di] };
+    });
+  }).enter().append("td").attr("class", function (d) {
+    return d.key;
+  }).each(function (d, i) {
+    var cell = d3.select(this);
+
+    switch (d.key) {
+      case "Column":
+        cell.text(d.value);
+        break;
+      default:
+        cell.attr("title", (d.value.checked ? "Remove" : "Add") + " " + d.column + " " + (d.value.checked ? "from" : "to") + " " + d.key.toLowerCase() + " list");
+        cell.append("input").attr("type", d.value.type).property("checked", d.value.checked);
+    }
+  });
+
+  //Add descriptive footnote.
+  columnTable.select("tbody").append("tr").style("border-bottom", "none").append("td").attr("colspan", "5").text("This interactive table allows users to modify each column's metadata.");
+}
+
+function updateGroups(codebook) {
+  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Group");
+
+  //Add click functionality to each list item.
+  groupCheckBoxes.on("change", function () {
+    var groups = groupCheckBoxes.filter(function () {
+      return d3.select(this).select("input").property("checked");
+    }).data().map(function (d) {
+      return d.column;
+    });
+    codebook.config.groups = groups.map(function (d) {
+      return { value_col: d };
+    });
+    codebook.controls.groups.update(codebook);
+
+    //Redraw codebook if currently grouped by former group column.
+    if (codebook.config.group && groups.indexOf(codebook.config.group) === -1) {
+      delete codebook.config.group;
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
+    }
+  });
+}
+
+function updateFilters(codebook) {
+  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Filter");
+
+  //Add click functionality to each list item.
+  filterCheckBoxes.on("change", function () {
+    var filters = filterCheckBoxes.filter(function () {
+      return d3.select(this).select("input").property("checked");
+    }).data().map(function (d) {
+      return d.column;
+    });
+    codebook.config.filters = filters.map(function (d) {
+      return { value_col: d };
+    });
+    codebook.controls.filters.update(codebook);
+
+    //Update filtered data and redraw codebook.
+    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
+  });
+}
+
+var functionality = {
+  updateGroups: updateGroups,
+  updateFilters: updateFilters
+};
+
+/*------------------------------------------------------------------------------------------------\
+  Define settings object.
+\------------------------------------------------------------------------------------------------*/
+
+var settings = {
+  init: init$8,
+  layout: layout$2,
+  functionality: functionality
+};
+
 function createCodebook() {
   var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
   var config = arguments[1];
@@ -2199,7 +2352,8 @@ function createCodebook() {
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
-    util: util
+    util: util,
+    settings: settings
   };
 
   return codebook;
@@ -2209,7 +2363,7 @@ function createCodebook() {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$8() {
+function init$9() {
   var settings = this.config;
 
   //create wrapper in specified div
@@ -2229,13 +2383,13 @@ function init$8() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$2() {
+function layout$3() {
   this.controls.wrap = this.wrap.append("div").attr("class", "controls");
 
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }
 
-function init$9(explorer) {
+function init$10(explorer) {
   explorer.controls.wrap.attr("onsubmit", "return false;");
   explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
 
@@ -2265,7 +2419,7 @@ function init$9(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$9
+  init: init$10
 };
 
 function makeCodebook(meta) {
@@ -2283,8 +2437,8 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$8,
-    layout: layout$2,
+    init: init$9,
+    layout: layout$3,
     controls: controls$1,
     makeCodebook: makeCodebook
   };

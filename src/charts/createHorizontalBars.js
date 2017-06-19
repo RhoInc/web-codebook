@@ -33,6 +33,7 @@ export function createHorizontalBars(this_, d) {
             stroke: null
           }
         }
+
       ],
       colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
       gridlines: "x",
