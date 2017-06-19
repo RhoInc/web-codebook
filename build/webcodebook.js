@@ -1445,6 +1445,20 @@ function makeDetails(d) {
     stats.append("div").text(function (d) {
       return d.value;
     }).attr("class", "value");
+	
+	// Display Unique Values for Categorical Variables
+	if (d.statistics.values.length > 5) {
+		var extraCount = (d.statistics.values.length) - 5;
+		var extraVar = stats_div.append("div").attr("class", "stat");
+		extraVar.append("div").text(function (d) {
+			return "Uniques";
+		}).attr("class", "label");
+		extraVar.append("div").text(function (d) {
+			return extraCount;
+		}).attr("class", "value");
+	}
+
+
   } else if (d.type === "continuous") {
     var stats = stats_div.selectAll("div").data(statList.filter(function (statItem) {
       return statItem.key.indexOf("ile") === -1;
