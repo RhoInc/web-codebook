@@ -2162,6 +2162,7 @@ function makeSummary(codebook) {
 function makeFiltered(data, filters) {
   var filtered = data;
   filters.forEach(function (filter_d) {
+    console.log(filter_d);
     //remove the filtered values from the data based on the filters
     filtered = filtered.filter(function (rowData) {
       var currentValues = filter_d.values.filter(function (f) {
@@ -2169,7 +2170,7 @@ function makeFiltered(data, filters) {
       }).map(function (m) {
         return m.value;
       });
-      return currentValues.indexOf(rowData[filter_d.value_col]) > -1;
+      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
     });
   });
   return filtered;
