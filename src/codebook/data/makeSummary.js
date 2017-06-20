@@ -29,7 +29,7 @@ export function makeSummary(codebook) {
       const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== "NA");
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.values = d3nest();
+      statistics.values = d3nest()
         .key(d => d)
         .rollup(d => {
           return {
