@@ -1109,6 +1109,32 @@ function onResize$3() {
     if (this.config.boxPlot) {
       var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.50, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
       //console.log(quantile$$1);
+	  
+	  var outliers = this.values.filter(function(f){
+		  var low_outlier = f < (quantiles.filter(q=>q.probability==0.05)[0]["quantile"] )
+		  var high_outlier = f > (quantiles.filter(q=>q.probability==0.95)[0]["quantile"] )
+		  return low_outlier || high_outlier;
+	  });
+	  
+	  var chart = this;
+	  this.svg
+	  .selectAll("line.outlier")
+	  .data(outliers)
+	  .enter()
+	  .append("line")
+	  .attr(function(d){return{
+		  class: "statistic outlier",
+		  x1: chart.x(d),
+		  y1: chart.plot_height * 1.07,
+		  x2: chart.x(d),
+		  y2: (chart.plot_height + chart.config.boxPlotHeight) / 1.07
+		  })
+		  .style({
+			  fill: '#000000",
+			  stroke: "black",
+			  "stroke-width": "1px"
+		  });
+	  }
 	  for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
         quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
