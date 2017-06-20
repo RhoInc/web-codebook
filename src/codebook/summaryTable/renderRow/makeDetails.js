@@ -25,17 +25,6 @@ export default function makeDetails(d) {
       .attr("class", "stat");
     stats.append("div").text(d => d.key).attr("class", "label");
     stats.append("div").text(d => d.value).attr("class", "value");
-	// Display Unique Values for Categorical Variables
-	if (d.statistics.values.length > 5) {
-		var extraCount = (d.statistics.values.length) - 5;
-		var extraVar = stats_div.append("div").attr("class", "stat");
-		extraVar.append("div").text(function (d) {
-			return "Uniques";
-		}).attr("class", "label");
-		extraVar.append("div").text(function (d) {
-			return extraCount;
-		}).attr("class", "value");
-	}
   } else if (d.type === "continuous") {
     var stats = stats_div
       .selectAll("div")
