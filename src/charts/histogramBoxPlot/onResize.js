@@ -39,60 +39,6 @@ export default function onResize() {
         const quantile = quantiles[item];
         quantile.quantile = d3quantile(this.values, quantile.probability);
 
-		// PLOT OUTLIERS
-		//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		if ( quantile$$1.probability == 0.05 ){
-			// probability of 0.05 corresponds to the lower whisker
-			var lower_whisker =  quantile$$1.quantile;
-			//Loop through all data points
-			for( var point in this.values ){
-				// if the data point is below the lower whisker, then it is an outlier
-				if( this.values[point] < lower_whisker ){
-					// plot outliers as vertical lines
-					const meanMark = this.svg
-					.append("line")
-					.attr({
-						class: "statistic",
-						x1: this.x(this.values[point]),
-						y1: this.plot_height * 1.07,
-						x2: this.x(this.values[point]),
-						y2: (this.plot_height + this.config.boxPlotHeight) / 1.07
-					})
-					.style({
-						fill: "#000000",
-						stroke: "black",
-						"stroke-width": "1px"
-					});
-				}
-			}
-		}
-		else if (quantile$$1.probability == 0.95){
-			// probability of 0.95 corresponds to the upper whisker
-			var upper_whisker = quantile$$1.quantile;
-			//Loop through all data points
-			for( var point in this.values ){
-				// if the data point is above the upper whisker, then it is an outlier
-				if( this.values[point] > upper_whisker ){
-					// plot outliers as vertical lines
-					const meanMark = this.svg
-					.append("line")
-					.attr({
-						class: "statistic",
-						x1: this.x(this.values[point]),
-						y1: this.plot_height * 1.07,
-						x2: this.x(this.values[point]),
-						y2: (this.plot_height + this.config.boxPlotHeight) / 1.07
-					})
-					.style({
-						fill: "#000000",
-						stroke: "black",
-						"stroke-width": "1px"
-					});
-				}
-			}
-		}
-		//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile.probability) > -1) {
           const rProbability = quantiles[+item + 1].probability;
