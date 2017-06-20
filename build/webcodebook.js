@@ -1122,7 +1122,7 @@ function onResize$3() {
 	  .data(outliers)
 	  .enter()
 	  .append("line")
-	  .attr(function(d)return{
+	  .attr(function(d){return{
 		  class: "statistic outlier",
 		  x1: chart.x(d),
 		  y1: chart.plot_height * 1.07,
@@ -1133,7 +1133,7 @@ function onResize$3() {
 		  fill: '#000000",
 		  stroke: "black",
 		  "stroke-width": "1px"
-	  });
+	  });}
 	  for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
         quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
