@@ -100,12 +100,12 @@ export function makeSummary(codebook) {
         ? "histogramBoxPlot"
         : (variables[i].type == "categorical") &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-            ? "verticalBars"
-            : (variables[i].type == "categorical") &
-                (variables[i].statistics.values.length <=
-                  codebook.config.levelSplit)
-                ? "horizontalBars"
-                : "error";
+          ? "verticalBars"
+          : (variables[i].type == "categorical") &
+              (variables[i].statistics.values.length <=
+                codebook.config.levelSplit)
+            ? "horizontalBars"
+            : "error";
 
       //Handle groups.
       if (group) {

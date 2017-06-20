@@ -33,7 +33,6 @@ export function createHorizontalBars(this_, d) {
             stroke: null
           }
         }
-
       ],
       colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
       gridlines: "x",
@@ -85,7 +84,8 @@ export function createHorizontalBars(this_, d) {
         d3select(chartContainer)
           .append("p")
           .text(
-            `${chartSettings.group_col}: ${group.chartSettings.group_val} (n=${group.chartSettings.n})`
+            `${chartSettings.group_col}: ${group.chartSettings
+              .group_val} (n=${group.chartSettings.n})`
           );
         d3select(chartContainer)
           .append("div")

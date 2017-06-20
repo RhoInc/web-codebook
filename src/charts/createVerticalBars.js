@@ -83,7 +83,8 @@ export function createVerticalBars(this_, d) {
         d3select(chartContainer)
           .append("p")
           .text(
-            `${chartSettings.group_col}: ${group.chartSettings.group_val} (n=${group.chartSettings.n})`
+            `${chartSettings.group_col}: ${group.chartSettings
+              .group_val} (n=${group.chartSettings.n})`
           );
 
         d3select(chartContainer)

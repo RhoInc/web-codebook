@@ -15,20 +15,25 @@ export default function updateHidden(codebook) {
       .map(d => d.column);
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.group-select option')
-      .classed('hidden', d => codebook.config.hiddenVariables
-          .indexOf(d) > -1);
-  
+    codebook.controls.wrap
+      .selectAll(".group-select option")
+      .classed("hidden", d => codebook.config.hiddenVariables.indexOf(d) > -1);
+
     //Hide filters corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.filter-list li.filterCustom')
-      .classed('hidden', d => codebook.config.hiddenVariables
-          .indexOf(d.value_col) > -1);
-  
+    codebook.controls.wrap
+      .selectAll(".filter-list li.filterCustom")
+      .classed(
+        "hidden",
+        d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+      );
+
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
     codebook.summaryTable.wrap
       .selectAll("div.variable-row")
-      .classed('hidden', d => codebook.config.hiddenVariables
-        .indexOf(d.value_col) > -1);
+      .classed(
+        "hidden",
+        d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+      );
 
     //Redraw data listing because columns corresponding to hidden variables will not be hidden until dataListing.onDraw() is called.
     codebook.dataListing.init(codebook);

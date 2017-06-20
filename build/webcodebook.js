@@ -74,12 +74,12 @@ function init$1(codebook) {
   codebook.controls.controlToggle.init(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
+  codebook.controls.wrap.selectAll(".group-select option").classed("hidden", function (d) {
     return codebook.config.hiddenVariables.indexOf(d) > -1;
   });
 
   //Hide filters corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
+  codebook.controls.wrap.selectAll(".filter-list li.filterCustom").classed("hidden", function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 }
@@ -154,6 +154,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
@@ -343,13 +344,11 @@ function init$6(codebook) {
   });
 
   navItems.append("a").html(function (d) {
-
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
-
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -390,7 +389,7 @@ function draw(codebook) {
   });
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
-  varRows.classed('hidden', function (d) {
+  varRows.classed("hidden", function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 
@@ -1336,7 +1335,7 @@ function onResize$3() {
 
     //Annotate quantiles
     if (this.config.boxPlot) {
-      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.50, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
+      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.5, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
@@ -1890,21 +1889,21 @@ function addPagination(dataListing) {
 }
 
 function onDraw(dataListing) {
-    dataListing.table.on("draw", function () {
-        //Add header sort functionality.
-        addSort(dataListing);
+  dataListing.table.on("draw", function () {
+    //Add header sort functionality.
+    addSort(dataListing);
 
-        //Add text search functionality.
-        addSearch(dataListing);
+    //Add text search functionality.
+    addSearch(dataListing);
 
-        //Add pagination functionality.
-        addPagination(dataListing);
+    //Add pagination functionality.
+    addPagination(dataListing);
 
-        //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
-        this.table.selectAll('th,td').classed('hidden', function (d) {
-            return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
-        });
+    //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
+    this.table.selectAll("th,td").classed("hidden", function (d) {
+      return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
     });
+  });
 }
 
 function init$7(codebook) {
@@ -2247,7 +2246,7 @@ function layout$2(codebook) {
     return d.value_col;
   }),
       hiddenColumns = codebook.config.hiddenVariables,
-      columnTableColumns = ["Column", "Group", "Filter", 'Hidden'],
+      columnTableColumns = ["Column", "Group", "Filter", "Hidden"],
       columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
@@ -2260,8 +2259,9 @@ function layout$2(codebook) {
         checked: filterColumns.indexOf(column) > -1
       },
       Hidden: {
-        type: 'checkbox',
-        checked: hiddenColumns.indexOf(column) > -1 }
+        type: "checkbox",
+        checked: hiddenColumns.indexOf(column) > -1
+      }
     };
 
     return columnDatum;
@@ -2356,17 +2356,17 @@ function updateHidden(codebook) {
     });
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
+    codebook.controls.wrap.selectAll(".group-select option").classed("hidden", function (d) {
       return codebook.config.hiddenVariables.indexOf(d) > -1;
     });
 
     //Hide filters corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
+    codebook.controls.wrap.selectAll(".filter-list li.filterCustom").classed("hidden", function (d) {
       return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
     });
 
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
-    codebook.summaryTable.wrap.selectAll("div.variable-row").classed('hidden', function (d) {
+    codebook.summaryTable.wrap.selectAll("div.variable-row").classed("hidden", function (d) {
       return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
     });
 

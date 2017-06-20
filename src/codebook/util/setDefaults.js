@@ -12,8 +12,8 @@ export function setDefaults(codebook) {
   codebook.config.autofilter = codebook.config.filters.length > 0
     ? false
     : codebook.config.autofilter == null
-        ? defaultSettings.autofilter
-        : codebook.config.autofilter;
+      ? defaultSettings.autofilter
+      : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
@@ -26,11 +26,12 @@ export function setDefaults(codebook) {
   codebook.config.autogroups = codebook.config.groups.length > 0
     ? false
     : codebook.config.autogroups == null
-        ? defaultSettings.autogroups
-        : codebook.config.autogroups;
+      ? defaultSettings.autogroups
+      : codebook.config.autogroups;
 
   /********************* Hidden Variable Settings ***************/
-  codebook.config.hiddenVariables = codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
+  codebook.config.hiddenVariables =
+    codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;
