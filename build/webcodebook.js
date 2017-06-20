@@ -1124,8 +1124,8 @@ function onResize$3() {
 	  console.log(quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]["probability"]);
 	  console.log(quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]["quantile"]);
 	  
-	  var chart = this;
-	  this.svg
+	  var chart = this.svg
+	  // What is the following line doing?
 	  .selectAll("line.outlier")
 	  .data(outliers)
 	  .enter()
