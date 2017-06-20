@@ -109,6 +109,31 @@ export default function onResize() {
           .append("title")
           .text(`${quantile.label}: ${format(quantile.quantile)}`);
       }
+	  
+	  var outliers = this.values.filter(function(f){
+		  var low_outlier = f < (quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]["quantile"]);
+		  var high_outlier = f > (quantiles.filter(q=>{if (q.probability==0.95){ return q;}})[0]["quantile"]);
+		  return low_outlier || high_outlier;
+	  });
+
+	  var chart = this.svg
+	  .selectAll("line.outlier")
+	  .data(outliers)
+	  .enter()
+	  .append("line")
+	  .attr(function(d){return{
+		  class: "statistic outlier",
+		  x1: chart.x(d),
+		  y1: chart.plot_height * 1.07,
+		  x2: chart.x(d),
+		  y2: (chart.plot_height + chart.config.boxPlotHeight) / 1.07
+	  }})
+	  .style({
+		  fill: "#000000",
+		  stroke: "black",
+		  "stroke-width": "1px"
+	  });
+
     }
 
     //Annotate mean.
