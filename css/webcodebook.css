@@ -20,8 +20,8 @@ General
   margin:0;
 }
 
-.web-codebook .hidden{
-  display: none;
+.web-codebook .hidden {
+  display: none !important; /* all .hidden elements should be hidden/display:none */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -38,10 +38,6 @@ Controls layout
   margin-bottom:0.5em;
 }
 
-.web-codebook .controls.hidden {
-  display:none;
-}
-
 .web-codebook .controls.minimized {
   height:28px;
 }
@@ -55,9 +51,6 @@ Controls layout
     display: inline-block;
 }
 
-.web-codebook .controls .data-listing-toggle.hidden {
-  display:none;
-}
 .web-codebook .controls .group-select span {
   padding-right: 5px;
 }
@@ -161,7 +154,6 @@ Row layout
 .web-codebook .summaryTable .variable-row.hiddenChart .row-chart {
   display: none;
 }
-
 
 /**-------------------------------------------------------------------------------------------\
 Header layout
@@ -274,10 +266,6 @@ Chart layout
 .web-codebook .summaryTable .variable-row .row-controls > * {
     display: inline-block;
     margin-right: .5em;
-}
-
-.web-codebook .summaryTable .variable-row .row-controls > *.hidden {
-    display: none;
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
