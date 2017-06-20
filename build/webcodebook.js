@@ -1111,10 +1111,18 @@ function onResize$3() {
       //console.log(quantile$$1);
 	  
 	  var outliers = this.values.filter(function(f){
-		  var low_outlier = f < (quantiles.filter(q=>q.probability==0.05)[0]["quantile"] )
-		  var high_outlier = f > (quantiles.filter(q=>q.probability==0.95)[0]["quantile"] )
+		  //var low_outlier = f < 50;
+		  //var low_outlier = f < (quantiles.filter(q=>({q.probability==0.05;)})[0]["quantile"] );
+		  //var high_outlier = f > (quantiles.filter(q=>({q.probability==0.95;)}[0]["quantile"] ));
+		  var low_outlier = f < (quantiles.filter(q=>{if (q.probability==0.05){ return q;}}).quantile);
+		  var high_outlier = f > (quantiles.filter(q=>{q.probability==0.95;}));
 		  return low_outlier || high_outlier;
 	  });
+	  console.log(outliers);
+	  console.log(quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]);
+	  // logs expected probability to console, but logs 'undefined' for quantile
+	  console.log(quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]["probability"]);
+	  console.log(quantiles.filter(q=>{if (q.probability==0.05){ return q;}})[0]["quantile"]);
 	  
 	  var chart = this;
 	  this.svg
@@ -1134,6 +1142,7 @@ function onResize$3() {
 		  stroke: "black",
 		  "stroke-width": "1px"
 	  });
+	  
 	  for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
         quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
