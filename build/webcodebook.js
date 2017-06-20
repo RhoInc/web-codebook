@@ -1130,7 +1130,7 @@ function onResize$3() {
 		  y2: (chart.plot_height + chart.config.boxPlotHeight) / 1.07
 	  }})
 	  .style({
-		  fill: '#000000",
+		  fill: "#000000",
 		  stroke: "black",
 		  "stroke-width": "1px"
 	  });
