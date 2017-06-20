@@ -29,7 +29,8 @@ export function makeSummary(codebook) {
       const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== "NA");
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.values = d3nest()
+      statistics.values = d3nest();
+	  statistics.unique = d3set(d.length - 5)
         .key(d => d)
         .rollup(d => {
           return {
@@ -37,7 +38,8 @@ export function makeSummary(codebook) {
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
             prop_N_text: d3format("0.1%")(d.length / statistics.N),
-            prop_n_text: d3format("0.1%")(d.length / statistics.n)
+            prop_n_text: d3format("0.1%")(d.length / statistics.n),
+			unique: (d.length - 5)
           };
         })
         .entries(nonMissing);
