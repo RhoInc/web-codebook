@@ -9,7 +9,7 @@ export default function updateFilters(codebook) {
   filterCheckBoxes.on("change", function() {
     const filters = filterCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3select(this).select("input").property("checked");
       })
       .data()
       .map(d => d.column);

@@ -1,6 +1,10 @@
 export function init(codebook) {
   codebook.controls.wrap.attr("onsubmit", "return false;");
-  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
+  codebook.controls.wrap.selectAll("*:not(#loading-indicator)").remove(); //Clear controls.
+
+  codebook.loadingIndicator = codebook.controls.wrap
+    .insert("div", ":first-child")
+    .attr("id", "loading-indicator");
 
   //Draw title
   codebook.controls.wrap

@@ -1,7 +1,6 @@
 export function makeFiltered(data, filters) {
   var filtered = data;
   filters.forEach(function(filter_d) {
-    console.log(filter_d);
     //remove the filtered values from the data based on the filters
     filtered = filtered.filter(function(rowData) {
       var currentValues = filter_d.values
