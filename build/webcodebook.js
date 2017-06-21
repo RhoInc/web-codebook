@@ -1012,8 +1012,9 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100 // space for panel value
-  } };
+    left: 100
+  } // space for panel value
+};
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -1855,20 +1856,22 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
+      statistics.unique = d3.set(vector).values().length;
       statistics.values = d3.nest().key(function (d) {
         return d;
       }).rollup(function (d) {
+        console.log(d);
+        console.log(statistics);
         return {
           n: d.length,
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
           prop_N_text: d3.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3.format("0.1%")(d.length / statistics.n)
+          prop_n_text: d3.format("0.1%")(d.length / statistics.n),
+          unique: d3.set(vector).values().length
         };
       }).entries(nonMissing);
-      if (statistics.values.length - 5 > 0) {
-        statistics.Unique = statistics.values.length - 5;
-      }
+
       statistics.values.forEach(function (value) {
         for (var statistic in value.values) {
           value[statistic] = value.values[statistic];
