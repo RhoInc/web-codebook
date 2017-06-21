@@ -43,7 +43,9 @@ export default function drawDifferences(chart) {
         "font-size": "0.7em"
       })
       .text(
-        `${x < d.total ? "+" : x > d.total ? "-" : ""}${d3format(".1f")(Math.abs(d.total - x) * 100)}`
+        `${x < d.total ? "+" : x > d.total ? "-" : ""}${d3format(".1f")(
+          Math.abs(d.total - x) * 100
+        )}`
       );
   });
 

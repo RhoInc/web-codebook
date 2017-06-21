@@ -1012,9 +1012,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -1107,7 +1106,7 @@ function onResize$3() {
 
     //Annotate quantiles
     if (this.config.boxPlot) {
-      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.50, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
+      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.5, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
@@ -1867,7 +1866,9 @@ function makeSummary(codebook) {
           prop_n_text: d3.format("0.1%")(d.length / statistics.n)
         };
       }).entries(nonMissing);
-
+      if (statistics.values.length - 5 > 0) {
+        statistics.Unique = statistics.values.length - 5;
+      }
       statistics.values.forEach(function (value) {
         for (var statistic in value.values) {
           value[statistic] = value.values[statistic];

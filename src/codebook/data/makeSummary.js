@@ -37,12 +37,13 @@ export function makeSummary(codebook) {
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
             prop_N_text: d3format("0.1%")(d.length / statistics.N),
-            prop_n_text: d3format("0.1%")(d.length / statistics.n),
-		    unique: d3set(statistics.values.length)
+            prop_n_text: d3format("0.1%")(d.length / statistics.n)
           };
         })
         .entries(nonMissing);
-
+      if (statistics.values.length - 5 > 0) {
+        statistics.Unique = statistics.values.length - 5;
+      }
       statistics.values.forEach(value => {
         for (var statistic in value.values) {
           value[statistic] = value.values[statistic];
@@ -101,12 +102,12 @@ export function makeSummary(codebook) {
         ? "histogramBoxPlot"
         : (variables[i].type == "categorical") &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-            ? "verticalBars"
-            : (variables[i].type == "categorical") &
-                (variables[i].statistics.values.length <=
-                  codebook.config.levelSplit)
-                ? "horizontalBars"
-                : "error";
+          ? "verticalBars"
+          : (variables[i].type == "categorical") &
+              (variables[i].statistics.values.length <=
+                codebook.config.levelSplit)
+            ? "horizontalBars"
+            : "error";
 
       //Handle groups.
       if (group) {
