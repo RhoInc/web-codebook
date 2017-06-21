@@ -2114,6 +2114,7 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
+      statistics.unique = d3$1.set(vector).values().length;
       statistics.values = d3$1.nest().key(function (d) {
         return d;
       }).rollup(function (d) {
@@ -2122,7 +2123,8 @@ function makeSummary(codebook) {
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
           prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
+          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n),
+          unique: d3$1.set(vector).values().length
         };
       }).entries(nonMissing);
 

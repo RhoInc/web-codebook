@@ -29,6 +29,7 @@ export function makeSummary(codebook) {
       const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== "NA");
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
+      statistics.unique = d3set(vector).values().length
       statistics.values = d3nest()
         .key(d => d)
         .rollup(d => {
@@ -37,10 +38,12 @@ export function makeSummary(codebook) {
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
             prop_N_text: d3format("0.1%")(d.length / statistics.N),
-            prop_n_text: d3format("0.1%")(d.length / statistics.n)
+            prop_n_text: d3format("0.1%")(d.length / statistics.n),
+            unique: d3set(vector).values().length
           };
         })
         .entries(nonMissing);
+
 
       statistics.values.forEach(value => {
         for (var statistic in value.values) {
@@ -100,12 +103,12 @@ export function makeSummary(codebook) {
         ? "histogramBoxPlot"
         : (variables[i].type == "categorical") &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-            ? "verticalBars"
-            : (variables[i].type == "categorical") &
-                (variables[i].statistics.values.length <=
-                  codebook.config.levelSplit)
-                ? "horizontalBars"
-                : "error";
+          ? "verticalBars"
+          : (variables[i].type == "categorical") &
+              (variables[i].statistics.values.length <=
+                codebook.config.levelSplit)
+            ? "horizontalBars"
+            : "error";
 
       //Handle groups.
       if (group) {
