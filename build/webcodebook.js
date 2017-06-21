@@ -249,7 +249,6 @@ function init$5(codebook) {
 
   controlToggle.on("click", function () {
     codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
-
     : "visible"; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
@@ -303,9 +302,9 @@ var availableTabs = [{
   selector: ".web-codebook .dataListing"
 }, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
 
-
 function init$6(codebook) {
   codebook.nav.wrap.selectAll("*").remove();
+
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
@@ -335,11 +334,13 @@ function init$6(codebook) {
   });
 
   navItems.append("a").html(function (d) {
+
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
+
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -350,7 +351,6 @@ function init$6(codebook) {
       });
     }
   });
-
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1333,10 +1333,9 @@ function onResize$3() {
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
           var rProbability = quantiles[+item + 1].probability;
-          var rQuantile = d3.quantile(this.values, rProbability);
+          var rQuantile = d3$1.quantile(this.values, rProbability);
           var whisker = this.svg.append('line').attr({
             class: 'statistic',
-
             x1: this.x(quantile$$1.quantile),
             y1: this.plot_height + this.config.boxPlotHeight / 2,
             x2: this.x(rQuantile),
@@ -1351,10 +1350,9 @@ function onResize$3() {
 
         //Box
         if (quantile$$1.probability === 0.25) {
-          var q3 = d3.quantile(this.values, 0.75);
+          var q3 = d3$1.quantile(this.values, 0.75);
           var interQ = this.svg.append('rect').attr({
             class: 'statistic',
-
             x: this.x(quantile$$1.quantile),
             y: this.plot_height,
             width: this.x(q3) - this.x(quantile$$1.quantile),
@@ -1411,11 +1409,10 @@ function onResize$3() {
 
     //Annotate mean.
     if (this.config.mean) {
-      var mean$$1 = d3.mean(this.values);
-      var sd = d3.deviation(this.values);
+      var mean$$1 = d3$1.mean(this.values);
+      var sd = d3$1.deviation(this.values);
       var meanMark = this.svg.append('circle').attr({
         class: 'statistic',
-
         cx: this.x(mean$$1),
         cy: this.plot_height + this.config.boxPlotHeight / 2,
         r: this.config.boxPlotHeight / 3
