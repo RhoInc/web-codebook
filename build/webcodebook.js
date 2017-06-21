@@ -28,6 +28,7 @@ function init(data) {
   //draw controls
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
+  console.log(this.data.summary);
   this.controls.init(this);
 
   //initialize nav
@@ -144,7 +145,6 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
@@ -170,14 +170,20 @@ function update$1(codebook) {
   var groupControl = codebook.controls.wrap.select("div.group-select"),
       groupSelect = groupControl.select("select"),
       columns = Object.keys(codebook.data.raw[0]),
-      groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
-    return m.value_col;
+      groupLevels = d3$1.merge([[{ value_col: "None", label: 'None' }], codebook.config.groups.map(function (m) {
+    return {
+      value_col: m.value_col,
+      label: codebook.data.summary.filter(function (variable) {
+        return variable.value_col === m.value_col;
+      })[0].label };
   })]),
       groupOptions = groupSelect.selectAll("option").data(groupLevels, function (d) {
-    return d;
+    return d.value_col;
   });
-  groupOptions.enter().append("option").text(function (d) {
-    return d;
+  groupOptions.enter().append("option").property('label', function (d) {
+    return d.label;
+  }).text(function (d) {
+    return d.value_col;
   });
   groupOptions.exit().remove();
   groupOptions.sort(function (a, b) {
@@ -249,7 +255,6 @@ function init$5(codebook) {
 
   controlToggle.on("click", function () {
     codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
-
     : "visible"; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
@@ -303,9 +308,9 @@ var availableTabs = [{
   selector: ".web-codebook .dataListing"
 }, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
 
-
 function init$6(codebook) {
   codebook.nav.wrap.selectAll("*").remove();
+
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
@@ -335,11 +340,13 @@ function init$6(codebook) {
   });
 
   navItems.append("a").html(function (d) {
+
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
+
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -350,7 +357,6 @@ function init$6(codebook) {
       });
     }
   });
-
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -394,7 +400,7 @@ function makeTitle(d) {
 
   //Title and type
   titleDiv.append("div").attr("class", "name").html(function (d) {
-    return d.value_col;
+    return d.label;
   });
   titleDiv.append("div").attr("class", "type").html(function (d) {
     return d.type;
@@ -1925,6 +1931,7 @@ var dataListing = { init: init$7 };
 var defaultSettings$1 = {
   filters: [],
   groups: [],
+  variableLabels: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
@@ -1948,6 +1955,18 @@ function setDefaults(codebook) {
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
   codebook.config.groups = codebook.config.groups.map(function (d) {
     if (typeof d == "string") return { value_col: d };else return d;
+  });
+
+  /********************* Variable Label Settings *********************/
+  codebook.config.variableLabels = codebook.config.variableLabels || defaultSettings$1.variableLabels;
+  codebook.config.variableLabels = codebook.config.variableLabels.filter(function (label, i) {
+    var is_object = (typeof label === "undefined" ? "undefined" : _typeof(label)) === 'object',
+        has_value_col = label.hasOwnProperty('value_col'),
+        has_label = label.hasOwnProperty('label'),
+        legit = is_object && has_value_col && has_label;
+    if (!legit) console.warn("Item " + i + " of settings.variableLabels (" + JSON.stringify(label) + ") must be an object with both a \"value_col\" and a \"label\" property.");
+
+    return legit;
   });
 
   //autogroups - don't use automatic groups if user specifies groups object
@@ -1990,6 +2009,11 @@ function makeAutomaticFilters(codebook) {
 
     codebook.config.filters = autofilters.length > 0 ? autofilters : null;
   }
+  codebook.data.summary.forEach(function (variable) {
+    variable.filter = codebook.config.filters.map(function (filter) {
+      return filter.value_col;
+    }).indexOf(variable.value_col) > -1;
+  });
 }
 
 function makeAutomaticGroups(codebook) {
@@ -2010,6 +2034,11 @@ function makeAutomaticGroups(codebook) {
 
     codebook.config.groups = autogroups.length > 0 ? autogroups : null;
   }
+  codebook.data.summary.forEach(function (variable) {
+    variable.groupOption = codebook.config.groups.map(function (group) {
+      return group.value_col;
+    }).indexOf(variable.value_col) > -1;
+  });
 }
 
 // determine the number of bins to use in the histogram based on the data.
@@ -2059,90 +2088,110 @@ var util = {
   getBinCounts: getBinCounts
 };
 
+function makeFiltered(data, filters) {
+  var filtered = data;
+  filters.forEach(function (filter_d) {
+    //remove the filtered values from the data based on the filters
+    filtered = filtered.filter(function (rowData) {
+      var currentValues = filter_d.values.filter(function (f) {
+        return f.selected;
+      }).map(function (m) {
+        return m.value;
+      });
+      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
+    });
+  });
+  return filtered;
+}
+
+function determineType(vector, levelSplit) {
+    var nonMissingValues = vector.filter(function (d) {
+        return !/^\s*$/.test(d);
+    });
+    var numericValues = nonMissingValues.filter(function (d) {
+        return !isNaN(+d);
+    });
+    var distinctValues = d3$1.set(numericValues).values();
+
+    return nonMissingValues.length === numericValues.length && distinctValues.length > levelSplit ? "continuous" : "categorical";
+}
+
+function categorical(vector) {
+    var statistics = {};
+    statistics.N = vector.length;
+    var nonMissing = vector.filter(function (d) {
+        return !/^\s*$/.test(d) && d !== "NA";
+    });
+    statistics.n = nonMissing.length;
+    statistics.nMissing = vector.length - statistics.n;
+    statistics.values = d3$1.nest().key(function (d) {
+        return d;
+    }).rollup(function (d) {
+        return {
+            n: d.length,
+            prop_N: d.length / statistics.N,
+            prop_n: d.length / statistics.n,
+            prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
+            prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
+        };
+    }).entries(nonMissing);
+
+    statistics.values.forEach(function (value) {
+        for (var statistic in value.values) {
+            value[statistic] = value.values[statistic];
+        }
+        delete value.values;
+    });
+
+    return statistics;
+}
+
+function continuous(vector) {
+    var statistics = {};
+    statistics.N = vector.length;
+    var nonMissing = vector.filter(function (d) {
+        return !isNaN(+d) && !/^\s*$/.test(d);
+    }).map(function (d) {
+        return +d;
+    }).sort(function (a, b) {
+        return a - b;
+    });
+    statistics.n = nonMissing.length;
+    statistics.nMissing = vector.length - statistics.n;
+    statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
+    statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
+    var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
+    quantiles.forEach(function (quantile$$1) {
+        var statistic = quantile$$1[0];
+        statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
+    });
+
+    return statistics;
+}
+
+var summarize = { determineType: determineType,
+    categorical: categorical,
+    continuous: continuous };
+
 function makeSummary(codebook) {
   var data = codebook.data.filtered;
   var group = codebook.config.group;
 
-  function determineType(vector) {
-    var nonMissingValues = vector.filter(function (d) {
-      return !/^\s*$/.test(d);
-    });
-    var numericValues = nonMissingValues.filter(function (d) {
-      return !isNaN(+d);
-    });
-    var distinctValues = d3$1.set(numericValues).values();
-
-    return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? "continuous" : "categorical";
-  }
-
-  var summarize = {
-    categorical: function categorical(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !/^\s*$/.test(d) && d !== "NA";
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.values = d3$1.nest().key(function (d) {
-        return d;
-      }).rollup(function (d) {
-        return {
-          n: d.length,
-          prop_N: d.length / statistics.N,
-          prop_n: d.length / statistics.n,
-          prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
-        };
-      }).entries(nonMissing);
-
-      statistics.values.forEach(function (value) {
-        for (var statistic in value.values) {
-          value[statistic] = value.values[statistic];
-        }
-        delete value.values;
-      });
-
-      return statistics;
-    },
-
-    continuous: function continuous(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !isNaN(+d) && !/^\s*$/.test(d);
-      }).map(function (d) {
-        return +d;
-      }).sort(function (a, b) {
-        return a - b;
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
-      statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
-      var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
-      quantiles.forEach(function (quantile$$1) {
-        var statistic = quantile$$1[0];
-        statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
-      });
-
-      return statistics;
-    }
-  };
-
   if (codebook.data.filtered.length > 0) {
     var variables = Object.keys(data[0]);
     variables.forEach(function (variable, i) {
-      //Define variable metadata and generate data array.
+      //Define variable data vector and metadata.
       variables[i] = { value_col: variable };
       variables[i].values = data.map(function (d) {
         return d[variable];
       });
-      variables[i].type = determineType(variables[i].values);
-
-      //Calculate statistics.
-      if (variables[i].type === "categorical") variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
-      //determine the renderer to use
+      variables[i].type = summarize.determineType(variables[i].values, codebook.config.levelSplit);
+      variables[i].label = codebook.config.variableLabels.map(function (variableLabel) {
+        return variableLabel.value_col;
+      }).indexOf(variable) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
+        return variableLabel.value_col === variable;
+      })[0].label : variable;
+      variables[i].statistics = variables[i].type === "continuous" ? summarize.continuous(variables[i].values) : summarize.categorical(variables[i].values);
       variables[i].chartType = variables[i].type == "continuous" ? "histogramBoxPlot" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "verticalBars" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "horizontalBars" : "error";
 
       //Handle groups.
@@ -2156,7 +2205,7 @@ function makeSummary(codebook) {
 
         variables[i].groups.forEach(function (g) {
           //Define variable metadata and generate data array.
-          g.value_col = variables[i].value_col;
+          g.value_col = variable;
           g.values = data.filter(function (d) {
             return d[group] === g.group;
           }).map(function (d) {
@@ -2178,30 +2227,13 @@ function makeSummary(codebook) {
   }
 }
 
-function makeFiltered(data, filters) {
-  var filtered = data;
-  filters.forEach(function (filter_d) {
-    console.log(filter_d);
-    //remove the filtered values from the data based on the filters
-    filtered = filtered.filter(function (rowData) {
-      var currentValues = filter_d.values.filter(function (f) {
-        return f.selected;
-      }).map(function (m) {
-        return m.value;
-      });
-      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
-    });
-  });
-  return filtered;
-}
-
 /*------------------------------------------------------------------------------------------------\
   Define data object.
 \------------------------------------------------------------------------------------------------*/
 
 var data = {
-  makeSummary: makeSummary,
-  makeFiltered: makeFiltered
+  makeFiltered: makeFiltered,
+  makeSummary: makeSummary
 };
 
 function init$8(codebook) {

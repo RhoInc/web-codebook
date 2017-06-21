@@ -11,4 +11,10 @@ export function makeAutomaticFilters(codebook) {
 
     codebook.config.filters = autofilters.length > 0 ? autofilters : null;
   }
+  codebook.data.summary
+    .forEach(variable => {
+        variable.filter = codebook.config.filters
+            .map(filter => filter.value_col)
+            .indexOf(variable.value_col) > -1;
+    });
 }
