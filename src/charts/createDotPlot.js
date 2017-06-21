@@ -1,32 +1,32 @@
-import clone from "../util/clone";
-import onResize from "./dotPlot/onResize";
-import { createChart } from "webcharts";
-import { select as d3select } from "d3";
+import clone from '../util/clone';
+import onResize from './dotPlot/onResize';
+import { createChart } from 'webcharts';
+import { select as d3select } from 'd3';
 
 export function createDotPlot(this_, d) {
   const chartContainer = d3select(this_).node();
   const chartSettings = {
     x: {
-      column: "prop_n",
-      type: "linear",
-      label: "",
-      format: "%",
+      column: 'prop_n',
+      type: 'linear',
+      label: '',
+      format: '%',
       domain: [0, null]
     },
     y: {
-      column: "key",
-      type: "ordinal",
-      label: ""
+      column: 'key',
+      type: 'ordinal',
+      label: ''
     },
     marks: [
       {
-        type: "circle",
-        per: ["key"],
-        summarizeX: "mean",
-        tooltip: "[key]: [n] ([prop_n_text])"
+        type: 'circle',
+        per: ['key'],
+        summarizeX: 'mean',
+        tooltip: '[key]: [n] ([prop_n_text])'
       }
     ],
-    gridlines: "xy",
+    gridlines: 'xy',
     resizable: false,
     height: this_.height,
     margin: this_.margin,
@@ -48,7 +48,7 @@ export function createDotPlot(this_, d) {
 
   if (d.groups) {
     //Define overall data.
-    chartData.forEach(di => (di.group = "Overall"));
+    chartData.forEach(di => (di.group = 'Overall'));
 
     //Add group data to overall data.
     d.groups.forEach(group => {
@@ -67,22 +67,22 @@ export function createDotPlot(this_, d) {
     });
 
     //Overall mark
-    chartSettings.marks[0].per.push("group");
-    chartSettings.marks[0].values = { group: ["Overall"] };
+    chartSettings.marks[0].per.push('group');
+    chartSettings.marks[0].values = { group: ['Overall'] };
 
     //Group marks
     chartSettings.marks[1] = clone(chartSettings.marks[0]);
     chartSettings.marks[1].values = { group: d.groups.map(d => d.group) };
 
-    chartSettings.color_by = "group";
+    chartSettings.color_by = 'group';
     chartSettings.legend = {
-      label: "",
+      label: '',
       order: d.groups.map(d => d.group),
-      mark: "circle"
+      mark: 'circle'
     };
   }
 
   const chart = createChart(chartContainer, chartSettings);
-  chart.on("resize", onResize);
+  chart.on('resize', onResize);
   chart.init(chartData);
 }

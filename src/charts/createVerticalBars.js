@@ -1,42 +1,42 @@
-import clone from "../util/clone";
-import onResize from "./verticalBars/onResize";
-import onInit from "./verticalBars/onInit";
-import axisSort from "./verticalBars/axisSort";
-import { createChart } from "webcharts";
-import { select as d3select, max as d3max } from "d3";
+import clone from '../util/clone';
+import onResize from './verticalBars/onResize';
+import onInit from './verticalBars/onInit';
+import axisSort from './verticalBars/axisSort';
+import { createChart } from 'webcharts';
+import { select as d3select, max as d3max } from 'd3';
 
 export function createVerticalBars(this_, d) {
   const chartContainer = d3select(this_).node();
   const rowSelector = d3select(this_).node().parentNode;
   var sortType = d3select(rowSelector)
-    .select(".row-controls")
-    .select("select")
-    .property("value");
+    .select('.row-controls')
+    .select('select')
+    .property('value');
   const chartSettings = {
     y: {
-      column: "prop_n",
-      type: "linear",
-      label: "",
-      format: "0.1%",
+      column: 'prop_n',
+      type: 'linear',
+      label: '',
+      format: '0.1%',
       domain: [0, null]
     },
     x: {
-      column: "key",
-      type: "ordinal",
-      label: ""
+      column: 'key',
+      type: 'ordinal',
+      label: ''
     },
     marks: [
       {
-        type: "bar",
-        per: ["key"],
-        summarizeX: "mean",
+        type: 'bar',
+        per: ['key'],
+        summarizeX: 'mean',
         attributes: {
           stroke: null,
-          fill: "#999"
+          fill: '#999'
         }
       }
     ],
-    gridlines: "",
+    gridlines: '',
     resizable: false,
     height: this_.height,
     margin: this_.margin,
@@ -73,28 +73,28 @@ export function createVerticalBars(this_, d) {
 
       //Define chart.
       group.chart = createChart(chartContainer, group.chartSettings);
-      group.chart.on("init", onInit);
-      group.chart.on("resize", onResize);
+      group.chart.on('init', onInit);
+      group.chart.on('resize', onResize);
 
       if (group.data.length) group.chart.init(group.data);
       else {
         d3select(chartContainer)
-          .append("p")
+          .append('p')
           .text(
             `${chartSettings.group_col}: ${group.chartSettings
               .group_val} (n=${group.chartSettings.n})`
           );
 
         d3select(chartContainer)
-          .append("div")
+          .append('div')
           .html(`<em>No data available for this level.</em>.<br><br>`);
       }
     });
   } else {
     //Define chart.
     const chart = createChart(chartContainer, chartSettings);
-    chart.on("init", onInit);
-    chart.on("resize", onResize);
+    chart.on('init', onInit);
+    chart.on('resize', onResize);
     chart.init(chartData);
   }
 }
