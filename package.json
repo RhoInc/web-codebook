@@ -17,7 +17,7 @@
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
   "scripts": {
-    "format": "prettier --write src/**/*.js",
+    "format": "prettier --single-quote --write src/**/*.js",
     "build": "npm run format && rollup -c",
     "watch": "rollup -c -w"
   },
