@@ -20,7 +20,14 @@ export default function onInit() {
       .append("p")
       .attr("class", "panel-label")
       .style("margin-left", context.config.margin.left + "px")
-      .text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+      .text(
+        this.config.group_label +
+          ": " +
+          this.group +
+          " (n=" +
+          this.raw_data.length +
+          ")"
+      );
     this.wrap
       .node()
       .parentNode.insertBefore(groupTitle.node(), this.wrap.node());

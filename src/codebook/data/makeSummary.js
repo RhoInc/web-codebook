@@ -1,5 +1,5 @@
 import { set as d3set } from "d3";
-import summarize from './summarize/index';
+import summarize from "./summarize/index";
 
 export function makeSummary(codebook) {
   var data = codebook.data.filtered;
@@ -9,12 +9,19 @@ export function makeSummary(codebook) {
     const variables = Object.keys(data[0]);
     variables.forEach((variable, i) => {
       //Define variable data vector and metadata.
-      variables[i] = {value_col: variable};
+      variables[i] = { value_col: variable };
       variables[i].values = data.map(d => d[variable]);
-      variables[i].type = summarize.determineType(variables[i].values, codebook.config.levelSplit);
-      variables[i].label = codebook.config.variableLabels.map(variableLabel => variableLabel.value_col).indexOf(variable) > -1
-            ? codebook.config.variableLabels.filter(variableLabel => variableLabel.value_col === variable)[0].label
-            : variable;
+      variables[i].type = summarize.determineType(
+        variables[i].values,
+        codebook.config.levelSplit
+      );
+      variables[i].label = codebook.config.variableLabels
+        .map(variableLabel => variableLabel.value_col)
+        .indexOf(variable) > -1
+        ? codebook.config.variableLabels.filter(
+            variableLabel => variableLabel.value_col === variable
+          )[0].label
+        : variable;
       variables[i].statistics = variables[i].type === "continuous"
         ? summarize.continuous(variables[i].values)
         : summarize.categorical(variables[i].values);
@@ -32,6 +39,13 @@ export function makeSummary(codebook) {
       //Handle groups.
       if (group) {
         variables[i].group = group;
+        variables[i].groupLabel = codebook.config.variableLabels
+          .map(variableLabel => variableLabel.value_col)
+          .indexOf(group) > -1
+          ? codebook.config.variableLabels.filter(
+              variableLabel => variableLabel.value_col === group
+            )[0].label
+          : group;
         variables[i].groups = d3set(data.map(d => d[group])).values().map(g => {
           return { group: g };
         });

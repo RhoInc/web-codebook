@@ -43,6 +43,7 @@ export function createVerticalBars(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
+    group_label: d.groupLabel || null,
     overall: d.statistics.values,
     gridlines: "y",
     sort: sortType //Alphabetical, Ascending, Descending

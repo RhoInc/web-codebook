@@ -14,6 +14,7 @@ export function createHistogramBoxPlot(this_, d) {
 
   if (d.groups) {
     chartSettings.panel = "group";
+    chartSettings.group_label = d.groupLabel;
     d.groups.forEach(group => {
       group.values.forEach(value => {
         chartData.push({ group: group.group || "<no value>", " ": value });

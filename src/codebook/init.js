@@ -26,7 +26,6 @@ export function init(data) {
   //draw controls
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
-    console.log(this.data.summary);
   this.controls.init(this);
 
   //initialize nav

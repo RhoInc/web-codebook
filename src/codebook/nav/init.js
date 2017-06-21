@@ -35,13 +35,11 @@ export function init(codebook) {
     .attr("title", d => `View ${d.key}`);
 
   navItems.append("a").html(function(d) {
-
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function(d) {
-
     if (!d.active) {
       codebook.nav.tabs.forEach(function(t) {
         t.active = d.label == t.label; //set the clicked tab to active

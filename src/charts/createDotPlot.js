@@ -36,6 +36,7 @@ export function createDotPlot(this_, d) {
       margin: this_.margin,
       value_col: d.value_col,
       group_col: d.group || null,
+      group_label: d.groupLabel || null,
       overall: d.statistics.values
     },
     chartData = d.statistics.values

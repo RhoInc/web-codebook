@@ -11,10 +11,10 @@ export function makeAutomaticGroups(codebook) {
 
     codebook.config.groups = autogroups.length > 0 ? autogroups : null;
   }
-  codebook.data.summary
-    .forEach(variable => {
-        variable.groupOption = codebook.config.groups
-            .map(group => group.value_col)
-            .indexOf(variable.value_col) > -1;
-    });
+  codebook.data.summary.forEach(variable => {
+    variable.groupOption =
+      codebook.config.groups
+        .map(group => group.value_col)
+        .indexOf(variable.value_col) > -1;
+  });
 }

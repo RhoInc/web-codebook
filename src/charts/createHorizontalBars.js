@@ -33,7 +33,6 @@ export function createHorizontalBars(this_, d) {
             stroke: null
           }
         }
-
       ],
       colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
       gridlines: "x",
@@ -42,6 +41,7 @@ export function createHorizontalBars(this_, d) {
       margin: this_.margin,
       value_col: d.value_col,
       group_col: d.group || null,
+      group_label: d.groupLabel || null,
       overall: d.statistics.values
     },
     chartData = d.statistics.values.sort(

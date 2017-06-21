@@ -23,19 +23,22 @@ export function setDefaults(codebook) {
   });
 
   /********************* Variable Label Settings *********************/
-  codebook.config.variableLabels = codebook.config.variableLabels || defaultSettings.variableLabels;
-  codebook.config.variableLabels = codebook.config.variableLabels
-    .filter((label,i) => {
-        const
-            is_object = typeof label === 'object',
-            has_value_col = label.hasOwnProperty('value_col'),
-            has_label = label.hasOwnProperty('label'),
-            legit = is_object && has_value_col && has_label;
-        if (!legit)
-            console.warn(`Item ${i} of settings.variableLabels (${JSON.stringify(label)}) must be an object with both a "value_col" and a "label" property.`)
+  codebook.config.variableLabels =
+    codebook.config.variableLabels || defaultSettings.variableLabels;
+  codebook.config.variableLabels = codebook.config.variableLabels.filter(
+    (label, i) => {
+      const is_object = typeof label === "object",
+        has_value_col = label.hasOwnProperty("value_col"),
+        has_label = label.hasOwnProperty("label"),
+        legit = is_object && has_value_col && has_label;
+      if (!legit)
+        console.warn(
+          `Item ${i} of settings.variableLabels (${JSON.stringify(label)}) must be an object with both a "value_col" and a "label" property.`
+        );
 
-        return legit;
-    });
+      return legit;
+    }
+  );
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
