@@ -1143,7 +1143,7 @@ function onResize$3() {
             width: this.x(q3) - this.x(quantile$$1.quantile),
             height: this.config.boxPlotHeight
           }).style({
-            fill: '#ffffff',
+            fill: '#ccc',
             opacity: 0.25
           });
           interQ.append('title').text('Interquartile range: ' + format$$1(quantile$$1.quantile) + '-' + format$$1(q3));
@@ -1177,11 +1177,7 @@ function onResize$3() {
         return low_outlier || high_outlier;
       });
 
-      console.log(outliers);
-      var chart = this;
-      console.log(chart);
-
-      chart.svg.selectAll('line.outlier').data(outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
+      this.svg.selectAll('line.outlier').data(outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
         return _this.x(d);
       }).attr('x2', function (d) {
         return _this.x(d);

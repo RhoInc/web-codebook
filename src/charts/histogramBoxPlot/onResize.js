@@ -79,7 +79,7 @@ export default function onResize() {
               height: this.config.boxPlotHeight
             })
             .style({
-              fill: '#ffffff',
+              fill: '#ccc',
               opacity: 0.25
             });
           interQ
@@ -130,11 +130,7 @@ export default function onResize() {
         return low_outlier || high_outlier;
       });
 
-      console.log(outliers);
-      var chart = this;
-      console.log(chart);
-
-      chart.svg
+      this.svg
         .selectAll('line.outlier')
         .data(outliers)
         .enter()
