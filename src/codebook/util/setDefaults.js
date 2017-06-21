@@ -38,4 +38,23 @@ export function setDefaults(codebook) {
   /********************* Histogram Settings *********************/
   codebook.config.levelSplit =
     codebook.config.levelSplit || defaultSettings.levelSplit;
+
+  /********************* Histogram Settings *********************/
+  codebook.config.controlVisibility =
+    codebook.config.controlVisibility || defaultSettings.controlVisibility;
+
+  /********************* Nav Settings *********************/
+  codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
+  codebook.config.defaultTab =
+    codebook.config.defaultTab || codebook.config.tabs[0];
+  if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
+    console.warn(
+      "Invalid starting tab of '" +
+        codebook.config.defaultTab +
+        "' specified. Using '" +
+        codebook.config.tabs[0] +
+        "' instead."
+    );
+    codebook.config.defaultTab = codebook.config.tabs[0];
+  }
 }

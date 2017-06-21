@@ -1,11 +1,11 @@
 /*------------------------------------------------------------------------------------------------\
-  Define filter controls object.
+  Define chart toggle object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from "./filters/init";
-import { update } from "./filters/update";
+import { init } from "./controlToggle/init";
+import { set } from "./controlToggle/set";
 
-export const filters = {
+export const controlToggle = {
   init: init,
-  update: update
+  set: set
 };

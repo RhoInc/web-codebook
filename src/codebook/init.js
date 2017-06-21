@@ -28,9 +28,15 @@ export function init(data) {
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
 
+  //initialize nav
+  this.nav.init(this);
+
   //initialize and then draw the codebook
   this.summaryTable.draw(this);
 
   //initialize and then draw the data listing
   this.dataListing.init(this);
+
+  //initialize and then draw the data listing
+  this.settings.init(this);
 }

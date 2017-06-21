@@ -2,7 +2,7 @@
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3'), require('webcharts')) :
 	typeof define === 'function' && define.amd ? define(['d3', 'webcharts'], factory) :
 	(global.webcodebook = factory(global.d3,global.webCharts));
-}(this, (function (d3,webcharts) { 'use strict';
+}(this, (function (d3$1,webcharts) { 'use strict';
 
 /*------------------------------------------------------------------------------------------------\
   Initialize codebook
@@ -12,7 +12,7 @@ function init(data) {
   var settings = this.config;
 
   //create chart wrapper in specified div
-  this.wrap = d3.select(this.element).append("div").attr("class", "web-codebook");
+  this.wrap = d3$1.select(this.element).append("div").attr("class", "web-codebook");
 
   //save raw data
   this.data.raw = data;
@@ -30,11 +30,17 @@ function init(data) {
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
 
+  //initialize nav
+  this.nav.init(this);
+
   //initialize and then draw the codebook
   this.summaryTable.draw(this);
 
   //initialize and then draw the data listing
   this.dataListing.init(this);
+
+  //initialize and then draw the data listing
+  this.settings.init(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -42,52 +48,62 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
-  this.controls.wrap = this.wrap.append("div").attr("class", "controls");
+  this.nav.wrap = this.wrap.append("div").attr("class", "nav section");
+  this.controls.wrap = this.wrap.append("div").attr("class", "controls section");
 
-  this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable").classed("hidden", false);
+  this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable section").classed("hidden", false);
 
-  this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText");
+  this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText section");
 
-  this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing").classed("hidden", true);
+  this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing section").classed("hidden", true);
+
+  this.settings.wrap = this.wrap.append("div").attr("class", "settings section").classed("hidden", true);
 }
 
 function init$1(codebook) {
   codebook.controls.wrap.attr("onsubmit", "return false;");
   codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
 
+  //Draw title
+  codebook.controls.wrap.append("div").attr("class", "controls-title").text("Codebook Controls");
+
   //Draw controls.
-  codebook.controls.dataListingToggle.init(codebook);
   codebook.controls.groups.init(codebook);
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
+  codebook.controls.controlToggle.init(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize custom controls.
+  Update filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
-function init$2(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters");
+function update(codebook) {
+  var selector = codebook.controls.wrap.select("div.custom-filters"),
+      filterList = selector.select("ul.filter-list");
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
-    e.values = d3.nest().key(function (d) {
+    e.values = d3$1.nest().key(function (d) {
       return d[e.value_col];
     }).entries(codebook.data.raw).map(function (d) {
       return { value: d.key, selected: true };
     });
   });
 
-  //Clear custom controls.
-  selector.selectAll("ul.nav").remove();
-
   //Add filter controls.
-  var filterList = selector.append("ul").attr("class", "nav");
-
-  var filterItem = filterList.selectAll("li").data(codebook.config.filters).enter().append("li").attr("class", function (d) {
-    return "custom-" + d.key + " filterCustom";
+  var allFilterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
+    return d.value_col;
+  });
+  var columns = Object.keys(codebook.data.raw[0]);
+  var filterItem = allFilterItem.enter().append("li").attr("class", function (d) {
+    return "custom-" + d.value_col + " filterCustom";
+  });
+  allFilterItem.exit().remove();
+  allFilterItem.sort(function (a, b) {
+    var aSort = columns.indexOf(a.value_col),
+        bSort = columns.indexOf(b.value_col);
+    return aSort - bSort;
   });
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
@@ -112,8 +128,8 @@ function init$2(codebook) {
   //Initialize event listeners
   filterCustom.on("change", function () {
     // flag the selected options in the config
-    d3.select(this).selectAll("option").each(function (option_d) {
-      option_d.selected = d3.select(this).property("selected");
+    d3$1.select(this).selectAll("option").each(function (option_d) {
+      option_d.selected = d3$1.select(this).property("selected");
     });
 
     //update the codebook
@@ -125,45 +141,74 @@ function init$2(codebook) {
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Define filter controls object.
+  Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-var filters = { init: init$2 };
+//export function init(selector, data, vars, settings) {
+function init$2(codebook) {
+  //initialize the wrapper
+  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
+      filterList = selector.append("ul").attr("class", "filter-list");
 
-/*------------------------------------------------------------------------------------------------\
-  Initialize group controls.
-\------------------------------------------------------------------------------------------------*/
-
-function init$3(codebook) {
-  if (codebook.config.groups.length > 0) {
-    var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
-
-    selector.append("span").text("Group by");
-
-    var groupSelect = selector.append("select");
-
-    var groupLevels = d3.merge([["None"], codebook.config.groups.map(function (m) {
-      return m.value_col;
-    })]);
-
-    groupSelect.selectAll("option").data(groupLevels).enter().append("option").text(function (d) {
-      return d;
-    });
-
-    groupSelect.on("change", function () {
-      if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
-      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-      codebook.data.makeSummary(codebook);
-      codebook.summaryTable.draw(codebook);
-    });
-  }
+  update(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define filter controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var groups = { init: init$3 };
+var filters = {
+  init: init$2,
+  update: update
+};
+
+/*------------------------------------------------------------------------------------------------\
+  Update group control.
+\------------------------------------------------------------------------------------------------*/
+
+function update$1(codebook) {
+  var groupControl = codebook.controls.wrap.select("div.group-select"),
+      groupSelect = groupControl.select("select"),
+      columns = Object.keys(codebook.data.raw[0]),
+      groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
+    return m.value_col;
+  })]),
+      groupOptions = groupSelect.selectAll("option").data(groupLevels, function (d) {
+    return d;
+  });
+  groupOptions.enter().append("option").text(function (d) {
+    return d;
+  });
+  groupOptions.exit().remove();
+  groupOptions.sort(function (a, b) {
+    return columns.indexOf(a) - columns.indexOf(b);
+  });
+  groupSelect.on("change", function () {
+    if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize group control.
+\------------------------------------------------------------------------------------------------*/
+
+function init$3(codebook) {
+  var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
+  selector.append("span").text("Group by");
+  var groupSelect = selector.append("select");
+  update$1(codebook);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define filter controls object.
+\------------------------------------------------------------------------------------------------*/
+
+var groups = {
+  init: init$3,
+  update: update$1
+};
 
 /*------------------------------------------------------------------------------------------------\
   Initialize custom controls.
@@ -191,26 +236,50 @@ function init$4(codebook) {
 
 var chartToggle = { init: init$4 };
 
+/*------------------------------------------------------------------------------------------------\
+  Initialize group controls.
+\------------------------------------------------------------------------------------------------*/
+
 function init$5(codebook) {
-  var container = codebook.controls.wrap.append("div").classed("data-listing-toggle", true).text(codebook.dataListing.wrap.style("display") === "none" ? "View data" : "View codebook");
-  container.on("click", function () {
-    if (codebook.dataListing.wrap.style("display") === "none") {
-      codebook.dataListing.wrap.classed("hidden", false);
-      codebook.summaryTable.wrap.classed("hidden", true);
-      container.text("View codebook");
-    } else {
-      codebook.dataListing.wrap.classed("hidden", true);
-      codebook.summaryTable.wrap.classed("hidden", false);
-      container.text("View data");
-    }
+  //render the control
+  var controlToggle = codebook.controls.wrap.append("button").attr("class", "control-toggle");
+
+  //set the initial
+  codebook.controls.controlToggle.set(codebook);
+
+  controlToggle.on("click", function () {
+    codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
+
+    : "visible"; // click "+" to show controls
+
+    codebook.controls.controlToggle.set(codebook);
   });
+}
+
+function set$1(codebook) {
+  //update toggle text
+  codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
+  codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
+
+  //hide the controls if controlVisibility isn't "visible" ...
+  codebook.controls.wrap.selectAll("*").classed("hidden", !(codebook.config.controlVisibility == "visible"));
+
+  // but show the title and the toggle ...
+  codebook.controls.wrap.select("div.controls-title").classed("hidden", false);
+  codebook.controls.wrap.select("button.control-toggle").classed("hidden", false);
+
+  // unless control visibility is hidden, in which case just hide it all
+  codebook.controls.wrap.classed("hidden", codebook.config.controlVisibility == "hidden");
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define chart toggle object.
 \------------------------------------------------------------------------------------------------*/
 
-var dataListingToggle = { init: init$5 };
+var controlToggle = {
+  init: init$5,
+  set: set$1
+};
 
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
@@ -221,7 +290,75 @@ var controls = {
   filters: filters,
   groups: groups,
   chartToggle: chartToggle,
-  dataListingToggle: dataListingToggle
+  controlToggle: controlToggle
+};
+
+var availableTabs = [{
+  key: "codebook",
+  label: "Codebook",
+  selector: ".web-codebook .summaryTable"
+}, {
+  key: "listing",
+  label: "Data Listing",
+  selector: ".web-codebook .dataListing"
+}, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
+
+
+function init$6(codebook) {
+  codebook.nav.wrap.selectAll("*").remove();
+  //permanently hide the codebook sections that aren't included
+  availableTabs.forEach(function (tab) {
+    tab.wrap = d3$1.select(tab.selector);
+    tab.wrap.classed("hidden", codebook.config.tabs.indexOf(tab.key) == -1);
+  });
+
+  //get the tabs for the current codebook
+  codebook.nav.tabs = availableTabs.filter(function (tab) {
+    return codebook.config.tabs.indexOf(tab.key) > -1;
+  });
+
+  //set the active tabs
+  codebook.nav.tabs.forEach(function (t) {
+    t.active = t.key == codebook.config.defaultTab;
+    t.wrap.classed("hidden", !t.active);
+  });
+
+  //draw the nav
+  var chartNav = codebook.nav.wrap.append("ul").attr("class", "nav nav-tabs");
+  var navItems = chartNav.selectAll("li").data(codebook.nav.tabs) //make this a setting
+  .enter().append("li").attr("class", function (d) {
+    return d.key;
+  }).classed("active", function (d, i) {
+    return d.active; //make this a setting
+  }).attr("title", function (d) {
+    return "View " + d.key;
+  });
+
+  navItems.append("a").html(function (d) {
+    return d.label;
+  });
+
+  //event listener for nav clicks
+  navItems.on("click", function (d) {
+    if (!d.active) {
+      codebook.nav.tabs.forEach(function (t) {
+        t.active = d.label == t.label; //set the clicked tab to active
+        navItems.filter(function (f) {
+          return f == t;
+        }).classed("active", t.active); //style the active nav element
+        t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
+      });
+    }
+  });
+
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define nav object.
+\------------------------------------------------------------------------------------------------*/
+
+var nav = {
+  init: init$6
 };
 
 /*------------------------------------------------------------------------------------------------\
@@ -251,7 +388,7 @@ function draw(codebook) {
 }
 
 function makeTitle(d) {
-  var wrap = d3.select(this);
+  var wrap = d3$1.select(this);
   var titleDiv = wrap.append("div").attr("class", "var-name");
   var valuesList = wrap.append("ul").attr("class", "value-list");
 
@@ -273,7 +410,7 @@ function makeTitle(d) {
     });
 
     valuesList.selectAll("li").data(topValues).enter().append("li").text(function (d) {
-      return d.key + " (" + d3.format("0.1%")(d.prop_n) + ")";
+      return d.key + " (" + d3$1.format("0.1%")(d.prop_n) + ")";
     }).attr("title", function (d) {
       return "n=" + d.n;
     }).style("cursor", "help");
@@ -285,7 +422,7 @@ function makeTitle(d) {
     }
   } else if (d.type == "continuous") {
     //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3.set(d.values).values() //get unique
+    var sortedValues = d3$1.set(d.values).values() //get unique
     .map(function (d) {
       return +d;
     }) //convert to numeric
@@ -300,7 +437,7 @@ function makeTitle(d) {
     var maxValues = sortedValues.filter(function (d, i) {
       return i >= nValues - 3;
     });
-    var valList = d3.merge([minValues, ["..."], maxValues]);
+    var valList = d3$1.merge([minValues, ["..."], maxValues]);
 
     valuesList.selectAll("li").data(valList).enter().append("li").text(function (d) {
       return d;
@@ -316,6 +453,39 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return typeof obj;
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
 };
 
 function clone(obj) {
@@ -364,12 +534,12 @@ function moveYaxis(chart) {
     dx: ".5em",
     x: chart.plot_width
   }).text(function (d) {
-    return d3.format("%")(d);
+    return d3$1.format(chart.config.y.format)(d);
   });
 }
 
 function makeTooltip(d, i, context) {
-  var format$$1 = d3.format(context.config.measureFormat);
+  var format$$1 = d3$1.format(context.config.measureFormat);
   d.selector = "bar" + i;
   //Define tooltips.
   var tooltip = context.svg.append("g").attr("id", d.selector);
@@ -392,7 +562,7 @@ function makeTooltip(d, i, context) {
     dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
     dy: "-1.5em",
     "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
-  }).text("n=" + d.values.raw[0].n + " (" + d3.format("0.1%")(d.total) + ")");
+  }).text("n=" + d.values.raw[0].n + " (" + d3$1.format("0.1%")(d.total) + ")");
   var dimensions = text[0][0].getBBox();
   tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
 
@@ -426,7 +596,7 @@ function onResize() {
   var statistics = this.svg.selectAll(".statistic");
   this.svg.on("mousemove", function () {
     //Highlight closest bar.
-    var mouse$$1 = d3.mouse(this);
+    var mouse$$1 = d3$1.mouse(this);
     var x = mouse$$1[0];
     var y = mouse$$1[1];
     var minimum = void 0;
@@ -475,15 +645,18 @@ function axisSort(a, b, type) {
 }
 
 function createVerticalBars(this_, d) {
-  var chartContainer = d3.select(this_).node();
-  var rowSelector = d3.select(this_).node().parentNode;
-  var sortType = d3.select(rowSelector).select(".row-controls").select("select").property("value");
-  var chartSettings = {
+  var _chartSettings;
+
+  var chartContainer = d3$1.select(this_).node();
+  var rowSelector = d3$1.select(this_).node().parentNode;
+  var sortType = d3$1.select(rowSelector).select(".row-controls .x-axis-sort select").property("value");
+  var outcome = d3$1.select(rowSelector).select(".row-controls .y-axis-outcome select").property("value");
+  var chartSettings = (_chartSettings = {
     y: {
-      column: "prop_n",
+      column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
       label: "",
-      format: "0.1%",
+      format: outcome === "rate" ? "0.1%" : "d",
       domain: [0, null]
     },
     x: {
@@ -494,7 +667,6 @@ function createVerticalBars(this_, d) {
     marks: [{
       type: "bar",
       per: ["key"],
-      summarizeX: "mean",
       attributes: {
         stroke: null,
         fill: "#999"
@@ -506,9 +678,8 @@ function createVerticalBars(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
-    overall: d.statistics.values,
-    sort: sortType //Alphabetical, Ascending, Descending
-  };
+    overall: d.statistics.values
+  }, defineProperty(_chartSettings, "gridlines", "y"), defineProperty(_chartSettings, "sort", sortType), _chartSettings);
 
   chartSettings.margin.bottom = 10;
 
@@ -525,9 +696,9 @@ function createVerticalBars(this_, d) {
 
   if (d.groups) {
     //Set upper limit of y-axis domain to the maximum group rate.
-    chartSettings.y.domain[1] = d3.max(d.groups, function (di) {
-      return d3.max(di.statistics.values, function (dii) {
-        return dii.prop_n;
+    chartSettings.y.domain[1] = d3$1.max(d.groups, function (di) {
+      return d3$1.max(di.statistics.values, function (dii) {
+        return dii[chartSettings.y.column];
       });
     });
 
@@ -547,9 +718,9 @@ function createVerticalBars(this_, d) {
       group.chart.on("resize", onResize);
 
       if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
+        d3$1.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
 
-        d3.select(chartContainer).append("div").html("<em>No data available for this level.</em>.<br><br>");
+        d3$1.select(chartContainer).append("div").html("<em>No data available for this level.</em>.<br><br>");
       }
     });
   } else {
@@ -562,17 +733,35 @@ function createVerticalBars(this_, d) {
 }
 
 function createVerticalBarsControls(this_, d) {
+  var controlsContainer = d3$1.select(this_).append("div").classed("row-controls", true);
+
+  //add control that changes y-axis scale
+  var outcomes = ["rate", "frequency"];
+  var outcomeWrap = controlsContainer.append("div").classed("y-axis-outcome", true);
+  outcomeWrap.append("small").text("Summarize by: ");
+  var outcomeSelect = outcomeWrap.append("select");
+  outcomeSelect.selectAll("option").data(outcomes).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  outcomeSelect.on("change", function () {
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
+    createVerticalBars(this_, d);
+  });
+
+  //add control that changes x-axis order
   var sort_values = ["Alphabetical", "Ascending", "Descending"];
-  var wrap = d3.select(this_).append("div").attr("class", "row-controls");
-  wrap.append("small").text("Sort levels: ");
-  var x_sort = wrap.append("select");
+  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
+  sortWrap.append("small").text("Sort levels: ");
+  var x_sort = sortWrap.append("select");
   x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
     return d;
   });
 
   x_sort.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
     createVerticalBars(this_, d);
   });
 }
@@ -610,7 +799,7 @@ function drawOverallMark(chart) {
   chart.config.overall.forEach(function (d) {
     if (chart.config.y.order.indexOf(d.key) > -1) {
       var g = chart.svg.append("g").classed("overall-mark", true);
-      var x = d.prop_n;
+      var x = d[chart.config.x.column];
       var y = d.key;
 
       //Draw vertical line representing the overall rate of the current categorical value.
@@ -625,7 +814,7 @@ function drawOverallMark(chart) {
           "stroke-width": "2px",
           "stroke-opacity": "1"
         });
-        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
+        rateLine.append("title").text("Overall rate: " + d3$1.format(chart.config.x.format)(x));
       }
     }
   });
@@ -641,7 +830,7 @@ function drawDifferences(chart) {
       return di.key === d.key;
     })[0],
         g = chart.svg.append("g").classed("difference-from-total", true).style("display", "none"),
-        x = overall.prop_n,
+        x = overall[chart.config.x.column],
         y = overall.key;
 
     //Draw line from overall rate to group rate.
@@ -655,21 +844,21 @@ function drawDifferences(chart) {
       "stroke-width": "2px",
       "stroke-opacity": ".25"
     });
-    diffLine.append("title").text("Difference from overall rate: " + d3.format(".1f")((d.total - x) * 100));
+    diffLine.append("title").text("Difference from overall rate: " + d3$1.format(".1f")((d.total - x) * 100));
     var diffText = g.append("text").attr({
       x: chart.x(d.total),
       y: chart.y(y) + chart.y.rangeBand() / 2,
       dx: x < d.total ? "5px" : "-2px",
       "text-anchor": x < d.total ? "beginning" : "end",
       "font-size": "0.7em"
-    }).text("" + (x < d.total ? "+" : x > d.total ? "-" : "") + d3.format(".1f")(Math.abs(d.total - x) * 100));
+    }).text("" + (x < d.total ? "+" : x > d.total ? "-" : "") + d3$1.format(".1f")(Math.abs(d.total - x) * 100));
   });
 
   //Display difference from total on hover.
   chart.svg.on("mouseover", function () {
     chart.svg.selectAll(".difference-from-total").style("display", "block");
     chart.svg.selectAll(".difference-from-total text").each(function () {
-      d3.select(this).attr("dy", this.getBBox().height / 4);
+      d3$1.select(this).attr("dy", this.getBBox().height / 4);
     });
   }).on("mouseout", function () {
     return chart.svg.selectAll(".difference-from-total").style("display", "none");
@@ -678,26 +867,25 @@ function drawDifferences(chart) {
 
 function onResize$1() {
   moveYaxis$1(this);
-  drawOverallMark(this);
-  if (this.config.group_col) drawDifferences(this);
+  if (this.config.x.column === "prop_n") {
+    drawOverallMark(this);
+
+    if (this.config.group_col) drawDifferences(this);
+  }
 }
 
 function createHorizontalBars(this_, d) {
-  //hide the controls if the chart isn't Grouped
-  var rowSelector = d3.select(this_).node().parentNode;
-  var chartControls = d3.select(rowSelector).select(".row-controls").classed("hidden", !d.groups);
-
-  //let height vary based on the number of levels
-  var custom_height = d.statistics.values.length * 20 + 35; //35 ~= top and bottom margin
-
-  //Chart settings
-  var chartContainer = d3.select(this_).node();
-  var chartSettings = {
+  var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      custom_height = d.statistics.values.length * 20 + 35,
+      // let height vary based on the number of levels; 35 ~= top and bottom margin
+  chartContainer = d3$1.select(this_).node(),
+      chartSettings = {
     x: {
-      column: "prop_n",
+      column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
       label: "",
-      format: "%",
+      format: outcome === "rate" ? "%" : "d",
       domain: [0, null]
     },
     y: {
@@ -708,26 +896,23 @@ function createHorizontalBars(this_, d) {
     marks: [{
       type: "bar",
       per: ["key"],
-      summarizeX: "mean",
       tooltip: "[key]: [n] ([prop_n_text])",
       attributes: {
         stroke: null
       }
     }],
     colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
-    gridlines: "xy",
+    gridlines: "x",
     resizable: false,
     height: custom_height,
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
     overall: d.statistics.values
-  };
-
-  //Sort data by descending rate and keep only the first five categories.
-  var chartData = d.statistics.values.sort(function (a, b) {
+  },
+      chartData = d.statistics.values.sort(function (a, b) {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-  });
+  }); // sort data by descending rate and keep only the first five categories.
 
   chartSettings.y.order = chartData.map(function (d) {
     return d.key;
@@ -735,9 +920,9 @@ function createHorizontalBars(this_, d) {
 
   if (d.groups) {
     //Set upper limit of x-axis domain to the maximum group rate.
-    chartSettings.x.domain[1] = d3.max(d.groups, function (di) {
-      return d3.max(di.statistics.values, function (dii) {
-        return dii.prop_n;
+    chartSettings.x.domain[1] = d3$1.max(d.groups, function (di) {
+      return d3$1.max(di.statistics.values, function (dii) {
+        return dii[chartSettings.x.column];
       });
     });
 
@@ -760,8 +945,8 @@ function createHorizontalBars(this_, d) {
       group.chart.on("resize", onResize$1);
 
       if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
-        d3.select(chartContainer).append("div").html("<em>This group does not contain any of the first 5 most prevalent levels of " + d.value_col + "</em>.<br><br>");
+        d3$1.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
+        d3$1.select(chartContainer).append("div").html("<em>This group does not contain any of the first 5 most prevalent levels of " + d.value_col + "</em>.<br><br>");
       }
     });
   } else {
@@ -812,7 +997,7 @@ function drawOverallMark$1(chart) {
           "stroke-width": "2px",
           "stroke-opacity": "1"
         });
-        rateLine.append("title").text("Overall rate: " + d3.format(".1%")(x));
+        rateLine.append("title").text("Overall rate: " + d3$1.format(".1%")(x));
       }
     }
   });
@@ -840,21 +1025,25 @@ function modifyOverallLegendMark(chart) {
 
 function onResize$2() {
   moveYaxis$2(this);
-  drawOverallMark$1(this);
-  if (this.config.color_by) modifyOverallLegendMark(this);
+  if (this.config.x.column === "prop_n") {
+    drawOverallMark$1(this);
+    if (this.config.color_by) modifyOverallLegendMark(this);
 
-  //Hide overall dots.
-  if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
+    //Hide overall dots.
+    if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
+  }
 }
 
 function createDotPlot(this_, d) {
-  var chartContainer = d3.select(this_).node();
-  var chartSettings = {
+  var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      chartContainer = d3$1.select(this_).node(),
+      chartSettings = {
     x: {
-      column: "prop_n",
+      column: outcome === "rate" ? "prop_n" : "n",
       type: "linear",
       label: "",
-      format: "%",
+      format: outcome === "rate" ? "%" : "d",
       domain: [0, null]
     },
     y: {
@@ -875,12 +1064,11 @@ function createDotPlot(this_, d) {
     value_col: d.value_col,
     group_col: d.group || null,
     overall: d.statistics.values
-  };
-
-  //Sort data by descending rate and keep only the first five categories.
-  var chartData = d.statistics.values.sort(function (a, b) {
+  },
+      chartData = d.statistics.values.sort(function (a, b) {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
-  }).slice(0, 5);
+  }).slice(0, 5); // sort data by descending rate and keep only the first five categories.
+
   chartSettings.y.order = chartData.map(function (d) {
     return d.key;
   }).reverse();
@@ -903,15 +1091,18 @@ function createDotPlot(this_, d) {
       });
     });
 
-    //Overall mark
     chartSettings.marks[0].per.push("group");
-    chartSettings.marks[0].values = { group: ["Overall"] };
 
-    //Group marks
-    chartSettings.marks[1] = clone(chartSettings.marks[0]);
-    chartSettings.marks[1].values = { group: d.groups.map(function (d) {
-        return d.group;
-      }) };
+    //Overall mark
+    if (outcome === "rate") {
+      chartSettings.marks[0].values = { group: ["Overall"] };
+
+      //Group marks
+      chartSettings.marks[1] = clone(chartSettings.marks[0]);
+      chartSettings.marks[1].values = { group: d.groups.map(function (d) {
+          return d.group;
+        }) };
+    }
 
     chartSettings.color_by = "group";
     chartSettings.legend = {
@@ -925,21 +1116,45 @@ function createDotPlot(this_, d) {
 
   var chart = webcharts.createChart(chartContainer, chartSettings);
   chart.on("resize", onResize$2);
-  chart.init(chartData);
+  chart.init(chartData.filter(function (d) {
+    return !(outcome === "frequency" && d.group === "Overall");
+  }));
 }
 
 function createHorizontalBarsControls(this_, d) {
+  var controlsContainer = d3$1.select(this_).append("div").classed("row-controls", true);
+
+  //add control that changes y-axis scale
+  var outcomes = ["rate", "frequency"];
+  var outcomeWrap = controlsContainer.append("div").classed("x-axis-outcome", true);
+  outcomeWrap.append("small").text("Summarize by: ");
+  var outcomeSelect = outcomeWrap.append("select");
+  outcomeSelect.selectAll("option").data(outcomes).enter().append("option").text(function (d) {
+    return d;
+  });
+
+  outcomeSelect.on("change", function () {
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
+    if (type_control.property("value") === "Paneled (Bar Charts)") {
+      createHorizontalBars(this_, d);
+    } else {
+      createDotPlot(this_, d);
+    }
+  });
+
+  //add control that change chart type
   var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
-  var wrap = d3.select(this_).append("div").attr("class", "row-controls");
-  wrap.append("small").text("Display Type: ");
-  var type_control = wrap.append("select");
+  var chartTypeWrap = controlsContainer.append("div").classed("chart-type", true).classed("hidden", !d.groups); // hide the controls if the chart isn't Grouped
+  chartTypeWrap.append("small").text("Display Type: ");
+  var type_control = chartTypeWrap.append("select");
   type_control.selectAll("option").data(chart_type_values).enter().append("option").text(function (d) {
     return d;
   });
 
   type_control.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
+    d3$1.select(this_).selectAll(".wc-chart").remove();
+    d3$1.select(this_).selectAll(".panel-label").remove();
     if (this.value == "Paneled (Bar Charts)") {
       createHorizontalBars(this_, d);
     } else {
@@ -1031,7 +1246,7 @@ function syncSettings(settings) {
 }
 
 function makeTooltip$1(d, i, context) {
-  var format$$1 = d3.format(context.config.measureFormat);
+  var format$$1 = d3$1.format(context.config.measureFormat);
   d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
   d.range = format$$1(d.rangeLow) + "-" + format$$1(d.rangeHigh);
   d.selector = "bar" + i;
@@ -1093,7 +1308,7 @@ function onResize$3() {
   var _this = this;
 
   var context = this;
-  var format$$1 = d3.format(this.config.measureFormat);
+  var format$$1 = d3$1.format(this.config.measureFormat);
 
   moveYaxis$3(this);
 
@@ -1113,7 +1328,7 @@ function onResize$3() {
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
-        quantile$$1.quantile = d3.quantile(this.values, quantile$$1.probability);
+        quantile$$1.quantile = d3$1.quantile(this.values, quantile$$1.probability);
 
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
@@ -1121,6 +1336,7 @@ function onResize$3() {
           var rQuantile = d3.quantile(this.values, rProbability);
           var whisker = this.svg.append('line').attr({
             class: 'statistic',
+
             x1: this.x(quantile$$1.quantile),
             y1: this.plot_height + this.config.boxPlotHeight / 2,
             x2: this.x(rQuantile),
@@ -1138,6 +1354,7 @@ function onResize$3() {
           var q3 = d3.quantile(this.values, 0.75);
           var interQ = this.svg.append('rect').attr({
             class: 'statistic',
+
             x: this.x(quantile$$1.quantile),
             y: this.plot_height,
             width: this.x(q3) - this.x(quantile$$1.quantile),
@@ -1198,6 +1415,7 @@ function onResize$3() {
       var sd = d3.deviation(this.values);
       var meanMark = this.svg.append('circle').attr({
         class: 'statistic',
+
         cx: this.x(mean$$1),
         cy: this.plot_height + this.config.boxPlotHeight / 2,
         r: this.config.boxPlotHeight / 3
@@ -1249,7 +1467,7 @@ function onResize$3() {
     var statistics = this.svg.selectAll('.statistic');
     this.svg.on('mousemove', function () {
       //Highlight closest bar.
-      var mouse$$1 = d3.mouse(this);
+      var mouse$$1 = d3$1.mouse(this);
       var x = context.x.invert(mouse$$1[0]);
       var y = context.y.invert(mouse$$1[1]);
       var minimum = void 0;
@@ -1307,7 +1525,7 @@ function onInit$2() {
 
   //Define x-axis domain as the range of the measure, regardless of subgrouping.
   if (!this.initialSettings.xDomain) {
-    this.initialSettings.xDomain = d3.extent(this.values);
+    this.initialSettings.xDomain = d3$1.extent(this.values);
     config.xDomain = this.initialSettings.xDomain;
   }
   this.config.x.domain = this.initialSettings.xDomain;
@@ -1321,30 +1539,30 @@ function onInit$2() {
     //in a single bin within a subgrouping.
     var max$$1 = 0;
     if (!config.y.domain[1]) {
-      var nestedData = d3.nest().key(function (d) {
+      var nestedData = d3$1.nest().key(function (d) {
         return d[panel];
       }).entries(context.raw_data);
       nestedData.forEach(function (group) {
-        var domain = d3.extent(group.values, function (d) {
+        var domain = d3$1.extent(group.values, function (d) {
           return +d[measure];
         });
         var binWidth = (domain[1] - domain[0]) / config.nBins;
         group.values.forEach(function (d) {
           d.bin = Math.floor((+d[measure] - domain[0]) / binWidth) - (+d[measure] === domain[1]) * 1;
         });
-        var bins = d3.nest().key(function (d) {
+        var bins = d3$1.nest().key(function (d) {
           return d.bin;
         }).rollup(function (d) {
           return d.length;
         }).entries(group.values);
-        max$$1 = Math.max(max$$1, d3.max(bins, function (d) {
+        max$$1 = Math.max(max$$1, d3$1.max(bins, function (d) {
           return d.values;
         }));
       });
     }
 
     //Plot the chart for each group.
-    var groups = d3.set(context.raw_data.map(function (d) {
+    var groups = d3$1.set(context.raw_data.map(function (d) {
       return d[panel];
     })).values().map(function (d) {
       return { group: d };
@@ -1390,7 +1608,7 @@ function defineHistogram(element, settings) {
 }
 
 function createHistogramBoxPlot(this_, d) {
-  var chartContainer = d3.select(this_).node();
+  var chartContainer = d3$1.select(this_).node();
   var chartSettings = {
     measure: " ",
     resizable: false,
@@ -1450,7 +1668,7 @@ function makeChart(d) {
 }
 
 function makeDetails(d) {
-  var wrap = d3.select(this);
+  var wrap = d3$1.select(this);
 
   //Render Summary Stats
   var stats_div = wrap.append("div").attr("class", "stat-row");
@@ -1493,17 +1711,17 @@ function makeDetails(d) {
 \------------------------------------------------------------------------------------------------*/
 
 function renderRow(d) {
-  var rowWrap = d3.select(this);
+  var rowWrap = d3$1.select(this);
   rowWrap.selectAll("*").remove();
 
   var rowHead = rowWrap.append("div").attr("class", "row-head section");
 
   rowHead.append("div").attr("class", "row-toggle").html("&#9658;").on("click", function () {
-    var rowDiv = d3.select(this.parentNode.parentNode);
+    var rowDiv = d3$1.select(this.parentNode.parentNode);
     var chartDiv = rowDiv.select(".row-chart");
     var hiddenFlag = rowDiv.classed("hiddenChart");
     rowDiv.classed("hiddenChart", !hiddenFlag);
-    d3.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
+    d3$1.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
   });
 
   rowHead.append("div").attr("class", "row-title").each(makeTitle);
@@ -1517,7 +1735,7 @@ function updateSummaryText(codebook) {
     var nCols = codebook.data.summary.length;
     var nShown = codebook.data.summary[0].statistics.N;
     var nTot = codebook.data.raw.length;
-    var percent = d3.format("0.1%")(nShown / nTot);
+    var percent = d3$1.format("0.1%")(nShown / nTot);
     var tableSummary = "Data summary for " + nCols + " columns and " + nShown + " of " + nTot + " (" + percent + ") rows shown below.";
   } else {
     tableSummary = "No values selected. Update the filters above or load a different data set.";
@@ -1616,7 +1834,7 @@ function addSort(dataListing) {
     //Add sort container deletion functionality.
     dataListing.sort.order.forEach(function (item, i) {
       item.container.on("click", function (d) {
-        d3.select(this).remove();
+        d3$1.select(this).remove();
         dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
           return d.variable;
         }).indexOf(d.key), 1);
@@ -1685,7 +1903,7 @@ function addPagination(dataListing) {
 
   //Render a different page on click.
   dataListing.pagination.links.on("click", function () {
-    dataListing.pagination.activeLink = d3.select(this).attr("rel");
+    dataListing.pagination.activeLink = d3$1.select(this).attr("rel");
     updatePagination(dataListing);
   });
 }
@@ -1703,7 +1921,7 @@ function onDraw(dataListing) {
   });
 }
 
-function init$6(codebook) {
+function init$7(codebook) {
   var dataListing = codebook.dataListing;
   layout$1(dataListing);
   //sort config
@@ -1735,7 +1953,7 @@ function init$6(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { init: init$6 };
+var dataListing = { init: init$7 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -1744,7 +1962,9 @@ var defaultSettings$1 = {
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
   nBins: 100,
-  levelSplit: 5 //cutpoint for # of levels to use levelPlot() renderer
+  levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
+  controlVisibility: "visible",
+  tabs: ["codebook", "listing", "settings"]
 };
 
 function setDefaults(codebook) {
@@ -1772,6 +1992,17 @@ function setDefaults(codebook) {
 
   /********************* Histogram Settings *********************/
   codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
+
+  /********************* Histogram Settings *********************/
+  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
+
+  /********************* Nav Settings *********************/
+  codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
+  codebook.config.defaultTab = codebook.config.defaultTab || codebook.config.tabs[0];
+  if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
+    console.warn("Invalid starting tab of '" + codebook.config.defaultTab + "' specified. Using '" + codebook.config.tabs[0] + "' instead.");
+    codebook.config.defaultTab = codebook.config.tabs[0];
+  }
 }
 
 function makeAutomaticFilters(codebook) {
@@ -1872,7 +2103,7 @@ function makeSummary(codebook) {
     var numericValues = nonMissingValues.filter(function (d) {
       return !isNaN(+d);
     });
-    var distinctValues = d3.set(numericValues).values();
+    var distinctValues = d3$1.set(numericValues).values();
 
     return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? "continuous" : "categorical";
   }
@@ -1886,15 +2117,15 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.values = d3.nest().key(function (d) {
+      statistics.values = d3$1.nest().key(function (d) {
         return d;
       }).rollup(function (d) {
         return {
           n: d.length,
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
-          prop_N_text: d3.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3.format("0.1%")(d.length / statistics.n)
+          prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
+          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
         };
       }).entries(nonMissing);
 
@@ -1920,12 +2151,12 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3.format("0.2f")(d3.mean(nonMissing));
-      statistics.SD = d3.format("0.2f")(d3.deviation(nonMissing));
+      statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
+      statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
       var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
       quantiles.forEach(function (quantile$$1) {
         var statistic = quantile$$1[0];
-        statistics[statistic] = d3.format("0.1f")(d3.quantile(nonMissing, quantile$$1[1]));
+        statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
       });
 
       return statistics;
@@ -1950,7 +2181,7 @@ function makeSummary(codebook) {
       //Handle groups.
       if (group) {
         variables[i].group = group;
-        variables[i].groups = d3.set(data.map(function (d) {
+        variables[i].groups = d3$1.set(data.map(function (d) {
           return d[group];
         })).values().map(function (g) {
           return { group: g };
@@ -1983,6 +2214,7 @@ function makeSummary(codebook) {
 function makeFiltered(data, filters) {
   var filtered = data;
   filters.forEach(function (filter_d) {
+    console.log(filter_d);
     //remove the filtered values from the data based on the filters
     filtered = filtered.filter(function (rowData) {
       var currentValues = filter_d.values.filter(function (f) {
@@ -1990,7 +2222,7 @@ function makeFiltered(data, filters) {
       }).map(function (m) {
         return m.value;
       });
-      return currentValues.indexOf(rowData[filter_d.value_col]) > -1;
+      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
     });
   });
   return filtered;
@@ -2005,6 +2237,140 @@ var data = {
   makeFiltered: makeFiltered
 };
 
+function init$8(codebook) {
+  codebook.settings.layout(codebook);
+  for (var funk in codebook.settings.functionality) {
+    codebook.settings.functionality[funk](codebook);
+  }
+}
+
+function layout$2(codebook) {
+  //Create list of columns in the data file.
+  var columns = codebook.data.summary.map(function (d) {
+    return d.value_col;
+  }),
+      groupColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      filterColumns = codebook.config.groups.map(function (d) {
+    return d.value_col;
+  }),
+      columnTableColumns = ["Column", "Group", "Filter"],
+      //, 'Visibility', 'Label'],
+  columnMetadata = columns.map(function (column) {
+    var columnDatum = {
+      Column: column,
+      Group: {
+        type: "checkbox",
+        checked: groupColumns.indexOf(column) > -1
+      },
+      Filter: {
+        type: "checkbox",
+        checked: filterColumns.indexOf(column) > -1
+      }
+      /*,'Visibility':
+                          {type: 'checkbox'
+                          ,checked: true}
+                      ,'Label':
+                          {type: 'text'
+                          ,checked: filterColumns.indexOf(column) > -1}*/
+    };
+
+    return columnDatum;
+  }),
+      columnTable = codebook.settings.wrap.append("table").classed("column-table", true),
+      columnTableHeader = columnTable.append("thead").append("tr"),
+      columnTableHeaders = columnTableHeader.selectAll("th").data(columnTableColumns).enter().append("th").attr("class", function (d) {
+    return d;
+  }).text(function (d) {
+    return d;
+  }),
+      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr"),
+      columnTableCells = columnTableRows.selectAll("td").data(function (d) {
+    return Object.keys(d).map(function (di) {
+      return { column: d.Column, key: di, value: d[di] };
+    });
+  }).enter().append("td").attr("class", function (d) {
+    return d.key;
+  }).each(function (d, i) {
+    var cell = d3.select(this);
+
+    switch (d.key) {
+      case "Column":
+        cell.text(d.value);
+        break;
+      default:
+        cell.attr("title", (d.value.checked ? "Remove" : "Add") + " " + d.column + " " + (d.value.checked ? "from" : "to") + " " + d.key.toLowerCase() + " list");
+        cell.append("input").attr("type", d.value.type).property("checked", d.value.checked);
+    }
+  });
+
+  //Add descriptive footnote.
+  columnTable.select("tbody").append("tr").style("border-bottom", "none").append("td").attr("colspan", "5").text("This interactive table allows users to modify each column's metadata.");
+}
+
+function updateGroups(codebook) {
+  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Group");
+
+  //Add click functionality to each list item.
+  groupCheckBoxes.on("change", function () {
+    var groups = groupCheckBoxes.filter(function () {
+      return d3.select(this).select("input").property("checked");
+    }).data().map(function (d) {
+      return d.column;
+    });
+    codebook.config.groups = groups.map(function (d) {
+      return { value_col: d };
+    });
+    codebook.controls.groups.update(codebook);
+
+    //Redraw codebook if currently grouped by former group column.
+    if (codebook.config.group && groups.indexOf(codebook.config.group) === -1) {
+      delete codebook.config.group;
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
+    }
+  });
+}
+
+function updateFilters(codebook) {
+  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Filter");
+
+  //Add click functionality to each list item.
+  filterCheckBoxes.on("change", function () {
+    var filters = filterCheckBoxes.filter(function () {
+      return d3.select(this).select("input").property("checked");
+    }).data().map(function (d) {
+      return d.column;
+    });
+    codebook.config.filters = filters.map(function (d) {
+      return { value_col: d };
+    });
+    codebook.controls.filters.update(codebook);
+
+    //Update filtered data and redraw codebook.
+    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+    codebook.data.makeSummary(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
+  });
+}
+
+var functionality = {
+  updateGroups: updateGroups,
+  updateFilters: updateFilters
+};
+
+/*------------------------------------------------------------------------------------------------\
+  Define settings object.
+\------------------------------------------------------------------------------------------------*/
+
+var settings = {
+  init: init$8,
+  layout: layout$2,
+  functionality: functionality
+};
+
 function createCodebook() {
   var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
   var config = arguments[1];
@@ -2015,10 +2381,12 @@ function createCodebook() {
     init: init,
     layout: layout,
     controls: controls,
+    nav: nav,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
-    util: util
+    util: util,
+    settings: settings
   };
 
   return codebook;
@@ -2028,11 +2396,11 @@ function createCodebook() {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$7() {
+function init$9() {
   var settings = this.config;
 
   //create wrapper in specified div
-  this.wrap = d3.select(this.element).append("div").attr("class", "web-codebook-explorer");
+  this.wrap = d3$1.select(this.element).append("div").attr("class", "web-codebook-explorer");
 
   //layout the divs
   this.layout(this);
@@ -2048,13 +2416,13 @@ function init$7() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$2() {
+function layout$3() {
   this.controls.wrap = this.wrap.append("div").attr("class", "controls");
 
   this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
 }
 
-function init$8(explorer) {
+function init$10(explorer) {
   explorer.controls.wrap.attr("onsubmit", "return false;");
   explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
 
@@ -2084,13 +2452,13 @@ function init$8(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var controls$1 = {
-  init: init$8
+  init: init$10
 };
 
 function makeCodebook(meta) {
   this.codebookWrap.selectAll("*").remove();
   var codebook = webcodebook.createCodebook(".web-codebook-explorer .codebookWrap", meta.settings);
-  d3.csv(meta.path, function (error, data) {
+  d3$1.csv(meta.path, function (error, data) {
     codebook.init(data);
   });
 }
@@ -2102,8 +2470,8 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$7,
-    layout: layout$2,
+    init: init$9,
+    layout: layout$3,
     controls: controls$1,
     makeCodebook: makeCodebook
   };
