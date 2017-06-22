@@ -1,3 +1,5 @@
+import { select as d3select } from "d3";
+
 export function layout(codebook) {
   //Create list of columns in the data file.
   const columns = codebook.data.summary.map(d => d.value_col),
@@ -53,7 +55,7 @@ export function layout(codebook) {
       .append("td")
       .attr("class", d => d.key)
       .each(function(d, i) {
-        const cell = d3.select(this);
+        const cell = d3select(this);
 
         switch (d.key) {
           case "Column":

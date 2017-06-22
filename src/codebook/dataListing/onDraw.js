@@ -1,3 +1,4 @@
+import { select as d3select } from "d3";
 import addSort from "./functionality/addSort";
 import addSearch from "./functionality/addSearch";
 import addPagination from "./functionality/addPagination";
@@ -5,14 +6,11 @@ import addPagination from "./functionality/addPagination";
 export default function onDraw(dataListing) {
   dataListing.table.on("draw", function() {
     //Attach variable name rather than variable label to header to be able to apply settings.hiddenVariables to column headers.
-    this.table.selectAll("th").each(function(d) {
-      d3
-        .select(this)
-        .datum(
-          dataListing.table.config.cols[
-            dataListing.table.config.headers.indexOf(d)
-          ]
-        );
+    this.table.selectAll("th").attr("title", d => {
+      const label = dataListing.config.variableLabels.filter(
+        di => di.value_col === d
+      )[0];
+      return label ? label.label : null;
     });
 
     //Add header sort functionality.

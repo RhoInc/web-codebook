@@ -4,6 +4,7 @@ import { createTable } from "webcharts";
 
 export function init(codebook) {
   const dataListing = codebook.dataListing;
+  dataListing.config = codebook.config;
   layout(dataListing);
   //sort config
   dataListing.sort = {};
@@ -20,10 +21,7 @@ export function init(codebook) {
   //Define table.
   dataListing.table = createTable(
     ".web-codebook .dataListing .listing-container",
-    {
-      cols: codebook.data.summary.map(d => d.value_col),
-      headers: codebook.data.summary.map(d => d.label)
-    }
+    {}
   );
 
   //Define callback.
