@@ -12,8 +12,8 @@ export function setDefaults(codebook) {
   codebook.config.autofilter = codebook.config.filters.length > 0
     ? false
     : codebook.config.autofilter == null
-        ? defaultSettings.autofilter
-        : codebook.config.autofilter;
+      ? defaultSettings.autofilter
+      : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
@@ -33,7 +33,9 @@ export function setDefaults(codebook) {
         legit = is_object && has_value_col && has_label;
       if (!legit)
         console.warn(
-          `Item ${i} of settings.variableLabels (${JSON.stringify(label)}) must be an object with both a "value_col" and a "label" property.`
+          `Item ${i} of settings.variableLabels (${JSON.stringify(
+            label
+          )}) must be an object with both a "value_col" and a "label" property.`
         );
 
       return legit;
@@ -44,8 +46,8 @@ export function setDefaults(codebook) {
   codebook.config.autogroups = codebook.config.groups.length > 0
     ? false
     : codebook.config.autogroups == null
-        ? defaultSettings.autogroups
-        : codebook.config.autogroups;
+      ? defaultSettings.autogroups
+      : codebook.config.autogroups;
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;

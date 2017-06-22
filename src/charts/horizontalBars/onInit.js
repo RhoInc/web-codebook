@@ -6,8 +6,9 @@ export default function onInit() {
       .append("p")
       .attr("class", "panel-label")
       .style("margin-left", chart.config.margin.left + "px")
-      .text(
-        `${this.config.group_label}: ${this.config.group_val} (n=${this.config.n})`
+      .html(
+        `${this.config.group_col}: <strong>${this.config
+          .group_val}</strong> (n=${this.config.n})`
       );
     this.wrap
       .node()

@@ -62,7 +62,10 @@ export function layout(codebook) {
           default:
             cell.attr(
               "title",
-              `${d.value.checked ? "Remove" : "Add"} ${d.column} ${d.value.checked ? "from" : "to"} ${d.key.toLowerCase()} list`
+              `${d.value.checked ? "Remove" : "Add"} ${d.column} ${d.value
+                .checked
+                ? "from"
+                : "to"} ${d.key.toLowerCase()} list`
             );
             cell
               .append("input")

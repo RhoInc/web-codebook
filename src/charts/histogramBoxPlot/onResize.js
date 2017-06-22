@@ -30,7 +30,7 @@ export default function onResize() {
       const quantiles = [
         { probability: 0.05, label: "5th percentile" },
         { probability: 0.25, label: "1st quartile" },
-        { probability: 0.50, label: "Median" },
+        { probability: 0.5, label: "Median" },
         { probability: 0.75, label: "3rd quartile" },
         { probability: 0.95, label: "95th percentile" }
       ];
@@ -60,7 +60,9 @@ export default function onResize() {
           whisker
             .append("title")
             .text(
-              `Q${quantile.probability}-Q${rProbability}: ${format(quantile.quantile)}-${format(rQuantile)}`
+              `Q${quantile.probability}-Q${rProbability}: ${format(
+                quantile.quantile
+              )}-${format(rQuantile)}`
             );
         }
 
@@ -101,8 +103,8 @@ export default function onResize() {
             stroke: [0.05, 0.95].indexOf(quantile.probability) > -1
               ? "red"
               : [0.25, 0.75].indexOf(quantile.probability) > -1
-                  ? "blue"
-                  : "black",
+                ? "blue"
+                : "black",
             "stroke-width": "3px"
           });
         quantile.mark

@@ -3,13 +3,9 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { createVerticalBars } from "./charts/createVerticalBars";
-import {
-  createVerticalBarsControls
-} from "./charts/createVerticalBarsControls";
+import { createVerticalBarsControls } from "./charts/createVerticalBarsControls";
 import { createHorizontalBars } from "./charts/createHorizontalBars";
-import {
-  createHorizontalBarsControls
-} from "./charts/createHorizontalBarsControls";
+import { createHorizontalBarsControls } from "./charts/createHorizontalBarsControls";
 import { createHistogramBoxPlot } from "./charts/createHistogramBoxPlot";
 import { createDotPlot } from "./charts/createDotPlot";
 

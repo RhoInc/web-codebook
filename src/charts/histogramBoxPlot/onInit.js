@@ -20,13 +20,9 @@ export default function onInit() {
       .append("p")
       .attr("class", "panel-label")
       .style("margin-left", context.config.margin.left + "px")
-      .text(
-        this.config.group_label +
-          ": " +
-          this.group +
-          " (n=" +
-          this.raw_data.length +
-          ")"
+      .html(
+        `${this.config.group_col}: <strong>${this.group}</strong> (n=${this
+          .raw_data.length})`
       );
     this.wrap
       .node()

@@ -19,6 +19,9 @@ export function update(codebook) {
         .map(function(d) {
           return { value: d.key, selected: true };
         });
+    e.label = codebook.data.summary.filter(
+      d => d.value_col === e.value_col
+    )[0].label;
   });
 
   //Add filter controls.
@@ -43,11 +46,12 @@ export function update(codebook) {
 
   filterLabel
     .append("span")
-    .html(
-      d =>
-        codebook.data.summary.filter(di => di.value_col === d.value_col)[0]
-          .label
-    );
+    .classed("filter-variable", true)
+    .html(d => d.value_col);
+  filterLabel
+    .append("span")
+    .classed("filter-label", true)
+    .html(d => (d.value_col !== d.label ? d.label : ""));
 
   var filterCustom = filterItem.append("select").attr("multiple", true);
 

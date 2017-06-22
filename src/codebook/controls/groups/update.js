@@ -25,7 +25,11 @@ export function update(codebook) {
   groupOptions
     .enter()
     .append("option")
-    .property("label", d => d.label)
+    .property(
+      "label",
+      d =>
+        d.value_col !== d.label ? `${d.value_col} (${d.label})` : d.value_col
+    )
     .text(d => d.value_col);
   groupOptions.exit().remove();
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));

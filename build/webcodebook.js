@@ -89,6 +89,9 @@ function update(codebook) {
     }).entries(codebook.data.raw).map(function (d) {
       return { value: d.key, selected: true };
     });
+    e.label = codebook.data.summary.filter(function (d) {
+      return d.value_col === e.value_col;
+    })[0].label;
   });
 
   //Add filter controls.
@@ -108,10 +111,11 @@ function update(codebook) {
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 
-  filterLabel.append("span").html(function (d) {
-    return codebook.data.summary.filter(function (di) {
-      return di.value_col === d.value_col;
-    })[0].label;
+  filterLabel.append("span").classed("filter-variable", true).html(function (d) {
+    return d.value_col;
+  });
+  filterLabel.append("span").classed("filter-label", true).html(function (d) {
+    return d.value_col !== d.label ? d.label : "";
   });
 
   var filterCustom = filterItem.append("select").attr("multiple", true);
@@ -184,7 +188,7 @@ function update$1(codebook) {
     return d.value_col;
   });
   groupOptions.enter().append("option").property("label", function (d) {
-    return d.label;
+    return d.value_col !== d.label ? d.value_col + " (" + d.label + ")" : d.value_col;
   }).text(function (d) {
     return d.value_col;
   });
@@ -401,7 +405,7 @@ function makeTitle(d) {
 
   //Title and type
   titleDiv.append("div").attr("class", "name").html(function (d) {
-    return d.label;
+    return d.label && d.label !== d.value_col ? d.value_col + " (" + d.label + ")" : d.value_col;
   });
   titleDiv.append("div").attr("class", "type").html(function (d) {
     return d.type;
@@ -635,7 +639,7 @@ function onInit() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_label + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.config.group_val + "</strong> (n=" + this.config.n + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
@@ -778,7 +782,7 @@ function onInit$1() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_label + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.config.group_val + "</strong> (n=" + this.config.n + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
@@ -1332,7 +1336,7 @@ function onResize$3() {
 
     //Annotate quantiles
     if (this.config.boxPlot) {
-      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.50, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
+      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.5, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
@@ -1481,7 +1485,7 @@ function onInit$2() {
 
   //Add a label
   if (this.group) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").text(this.config.group_label + ": " + this.group + " (n=" + this.raw_data.length + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.group + "</strong> (n=" + this.raw_data.length + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 
@@ -1597,6 +1601,7 @@ function createHistogramBoxPlot(this_, d) {
 
   if (d.groups) {
     chartSettings.panel = "group";
+    chartSettings.group_col = d.group;
     chartSettings.group_label = d.groupLabel;
     d.groups.forEach(function (group) {
       group.values.forEach(function (value) {
