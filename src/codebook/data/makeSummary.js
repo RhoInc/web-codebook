@@ -5,7 +5,7 @@ import {
   mean as d3mean,
   deviation as d3deviation,
   quantile as d3quantile
-} from "d3";
+} from 'd3';
 
 export function makeSummary(codebook) {
   var data = codebook.data.filtered;
@@ -18,18 +18,18 @@ export function makeSummary(codebook) {
 
     return nonMissingValues.length === numericValues.length &&
       distinctValues.length > codebook.config.levelSplit
-      ? "continuous"
-      : "categorical";
+      ? 'continuous'
+      : 'categorical';
   }
 
   const summarize = {
     categorical: function(vector) {
       const statistics = {};
       statistics.N = vector.length;
-      const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== "NA");
+      const nonMissing = vector.filter(d => !/^\s*$/.test(d) && d !== 'NA');
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.unique = d3set(vector).values().length
+      statistics.unique = d3set(vector).values().length;
       statistics.values = d3nest()
         .key(d => d)
         .rollup(d => {
@@ -37,13 +37,12 @@ export function makeSummary(codebook) {
             n: d.length,
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
-            prop_N_text: d3format("0.1%")(d.length / statistics.N),
-            prop_n_text: d3format("0.1%")(d.length / statistics.n),
+            prop_N_text: d3format('0.1%')(d.length / statistics.N),
+            prop_n_text: d3format('0.1%')(d.length / statistics.n),
             unique: d3set(vector).values().length
           };
         })
         .entries(nonMissing);
-
 
       statistics.values.forEach(value => {
         for (var statistic in value.values) {
@@ -64,20 +63,20 @@ export function makeSummary(codebook) {
         .sort((a, b) => a - b);
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3format("0.2f")(d3mean(nonMissing));
-      statistics.SD = d3format("0.2f")(d3deviation(nonMissing));
+      statistics.mean = d3format('0.2f')(d3mean(nonMissing));
+      statistics.SD = d3format('0.2f')(d3deviation(nonMissing));
       const quantiles = [
-        ["min", 0],
-        ["5th percentile", 0.05],
-        ["1st quartile", 0.25],
-        ["median", 0.5],
-        ["3rd quartile", 0.75],
-        ["95th percentile", 0.95],
-        ["max", 1]
+        ['min', 0],
+        ['5th percentile', 0.05],
+        ['1st quartile', 0.25],
+        ['median', 0.5],
+        ['3rd quartile', 0.75],
+        ['95th percentile', 0.95],
+        ['max', 1]
       ];
       quantiles.forEach(quantile => {
         let statistic = quantile[0];
-        statistics[statistic] = d3format("0.1f")(
+        statistics[statistic] = d3format('0.1f')(
           d3quantile(nonMissing, quantile[1])
         );
       });
@@ -95,20 +94,20 @@ export function makeSummary(codebook) {
       variables[i].type = determineType(variables[i].values);
 
       //Calculate statistics.
-      if (variables[i].type === "categorical")
+      if (variables[i].type === 'categorical')
         variables[i].statistics = summarize.categorical(variables[i].values);
       else variables[i].statistics = summarize.continuous(variables[i].values);
       //determine the renderer to use
-      variables[i].chartType = variables[i].type == "continuous"
-        ? "histogramBoxPlot"
-        : (variables[i].type == "categorical") &
+      variables[i].chartType = variables[i].type == 'continuous'
+        ? 'histogramBoxPlot'
+        : (variables[i].type == 'categorical') &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-          ? "verticalBars"
-          : (variables[i].type == "categorical") &
+          ? 'verticalBars'
+          : (variables[i].type == 'categorical') &
               (variables[i].statistics.values.length <=
                 codebook.config.levelSplit)
-            ? "horizontalBars"
-            : "error";
+            ? 'horizontalBars'
+            : 'error';
 
       //Handle groups.
       if (group) {
@@ -126,7 +125,7 @@ export function makeSummary(codebook) {
           g.type = variables[i].type;
 
           //Calculate statistics.
-          if (variables[i].type === "categorical")
+          if (variables[i].type === 'categorical')
             g.statistics = summarize.categorical(g.values);
           else g.statistics = summarize.continuous(g.values);
         });

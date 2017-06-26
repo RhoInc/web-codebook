@@ -130,7 +130,7 @@ export default function onResize() {
         return low_outlier || high_outlier;
       });
 
-      this.svg
+      var outlier = this.svg
         .selectAll('line.outlier')
         .data(outliers)
         .enter()
@@ -139,15 +139,15 @@ export default function onResize() {
         .attr('x1', d => this.x(d))
         .attr('x2', d => this.x(d))
         .attr('y1', d => this.plot_height * 1.07)
-        .attr(
-          'y2',
-          d => (this.plot_height + this.config.boxPlotHeight) / 1.07
-        )
+        .attr('y2', d => (this.plot_height + this.config.boxPlotHeight) / 1.07)
         .style({
           fill: '#000000',
           stroke: 'black',
           'stroke-width': '1px'
         });
+      outlier.append('title').text(function(d) {
+        return d;
+      });
     }
 
     //Annotate mean.
