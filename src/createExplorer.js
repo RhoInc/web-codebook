@@ -1,9 +1,9 @@
-import { init } from "./explorer/init";
-import { layout } from "./explorer/layout";
-import { controls } from "./explorer/controls";
-import { makeCodebook } from "./explorer/makeCodebook";
+import { init } from './explorer/init';
+import { layout } from './explorer/layout';
+import { controls } from './explorer/controls';
+import { makeCodebook } from './explorer/makeCodebook';
 
-export function createExplorer(element = "body", config) {
+export function createExplorer(element = 'body', config) {
   let explorer = {
     element: element,
     config: config,
