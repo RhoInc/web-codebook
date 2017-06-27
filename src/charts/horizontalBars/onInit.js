@@ -3,11 +3,12 @@ export default function onInit() {
   var chart = this;
   if (this.config.group_col) {
     const groupTitle = this.wrap
-      .append("p")
-      .attr("class", "panel-label")
-      .style("margin-left", chart.config.margin.left + "px")
+      .append('p')
+      .attr('class', 'panel-label')
+      .style('margin-left', chart.config.margin.left + 'px')
       .text(
-        `${this.config.group_col}: ${this.config.group_val} (n=${this.config.n})`
+        `${this.config.group_col}: ${this.config.group_val} (n=${this.config
+          .n})`
       );
     this.wrap
       .node()

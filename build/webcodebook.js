@@ -61,11 +61,11 @@ function layout() {
 }
 
 function init$1(codebook) {
-  codebook.controls.wrap.attr("onsubmit", "return false;");
-  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
+  codebook.controls.wrap.attr('onsubmit', 'return false;');
+  codebook.controls.wrap.selectAll('*').remove(); //Clear controls.
 
   //Draw title
-  codebook.controls.wrap.append("div").attr("class", "controls-title").text("Codebook Controls");
+  codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Codebook Controls');
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
@@ -79,8 +79,8 @@ function init$1(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 function update(codebook) {
-  var selector = codebook.controls.wrap.select("div.custom-filters"),
-      filterList = selector.select("ul.filter-list");
+  var selector = codebook.controls.wrap.select('div.custom-filters'),
+      filterList = selector.select('ul.filter-list');
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
@@ -92,12 +92,12 @@ function update(codebook) {
   });
 
   //Add filter controls.
-  var allFilterItem = filterList.selectAll("li").data(codebook.config.filters, function (d) {
+  var allFilterItem = filterList.selectAll('li').data(codebook.config.filters, function (d) {
     return d.value_col;
   });
   var columns = Object.keys(codebook.data.raw[0]);
-  var filterItem = allFilterItem.enter().append("li").attr("class", function (d) {
-    return "custom-" + d.value_col + " filterCustom";
+  var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
+    return 'custom-' + d.value_col + ' filterCustom';
   });
   allFilterItem.exit().remove();
   allFilterItem.sort(function (a, b) {
@@ -106,30 +106,30 @@ function update(codebook) {
     return aSort - bSort;
   });
 
-  var filterLabel = filterItem.append("span").attr("class", "filterLabel");
+  var filterLabel = filterItem.append('span').attr('class', 'filterLabel');
 
-  filterLabel.append("span").html(function (d) {
+  filterLabel.append('span').html(function (d) {
     return d.label || d.value_col;
   });
 
-  var filterCustom = filterItem.append("select").attr("multiple", true);
+  var filterCustom = filterItem.append('select').attr('multiple', true);
 
   //Add data-driven filter options.
-  var filterItems = filterCustom.selectAll("option").data(function (d) {
+  var filterItems = filterCustom.selectAll('option').data(function (d) {
     return d.values;
-  }).enter().append("option").html(function (d) {
+  }).enter().append('option').html(function (d) {
     return d.value;
-  }).attr("value", function (d) {
+  }).attr('value', function (d) {
     return d.value;
-  }).attr("selected", function (d) {
-    return d.selected ? "selected" : null;
+  }).attr('selected', function (d) {
+    return d.selected ? 'selected' : null;
   });
 
   //Initialize event listeners
-  filterCustom.on("change", function () {
+  filterCustom.on('change', function () {
     // flag the selected options in the config
-    d3$1.select(this).selectAll("option").each(function (option_d) {
-      option_d.selected = d3$1.select(this).property("selected");
+    d3$1.select(this).selectAll('option').each(function (option_d) {
+      option_d.selected = d3$1.select(this).property('selected');
     });
 
     //update the codebook
@@ -147,8 +147,8 @@ function update(codebook) {
 //export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap.append("div").attr("class", "custom-filters"),
-      filterList = selector.append("ul").attr("class", "filter-list");
+  var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
+      filterList = selector.append('ul').attr('class', 'filter-list');
 
   update(codebook);
 }
@@ -167,24 +167,24 @@ var filters = {
 \------------------------------------------------------------------------------------------------*/
 
 function update$1(codebook) {
-  var groupControl = codebook.controls.wrap.select("div.group-select"),
-      groupSelect = groupControl.select("select"),
+  var groupControl = codebook.controls.wrap.select('div.group-select'),
+      groupSelect = groupControl.select('select'),
       columns = Object.keys(codebook.data.raw[0]),
-      groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
+      groupLevels = d3$1.merge([['None'], codebook.config.groups.map(function (m) {
     return m.value_col;
   })]),
-      groupOptions = groupSelect.selectAll("option").data(groupLevels, function (d) {
+      groupOptions = groupSelect.selectAll('option').data(groupLevels, function (d) {
     return d;
   });
-  groupOptions.enter().append("option").text(function (d) {
+  groupOptions.enter().append('option').text(function (d) {
     return d;
   });
   groupOptions.exit().remove();
   groupOptions.sort(function (a, b) {
     return columns.indexOf(a) - columns.indexOf(b);
   });
-  groupSelect.on("change", function () {
-    if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
+  groupSelect.on('change', function () {
+    if (this.value !== 'None') codebook.config.group = this.value;else delete codebook.config.group;
     codebook.data.makeSummary(codebook);
     codebook.summaryTable.draw(codebook);
   });
@@ -195,9 +195,9 @@ function update$1(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 function init$3(codebook) {
-  var selector = codebook.controls.wrap.append("div").attr("class", "group-select");
-  selector.append("span").text("Group by");
-  var groupSelect = selector.append("select");
+  var selector = codebook.controls.wrap.append('div').attr('class', 'group-select');
+  selector.append('span').text('Group by');
+  var groupSelect = selector.append('select');
   update$1(codebook);
 }
 
@@ -217,16 +217,16 @@ var groups = {
 //export function init(selector, data, vars, settings) {
 function init$4(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap.append("div").attr("class", "chart-toggle");
+  var selector = codebook.controls.wrap.append('div').attr('class', 'chart-toggle');
 
-  var showAllButton = selector.append("button").text("Show All Charts").on("click", function () {
-    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", false);
-    codebook.wrap.selectAll(".row-toggle").html("&#9660;");
+  var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+    codebook.wrap.selectAll('.row-toggle').html('&#9660;');
   });
 
-  var hideAllButton = selector.append("button").text("Hide All Charts").on("click", function () {
-    codebook.wrap.selectAll(".variable-row").classed("hiddenChart", true);
-    codebook.wrap.selectAll(".row-toggle").html("&#9658;");
+  var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+    codebook.wrap.selectAll('.row-toggle').html('&#9658;');
   });
 }
 
@@ -242,14 +242,14 @@ var chartToggle = { init: init$4 };
 
 function init$5(codebook) {
   //render the control
-  var controlToggle = codebook.controls.wrap.append("button").attr("class", "control-toggle");
+  var controlToggle = codebook.controls.wrap.append('button').attr('class', 'control-toggle');
 
   //set the initial
   codebook.controls.controlToggle.set(codebook);
 
-  controlToggle.on("click", function () {
-    codebook.config.controlVisibility = d3$1.select(this).text() == "Hide" ? "minimized" //click "-" to minimize controls
-    : "visible"; // click "+" to show controls
+  controlToggle.on('click', function () {
+    codebook.config.controlVisibility = d3$1.select(this).text() == 'Hide' ? 'minimized' //click "-" to minimize controls
+    : 'visible'; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
   });
@@ -257,18 +257,18 @@ function init$5(codebook) {
 
 function set$1(codebook) {
   //update toggle text
-  codebook.controls.wrap.select("button.control-toggle").text(codebook.config.controlVisibility == "visible" ? "Hide" : "Show");
-  codebook.controls.wrap.attr("class", "controls section " + codebook.config.controlVisibility);
+  codebook.controls.wrap.select('button.control-toggle').text(codebook.config.controlVisibility == 'visible' ? 'Hide' : 'Show');
+  codebook.controls.wrap.attr('class', 'controls section ' + codebook.config.controlVisibility);
 
   //hide the controls if controlVisibility isn't "visible" ...
-  codebook.controls.wrap.selectAll("*").classed("hidden", !(codebook.config.controlVisibility == "visible"));
+  codebook.controls.wrap.selectAll('*').classed('hidden', !(codebook.config.controlVisibility == 'visible'));
 
   // but show the title and the toggle ...
-  codebook.controls.wrap.select("div.controls-title").classed("hidden", false);
-  codebook.controls.wrap.select("button.control-toggle").classed("hidden", false);
+  codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
+  codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
 
   // unless control visibility is hidden, in which case just hide it all
-  codebook.controls.wrap.classed("hidden", codebook.config.controlVisibility == "hidden");
+  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -293,22 +293,22 @@ var controls = {
 };
 
 var availableTabs = [{
-  key: "codebook",
-  label: "Codebook",
-  selector: ".web-codebook .summaryTable"
+  key: 'codebook',
+  label: 'Codebook',
+  selector: '.web-codebook .summaryTable'
 }, {
-  key: "listing",
-  label: "Data Listing",
-  selector: ".web-codebook .dataListing"
-}, { key: "settings", label: "&#x2699;", selector: ".web-codebook .settings" }];
+  key: 'listing',
+  label: 'Data Listing',
+  selector: '.web-codebook .dataListing'
+}, { key: 'settings', label: '&#x2699;', selector: '.web-codebook .settings' }];
 
 function init$6(codebook) {
-  codebook.nav.wrap.selectAll("*").remove();
+  codebook.nav.wrap.selectAll('*').remove();
 
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3$1.select(tab.selector);
-    tab.wrap.classed("hidden", codebook.config.tabs.indexOf(tab.key) == -1);
+    tab.wrap.classed('hidden', codebook.config.tabs.indexOf(tab.key) == -1);
   });
 
   //get the tabs for the current codebook
@@ -319,38 +319,38 @@ function init$6(codebook) {
   //set the active tabs
   codebook.nav.tabs.forEach(function (t) {
     t.active = t.key == codebook.config.defaultTab;
-    t.wrap.classed("hidden", !t.active);
+    t.wrap.classed('hidden', !t.active);
   });
 
   //draw the nav
-  var chartNav = codebook.nav.wrap.append("ul").attr("class", "nav nav-tabs");
-  var navItems = chartNav.selectAll("li").data(codebook.nav.tabs) //make this a setting
-  .enter().append("li").attr("class", function (d) {
-    return d.key;
-  }).classed("active", function (d, i) {
-    return d.active; //make this a setting
-  }).attr("title", function (d) {
-    return "View " + d.key;
-  });
+  if (codebook.nav.tabs.length > 1) {
+    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
+    var navItems = chartNav.selectAll('li').data(codebook.nav.tabs) //make this a setting
+    .enter().append('li').attr('class', function (d) {
+      return d.key;
+    }).classed('active', function (d, i) {
+      return d.active; //make this a setting
+    }).attr('title', function (d) {
+      return 'View ' + d.key;
+    });
 
-  navItems.append("a").html(function (d) {
+    navItems.append('a').html(function (d) {
+      return d.label;
+    });
 
-    return d.label;
-  });
-
-  //event listener for nav clicks
-  navItems.on("click", function (d) {
-
-    if (!d.active) {
-      codebook.nav.tabs.forEach(function (t) {
-        t.active = d.label == t.label; //set the clicked tab to active
-        navItems.filter(function (f) {
-          return f == t;
-        }).classed("active", t.active); //style the active nav element
-        t.wrap.classed("hidden", !t.active); //hide all of the wraps (except for the active one)
-      });
-    }
-  });
+    //event listener for nav clicks
+    navItems.on('click', function (d) {
+      if (!d.active) {
+        codebook.nav.tabs.forEach(function (t) {
+          t.active = d.label == t.label; //set the clicked tab to active
+          navItems.filter(function (f) {
+            return f == t;
+          }).classed('active', t.active); //style the active nav element
+          t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
+        });
+      }
+    });
+  }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -371,13 +371,13 @@ function draw(codebook) {
 
   //enter/update/exit for variableDivs
   //BIND the newest data
-  var varRows = codebook.summaryTable.wrap.selectAll("div.variable-row").data(codebook.data.summary, function (d) {
+  var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
     return d.value_col;
   });
 
   //ENTER
-  varRows.enter().append("div").attr("class", function (d) {
-    return "variable-row hiddenChart " + d.type;
+  varRows.enter().append('div').attr('class', function (d) {
+    return 'variable-row hiddenChart ' + d.type;
   });
 
   //ENTER + Update
@@ -389,19 +389,19 @@ function draw(codebook) {
 
 function makeTitle(d) {
   var wrap = d3$1.select(this);
-  var titleDiv = wrap.append("div").attr("class", "var-name");
-  var valuesList = wrap.append("ul").attr("class", "value-list");
+  var titleDiv = wrap.append('div').attr('class', 'var-name');
+  var valuesList = wrap.append('ul').attr('class', 'value-list');
 
   //Title and type
-  titleDiv.append("div").attr("class", "name").html(function (d) {
+  titleDiv.append('div').attr('class', 'name').html(function (d) {
     return d.value_col;
   });
-  titleDiv.append("div").attr("class", "type").html(function (d) {
+  titleDiv.append('div').attr('class', 'type').html(function (d) {
     return d.type;
   });
 
   //make a list of values
-  if (d.type == "categorical") {
+  if (d.type == 'categorical') {
     //valuesList.append("span").text( "Values (Most Frequent):")
     var topValues = d.statistics.values.sort(function (a, b) {
       return b.n - a.n;
@@ -409,18 +409,18 @@ function makeTitle(d) {
       return i < 5;
     });
 
-    valuesList.selectAll("li").data(topValues).enter().append("li").text(function (d) {
-      return d.key + " (" + d3$1.format("0.1%")(d.prop_n) + ")";
-    }).attr("title", function (d) {
-      return "n=" + d.n;
-    }).style("cursor", "help");
+    valuesList.selectAll('li').data(topValues).enter().append('li').text(function (d) {
+      return d.key + ' (' + d3$1.format('0.1%')(d.prop_n) + ')';
+    }).attr('title', function (d) {
+      return 'n=' + d.n;
+    }).style('cursor', 'help');
 
     if (d.statistics.values.length > 5) {
       var totLength = d.statistics.values.length;
       var extraCount = totLength - 5;
-      var extra_span = valuesList.append("span").html("and " + extraCount + " more.");
+      var extra_span = valuesList.append('span').html('and ' + extraCount + ' more.');
     }
-  } else if (d.type == "continuous") {
+  } else if (d.type == 'continuous') {
     //valuesList.append("span").text( "Values (Most Frequent):"
     var sortedValues = d3$1.set(d.values).values() //get unique
     .map(function (d) {
@@ -437,14 +437,14 @@ function makeTitle(d) {
     var maxValues = sortedValues.filter(function (d, i) {
       return i >= nValues - 3;
     });
-    var valList = d3$1.merge([minValues, ["..."], maxValues]);
+    var valList = d3$1.merge([minValues, ['...'], maxValues]);
 
-    valuesList.selectAll("li").data(valList).enter().append("li").text(function (d) {
+    valuesList.selectAll('li').data(valList).enter().append('li').text(function (d) {
       return d;
-    }).attr("title", function (d) {
-      return d == "..." ? nValues - 6 + " other values" : "";
-    }).style("cursor", function (d) {
-      return d == "..." ? "help" : null;
+    }).attr('title', function (d) {
+      return d == '...' ? nValues - 6 + ' other values' : '';
+    }).style('cursor', function (d) {
+      return d == '...' ? 'help' : null;
     });
   }
 }
@@ -523,15 +523,15 @@ function clone(obj) {
 }
 
 function moveYaxis(chart) {
-  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
-  ticks.select("text").remove();
-  ticks.append("title").text(function (d) {
+  var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+  ticks.select('text').remove();
+  ticks.append('title').text(function (d) {
     return d;
   });
-  ticks.append("text").attr({
-    "text-anchor": "start",
-    "alignment-baseline": "middle",
-    dx: ".5em",
+  ticks.append('text').attr({
+    'text-anchor': 'start',
+    'alignment-baseline': 'middle',
+    dx: '.5em',
     x: chart.plot_width
   }).text(function (d) {
     return d3$1.format(chart.config.y.format)(d);
@@ -540,41 +540,41 @@ function moveYaxis(chart) {
 
 function makeTooltip(d, i, context) {
   var format$$1 = d3$1.format(context.config.measureFormat);
-  d.selector = "bar" + i;
+  d.selector = 'bar' + i;
   //Define tooltips.
-  var tooltip = context.svg.append("g").attr("id", d.selector);
-  var text = tooltip.append("text").attr({
-    id: "text",
+  var tooltip = context.svg.append('g').attr('id', d.selector);
+  var text = tooltip.append('text').attr({
+    id: 'text',
     x: context.x(d.key),
     y: context.plot_height,
-    dy: "-.75em",
-    "font-size": "75%",
-    "font-weight": "bold",
-    fill: "white"
+    dy: '-.75em',
+    'font-size': '75%',
+    'font-weight': 'bold',
+    fill: 'white'
   });
-  text.append("tspan").attr({
+  text.append('tspan').attr({
     x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
-    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
-  }).text("" + d.key);
-  text.append("tspan").attr({
+    dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+    'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('' + d.key);
+  text.append('tspan').attr({
     x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? "1em" : "-1em",
-    dy: "-1.5em",
-    "text-anchor": context.x(d.key) < context.plot_width / 2 ? "start" : "end"
-  }).text("n=" + d.values.raw[0].n + " (" + d3$1.format("0.1%")(d.total) + ")");
+    dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+    dy: '-1.5em',
+    'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('n=' + d.values.raw[0].n + ' (' + d3$1.format('0.1%')(d.total) + ')');
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
-  var background = tooltip.append("rect").attr({
-    id: "background",
+  var background = tooltip.append('rect').attr({
+    id: 'background',
     x: dimensions.x - 5,
     y: dimensions.y - 2,
     width: dimensions.width + 10,
     height: dimensions.height + 4
   }).style({
-    fill: "black",
-    stroke: "white"
+    fill: 'black',
+    stroke: 'white'
   });
   tooltip[0][0].insertBefore(background[0][0], text[0][0]);
 }
@@ -584,17 +584,17 @@ function onResize() {
 
   moveYaxis(this);
   //remove x-axis text
-  var ticks = this.wrap.selectAll("g.x.axis g.tick");
-  ticks.select("text").remove();
-  this.svg.selectAll("g.bar-group").each(function (d, i) {
+  var ticks = this.wrap.selectAll('g.x.axis g.tick');
+  ticks.select('text').remove();
+  this.svg.selectAll('g.bar-group').each(function (d, i) {
     makeTooltip(d, i, context);
   });
 
   //Add modal to nearest mark.
-  var bars = this.svg.selectAll(".bar-group");
-  var tooltips = this.svg.selectAll(".svg-tooltip");
-  var statistics = this.svg.selectAll(".statistic");
-  this.svg.on("mousemove", function () {
+  var bars = this.svg.selectAll('.bar-group');
+  var tooltips = this.svg.selectAll('.svg-tooltip');
+  var statistics = this.svg.selectAll('.statistic');
+  this.svg.on('mousemove', function () {
     //Highlight closest bar.
     var mouse$$1 = d3$1.mouse(this);
     var x = mouse$$1[0];
@@ -612,15 +612,15 @@ function onResize() {
       return d.distance === minimum;
     }).filter(function (d, i) {
       return i === 0;
-    }).select("rect").style("fill", "#7BAFD4");
+    }).select('rect').style('fill', '#7BAFD4');
 
     //Activate tooltip.
     var d = closest.datum();
-    tooltips.classed("active", false);
-    context.svg.select("#" + d.selector).classed("active", true);
-  }).on("mouseout", function () {
-    bars.select("rect").style("fill", "#999");
-    context.svg.selectAll("g.svg-tooltip").classed("active", false);
+    tooltips.classed('active', false);
+    context.svg.select('#' + d.selector).classed('active', true);
+  }).on('mouseout', function () {
+    bars.select('rect').style('fill', '#999');
+    context.svg.selectAll('g.svg-tooltip').classed('active', false);
   });
 }
 
@@ -628,18 +628,18 @@ function onInit() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append('p').attr('class', 'panel-label').style('margin-left', chart.config.margin.left + 'px').text(this.config.group_col + ': ' + this.config.group_val + ' (n=' + this.config.n + ')');
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
 
 function axisSort(a, b, type) {
   var alpha = a.key < b.key ? -1 : 1;
-  if (type == "Alphabetical") {
+  if (type == 'Alphabetical') {
     return alpha;
-  } else if (type == "Descending") {
+  } else if (type == 'Descending') {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : alpha;
-  } else if (type == "Ascending") {
+  } else if (type == 'Ascending') {
     return a.prop_n > b.prop_n ? 2 : a.prop_n < b.prop_n ? -2 : alpha;
   }
 }
@@ -770,51 +770,51 @@ function onInit$1() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append('p').attr('class', 'panel-label').style('margin-left', chart.config.margin.left + 'px').text(this.config.group_col + ': ' + this.config.group_val + ' (n=' + this.config.n + ')');
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
 
 function moveYaxis$1(chart) {
-  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
-  ticks.select("text").remove();
-  ticks.append("title").text(function (d) {
+  var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+  ticks.select('text').remove();
+  ticks.append('title').text(function (d) {
     return d;
   });
-  ticks.append("text").attr({
-    "text-anchor": "start",
-    "alignment-baseline": "middle",
-    dx: "2.5em",
+  ticks.append('text').attr({
+    'text-anchor': 'start',
+    'alignment-baseline': 'middle',
+    dx: '2.5em',
     x: chart.plot_width
   }).text(function (d) {
-    return d.length < 25 ? d : d.substring(0, 25) + "...";
+    return d.length < 25 ? d : d.substring(0, 25) + '...';
   });
 }
 
 function drawOverallMark(chart) {
   //Clear overall marks.
-  chart.svg.selectAll(".overall-mark").remove();
+  chart.svg.selectAll('.overall-mark').remove();
 
   //For each mark draw an overall mark.
   chart.config.overall.forEach(function (d) {
     if (chart.config.y.order.indexOf(d.key) > -1) {
-      var g = chart.svg.append("g").classed("overall-mark", true);
+      var g = chart.svg.append('g').classed('overall-mark', true);
       var x = d[chart.config.x.column];
       var y = d.key;
 
       //Draw vertical line representing the overall rate of the current categorical value.
       if (chart.y(y)) {
-        var rateLine = g.append("line").attr({
+        var rateLine = g.append('line').attr({
           x1: chart.x(x),
           y1: chart.y(y),
           x2: chart.x(x),
           y2: chart.y(y) + chart.y.rangeBand()
         }).style({
-          stroke: "black",
-          "stroke-width": "2px",
-          "stroke-opacity": "1"
+          stroke: 'black',
+          'stroke-width': '2px',
+          'stroke-opacity': '1'
         });
-        rateLine.append("title").text("Overall rate: " + d3$1.format(chart.config.x.format)(x));
+        rateLine.append('title').text('Overall rate: ' + d3$1.format(chart.config.x.format)(x));
       }
     }
   });
@@ -822,52 +822,52 @@ function drawOverallMark(chart) {
 
 function drawDifferences(chart) {
   //Clear difference marks and annotations.
-  chart.svg.selectAll(".difference-from-total").remove();
+  chart.svg.selectAll('.difference-from-total').remove();
 
   //For each mark draw a difference mark and annotation.
   chart.current_data.forEach(function (d) {
     var overall = chart.config.overall.filter(function (di) {
       return di.key === d.key;
     })[0],
-        g = chart.svg.append("g").classed("difference-from-total", true).style("display", "none"),
+        g = chart.svg.append('g').classed('difference-from-total', true).style('display', 'none'),
         x = overall[chart.config.x.column],
         y = overall.key;
 
     //Draw line from overall rate to group rate.
-    var diffLine = g.append("line").attr({
+    var diffLine = g.append('line').attr({
       x1: chart.x(x),
       y1: chart.y(y) + chart.y.rangeBand() / 2,
       x2: chart.x(d.total),
       y2: chart.y(y) + chart.y.rangeBand() / 2
     }).style({
-      stroke: "black",
-      "stroke-width": "2px",
-      "stroke-opacity": ".25"
+      stroke: 'black',
+      'stroke-width': '2px',
+      'stroke-opacity': '.25'
     });
-    diffLine.append("title").text("Difference from overall rate: " + d3$1.format(".1f")((d.total - x) * 100));
-    var diffText = g.append("text").attr({
+    diffLine.append('title').text('Difference from overall rate: ' + d3$1.format('.1f')((d.total - x) * 100));
+    var diffText = g.append('text').attr({
       x: chart.x(d.total),
       y: chart.y(y) + chart.y.rangeBand() / 2,
-      dx: x < d.total ? "5px" : "-2px",
-      "text-anchor": x < d.total ? "beginning" : "end",
-      "font-size": "0.7em"
-    }).text("" + (x < d.total ? "+" : x > d.total ? "-" : "") + d3$1.format(".1f")(Math.abs(d.total - x) * 100));
+      dx: x < d.total ? '5px' : '-2px',
+      'text-anchor': x < d.total ? 'beginning' : 'end',
+      'font-size': '0.7em'
+    }).text('' + (x < d.total ? '+' : x > d.total ? '-' : '') + d3$1.format('.1f')(Math.abs(d.total - x) * 100));
   });
 
   //Display difference from total on hover.
-  chart.svg.on("mouseover", function () {
-    chart.svg.selectAll(".difference-from-total").style("display", "block");
-    chart.svg.selectAll(".difference-from-total text").each(function () {
-      d3$1.select(this).attr("dy", this.getBBox().height / 4);
+  chart.svg.on('mouseover', function () {
+    chart.svg.selectAll('.difference-from-total').style('display', 'block');
+    chart.svg.selectAll('.difference-from-total text').each(function () {
+      d3$1.select(this).attr('dy', this.getBBox().height / 4);
     });
-  }).on("mouseout", function () {
-    return chart.svg.selectAll(".difference-from-total").style("display", "none");
+  }).on('mouseout', function () {
+    return chart.svg.selectAll('.difference-from-total').style('display', 'none');
   });
 }
 
 function onResize$1() {
   moveYaxis$1(this);
-  if (this.config.x.column === "prop_n") {
+  if (this.config.x.column === 'prop_n') {
     drawOverallMark(this);
 
     if (this.config.group_col) drawDifferences(this);
@@ -959,78 +959,78 @@ function createHorizontalBars(this_, d) {
 }
 
 function moveYaxis$2(chart) {
-  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
-  ticks.select("text").remove();
-  ticks.append("title").text(function (d) {
+  var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+  ticks.select('text').remove();
+  ticks.append('title').text(function (d) {
     return d;
   });
-  ticks.append("text").attr({
-    "text-anchor": "start",
-    "alignment-baseline": "middle",
-    dx: "1em",
+  ticks.append('text').attr({
+    'text-anchor': 'start',
+    'alignment-baseline': 'middle',
+    dx: '1em',
     x: chart.plot_width
   }).text(function (d) {
-    return d.length < 30 ? d : d.substring(0, 30) + "...";
+    return d.length < 30 ? d : d.substring(0, 30) + '...';
   });
 }
 
 function drawOverallMark$1(chart) {
   //Clear overall marks.
-  chart.svg.selectAll(".overall-mark").remove();
+  chart.svg.selectAll('.overall-mark').remove();
 
   //For each mark draw an overall mark.
   chart.config.overall.forEach(function (d) {
     if (chart.config.y.order.indexOf(d.key) > -1) {
-      var g = chart.svg.append("g").classed("overall-mark", true);
+      var g = chart.svg.append('g').classed('overall-mark', true);
       var x = d.prop_n;
       var y = d.key;
 
       //Draw vertical line representing the overall rate of the current categorical value.
       if (chart.y(y)) {
-        var rateLine = g.append("line").attr({
+        var rateLine = g.append('line').attr({
           x1: chart.x(x),
           y1: chart.y(y),
           x2: chart.x(x),
           y2: chart.y(y) + chart.y.rangeBand()
         }).style({
-          stroke: "black",
-          "stroke-width": "2px",
-          "stroke-opacity": "1"
+          stroke: 'black',
+          'stroke-width': '2px',
+          'stroke-opacity': '1'
         });
-        rateLine.append("title").text("Overall rate: " + d3$1.format(".1%")(x));
+        rateLine.append('title').text('Overall rate: ' + d3$1.format('.1%')(x));
       }
     }
   });
 }
 
 function modifyOverallLegendMark(chart) {
-  var legendItems = chart.wrap.selectAll(".legend-item"),
+  var legendItems = chart.wrap.selectAll('.legend-item'),
       overallMark = legendItems.filter(function (d) {
-    return d.label === "Overall";
-  }).select("svg"),
+    return d.label === 'Overall';
+  }).select('svg'),
       BBox = overallMark.node().getBBox();
-  overallMark.select(".legend-mark").remove();
-  overallMark.append("line").classed("legend-mark", true).attr({
+  overallMark.select('.legend-mark').remove();
+  overallMark.append('line').classed('legend-mark', true).attr({
     x1: 3 * BBox.width / 4,
     y1: 0,
     x2: 3 * BBox.width / 4,
     y2: BBox.height
   }).style({
-    stroke: "black",
-    "stroke-width": "2px",
-    "stroke-opacity": "1"
+    stroke: 'black',
+    'stroke-width': '2px',
+    'stroke-opacity': '1'
   });
-  legendItems.selectAll("circle").attr("r", ".4em");
+  legendItems.selectAll('circle').attr('r', '.4em');
 }
 
 function onResize$2() {
   moveYaxis$2(this);
-  if (this.config.x.column === "prop_n") {
+  if (this.config.x.column === 'prop_n') {
     drawOverallMark$1(this);
     if (this.config.color_by) modifyOverallLegendMark(this);
 
     //Hide overall dots.
-    if (this.config.color_by) this.svg.selectAll(".Overall").remove();else this.svg.selectAll(".point").remove();
+    if (this.config.color_by) this.svg.selectAll('.Overall').remove();else this.svg.selectAll('.point').remove();
   }
 }
 
@@ -1191,7 +1191,7 @@ var defaultSettings = //Custom settings
 {
   measure: null,
   panel: null,
-  measureFormat: ",.2f",
+  measureFormat: ',.2f',
   boxPlot: true,
   nBins: null,
   mean: true,
@@ -1201,35 +1201,34 @@ var defaultSettings = //Custom settings
   //Webcharts settings
   x: {
     column: null, // set in syncSettings()
-    type: "linear",
-    label: "",
+    type: 'linear',
+    label: '',
     bin: null
   }, // set in syncSettings()
   y: {
     column: null, // set in syncSettings()
-    type: "linear",
-    label: "",
+    type: 'linear',
+    label: '',
     domain: [0, null]
   },
   marks: [{
-    type: "bar",
+    type: 'bar',
     per: null, // set in syncSettings()
-    summarizeX: "mean",
-    summarizeY: "count",
+    summarizeX: 'mean',
+    summarizeY: 'count',
     attributes: {
-      fill: "#999",
-      stroke: "#333",
-      "stroke-width": "2px"
+      fill: '#999',
+      stroke: '#333',
+      'stroke-width': '2px'
     }
   }],
-  gridlines: "y",
+  gridlines: 'y',
   resizable: true,
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -1248,56 +1247,56 @@ function syncSettings(settings) {
 function makeTooltip$1(d, i, context) {
   var format$$1 = d3$1.format(context.config.measureFormat);
   d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
-  d.range = format$$1(d.rangeLow) + "-" + format$$1(d.rangeHigh);
-  d.selector = "bar" + i;
+  d.range = format$$1(d.rangeLow) + '-' + format$$1(d.rangeHigh);
+  d.selector = 'bar' + i;
   //Define tooltips.
-  var tooltip = context.svg.append("g").attr("id", d.selector);
-  var text = tooltip.append("text").attr({
-    id: "text",
+  var tooltip = context.svg.append('g').attr('id', d.selector);
+  var text = tooltip.append('text').attr({
+    id: 'text',
     x: context.x(d.midpoint),
     y: context.plot_height,
-    dy: "-.75em",
-    "font-size": "75%",
-    "font-weight": "bold",
-    fill: "white"
+    dy: '-.75em',
+    'font-size': '75%',
+    'font-weight': 'bold',
+    fill: 'white'
   });
-  text.append("tspan").attr({
+  text.append('tspan').attr({
     x: context.x(d.midpoint),
-    dx: context.x(d.midpoint) < context.plot_width / 2 ? "1em" : "-1em",
-    "text-anchor": context.x(d.midpoint) < context.plot_width / 2 ? "start" : "end"
-  }).text("Range: " + d.range);
-  text.append("tspan").attr({
+    dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+    'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('Range: ' + d.range);
+  text.append('tspan').attr({
     x: context.x(d.midpoint),
-    dx: context.x(d.midpoint) < context.plot_width / 2 ? "1em" : "-1em",
-    dy: "-1.5em",
-    "text-anchor": context.x(d.midpoint) < context.plot_width / 2 ? "start" : "end"
-  }).text("n: " + d.total);
+    dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+    dy: '-1.5em',
+    'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('n: ' + d.total);
   var dimensions = text[0][0].getBBox();
-  tooltip.classed("svg-tooltip", true); //have to run after .getBBox() in FF/EI since this sets display:none
+  tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
-  var background = tooltip.append("rect").attr({
-    id: "background",
+  var background = tooltip.append('rect').attr({
+    id: 'background',
     x: dimensions.x - 5,
     y: dimensions.y - 2,
     width: dimensions.width + 10,
     height: dimensions.height + 4
   }).style({
-    fill: "black",
-    stroke: "white"
+    fill: 'black',
+    stroke: 'white'
   });
   tooltip[0][0].insertBefore(background[0][0], text[0][0]);
 }
 
 function moveYaxis$3(chart) {
-  var ticks = chart.wrap.selectAll("g.y.axis g.tick");
-  ticks.select("text").remove();
-  ticks.append("title").text(function (d) {
+  var ticks = chart.wrap.selectAll('g.y.axis g.tick');
+  ticks.select('text').remove();
+  ticks.append('title').text(function (d) {
     return d;
   });
-  ticks.append("text").attr({
-    "text-anchor": "start",
-    "alignment-baseline": "middle",
-    dx: ".5em",
+  ticks.append('text').attr({
+    'text-anchor': 'start',
+    'alignment-baseline': 'middle',
+    dx: '.5em',
     x: chart.plot_width
   }).text(function (d) {
     return d;
@@ -1501,7 +1500,7 @@ function onInit$2() {
 
   //Add a label
   if (this.group) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+    var groupTitle = this.wrap.append('p').attr('class', 'panel-label').style('margin-left', context.config.margin.left + 'px').text('Group: ' + this.group + ' (n=' + this.raw_data.length + ')');
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 
@@ -1576,8 +1575,8 @@ function onInit$2() {
       group.webChart = new webcharts.createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
-      group.webChart.on("init", onInit$2);
-      group.webChart.on("resize", onResize$3);
+      group.webChart.on('init', onInit$2);
+      group.webChart.on('resize', onResize$3);
       group.webChart.init(group.data);
     });
   }
@@ -1598,8 +1597,8 @@ function defineHistogram(element, settings) {
   var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
   chart.initialSettings = clone(syncedSettings);
   chart.initialSettings.container = element;
-  chart.on("init", onInit$2);
-  chart.on("resize", onResize$3);
+  chart.on('init', onInit$2);
+  chart.on('resize', onResize$3);
 
   return chart;
 }
@@ -1650,17 +1649,17 @@ function makeChart(d) {
   this.height = 100;
   this.margin = { right: 200, left: 30 };
 
-  if (d.chartType === "horizontalBars") {
+  if (d.chartType === 'horizontalBars') {
     charts.createHorizontalBarsControls(this, d);
     charts.createHorizontalBars(this, d);
-  } else if (d.chartType === "verticalBars") {
+  } else if (d.chartType === 'verticalBars') {
     charts.createVerticalBarsControls(this, d);
     charts.createVerticalBars(this, d);
-  } else if (d.chartType === "histogramBoxPlot") {
+  } else if (d.chartType === 'histogramBoxPlot') {
     // continuous outcomes
     charts.createHistogramBoxPlot(this, d);
   } else {
-    console.warn("Invalid chart type for " + d.key);
+    console.warn('Invalid chart type for ' + d.key);
   }
 }
 
@@ -1668,38 +1667,38 @@ function makeDetails(d) {
   var wrap = d3$1.select(this);
 
   //Render Summary Stats
-  var stats_div = wrap.append("div").attr("class", "stat-row");
+  var stats_div = wrap.append('div').attr('class', 'stat-row');
   var statNames = Object.keys(d.statistics).filter(function (f) {
-    return f != "values";
+    return f != 'values';
   });
   var statList = statNames.map(function (stat) {
     return {
-      key: stat !== "nMissing" ? stat : "Missing",
+      key: stat !== 'nMissing' ? stat : 'Missing',
       value: d.statistics[stat]
     };
   }).filter(function (statItem) {
-    return ["min", "max"].indexOf(statItem.key) === -1;
+    return ['min', 'max'].indexOf(statItem.key) === -1;
   });
 
   //Render Values
-  if (d.type == "categorical") {
-    var stats = stats_div.selectAll("div").data(statList).enter().append("div").attr("class", "stat");
-    stats.append("div").text(function (d) {
+  if (d.type == 'categorical') {
+    var stats = stats_div.selectAll('div').data(statList).enter().append('div').attr('class', 'stat');
+    stats.append('div').text(function (d) {
       return d.key;
-    }).attr("class", "label");
-    stats.append("div").text(function (d) {
+    }).attr('class', 'label');
+    stats.append('div').text(function (d) {
       return d.value;
-    }).attr("class", "value");
-  } else if (d.type === "continuous") {
-    var stats = stats_div.selectAll("div").data(statList.filter(function (statItem) {
-      return statItem.key.indexOf("ile") === -1;
-    })).enter().append("div").attr("class", "stat");
-    stats.append("div").text(function (d) {
+    }).attr('class', 'value');
+  } else if (d.type === 'continuous') {
+    var stats = stats_div.selectAll('div').data(statList.filter(function (statItem) {
+      return statItem.key.indexOf('ile') === -1;
+    })).enter().append('div').attr('class', 'stat');
+    stats.append('div').text(function (d) {
       return d.key;
-    }).attr("class", "label");
-    stats.append("div").text(function (d) {
+    }).attr('class', 'label');
+    stats.append('div').text(function (d) {
       return d.value;
-    }).attr("class", "value");
+    }).attr('class', 'value');
   }
 }
 
@@ -1709,21 +1708,21 @@ function makeDetails(d) {
 
 function renderRow(d) {
   var rowWrap = d3$1.select(this);
-  rowWrap.selectAll("*").remove();
+  rowWrap.selectAll('*').remove();
 
-  var rowHead = rowWrap.append("div").attr("class", "row-head section");
+  var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
-  rowHead.append("div").attr("class", "row-toggle").html("&#9658;").on("click", function () {
+  rowHead.append('div').attr('class', 'row-toggle').html('&#9658;').on('click', function () {
     var rowDiv = d3$1.select(this.parentNode.parentNode);
-    var chartDiv = rowDiv.select(".row-chart");
-    var hiddenFlag = rowDiv.classed("hiddenChart");
-    rowDiv.classed("hiddenChart", !hiddenFlag);
-    d3$1.select(this).html(hiddenFlag ? "&#9660;" : "&#9658;");
+    var chartDiv = rowDiv.select('.row-chart');
+    var hiddenFlag = rowDiv.classed('hiddenChart');
+    rowDiv.classed('hiddenChart', !hiddenFlag);
+    d3$1.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
   });
 
-  rowHead.append("div").attr("class", "row-title").each(makeTitle);
-  rowHead.append("div").attr("class", "row-details").each(makeDetails);
-  rowWrap.append("div").attr("class", "row-chart section").each(makeChart);
+  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+  rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
 function updateSummaryText(codebook) {
@@ -1732,10 +1731,10 @@ function updateSummaryText(codebook) {
     var nCols = codebook.data.summary.length;
     var nShown = codebook.data.summary[0].statistics.N;
     var nTot = codebook.data.raw.length;
-    var percent = d3$1.format("0.1%")(nShown / nTot);
-    var tableSummary = "Data summary for " + nCols + " columns and " + nShown + " of " + nTot + " (" + percent + ") rows shown below.";
+    var percent = d3$1.format('0.1%')(nShown / nTot);
+    var tableSummary = 'Data summary for ' + nCols + ' columns and ' + nShown + ' of ' + nTot + ' (' + percent + ') rows shown below.';
   } else {
-    tableSummary = "No values selected. Update the filters above or load a different data set.";
+    tableSummary = 'No values selected. Update the filters above or load a different data set.';
   }
 
   codebook.summaryTable.summaryText.text(tableSummary);
@@ -1752,33 +1751,33 @@ var summaryTable = {
 
 function layout$1(dataListing) {
   //Clear data listing.
-  dataListing.wrap.selectAll("*").remove();
+  dataListing.wrap.selectAll('*').remove();
 
   //Add sort container.
-  var sortContainer = dataListing.wrap.append("div").classed("sort-container", true);
-  sortContainer.append("span").classed("description", true).text("Click any column header to sort that column.");
+  var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
+  sortContainer.append('span').classed('description', true).text('Click any column header to sort that column.');
 
   //Add search container.
-  var searchContainer = dataListing.wrap.append("div").classed("search-container", true);
-  searchContainer.append("span").classed("description", true).text("Search:");
-  searchContainer.append("input").attr("class", "search-box");
+  var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
+  searchContainer.append('span').classed('description', true).text('Search:');
+  searchContainer.append('input').attr('class', 'search-box');
 
   //Add listing container.
-  dataListing.wrap.append("div").classed("listing-container", true);
+  dataListing.wrap.append('div').classed('listing-container', true);
 
   //Add pagination container.
-  var paginationContainer = dataListing.wrap.append("div").classed("pagination-container", true);
-  paginationContainer.append("span").classed("description", true).text("Page:");
+  var paginationContainer = dataListing.wrap.append('div').classed('pagination-container', true);
+  paginationContainer.append('span').classed('description', true).text('Page:');
 }
 
 function updatePagination(dataListing) {
   //Reset pagination.
-  dataListing.pagination.links.classed("active", false);
+  dataListing.pagination.links.classed('active', false);
 
   //Set to active the selected page link and unhide associated rows.
   dataListing.pagination.links.filter(function (link) {
     return +link.rel === +dataListing.pagination.activeLink;
-  }).classed("active", true);
+  }).classed('active', true);
   dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
   dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
   var sub = dataListing.sorted_raw_data.filter(function (d, i) {
@@ -1796,7 +1795,7 @@ function sort(dataListing) {
       var bcell = b[item.variable];
 
       if (order === 0) {
-        if (item.direction === "ascending" && acell < bcell || item.direction === "descending" && acell > bcell) order = -1;else if (item.direction === "ascending" && acell > bcell || item.direction === "descending" && acell < bcell) order = 1;
+        if (item.direction === 'ascending' && acell < bcell || item.direction === 'descending' && acell > bcell) order = -1;else if (item.direction === 'ascending' && acell > bcell || item.direction === 'descending' && acell < bcell) order = 1;
       }
     });
     return order;
@@ -1805,7 +1804,7 @@ function sort(dataListing) {
 }
 
 function addSort(dataListing) {
-  dataListing.table.wrap.selectAll(".headers th").on("click", function () {
+  dataListing.table.wrap.selectAll('.headers th').on('click', function () {
     var variable = this.textContent;
     var sortItem = dataListing.sort.order.filter(function (item) {
       return item.variable === variable;
@@ -1814,29 +1813,29 @@ function addSort(dataListing) {
     if (!sortItem) {
       sortItem = {
         variable: variable,
-        direction: "ascending",
-        container: dataListing.sort.wrap.append("div").datum({ key: variable }).classed("sort-box", true).text(variable)
+        direction: 'ascending',
+        container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort-box', true).text(variable)
       };
-      sortItem.container.append("span").classed("sort-direction", true).html("&darr;");
-      sortItem.container.append("span").classed("remove-sort", true).html("&#10060;");
+      sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
+      sortItem.container.append('span').classed('remove-sort', true).html('&#10060;');
       dataListing.sort.order.push(sortItem);
     } else {
-      sortItem.direction = sortItem.direction === "ascending" ? "descending" : "ascending";
-      sortItem.container.select("span.sort-direction").html(sortItem.direction === "ascending" ? "&darr;" : "&uarr;");
+      sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
+      sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
     }
 
     sort(dataListing);
-    dataListing.sort.wrap.select(".description").classed("hidden", true);
+    dataListing.sort.wrap.select('.description').classed('hidden', true);
 
     //Add sort container deletion functionality.
     dataListing.sort.order.forEach(function (item, i) {
-      item.container.on("click", function (d) {
+      item.container.on('click', function (d) {
         d3$1.select(this).remove();
         dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
           return d.variable;
         }).indexOf(d.key), 1);
 
-        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select(".description").classed("hidden", false);
+        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('hidden', false);
       });
     });
   });
@@ -1844,8 +1843,8 @@ function addSort(dataListing) {
 
 function addSearch(dataListing) {
   dataListing.search = {};
-  dataListing.search.wrap = dataListing.wrap.select(".search-container");
-  dataListing.search.wrap.select(".search-box").on("input", function () {
+  dataListing.search.wrap = dataListing.wrap.select('.search-container');
+  dataListing.search.wrap.select('.search-box').on('input', function () {
     var inputText = this.value.toLowerCase();
     //Determine which rows contain input text.
     dataListing.sorted_raw_data = dataListing.super_raw_data.filter(function (d) {
@@ -1853,7 +1852,7 @@ function addSearch(dataListing) {
       var vars = Object.keys(d);
       vars.forEach(function (var_name) {
         if (match === false) {
-          var cellText = "" + d[var_name];
+          var cellText = '' + d[var_name];
           match = cellText.toLowerCase().indexOf(inputText) > -1;
         }
       });
@@ -1868,7 +1867,7 @@ function addSearch(dataListing) {
       item.container.remove();
     });
     dataListing.sort.order = [];
-    dataListing.sort.wrap.select(".description").classed("hidden", false);
+    dataListing.sort.wrap.select('.description').classed('hidden', false);
 
     //reset to first page
     dataListing.pagination.activeLink = 0;
@@ -1882,16 +1881,16 @@ function addLinks(dataListing) {
 
   //Calculate number of pages needed and create a link for each page.
   dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
-  dataListing.pagination.wrap.selectAll("a").remove();
+  dataListing.pagination.wrap.selectAll('a').remove();
   for (var i = 0; i < dataListing.pagination.numPages; i++) {
-    dataListing.pagination.wrap.append("a").datum({ rel: i }).attr({
-      href: "#",
+    dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({
+      href: '#',
       rel: i
-    }).text(i + 1).classed("active", function (d) {
+    }).text(i + 1).classed('active', function (d) {
       return d.rel == dataListing.pagination.activeLink;
     });
   }
-  dataListing.pagination.links = dataListing.pagination.wrap.selectAll("a");
+  dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
 }
 
 function addPagination(dataListing) {
@@ -1899,14 +1898,14 @@ function addPagination(dataListing) {
   addLinks(dataListing);
 
   //Render a different page on click.
-  dataListing.pagination.links.on("click", function () {
-    dataListing.pagination.activeLink = d3$1.select(this).attr("rel");
+  dataListing.pagination.links.on('click', function () {
+    dataListing.pagination.activeLink = d3$1.select(this).attr('rel');
     updatePagination(dataListing);
   });
 }
 
 function onDraw(dataListing) {
-  dataListing.table.on("draw", function () {
+  dataListing.table.on('draw', function () {
     //Add header sort functionality.
     addSort(dataListing);
 
@@ -1923,16 +1922,16 @@ function init$7(codebook) {
   layout$1(dataListing);
   //sort config
   dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select(".sort-container");
+  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
   dataListing.sort.order = [];
   //pagination config
   dataListing.pagination = {};
-  dataListing.pagination.wrap = dataListing.wrap.select(".pagination-container");
+  dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
   dataListing.pagination.rowsShown = 25;
   dataListing.pagination.activeLink = 0;
 
   //Define table.
-  dataListing.table = webcharts.createTable(".web-codebook .dataListing .listing-container", {});
+  dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
 
   //Define callback.
   onDraw(dataListing);
@@ -1968,7 +1967,7 @@ function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
   codebook.config.filters = codebook.config.filters.map(function (d) {
-    if (typeof d == "string") return { value_col: d };else return d;
+    if (typeof d == 'string') return { value_col: d };else return d;
   });
 
   //autofilter - don't use automatic filter if user specifies filters object
@@ -1977,7 +1976,7 @@ function setDefaults(codebook) {
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
   codebook.config.groups = codebook.config.groups.map(function (d) {
-    if (typeof d == "string") return { value_col: d };else return d;
+    if (typeof d == 'string') return { value_col: d };else return d;
   });
 
   //autogroups - don't use automatic groups if user specifies groups object
@@ -2006,7 +2005,7 @@ function makeAutomaticFilters(codebook) {
   //make filters for all categorical variables with less than autofilter levels
   if (codebook.config.autofilter > 1) {
     var autofilters = codebook.data.summary.filter(function (f) {
-      return f.type == "categorical";
+      return f.type == 'categorical';
     }) //categorical filters only
     .filter(function (f) {
       return f.statistics.values.length <= codebook.config.autofilter;
@@ -2026,7 +2025,7 @@ function makeAutomaticGroups(codebook) {
   //make groups for all categorical variables with less than autofilter levels
   if (codebook.config.autogroups > 1) {
     var autogroups = codebook.data.summary.filter(function (f) {
-      return f.type == "categorical";
+      return f.type == 'categorical';
     }) //categorical filters only
     .filter(function (f) {
       return f.statistics.values.length <= codebook.config.autogroups;
@@ -2056,9 +2055,9 @@ function getBinCounts(codebook) {
       return 2 * (IQR / cubeRootN);
     }
 
-    var IQR = +summaryData.statistics["3rd quartile"] - +summaryData.statistics["1st quartile"];
-    var n = summaryData.statistics["n"];
-    var range = +summaryData.statistics["max"] - +summaryData.statistics["min"];
+    var IQR = +summaryData.statistics['3rd quartile'] - +summaryData.statistics['1st quartile'];
+    var n = summaryData.statistics['n'];
+    var range = +summaryData.statistics['max'] - +summaryData.statistics['min'];
     var binSize = FreedmanDiaconis(IQR, n);
     var bins = Math.ceil(range / binSize);
 
@@ -2066,11 +2065,11 @@ function getBinCounts(codebook) {
   }
 
   var continuousVars = codebook.data.summary.filter(function (d) {
-    return d.type == "continuous";
+    return d.type == 'continuous';
   });
   continuousVars.forEach(function (cvar) {
     cvar.bins = codebook.config.autoBins ? codebook.config.nBins : setBinCount(cvar);
-    if (Object.keys(codebook.config).indexOf("group") > -1) {
+    if (Object.keys(codebook.config).indexOf('group') > -1) {
       cvar.groups.forEach(function (gvar) {
         gvar.bins = codebook.config.autoBins ? codebook.config.nBins : setBinCount(gvar);
       });
@@ -2102,7 +2101,7 @@ function makeSummary(codebook) {
     });
     var distinctValues = d3$1.set(numericValues).values();
 
-    return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? "continuous" : "categorical";
+    return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? 'continuous' : 'categorical';
   }
 
   var summarize = {
@@ -2110,7 +2109,7 @@ function makeSummary(codebook) {
       var statistics = {};
       statistics.N = vector.length;
       var nonMissing = vector.filter(function (d) {
-        return !/^\s*$/.test(d) && d !== "NA";
+        return !/^\s*$/.test(d) && d !== 'NA';
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
@@ -2122,8 +2121,8 @@ function makeSummary(codebook) {
           n: d.length,
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
-          prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n),
+          prop_N_text: d3$1.format('0.1%')(d.length / statistics.N),
+          prop_n_text: d3$1.format('0.1%')(d.length / statistics.n),
           unique: d3$1.set(vector).values().length
         };
       }).entries(nonMissing);
@@ -2150,12 +2149,12 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
-      statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
-      var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
+      statistics.mean = d3$1.format('0.2f')(d3$1.mean(nonMissing));
+      statistics.SD = d3$1.format('0.2f')(d3$1.deviation(nonMissing));
+      var quantiles = [['min', 0], ['5th percentile', 0.05], ['1st quartile', 0.25], ['median', 0.5], ['3rd quartile', 0.75], ['95th percentile', 0.95], ['max', 1]];
       quantiles.forEach(function (quantile$$1) {
         var statistic = quantile$$1[0];
-        statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
+        statistics[statistic] = d3$1.format('0.1f')(d3$1.quantile(nonMissing, quantile$$1[1]));
       });
 
       return statistics;
@@ -2173,9 +2172,9 @@ function makeSummary(codebook) {
       variables[i].type = determineType(variables[i].values);
 
       //Calculate statistics.
-      if (variables[i].type === "categorical") variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
+      if (variables[i].type === 'categorical') variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
       //determine the renderer to use
-      variables[i].chartType = variables[i].type == "continuous" ? "histogramBoxPlot" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "verticalBars" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "horizontalBars" : "error";
+      variables[i].chartType = variables[i].type == 'continuous' ? 'histogramBoxPlot' : variables[i].type == 'categorical' & variables[i].statistics.values.length > codebook.config.levelSplit ? 'verticalBars' : variables[i].type == 'categorical' & variables[i].statistics.values.length <= codebook.config.levelSplit ? 'horizontalBars' : 'error';
 
       //Handle groups.
       if (group) {
@@ -2197,7 +2196,7 @@ function makeSummary(codebook) {
           g.type = variables[i].type;
 
           //Calculate statistics.
-          if (variables[i].type === "categorical") g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
+          if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
         });
       }
     });
@@ -2221,7 +2220,7 @@ function makeFiltered(data, filters) {
       }).map(function (m) {
         return m.value;
       });
-      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
+      return currentValues.indexOf('' + rowData[filter_d.value_col]) > -1;
     });
   });
   return filtered;
@@ -2254,67 +2253,66 @@ function layout$2(codebook) {
       filterColumns = codebook.config.groups.map(function (d) {
     return d.value_col;
   }),
-      columnTableColumns = ["Column", "Group", "Filter"],
+      columnTableColumns = ['Column', 'Group', 'Filter'],
       //, 'Visibility', 'Label'],
   columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
       Group: {
-        type: "checkbox",
+        type: 'checkbox',
         checked: groupColumns.indexOf(column) > -1
       },
       Filter: {
-        type: "checkbox",
+        type: 'checkbox',
         checked: filterColumns.indexOf(column) > -1
-      }
-      /*,'Visibility':
-                          {type: 'checkbox'
-                          ,checked: true}
-                      ,'Label':
-                          {type: 'text'
-                          ,checked: filterColumns.indexOf(column) > -1}*/
-    };
+        /*,'Visibility':
+                            {type: 'checkbox'
+                            ,checked: true}
+                        ,'Label':
+                            {type: 'text'
+                            ,checked: filterColumns.indexOf(column) > -1}*/
+      } };
 
     return columnDatum;
   }),
-      columnTable = codebook.settings.wrap.append("table").classed("column-table", true),
-      columnTableHeader = columnTable.append("thead").append("tr"),
-      columnTableHeaders = columnTableHeader.selectAll("th").data(columnTableColumns).enter().append("th").attr("class", function (d) {
+      columnTable = codebook.settings.wrap.append('table').classed('column-table', true),
+      columnTableHeader = columnTable.append('thead').append('tr'),
+      columnTableHeaders = columnTableHeader.selectAll('th').data(columnTableColumns).enter().append('th').attr('class', function (d) {
     return d;
   }).text(function (d) {
     return d;
   }),
-      columnTableRows = columnTable.append("tbody").selectAll("tr").data(columnMetadata).enter().append("tr"),
-      columnTableCells = columnTableRows.selectAll("td").data(function (d) {
+      columnTableRows = columnTable.append('tbody').selectAll('tr').data(columnMetadata).enter().append('tr'),
+      columnTableCells = columnTableRows.selectAll('td').data(function (d) {
     return Object.keys(d).map(function (di) {
       return { column: d.Column, key: di, value: d[di] };
     });
-  }).enter().append("td").attr("class", function (d) {
+  }).enter().append('td').attr('class', function (d) {
     return d.key;
   }).each(function (d, i) {
     var cell = d3.select(this);
 
     switch (d.key) {
-      case "Column":
+      case 'Column':
         cell.text(d.value);
         break;
       default:
-        cell.attr("title", (d.value.checked ? "Remove" : "Add") + " " + d.column + " " + (d.value.checked ? "from" : "to") + " " + d.key.toLowerCase() + " list");
-        cell.append("input").attr("type", d.value.type).property("checked", d.value.checked);
+        cell.attr('title', (d.value.checked ? 'Remove' : 'Add') + ' ' + d.column + ' ' + (d.value.checked ? 'from' : 'to') + ' ' + d.key.toLowerCase() + ' list');
+        cell.append('input').attr('type', d.value.type).property('checked', d.value.checked);
     }
   });
 
   //Add descriptive footnote.
-  columnTable.select("tbody").append("tr").style("border-bottom", "none").append("td").attr("colspan", "5").text("This interactive table allows users to modify each column's metadata.");
+  columnTable.select('tbody').append('tr').style('border-bottom', 'none').append('td').attr('colspan', '5').text("This interactive table allows users to modify each column's metadata.");
 }
 
 function updateGroups(codebook) {
-  var groupCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Group");
+  var groupCheckBoxes = codebook.settings.wrap.selectAll('.column-table td.Group');
 
   //Add click functionality to each list item.
-  groupCheckBoxes.on("change", function () {
+  groupCheckBoxes.on('change', function () {
     var groups = groupCheckBoxes.filter(function () {
-      return d3.select(this).select("input").property("checked");
+      return d3.select(this).select('input').property('checked');
     }).data().map(function (d) {
       return d.column;
     });
@@ -2333,12 +2331,12 @@ function updateGroups(codebook) {
 }
 
 function updateFilters(codebook) {
-  var filterCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Filter");
+  var filterCheckBoxes = codebook.settings.wrap.selectAll('.column-table td.Filter');
 
   //Add click functionality to each list item.
-  filterCheckBoxes.on("change", function () {
+  filterCheckBoxes.on('change', function () {
     var filters = filterCheckBoxes.filter(function () {
-      return d3.select(this).select("input").property("checked");
+      return d3.select(this).select('input').property('checked');
     }).data().map(function (d) {
       return d.column;
     });
@@ -2371,7 +2369,7 @@ var settings = {
 };
 
 function createCodebook() {
-  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
+  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
   var config = arguments[1];
 
   var codebook = {
@@ -2422,22 +2420,22 @@ function layout$3() {
 }
 
 function init$10(explorer) {
-  explorer.controls.wrap.attr("onsubmit", "return false;");
-  explorer.controls.wrap.selectAll("*").remove(); //Clear controls.
+  explorer.controls.wrap.attr('onsubmit', 'return false;');
+  explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
 
-  var file_select_wrap = explorer.controls.wrap.append("div").style("padding", ".5em").style("border-bottom", "2px solid black");
+  var file_select_wrap = explorer.controls.wrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
 
-  file_select_wrap.append("span").text("Pick a file: ");
+  file_select_wrap.append('span').text('Pick a file: ');
 
-  var select$$1 = file_select_wrap.append("select");
+  var select$$1 = file_select_wrap.append('select');
 
-  select$$1.selectAll("option").data(explorer.config.files).enter().append("option").text(function (d) {
+  select$$1.selectAll('option').data(explorer.config.files).enter().append('option').text(function (d) {
     return d.label;
   });
 
-  select$$1.on("change", function (d) {
+  select$$1.on('change', function (d) {
     var current_text = this.value;
     var current_obj = explorer.config.files.filter(function (f) {
       return f.label == current_text;
@@ -2463,7 +2461,7 @@ function makeCodebook(meta) {
 }
 
 function createExplorer() {
-  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "body";
+  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
   var config = arguments[1];
 
   var explorer = {

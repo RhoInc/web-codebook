@@ -1,12 +1,12 @@
 export function init(codebook) {
-  codebook.controls.wrap.attr("onsubmit", "return false;");
-  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
+  codebook.controls.wrap.attr('onsubmit', 'return false;');
+  codebook.controls.wrap.selectAll('*').remove(); //Clear controls.
 
   //Draw title
   codebook.controls.wrap
-    .append("div")
-    .attr("class", "controls-title")
-    .text("Codebook Controls");
+    .append('div')
+    .attr('class', 'controls-title')
+    .text('Codebook Controls');
 
   //Draw controls.
   codebook.controls.groups.init(codebook);

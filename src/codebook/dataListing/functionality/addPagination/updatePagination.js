@@ -1,11 +1,11 @@
 export default function updatePagination(dataListing) {
   //Reset pagination.
-  dataListing.pagination.links.classed("active", false);
+  dataListing.pagination.links.classed('active', false);
 
   //Set to active the selected page link and unhide associated rows.
   dataListing.pagination.links
     .filter(link => +link.rel === +dataListing.pagination.activeLink)
-    .classed("active", true);
+    .classed('active', true);
   dataListing.pagination.startItem =
     dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
   dataListing.pagination.endItem =
