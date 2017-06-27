@@ -1,15 +1,15 @@
-import { select as d3select } from "d3";
+import { select as d3select } from 'd3';
 
 export default function updateFilters(codebook) {
   const filterCheckBoxes = codebook.settings.wrap.selectAll(
-    ".column-table td.Filter"
+    '.column-table td.Filter'
   );
 
   //Add click functionality to each list item.
-  filterCheckBoxes.on("change", function() {
+  filterCheckBoxes.on('change', function() {
     const filters = filterCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3.select(this).select('input').property('checked');
       })
       .data()
       .map(d => d.column);
