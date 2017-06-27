@@ -3,7 +3,7 @@
 // See https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule for more
 // values should be an array of numbers
 
-import defaultSettings from "../defaultSettings";
+import defaultSettings from '../defaultSettings';
 
 export function getBinCounts(codebook) {
   //function to set the bin count for a single variable
@@ -15,10 +15,10 @@ export function getBinCounts(codebook) {
     }
 
     var IQR =
-      +summaryData.statistics["3rd quartile"] -
-      +summaryData.statistics["1st quartile"];
-    var n = summaryData.statistics["n"];
-    var range = +summaryData.statistics["max"] - +summaryData.statistics["min"];
+      +summaryData.statistics['3rd quartile'] -
+      +summaryData.statistics['1st quartile'];
+    var n = summaryData.statistics['n'];
+    var range = +summaryData.statistics['max'] - +summaryData.statistics['min'];
     var binSize = FreedmanDiaconis(IQR, n);
     var bins = Math.ceil(range / binSize);
 
@@ -26,13 +26,13 @@ export function getBinCounts(codebook) {
   }
 
   var continuousVars = codebook.data.summary.filter(
-    d => d.type == "continuous"
+    d => d.type == 'continuous'
   );
   continuousVars.forEach(function(cvar) {
     cvar.bins = codebook.config.autoBins
       ? codebook.config.nBins
       : setBinCount(cvar);
-    if (Object.keys(codebook.config).indexOf("group") > -1) {
+    if (Object.keys(codebook.config).indexOf('group') > -1) {
       cvar.groups.forEach(function(gvar) {
         gvar.bins = codebook.config.autoBins
           ? codebook.config.nBins

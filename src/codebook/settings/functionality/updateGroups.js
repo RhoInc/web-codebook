@@ -1,15 +1,15 @@
-import { select as d3select } from "d3";
+import { select as d3select } from 'd3';
 
 export default function updateGroups(codebook) {
   const groupCheckBoxes = codebook.settings.wrap.selectAll(
-    ".column-table td.Group"
+    '.column-table td.Group'
   );
 
   //Add click functionality to each list item.
-  groupCheckBoxes.on("change", function() {
+  groupCheckBoxes.on('change', function() {
     const groups = groupCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3.select(this).select('input').property('checked');
       })
       .data()
       .map(d => d.column);

@@ -139,10 +139,7 @@ export default function onResize() {
         .attr('x1', d => this.x(d))
         .attr('x2', d => this.x(d))
         .attr('y1', d => this.plot_height * 1.07)
-        .attr(
-          'y2',
-          d => (this.plot_height + this.config.boxPlotHeight) / 1.07
-        )
+        .attr('y2', d => (this.plot_height + this.config.boxPlotHeight) / 1.07)
         .style({
           fill: '#000000',
           stroke: 'black',
