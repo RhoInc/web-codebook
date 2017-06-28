@@ -28,18 +28,45 @@ General
 Controls layout
 \------------------------------------------------------------------------------------------------*/
 
-
 .web-codebook .controls {
   position: relative;
   display: inline-block;
   vertical-align: top;
   border: 1px dashed #ccc;
-  padding: 0.2em;
   margin-bottom:0.5em;
 }
 
 .web-codebook .controls.minimized {
   height:28px;
+}
+
+.web-codebook .controls > * {
+    margin: .25em .5em;
+}
+
+.web-codebook .controls #loading-indicator {
+  float: right;
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid #008CBA;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  margin: 0 0.5em 0.5em 0;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .web-codebook .controls .controls-title{

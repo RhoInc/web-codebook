@@ -20,6 +20,9 @@ export function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
+  //initialize nav
+  this.nav.init(this);
+
   //prepare the data summaries
   this.data.makeSummary(this);
 
@@ -28,15 +31,22 @@ export function init(data) {
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
 
-  //initialize nav
-  this.nav.init(this);
+  //wait by the quarter second until the loading indicator is visible
+  const loading = setInterval(() => {
+    const laidOut = this.controls.wrap.property('offsetwidth') > 0;
+    if (!laidOut) {
+      //initialize and then draw the codebook
+      this.summaryTable.draw(this);
 
-  //initialize and then draw the codebook
-  this.summaryTable.draw(this);
+      //initialize and then draw the data listing
+      this.dataListing.init(this);
 
-  //initialize and then draw the data listing
-  this.dataListing.init(this);
+      //initialize and then draw the data listing
+      this.settings.init(this);
 
-  //initialize and then draw the data listing
-  this.settings.init(this);
+      //loading is complete
+      clearInterval(loading);
+      this.loadingIndicator.style('display', 'none');
+    }
+  }, 250);
 }

@@ -9,6 +9,8 @@
 \------------------------------------------------------------------------------------------------*/
 
 function init(data) {
+  var _this = this;
+
   var settings = this.config;
 
   //create chart wrapper in specified div
@@ -22,6 +24,9 @@ function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
+  //initialize nav
+  this.nav.init(this);
+
   //prepare the data summaries
   this.data.makeSummary(this);
 
@@ -30,17 +35,24 @@ function init(data) {
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
 
-  //initialize nav
-  this.nav.init(this);
+  //wait by the quarter second until the loading indicator is visible
+  var loading = setInterval(function () {
+    var laidOut = _this.controls.wrap.property('offsetwidth') > 0;
+    if (!laidOut) {
+      //initialize and then draw the codebook
+      _this.summaryTable.draw(_this);
 
-  //initialize and then draw the codebook
-  this.summaryTable.draw(this);
+      //initialize and then draw the data listing
+      _this.dataListing.init(_this);
 
-  //initialize and then draw the data listing
-  this.dataListing.init(this);
+      //initialize and then draw the data listing
+      _this.settings.init(_this);
 
-  //initialize and then draw the data listing
-  this.settings.init(this);
+      //loading is complete
+      clearInterval(loading);
+      _this.loadingIndicator.style('display', 'none');
+    }
+  }, 250);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -62,7 +74,9 @@ function layout() {
 
 function init$1(codebook) {
   codebook.controls.wrap.attr("onsubmit", "return false;");
-  codebook.controls.wrap.selectAll("*").remove(); //Clear controls.
+  codebook.controls.wrap.selectAll("*:not(#loading-indicator)").remove(); //Clear controls.
+
+  codebook.loadingIndicator = codebook.controls.wrap.insert("div", ":first-child").attr("id", "loading-indicator");
 
   //Draw title
   codebook.controls.wrap.append("div").attr("class", "controls-title").text("Codebook Controls");
@@ -142,17 +156,31 @@ function update(codebook) {
   });
 
   //Initialize event listeners
-  filterCustom.on("change", function (d) {
-    // flag the selected options in the config
-    d3$1.select(this).selectAll("option").each(function (option_d) {
-      option_d.selected = d3$1.select(this).property("selected");
-    });
+  filterCustom.on("change", function () {
+    var _this = this;
 
-    //update the codebook
-    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-    codebook.data.makeSummary(codebook);
-    codebook.summaryTable.draw(codebook);
-    codebook.dataListing.init(codebook);
+    //display the loading indicator
+    codebook.loadingIndicator.style("display", "block");
+    //wait by the quarter second until the loading indicator is visible to re-render everything
+    var loading = setInterval(function () {
+      var display = codebook.loadingIndicator.style("display");
+      if (display === "block") {
+        // flag the selected options in the config
+        d3$1.select(_this).selectAll("option").each(function (option_d) {
+          option_d.selected = d3$1.select(this).property("selected");
+        });
+
+        //update the codebook
+        codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+        codebook.data.makeSummary(codebook);
+        codebook.summaryTable.draw(codebook);
+        codebook.dataListing.init(codebook);
+
+        //loading complete
+        clearInterval(loading);
+        codebook.loadingIndicator.style("display", "none");
+      }
+    }, 250);
   });
 }
 
@@ -207,9 +235,23 @@ function update$1(codebook) {
     return columns.indexOf(a) - columns.indexOf(b);
   });
   groupSelect.on("change", function () {
-    if (this.value !== "None") codebook.config.group = this.value;else delete codebook.config.group;
-    codebook.data.makeSummary(codebook);
-    codebook.summaryTable.draw(codebook);
+    var _this = this;
+
+    //display loading indicator
+    codebook.loadingIndicator.style("display", "block");
+    //wait by the quarter second until the loading indicator is visible to re-render everything
+    var loading = setInterval(function () {
+      var display = codebook.loadingIndicator.style("display");
+      if (display === "block") {
+        if (_this.value !== "None") codebook.config.group = _this.value;else delete codebook.config.group;
+        codebook.data.makeSummary(codebook);
+        codebook.summaryTable.draw(codebook);
+
+        //loading complete
+        clearInterval(loading);
+        codebook.loadingIndicator.style("display", "none");
+      }
+    }, 250);
   });
 }
 
@@ -1341,18 +1383,21 @@ function onResize$3() {
   moveYaxis$3(this);
 
   //Hide overall plot if [settings.overall] is set to false.
-  if (!this.config.overall && !this.group) this.wrap.style('display', 'none');else {
+  if (!this.config.overall && !this.group) {
+    this.wrap.style("display", "none");
+    this.wrap.classed("overall", true);
+  } else {
     //Clear custom marks.
-    this.svg.selectAll('g.svg-tooltip').remove();
-    this.svg.selectAll('.statistic').remove();
+    this.svg.selectAll("g.svg-tooltip").remove();
+    this.svg.selectAll(".statistic").remove();
 
-    this.svg.selectAll('g.bar-group').each(function (d, i) {
+    this.svg.selectAll("g.bar-group").each(function (d, i) {
       makeTooltip$1(d, i, context);
     });
 
     //Annotate quantiles
     if (this.config.boxPlot) {
-      var quantiles = [{ probability: 0.05, label: '5th percentile' }, { probability: 0.25, label: '1st quartile' }, { probability: 0.5, label: 'Median' }, { probability: 0.75, label: '3rd quartile' }, { probability: 0.95, label: '95th percentile' }];
+      var quantiles = [{ probability: 0.05, label: "5th percentile" }, { probability: 0.25, label: "1st quartile" }, { probability: 0.5, label: "Median" }, { probability: 0.75, label: "3rd quartile" }, { probability: 0.95, label: "95th percentile" }];
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
@@ -1362,48 +1407,48 @@ function onResize$3() {
         if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
           var rProbability = quantiles[+item + 1].probability;
           var rQuantile = d3$1.quantile(this.values, rProbability);
-          var whisker = this.svg.append('line').attr({
-            class: 'statistic',
+          var whisker = this.svg.append("line").attr({
+            class: "statistic",
             x1: this.x(quantile$$1.quantile),
             y1: this.plot_height + this.config.boxPlotHeight / 2,
             x2: this.x(rQuantile),
             y2: this.plot_height + this.config.boxPlotHeight / 2
           }).style({
-            stroke: 'black',
-            'stroke-width': '2px',
+            stroke: "black",
+            "stroke-width": "2px",
             opacity: 0.25
           });
-          whisker.append('title').text('Q' + quantile$$1.probability + '-Q' + rProbability + ': ' + format$$1(quantile$$1.quantile) + '-' + format$$1(rQuantile));
+          whisker.append("title").text("Q" + quantile$$1.probability + "-Q" + rProbability + ": " + format$$1(quantile$$1.quantile) + "-" + format$$1(rQuantile));
         }
 
         //Box
         if (quantile$$1.probability === 0.25) {
           var q3 = d3$1.quantile(this.values, 0.75);
-          var interQ = this.svg.append('rect').attr({
-            class: 'statistic',
+          var interQ = this.svg.append("rect").attr({
+            class: "statistic",
             x: this.x(quantile$$1.quantile),
             y: this.plot_height,
             width: this.x(q3) - this.x(quantile$$1.quantile),
             height: this.config.boxPlotHeight
           }).style({
-            fill: '#ccc',
+            fill: "#ccc",
             opacity: 0.25
           });
-          interQ.append('title').text('Interquartile range: ' + format$$1(quantile$$1.quantile) + '-' + format$$1(q3));
+          interQ.append("title").text("Interquartile range: " + format$$1(quantile$$1.quantile) + "-" + format$$1(q3));
         }
 
         //Vertical lines
-        quantile$$1.mark = this.svg.append('line').attr({
-          class: 'statistic',
+        quantile$$1.mark = this.svg.append("line").attr({
+          class: "statistic",
           x1: this.x(quantile$$1.quantile),
           y1: this.plot_height,
           x2: this.x(quantile$$1.quantile),
           y2: this.plot_height + this.config.boxPlotHeight
         }).style({
-          stroke: [0.05, 0.95].indexOf(quantile$$1.probability) > -1 ? 'black' : [0.25, 0.75].indexOf(quantile$$1.probability) > -1 ? 'black' : 'black',
-          'stroke-width': '3px'
+          stroke: [0.05, 0.95].indexOf(quantile$$1.probability) > -1 ? "black" : [0.25, 0.75].indexOf(quantile$$1.probability) > -1 ? "black" : "black",
+          "stroke-width": "3px"
         });
-        quantile$$1.mark.append('title').text(quantile$$1.label + ': ' + format$$1(quantile$$1.quantile));
+        quantile$$1.mark.append("title").text(quantile$$1.label + ": " + format$$1(quantile$$1.quantile));
       }
 
       var outliers = this.values.filter(function (f) {
@@ -1411,27 +1456,27 @@ function onResize$3() {
           if (q.probability == 0.05) {
             return q;
           }
-        })[0]['quantile'];
+        })[0]["quantile"];
         var high_outlier = f > quantiles.filter(function (q) {
           if (q.probability == 0.95) {
             return q;
           }
-        })[0]['quantile'];
+        })[0]["quantile"];
         return low_outlier || high_outlier;
       });
 
-      this.svg.selectAll('line.outlier').data(outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
+      this.svg.selectAll("line.outlier").data(outliers).enter().append("line").attr("class", "outlier").attr("x1", function (d) {
         return _this.x(d);
-      }).attr('x2', function (d) {
+      }).attr("x2", function (d) {
         return _this.x(d);
-      }).attr('y1', function (d) {
+      }).attr("y1", function (d) {
         return _this.plot_height * 1.07;
-      }).attr('y2', function (d) {
+      }).attr("y2", function (d) {
         return (_this.plot_height + _this.config.boxPlotHeight) / 1.07;
       }).style({
-        fill: '#000000',
-        stroke: 'black',
-        'stroke-width': '1px'
+        fill: "#000000",
+        stroke: "black",
+        "stroke-width": "1px"
       });
     }
 
@@ -1439,17 +1484,17 @@ function onResize$3() {
     if (this.config.mean) {
       var mean$$1 = d3$1.mean(this.values);
       var sd = d3$1.deviation(this.values);
-      var meanMark = this.svg.append('circle').attr({
-        class: 'statistic',
+      var meanMark = this.svg.append("circle").attr({
+        class: "statistic",
         cx: this.x(mean$$1),
         cy: this.plot_height + this.config.boxPlotHeight / 2,
         r: this.config.boxPlotHeight / 3
       }).style({
-        fill: '#000000',
-        stroke: 'black',
-        'stroke-width': '1px'
+        fill: "#000000",
+        stroke: "black",
+        "stroke-width": "1px"
       });
-      meanMark.append('title').text('n: ' + this.values.length + '\nMean: ' + format$$1(mean$$1) + '\nSD: ' + format$$1(sd));
+      meanMark.append("title").text("n: " + this.values.length + "\nMean: " + format$$1(mean$$1) + "\nSD: " + format$$1(sd));
     }
 
     //Rotate y-axis labels.
@@ -1457,20 +1502,20 @@ function onResize$3() {
     this.svg.select('g.y.axis text.axis-title').remove();
 
     //Hide legends.
-    this.wrap.select('ul.legend').remove();
+    this.wrap.select("ul.legend").remove();
 
     //Shift x-axis tick labels downward.
-    var yticks = this.svg.select('.x.axis').selectAll('g.tick');
-    yticks.select('text').remove();
-    yticks.append('text').attr('y', context.config.boxPlotHeight).attr('dy', '1em').attr('x', 0).attr('text-anchor', 'middle').attr('alignment-baseline', 'top').text(function (d) {
+    var yticks = this.svg.select(".x.axis").selectAll("g.tick");
+    yticks.select("text").remove();
+    yticks.append("text").attr("y", context.config.boxPlotHeight).attr("dy", "1em").attr("x", 0).attr("text-anchor", "middle").attr("alignment-baseline", "top").text(function (d) {
       return d;
     });
 
     //Add modal to nearest mark.
-    var bars = this.svg.selectAll('.bar-group');
-    var tooltips = this.svg.selectAll('.svg-tooltip');
-    var statistics = this.svg.selectAll('.statistic');
-    this.svg.on('mousemove', function () {
+    var bars = this.svg.selectAll(".bar-group");
+    var tooltips = this.svg.selectAll(".svg-tooltip");
+    var statistics = this.svg.selectAll(".statistic");
+    this.svg.on("mousemove", function () {
       //Highlight closest bar.
       var mouse$$1 = d3$1.mouse(this);
       var x = context.x.invert(mouse$$1[0]);
@@ -1488,15 +1533,15 @@ function onResize$3() {
         return d.distance === minimum;
       }).filter(function (d, i) {
         return i === 0;
-      }).select('rect').style('fill', '#000000');
+      }).select("rect").style("fill", "#000000");
 
       //Activate tooltip.
       var d = closest.datum();
-      tooltips.classed('active', false);
-      context.svg.select('#' + d.selector).classed('active', true);
-    }).on('mouseout', function () {
-      bars.select('rect').style('fill', '#999');
-      context.svg.selectAll('g.svg-tooltip').classed('active', false);
+      tooltips.classed("active", false);
+      context.svg.select("#" + d.selector).classed("active", true);
+    }).on("mouseout", function () {
+      bars.select("rect").style("fill", "#999");
+      context.svg.selectAll("g.svg-tooltip").classed("active", false);
     });
   }
 }
@@ -2156,66 +2201,80 @@ function makeFiltered(data, filters) {
   return filtered;
 }
 
+function determineType(vector, levelSplit) {
+  var nonMissingValues = vector.filter(function (d) {
+    return !/^\s*$/.test(d);
+  });
+  var numericValues = nonMissingValues.filter(function (d) {
+    return !isNaN(+d);
+  });
+  var distinctValues = d3$1.set(numericValues).values();
+
+  return nonMissingValues.length === numericValues.length && distinctValues.length > levelSplit ? "continuous" : "categorical";
+}
+
+function categorical(vector) {
+  var statistics = {};
+  statistics.N = vector.length;
+  var nonMissing = vector.filter(function (d) {
+    return !/^\s*$/.test(d) && d !== "NA";
+  });
+  statistics.n = nonMissing.length;
+  statistics.nMissing = vector.length - statistics.n;
+  statistics.values = d3$1.nest().key(function (d) {
+    return d;
+  }).rollup(function (d) {
+    return {
+      n: d.length,
+      prop_N: d.length / statistics.N,
+      prop_n: d.length / statistics.n,
+      prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
+      prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
+    };
+  }).entries(nonMissing);
+
+  statistics.values.forEach(function (value) {
+    for (var statistic in value.values) {
+      value[statistic] = value.values[statistic];
+    }
+    delete value.values;
+  });
+
+  return statistics;
+}
+
+function continuous(vector) {
+  var statistics = {};
+  statistics.N = vector.length;
+  var nonMissing = vector.filter(function (d) {
+    return !isNaN(+d) && !/^\s*$/.test(d);
+  }).map(function (d) {
+    return +d;
+  }).sort(function (a, b) {
+    return a - b;
+  });
+  statistics.n = nonMissing.length;
+  statistics.nMissing = vector.length - statistics.n;
+  statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
+  statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
+  var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
+  quantiles.forEach(function (quantile$$1) {
+    var statistic = quantile$$1[0];
+    statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
+  });
+
+  return statistics;
+}
+
+var summarize = {
+  determineType: determineType,
+  categorical: categorical,
+  continuous: continuous
+};
+
 function makeSummary(codebook) {
   var data = codebook.data.filtered;
   var group = codebook.config.group;
-
-  var summarize = {
-    categorical: function categorical(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !/^\s*$/.test(d) && d !== "NA";
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.unique = d3$1.set(vector).values().length;
-      statistics.values = d3nest().key(function (d) {
-        return d;
-      }).rollup(function (d) {
-        return {
-          n: d.length,
-          prop_N: d.length / statistics.N,
-          prop_n: d.length / statistics.n,
-          prop_N_text: d3format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3format("0.1%")(d.length / statistics.n),
-          unique: d3$1.set(vector).values().length
-        };
-      }).entries(nonMissing);
-
-      statistics.values.forEach(function (value) {
-        for (var statistic in value.values) {
-          value[statistic] = value.values[statistic];
-        }
-        delete value.values;
-      });
-
-      return statistics;
-    },
-
-    continuous: function continuous(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !isNaN(+d) && !/^\s*$/.test(d);
-      }).map(function (d) {
-        return +d;
-      }).sort(function (a, b) {
-        return a - b;
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3format("0.2f")(d3mean(nonMissing));
-      statistics.SD = d3format("0.2f")(d3deviation(nonMissing));
-      var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
-      quantiles.forEach(function (quantile$$1) {
-        var statistic = quantile$$1[0];
-        statistics[statistic] = d3format("0.1f")(d3quantile(nonMissing, quantile$$1[1]));
-      });
-
-      return statistics;
-    }
-  };
 
   if (codebook.data.filtered.length > 0) {
     var variables = Object.keys(data[0]);
