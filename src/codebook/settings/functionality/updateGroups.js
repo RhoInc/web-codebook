@@ -9,7 +9,7 @@ export default function updateGroups(codebook) {
   groupCheckBoxes.on("change", function() {
     const groups = groupCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3select(this).select("input").property("checked");
       })
       .data()
       .map(d => d.column);

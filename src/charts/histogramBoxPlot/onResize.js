@@ -177,7 +177,7 @@ export default function onResize() {
     //Rotate y-axis labels.
 
     this.svg.select('g.y.axis text.axis-title').remove();
-    
+
     //Hide legends.
     this.wrap.select('ul.legend').remove();
 

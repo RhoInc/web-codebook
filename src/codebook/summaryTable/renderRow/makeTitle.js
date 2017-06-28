@@ -11,7 +11,15 @@ export default function makeTitle(d) {
   var valuesList = wrap.append("ul").attr("class", "value-list");
 
   //Title and type
-  titleDiv.append("div").attr("class", "name").html(d => d.value_col);
+  titleDiv
+    .append("div")
+    .attr("class", "name")
+    .html(
+      d =>
+        d.label && d.label !== d.value_col
+          ? `${d.value_col} (${d.label})`
+          : d.value_col
+    );
   titleDiv.append("div").attr("class", "type").html(d => d.type);
 
   //make a list of values

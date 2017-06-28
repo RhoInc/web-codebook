@@ -94,11 +94,14 @@ function update(codebook) {
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
-    e.values = d3$1.nest().key(function (d) {
+    if (!e.hasOwnProperty("values")) e.values = d3$1.nest().key(function (d) {
       return d[e.value_col];
     }).entries(codebook.data.raw).map(function (d) {
       return { value: d.key, selected: true };
     });
+    e.label = codebook.data.summary.filter(function (d) {
+      return d.value_col === e.value_col;
+    })[0].label;
   });
 
   //Add filter controls.
@@ -118,8 +121,11 @@ function update(codebook) {
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 
-  filterLabel.append("span").html(function (d) {
-    return d.label || d.value_col;
+  filterLabel.append("span").classed("filter-variable", true).html(function (d) {
+    return d.value_col;
+  });
+  filterLabel.append("span").classed("filter-label", true).html(function (d) {
+    return d.value_col !== d.label ? d.label : "";
   });
 
   var filterCustom = filterItem.append("select").attr("multiple", true);
@@ -136,7 +142,7 @@ function update(codebook) {
   });
 
   //Initialize event listeners
-  filterCustom.on("change", function () {
+  filterCustom.on("change", function (d) {
     // flag the selected options in the config
     d3$1.select(this).selectAll("option").each(function (option_d) {
       option_d.selected = d3$1.select(this).property("selected");
@@ -180,14 +186,21 @@ function update$1(codebook) {
   var groupControl = codebook.controls.wrap.select("div.group-select"),
       groupSelect = groupControl.select("select"),
       columns = Object.keys(codebook.data.raw[0]),
-      groupLevels = d3$1.merge([["None"], codebook.config.groups.map(function (m) {
-    return m.value_col;
+      groupLevels = d3$1.merge([[{ value_col: "None", label: "None" }], codebook.config.groups.map(function (m) {
+    return {
+      value_col: m.value_col,
+      label: codebook.data.summary.filter(function (variable) {
+        return variable.value_col === m.value_col;
+      })[0].label
+    };
   })]),
       groupOptions = groupSelect.selectAll("option").data(groupLevels, function (d) {
-    return d;
+    return d.value_col;
   });
-  groupOptions.enter().append("option").text(function (d) {
-    return d;
+  groupOptions.enter().append("option").property("label", function (d) {
+    return d.value_col !== d.label ? d.value_col + " (" + d.label + ")" : d.value_col;
+  }).text(function (d) {
+    return d.value_col;
   });
   groupOptions.exit().remove();
   groupOptions.sort(function (a, b) {
@@ -407,7 +420,7 @@ function makeTitle(d) {
 
   //Title and type
   titleDiv.append("div").attr("class", "name").html(function (d) {
-    return d.value_col;
+    return d.label && d.label !== d.value_col ? d.value_col + " (" + d.label + ")" : d.value_col;
   });
   titleDiv.append("div").attr("class", "type").html(function (d) {
     return d.type;
@@ -641,7 +654,7 @@ function onInit() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.config.group_val + "</strong> (n=" + this.config.n + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
@@ -691,6 +704,7 @@ function createVerticalBars(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
+    group_label: d.groupLabel || null,
     overall: d.statistics.values
   }, defineProperty(_chartSettings, 'gridlines', 'y'), defineProperty(_chartSettings, 'sort', sortType), _chartSettings);
 
@@ -783,7 +797,7 @@ function onInit$1() {
   //Add group labels.
   var chart = this;
   if (this.config.group_col) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").text(this.config.group_col + ": " + this.config.group_val + " (n=" + this.config.n + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", chart.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.config.group_val + "</strong> (n=" + this.config.n + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 }
@@ -921,6 +935,7 @@ function createHorizontalBars(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
+    group_label: d.groupLabel || null,
     overall: d.statistics.values
   },
       chartData = d.statistics.values.sort(function (a, b) {
@@ -1076,6 +1091,7 @@ function createDotPlot(this_, d) {
     margin: this_.margin,
     value_col: d.value_col,
     group_col: d.group || null,
+    group_label: d.groupLabel || null,
     overall: d.statistics.values
   },
       chartData = d.statistics.values.sort(function (a, b) {
@@ -1240,9 +1256,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -1494,7 +1509,7 @@ function onInit$2() {
 
   //Add a label
   if (this.group) {
-    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+    var groupTitle = this.wrap.append("p").attr("class", "panel-label").style("margin-left", context.config.margin.left + "px").html(this.config.group_col + ": <strong>" + this.group + "</strong> (n=" + this.raw_data.length + ")");
     this.wrap.node().parentNode.insertBefore(groupTitle.node(), this.wrap.node());
   }
 
@@ -1610,6 +1625,8 @@ function createHistogramBoxPlot(this_, d) {
 
   if (d.groups) {
     chartSettings.panel = 'group';
+    chartSettings.group_col = d.group;
+    chartSettings.group_label = d.groupLabel;
     d.groups.forEach(function (group) {
       group.values.forEach(function (value) {
         chartData.push({ group: group.group || '<no value>', ' ': value });
@@ -1900,6 +1917,14 @@ function addPagination(dataListing) {
 
 function onDraw(dataListing) {
   dataListing.table.on("draw", function () {
+    //Attach variable name rather than variable label to header to be able to apply settings.hiddenVariables to column headers.
+    this.table.selectAll("th").attr("title", function (d) {
+      var label = dataListing.config.variableLabels.filter(function (di) {
+        return di.value_col === d;
+      })[0];
+      return label ? label.label : null;
+    });
+
     //Add header sort functionality.
     addSort(dataListing);
 
@@ -1954,6 +1979,7 @@ var dataListing = { init: init$7 };
 var defaultSettings$1 = {
   filters: [],
   groups: [],
+  variableLabels: [],
   hiddenVariables: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
@@ -1978,6 +2004,18 @@ function setDefaults(codebook) {
   codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
   codebook.config.groups = codebook.config.groups.map(function (d) {
     if (typeof d == "string") return { value_col: d };else return d;
+  });
+
+  /********************* Variable Label Settings *********************/
+  codebook.config.variableLabels = codebook.config.variableLabels || defaultSettings$1.variableLabels;
+  codebook.config.variableLabels = codebook.config.variableLabels.filter(function (label, i) {
+    var is_object = (typeof label === "undefined" ? "undefined" : _typeof(label)) === "object",
+        has_value_col = label.hasOwnProperty("value_col"),
+        has_label = label.hasOwnProperty("label"),
+        legit = is_object && has_value_col && has_label;
+    if (!legit) console.warn("Item " + i + " of settings.variableLabels (" + JSON.stringify(label) + ") must be an object with both a \"value_col\" and a \"label\" property.");
+
+    return legit;
   });
 
   //autogroups - don't use automatic groups if user specifies groups object
@@ -2023,6 +2061,11 @@ function makeAutomaticFilters(codebook) {
 
     codebook.config.filters = autofilters.length > 0 ? autofilters : null;
   }
+  codebook.data.summary.forEach(function (variable) {
+    variable.filter = codebook.config.filters.map(function (filter) {
+      return filter.value_col;
+    }).indexOf(variable.value_col) > -1;
+  });
 }
 
 function makeAutomaticGroups(codebook) {
@@ -2043,6 +2086,11 @@ function makeAutomaticGroups(codebook) {
 
     codebook.config.groups = autogroups.length > 0 ? autogroups : null;
   }
+  codebook.data.summary.forEach(function (variable) {
+    variable.groupOption = codebook.config.groups.map(function (group) {
+      return group.value_col;
+    }).indexOf(variable.value_col) > -1;
+  });
 }
 
 // determine the number of bins to use in the histogram based on the data.
@@ -2092,21 +2140,25 @@ var util = {
   getBinCounts: getBinCounts
 };
 
+function makeFiltered(data, filters) {
+  var filtered = data;
+  filters.forEach(function (filter_d) {
+    //remove the filtered values from the data based on the filters
+    filtered = filtered.filter(function (rowData) {
+      var currentValues = filter_d.values.filter(function (f) {
+        return f.selected;
+      }).map(function (m) {
+        return m.value;
+      });
+      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
+    });
+  });
+  return filtered;
+}
+
 function makeSummary(codebook) {
   var data = codebook.data.filtered;
   var group = codebook.config.group;
-
-  function determineType(vector) {
-    var nonMissingValues = vector.filter(function (d) {
-      return !/^\s*$/.test(d);
-    });
-    var numericValues = nonMissingValues.filter(function (d) {
-      return !isNaN(+d);
-    });
-    var distinctValues = d3$1.set(numericValues).values();
-
-    return nonMissingValues.length === numericValues.length && distinctValues.length > codebook.config.levelSplit ? "continuous" : "categorical";
-  }
 
   var summarize = {
     categorical: function categorical(vector) {
@@ -2118,15 +2170,15 @@ function makeSummary(codebook) {
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
       statistics.unique = d3$1.set(vector).values().length;
-      statistics.values = d3$1.nest().key(function (d) {
+      statistics.values = d3nest().key(function (d) {
         return d;
       }).rollup(function (d) {
         return {
           n: d.length,
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
-          prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3$1.format("0.1%")(d.length / statistics.n),
+          prop_N_text: d3format("0.1%")(d.length / statistics.N),
+          prop_n_text: d3format("0.1%")(d.length / statistics.n),
           unique: d3$1.set(vector).values().length
         };
       }).entries(nonMissing);
@@ -2153,12 +2205,12 @@ function makeSummary(codebook) {
       });
       statistics.n = nonMissing.length;
       statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
-      statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
+      statistics.mean = d3format("0.2f")(d3mean(nonMissing));
+      statistics.SD = d3format("0.2f")(d3deviation(nonMissing));
       var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
       quantiles.forEach(function (quantile$$1) {
         var statistic = quantile$$1[0];
-        statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
+        statistics[statistic] = d3format("0.1f")(d3quantile(nonMissing, quantile$$1[1]));
       });
 
       return statistics;
@@ -2168,21 +2220,28 @@ function makeSummary(codebook) {
   if (codebook.data.filtered.length > 0) {
     var variables = Object.keys(data[0]);
     variables.forEach(function (variable, i) {
-      //Define variable metadata and generate data array.
+      //Define variable data vector and metadata.
       variables[i] = { value_col: variable };
       variables[i].values = data.map(function (d) {
         return d[variable];
       });
-      variables[i].type = determineType(variables[i].values);
-
-      //Calculate statistics.
-      if (variables[i].type === "categorical") variables[i].statistics = summarize.categorical(variables[i].values);else variables[i].statistics = summarize.continuous(variables[i].values);
-      //determine the renderer to use
+      variables[i].type = summarize.determineType(variables[i].values, codebook.config.levelSplit);
+      variables[i].label = codebook.config.variableLabels.map(function (variableLabel) {
+        return variableLabel.value_col;
+      }).indexOf(variable) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
+        return variableLabel.value_col === variable;
+      })[0].label : variable;
+      variables[i].statistics = variables[i].type === "continuous" ? summarize.continuous(variables[i].values) : summarize.categorical(variables[i].values);
       variables[i].chartType = variables[i].type == "continuous" ? "histogramBoxPlot" : variables[i].type == "categorical" & variables[i].statistics.values.length > codebook.config.levelSplit ? "verticalBars" : variables[i].type == "categorical" & variables[i].statistics.values.length <= codebook.config.levelSplit ? "horizontalBars" : "error";
 
       //Handle groups.
       if (group) {
         variables[i].group = group;
+        variables[i].groupLabel = codebook.config.variableLabels.map(function (variableLabel) {
+          return variableLabel.value_col;
+        }).indexOf(group) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
+          return variableLabel.value_col === group;
+        })[0].label : group;
         variables[i].groups = d3$1.set(data.map(function (d) {
           return d[group];
         })).values().map(function (g) {
@@ -2191,7 +2250,7 @@ function makeSummary(codebook) {
 
         variables[i].groups.forEach(function (g) {
           //Define variable metadata and generate data array.
-          g.value_col = variables[i].value_col;
+          g.value_col = variable;
           g.values = data.filter(function (d) {
             return d[group] === g.group;
           }).map(function (d) {
@@ -2213,30 +2272,13 @@ function makeSummary(codebook) {
   }
 }
 
-function makeFiltered(data, filters) {
-  var filtered = data;
-  filters.forEach(function (filter_d) {
-    console.log(filter_d);
-    //remove the filtered values from the data based on the filters
-    filtered = filtered.filter(function (rowData) {
-      var currentValues = filter_d.values.filter(function (f) {
-        return f.selected;
-      }).map(function (m) {
-        return m.value;
-      });
-      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
-    });
-  });
-  return filtered;
-}
-
 /*------------------------------------------------------------------------------------------------\
   Define data object.
 \------------------------------------------------------------------------------------------------*/
 
 var data = {
-  makeSummary: makeSummary,
-  makeFiltered: makeFiltered
+  makeFiltered: makeFiltered,
+  makeSummary: makeSummary
 };
 
 function init$8(codebook) {
@@ -2293,7 +2335,7 @@ function layout$2(codebook) {
   }).enter().append("td").attr("class", function (d) {
     return d.key;
   }).each(function (d, i) {
-    var cell = d3.select(this);
+    var cell = d3$1.select(this);
 
     switch (d.key) {
       case "Column":
@@ -2315,7 +2357,7 @@ function updateGroups(codebook) {
   //Add click functionality to each list item.
   groupCheckBoxes.on("change", function () {
     var groups = groupCheckBoxes.filter(function () {
-      return d3.select(this).select("input").property("checked");
+      return d3$1.select(this).select("input").property("checked");
     }).data().map(function (d) {
       return d.column;
     });
@@ -2339,12 +2381,20 @@ function updateFilters(codebook) {
   //Add click functionality to each list item.
   filterCheckBoxes.on("change", function () {
     var filters = filterCheckBoxes.filter(function () {
-      return d3.select(this).select("input").property("checked");
+      return d3$1.select(this).select("input").property("checked");
     }).data().map(function (d) {
       return d.column;
     });
-    codebook.config.filters = filters.map(function (d) {
-      return { value_col: d };
+
+    //Add new filters to settings.filters.
+    filters.forEach(function (filter) {
+      if (codebook.config.filters.map(function (d) {
+        return d.value_col;
+      }).indexOf(filter) === -1) codebook.config.filters.push({ value_col: filter });
+    });
+    //Remove old  filters from settings.filters.
+    codebook.config.filters.forEach(function (filter, i) {
+      if (filters.indexOf(filter.value_col) === -1) codebook.config.filters.splice(i, 1);
     });
     codebook.controls.filters.update(codebook);
 

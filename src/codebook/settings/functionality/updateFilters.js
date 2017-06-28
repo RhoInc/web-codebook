@@ -9,12 +9,20 @@ export default function updateFilters(codebook) {
   filterCheckBoxes.on("change", function() {
     const filters = filterCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3select(this).select("input").property("checked");
       })
       .data()
       .map(d => d.column);
-    codebook.config.filters = filters.map(d => {
-      return { value_col: d };
+
+    //Add new filters to settings.filters.
+    filters.forEach(filter => {
+      if (codebook.config.filters.map(d => d.value_col).indexOf(filter) === -1)
+        codebook.config.filters.push({ value_col: filter });
+    });
+    //Remove old  filters from settings.filters.
+    codebook.config.filters.forEach((filter, i) => {
+      if (filters.indexOf(filter.value_col) === -1)
+        codebook.config.filters.splice(i, 1);
     });
     codebook.controls.filters.update(codebook);
 

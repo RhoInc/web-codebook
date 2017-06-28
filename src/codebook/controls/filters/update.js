@@ -10,14 +10,18 @@ export function update(codebook) {
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function(e) {
-    e.values = d3nest()
-      .key(function(d) {
-        return d[e.value_col];
-      })
-      .entries(codebook.data.raw)
-      .map(function(d) {
-        return { value: d.key, selected: true };
-      });
+    if (!e.hasOwnProperty("values"))
+      e.values = d3nest()
+        .key(function(d) {
+          return d[e.value_col];
+        })
+        .entries(codebook.data.raw)
+        .map(function(d) {
+          return { value: d.key, selected: true };
+        });
+    e.label = codebook.data.summary.filter(
+      d => d.value_col === e.value_col
+    )[0].label;
   });
 
   //Add filter controls.
@@ -40,7 +44,14 @@ export function update(codebook) {
 
   var filterLabel = filterItem.append("span").attr("class", "filterLabel");
 
-  filterLabel.append("span").html(d => d.label || d.value_col);
+  filterLabel
+    .append("span")
+    .classed("filter-variable", true)
+    .html(d => d.value_col);
+  filterLabel
+    .append("span")
+    .classed("filter-label", true)
+    .html(d => (d.value_col !== d.label ? d.label : ""));
 
   var filterCustom = filterItem.append("select").attr("multiple", true);
 
@@ -61,7 +72,7 @@ export function update(codebook) {
     .attr("selected", d => (d.selected ? "selected" : null));
 
   //Initialize event listeners
-  filterCustom.on("change", function() {
+  filterCustom.on("change", function(d) {
     // flag the selected options in the config
     d3select(this).selectAll("option").each(function(option_d) {
       option_d.selected = d3select(this).property("selected");

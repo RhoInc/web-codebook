@@ -127,6 +127,12 @@ Controls layout
   display: inline-block;
 }
 
+.web-codebook .controls .custom-filters ul li.filterCustom span.filter-label {
+	display: block;
+	font-size: .75em;
+	color: #777;
+	margin-bottom: 3px;
+}
 
 
 
