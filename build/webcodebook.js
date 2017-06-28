@@ -72,6 +72,16 @@ function init$1(codebook) {
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
+
+  //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
+  codebook.controls.wrap.selectAll(".group-select option").classed("hidden", function (d) {
+    return codebook.config.hiddenVariables.indexOf(d) > -1;
+  });
+
+  //Hide filters corresponding to variables specified in settings.hiddenVariables.
+  codebook.controls.wrap.selectAll(".filter-list li.filterCustom").classed("hidden", function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+  });
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -334,13 +344,11 @@ function init$6(codebook) {
   });
 
   navItems.append("a").html(function (d) {
-
     return d.label;
   });
 
   //event listener for nav clicks
   navItems.on("click", function (d) {
-
     if (!d.active) {
       codebook.nav.tabs.forEach(function (t) {
         t.active = d.label == t.label; //set the clicked tab to active
@@ -378,6 +386,11 @@ function draw(codebook) {
   //ENTER
   varRows.enter().append("div").attr("class", function (d) {
     return "variable-row hiddenChart " + d.type;
+  });
+
+  //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
+  varRows.classed("hidden", function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 
   //ENTER + Update
@@ -1427,27 +1440,7 @@ function onResize$3() {
     //Rotate y-axis labels.
 
     this.svg.select('g.y.axis text.axis-title').remove();
-    /*
-    this.svg
-      .select("g.y.axis")
-      .insert("text", ":first-child")
-      .attr({
-        class: "axis-title",
-        x: this.plot_width,
-        y: this.plot_height / 2,
-        dx: "1em"
-      })
-      .style("text-anchor", "start")
-      .text(
-        this.group
-          ? "Level: " +
-              this.config.y.label +
-              " \n(n=" +
-              this.values.length +
-              ")"
-          : ""
-      );
-    */
+
     //Hide legends.
     this.wrap.select('ul.legend').remove();
 
@@ -1915,11 +1908,17 @@ function onDraw(dataListing) {
 
     //Add pagination functionality.
     addPagination(dataListing);
+
+    //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
+    this.table.selectAll("th,td").classed("hidden", function (d) {
+      return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
+    });
   });
 }
 
 function init$7(codebook) {
   var dataListing = codebook.dataListing;
+  dataListing.config = codebook.config;
   layout$1(dataListing);
   //sort config
   dataListing.sort = {};
@@ -1955,6 +1954,7 @@ var dataListing = { init: init$7 };
 var defaultSettings$1 = {
   filters: [],
   groups: [],
+  hiddenVariables: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
@@ -1982,6 +1982,9 @@ function setDefaults(codebook) {
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
+
+  /********************* Hidden Variable Settings ***************/
+  codebook.config.hiddenVariables = codebook.config.hiddenVariables || defaultSettings$1.hiddenVariables;
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
@@ -2251,12 +2254,12 @@ function layout$2(codebook) {
       groupColumns = codebook.config.groups.map(function (d) {
     return d.value_col;
   }),
-      filterColumns = codebook.config.groups.map(function (d) {
+      filterColumns = codebook.config.filters.map(function (d) {
     return d.value_col;
   }),
-      columnTableColumns = ["Column", "Group", "Filter"],
-      //, 'Visibility', 'Label'],
-  columnMetadata = columns.map(function (column) {
+      hiddenColumns = codebook.config.hiddenVariables,
+      columnTableColumns = ["Column", "Group", "Filter", "Hidden"],
+      columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
       Group: {
@@ -2266,13 +2269,11 @@ function layout$2(codebook) {
       Filter: {
         type: "checkbox",
         checked: filterColumns.indexOf(column) > -1
+      },
+      Hidden: {
+        type: "checkbox",
+        checked: hiddenColumns.indexOf(column) > -1
       }
-      /*,'Visibility':
-                          {type: 'checkbox'
-                          ,checked: true}
-                      ,'Label':
-                          {type: 'text'
-                          ,checked: filterColumns.indexOf(column) > -1}*/
     };
 
     return columnDatum;
@@ -2355,9 +2356,41 @@ function updateFilters(codebook) {
   });
 }
 
+function updateHidden(codebook) {
+  var hiddenCheckBoxes = codebook.settings.wrap.selectAll(".column-table td.Hidden");
+
+  //Add click functionality to each list item.
+  hiddenCheckBoxes.on("change", function () {
+    codebook.config.hiddenVariables = hiddenCheckBoxes.filter(function () {
+      return d3.select(this).select("input").property("checked");
+    }).data().map(function (d) {
+      return d.column;
+    });
+
+    //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
+    codebook.controls.wrap.selectAll(".group-select option").classed("hidden", function (d) {
+      return codebook.config.hiddenVariables.indexOf(d) > -1;
+    });
+
+    //Hide filters corresponding to variables specified in settings.hiddenVariables.
+    codebook.controls.wrap.selectAll(".filter-list li.filterCustom").classed("hidden", function (d) {
+      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+    });
+
+    //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
+    codebook.summaryTable.wrap.selectAll("div.variable-row").classed("hidden", function (d) {
+      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+    });
+
+    //Redraw data listing because columns corresponding to hidden variables will not be hidden until dataListing.onDraw() is called.
+    codebook.dataListing.init(codebook);
+  });
+}
+
 var functionality = {
   updateGroups: updateGroups,
-  updateFilters: updateFilters
+  updateFilters: updateFilters,
+  updateHidden: updateHidden
 };
 
 /*------------------------------------------------------------------------------------------------\

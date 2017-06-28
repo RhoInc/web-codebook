@@ -15,7 +15,6 @@ export function init(codebook) {
 
   controlToggle.on("click", function() {
     codebook.config.controlVisibility = d3select(this).text() == "Hide"
-
       ? "minimized" //click "-" to minimize controls
       : "visible"; // click "+" to show controls
 

@@ -13,4 +13,17 @@ export function init(codebook) {
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
+
+  //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
+  codebook.controls.wrap
+    .selectAll(".group-select option")
+    .classed("hidden", d => codebook.config.hiddenVariables.indexOf(d) > -1);
+
+  //Hide filters corresponding to variables specified in settings.hiddenVariables.
+  codebook.controls.wrap
+    .selectAll(".filter-list li.filterCustom")
+    .classed(
+      "hidden",
+      d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+    );
 }

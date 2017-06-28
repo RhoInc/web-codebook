@@ -2,8 +2,9 @@ export function layout(codebook) {
   //Create list of columns in the data file.
   const columns = codebook.data.summary.map(d => d.value_col),
     groupColumns = codebook.config.groups.map(d => d.value_col),
-    filterColumns = codebook.config.groups.map(d => d.value_col),
-    columnTableColumns = ["Column", "Group", "Filter"], //, 'Visibility', 'Label'],
+    filterColumns = codebook.config.filters.map(d => d.value_col),
+    hiddenColumns = codebook.config.hiddenVariables,
+    columnTableColumns = ["Column", "Group", "Filter", "Hidden"],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
@@ -14,13 +15,11 @@ export function layout(codebook) {
         Filter: {
           type: "checkbox",
           checked: filterColumns.indexOf(column) > -1
+        },
+        Hidden: {
+          type: "checkbox",
+          checked: hiddenColumns.indexOf(column) > -1
         }
-        /*,'Visibility':
-                            {type: 'checkbox'
-                            ,checked: true}
-                        ,'Label':
-                            {type: 'text'
-                            ,checked: filterColumns.indexOf(column) > -1}*/
       };
 
       return columnDatum;
@@ -62,7 +61,10 @@ export function layout(codebook) {
           default:
             cell.attr(
               "title",
-              `${d.value.checked ? "Remove" : "Add"} ${d.column} ${d.value.checked ? "from" : "to"} ${d.key.toLowerCase()} list`
+              `${d.value.checked ? "Remove" : "Add"} ${d.column} ${d.value
+                .checked
+                ? "from"
+                : "to"} ${d.key.toLowerCase()} list`
             );
             cell
               .append("input")
