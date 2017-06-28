@@ -2201,66 +2201,80 @@ function makeFiltered(data, filters) {
   return filtered;
 }
 
+function determineType(vector, levelSplit) {
+  var nonMissingValues = vector.filter(function (d) {
+    return !/^\s*$/.test(d);
+  });
+  var numericValues = nonMissingValues.filter(function (d) {
+    return !isNaN(+d);
+  });
+  var distinctValues = d3$1.set(numericValues).values();
+
+  return nonMissingValues.length === numericValues.length && distinctValues.length > levelSplit ? "continuous" : "categorical";
+}
+
+function categorical(vector) {
+  var statistics = {};
+  statistics.N = vector.length;
+  var nonMissing = vector.filter(function (d) {
+    return !/^\s*$/.test(d) && d !== "NA";
+  });
+  statistics.n = nonMissing.length;
+  statistics.nMissing = vector.length - statistics.n;
+  statistics.values = d3$1.nest().key(function (d) {
+    return d;
+  }).rollup(function (d) {
+    return {
+      n: d.length,
+      prop_N: d.length / statistics.N,
+      prop_n: d.length / statistics.n,
+      prop_N_text: d3$1.format("0.1%")(d.length / statistics.N),
+      prop_n_text: d3$1.format("0.1%")(d.length / statistics.n)
+    };
+  }).entries(nonMissing);
+
+  statistics.values.forEach(function (value) {
+    for (var statistic in value.values) {
+      value[statistic] = value.values[statistic];
+    }
+    delete value.values;
+  });
+
+  return statistics;
+}
+
+function continuous(vector) {
+  var statistics = {};
+  statistics.N = vector.length;
+  var nonMissing = vector.filter(function (d) {
+    return !isNaN(+d) && !/^\s*$/.test(d);
+  }).map(function (d) {
+    return +d;
+  }).sort(function (a, b) {
+    return a - b;
+  });
+  statistics.n = nonMissing.length;
+  statistics.nMissing = vector.length - statistics.n;
+  statistics.mean = d3$1.format("0.2f")(d3$1.mean(nonMissing));
+  statistics.SD = d3$1.format("0.2f")(d3$1.deviation(nonMissing));
+  var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
+  quantiles.forEach(function (quantile$$1) {
+    var statistic = quantile$$1[0];
+    statistics[statistic] = d3$1.format("0.1f")(d3$1.quantile(nonMissing, quantile$$1[1]));
+  });
+
+  return statistics;
+}
+
+var summarize = {
+  determineType: determineType,
+  categorical: categorical,
+  continuous: continuous
+};
+
 function makeSummary(codebook) {
   var data = codebook.data.filtered;
   var group = codebook.config.group;
-
-  var summarize = {
-    categorical: function categorical(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !/^\s*$/.test(d) && d !== "NA";
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.unique = d3$1.set(vector).values().length;
-      statistics.values = d3nest().key(function (d) {
-        return d;
-      }).rollup(function (d) {
-        return {
-          n: d.length,
-          prop_N: d.length / statistics.N,
-          prop_n: d.length / statistics.n,
-          prop_N_text: d3format("0.1%")(d.length / statistics.N),
-          prop_n_text: d3format("0.1%")(d.length / statistics.n),
-          unique: d3$1.set(vector).values().length
-        };
-      }).entries(nonMissing);
-
-      statistics.values.forEach(function (value) {
-        for (var statistic in value.values) {
-          value[statistic] = value.values[statistic];
-        }
-        delete value.values;
-      });
-
-      return statistics;
-    },
-
-    continuous: function continuous(vector) {
-      var statistics = {};
-      statistics.N = vector.length;
-      var nonMissing = vector.filter(function (d) {
-        return !isNaN(+d) && !/^\s*$/.test(d);
-      }).map(function (d) {
-        return +d;
-      }).sort(function (a, b) {
-        return a - b;
-      });
-      statistics.n = nonMissing.length;
-      statistics.nMissing = vector.length - statistics.n;
-      statistics.mean = d3format("0.2f")(d3mean(nonMissing));
-      statistics.SD = d3format("0.2f")(d3deviation(nonMissing));
-      var quantiles = [["min", 0], ["5th percentile", 0.05], ["1st quartile", 0.25], ["median", 0.5], ["3rd quartile", 0.75], ["95th percentile", 0.95], ["max", 1]];
-      quantiles.forEach(function (quantile$$1) {
-        var statistic = quantile$$1[0];
-        statistics[statistic] = d3format("0.1f")(d3quantile(nonMissing, quantile$$1[1]));
-      });
-
-      return statistics;
-    }
-  };
 
   if (codebook.data.filtered.length > 0) {
     var variables = Object.keys(data[0]);
