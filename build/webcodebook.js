@@ -12,7 +12,7 @@ function init(data) {
   var settings = this.config;
 
   //create chart wrapper in specified div
-  this.wrap = d3.select(this.element).append("div").attr("class", "web-codebook");
+  this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook');
 
   //save raw data
   this.data.raw = data;
@@ -48,16 +48,16 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
-  this.nav.wrap = this.wrap.append("div").attr("class", "nav section");
-  this.controls.wrap = this.wrap.append("div").attr("class", "controls section");
+  this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
+  this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
 
-  this.summaryTable.wrap = this.wrap.append("div").attr("class", "summaryTable section").classed("hidden", false);
+  this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
 
-  this.summaryTable.summaryText = this.summaryTable.wrap.append("strong").attr("class", "summaryText section");
+  this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
 
-  this.dataListing.wrap = this.wrap.append("div").attr("class", "dataListing section").classed("hidden", true);
+  this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
 
-  this.settings.wrap = this.wrap.append("div").attr("class", "settings section").classed("hidden", true);
+  this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
 }
 
 function init$1(codebook) {
@@ -503,7 +503,7 @@ function clone(obj) {
   var copy = void 0;
 
   //boolean, number, string, null, undefined
-  if ("object" != (typeof obj === "undefined" ? "undefined" : _typeof(obj)) || null == obj) return obj;
+  if ('object' != (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) || null == obj) return obj;
 
   //date
   if (obj instanceof Date) {
@@ -530,7 +530,7 @@ function clone(obj) {
     return copy;
   }
 
-  throw new Error("Unable to copy [obj]! Its type is not supported.");
+  throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
 function moveYaxis(chart) {
@@ -660,30 +660,30 @@ function createVerticalBars(this_, d) {
 
   var chartContainer = d3.select(this_).node();
   var rowSelector = d3.select(this_).node().parentNode;
-  var sortType = d3.select(rowSelector).select(".row-controls .x-axis-sort select").property("value");
-  var outcome = d3.select(rowSelector).select(".row-controls .y-axis-outcome select").property("value");
+  var sortType = d3.select(rowSelector).select('.row-controls .x-axis-sort select').property('value');
+  var outcome = d3.select(rowSelector).select('.row-controls .y-axis-outcome select').property('value');
   var chartSettings = (_chartSettings = {
     y: {
-      column: outcome === "rate" ? "prop_n" : "n",
-      type: "linear",
-      label: "",
-      format: outcome === "rate" ? "0.1%" : "d",
+      column: outcome === 'rate' ? 'prop_n' : 'n',
+      type: 'linear',
+      label: '',
+      format: outcome === 'rate' ? '0.1%' : 'd',
       domain: [0, null]
     },
     x: {
-      column: "key",
-      type: "ordinal",
-      label: ""
+      column: 'key',
+      type: 'ordinal',
+      label: ''
     },
     marks: [{
-      type: "bar",
-      per: ["key"],
+      type: 'bar',
+      per: ['key'],
       attributes: {
         stroke: null,
-        fill: "#999"
+        fill: '#999'
       }
     }],
-    gridlines: "",
+    gridlines: '',
     resizable: false,
     height: this_.height,
     margin: this_.margin,
@@ -691,7 +691,7 @@ function createVerticalBars(this_, d) {
     group_col: d.group || null,
     group_label: d.groupLabel || null,
     overall: d.statistics.values
-  }, defineProperty(_chartSettings, "gridlines", "y"), defineProperty(_chartSettings, "sort", sortType), _chartSettings);
+  }, defineProperty(_chartSettings, 'gridlines', 'y'), defineProperty(_chartSettings, 'sort', sortType), _chartSettings);
 
   chartSettings.margin.bottom = 10;
 
@@ -726,54 +726,54 @@ function createVerticalBars(this_, d) {
 
       //Define chart.
       group.chart = webcharts.createChart(chartContainer, group.chartSettings);
-      group.chart.on("init", onInit);
-      group.chart.on("resize", onResize);
+      group.chart.on('init', onInit);
+      group.chart.on('resize', onResize);
 
       if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
+        d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
 
-        d3.select(chartContainer).append("div").html("<em>No data available for this level.</em>.<br><br>");
+        d3.select(chartContainer).append('div').html('<em>No data available for this level.</em>.<br><br>');
       }
     });
   } else {
     //Define chart.
     var chart = webcharts.createChart(chartContainer, chartSettings);
-    chart.on("init", onInit);
-    chart.on("resize", onResize);
+    chart.on('init', onInit);
+    chart.on('resize', onResize);
     chart.init(chartData);
   }
 }
 
 function createVerticalBarsControls(this_, d) {
-  var controlsContainer = d3.select(this_).append("div").classed("row-controls", true);
+  var controlsContainer = d3.select(this_).append('div').classed('row-controls', true);
 
   //add control that changes y-axis scale
-  var outcomes = ["rate", "frequency"];
-  var outcomeWrap = controlsContainer.append("div").classed("y-axis-outcome", true);
-  outcomeWrap.append("small").text("Summarize by: ");
-  var outcomeSelect = outcomeWrap.append("select");
-  outcomeSelect.selectAll("option").data(outcomes).enter().append("option").text(function (d) {
+  var outcomes = ['rate', 'frequency'];
+  var outcomeWrap = controlsContainer.append('div').classed('y-axis-outcome', true);
+  outcomeWrap.append('small').text('Summarize by: ');
+  var outcomeSelect = outcomeWrap.append('select');
+  outcomeSelect.selectAll('option').data(outcomes).enter().append('option').text(function (d) {
     return d;
   });
 
-  outcomeSelect.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
+  outcomeSelect.on('change', function () {
+    d3.select(this_).selectAll('.wc-chart').remove();
+    d3.select(this_).selectAll('.panel-label').remove();
     createVerticalBars(this_, d);
   });
 
   //add control that changes x-axis order
-  var sort_values = ["Alphabetical", "Ascending", "Descending"];
-  var sortWrap = controlsContainer.append("div").classed("x-axis-sort", true);
-  sortWrap.append("small").text("Sort levels: ");
-  var x_sort = sortWrap.append("select");
-  x_sort.selectAll("option").data(sort_values).enter().append("option").text(function (d) {
+  var sort_values = ['Alphabetical', 'Ascending', 'Descending'];
+  var sortWrap = controlsContainer.append('div').classed('x-axis-sort', true);
+  sortWrap.append('small').text('Sort levels: ');
+  var x_sort = sortWrap.append('select');
+  x_sort.selectAll('option').data(sort_values).enter().append('option').text(function (d) {
     return d;
   });
 
-  x_sort.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
+  x_sort.on('change', function () {
+    d3.select(this_).selectAll('.wc-chart').remove();
+    d3.select(this_).selectAll('.panel-label').remove();
     createVerticalBars(this_, d);
   });
 }
@@ -888,33 +888,33 @@ function onResize$1() {
 
 function createHorizontalBars(this_, d) {
   var rowSelector = d3.select(this_).node().parentNode,
-      outcome = d3.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      outcome = d3.select(rowSelector).select('.row-controls .x-axis-outcome select').property('value'),
       custom_height = d.statistics.values.length * 20 + 35,
       // let height vary based on the number of levels; 35 ~= top and bottom margin
   chartContainer = d3.select(this_).node(),
       chartSettings = {
     x: {
-      column: outcome === "rate" ? "prop_n" : "n",
-      type: "linear",
-      label: "",
-      format: outcome === "rate" ? "%" : "d",
+      column: outcome === 'rate' ? 'prop_n' : 'n',
+      type: 'linear',
+      label: '',
+      format: outcome === 'rate' ? '%' : 'd',
       domain: [0, null]
     },
     y: {
-      column: "key",
-      type: "ordinal",
-      label: ""
+      column: 'key',
+      type: 'ordinal',
+      label: ''
     },
     marks: [{
-      type: "bar",
-      per: ["key"],
-      tooltip: "[key]: [n] ([prop_n_text])",
+      type: 'bar',
+      per: ['key'],
+      tooltip: '[key]: [n] ([prop_n_text])',
       attributes: {
         stroke: null
       }
     }],
-    colors: ["#999", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99"],
-    gridlines: "x",
+    colors: ['#999', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
+    gridlines: 'x',
     resizable: false,
     height: custom_height,
     margin: this_.margin,
@@ -954,19 +954,19 @@ function createHorizontalBars(this_, d) {
 
       //Define chart.
       group.chart = webcharts.createChart(chartContainer, group.chartSettings);
-      group.chart.on("init", onInit$1);
-      group.chart.on("resize", onResize$1);
+      group.chart.on('init', onInit$1);
+      group.chart.on('resize', onResize$1);
 
       if (group.data.length) group.chart.init(group.data);else {
-        d3.select(chartContainer).append("p").text(chartSettings.group_col + ": " + group.chartSettings.group_val + " (n=" + group.chartSettings.n + ")");
-        d3.select(chartContainer).append("div").html("<em>This group does not contain any of the first 5 most prevalent levels of " + d.value_col + "</em>.<br><br>");
+        d3.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
+        d3.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
       }
     });
   } else {
     //Define chart.
     var chart = webcharts.createChart(chartContainer, chartSettings);
-    chart.on("init", onInit$1);
-    chart.on("resize", onResize$1);
+    chart.on('init', onInit$1);
+    chart.on('resize', onResize$1);
     chart.init(chartData);
   }
 }
@@ -1049,28 +1049,28 @@ function onResize$2() {
 
 function createDotPlot(this_, d) {
   var rowSelector = d3.select(this_).node().parentNode,
-      outcome = d3.select(rowSelector).select(".row-controls .x-axis-outcome select").property("value"),
+      outcome = d3.select(rowSelector).select('.row-controls .x-axis-outcome select').property('value'),
       chartContainer = d3.select(this_).node(),
       chartSettings = {
     x: {
-      column: outcome === "rate" ? "prop_n" : "n",
-      type: "linear",
-      label: "",
-      format: outcome === "rate" ? "%" : "d",
+      column: outcome === 'rate' ? 'prop_n' : 'n',
+      type: 'linear',
+      label: '',
+      format: outcome === 'rate' ? '%' : 'd',
       domain: [0, null]
     },
     y: {
-      column: "key",
-      type: "ordinal",
-      label: ""
+      column: 'key',
+      type: 'ordinal',
+      label: ''
     },
     marks: [{
-      type: "circle",
-      per: ["key"],
-      summarizeX: "mean",
-      tooltip: "[key]: [n] ([prop_n_text])"
+      type: 'circle',
+      per: ['key'],
+      summarizeX: 'mean',
+      tooltip: '[key]: [n] ([prop_n_text])'
     }],
-    gridlines: "xy",
+    gridlines: 'xy',
     resizable: false,
     height: this_.height,
     margin: this_.margin,
@@ -1090,7 +1090,7 @@ function createDotPlot(this_, d) {
   if (d.groups) {
     //Define overall data.
     chartData.forEach(function (di) {
-      return di.group = "Overall";
+      return di.group = 'Overall';
     });
 
     //Add group data to overall data.
@@ -1105,11 +1105,11 @@ function createDotPlot(this_, d) {
       });
     });
 
-    chartSettings.marks[0].per.push("group");
+    chartSettings.marks[0].per.push('group');
 
     //Overall mark
-    if (outcome === "rate") {
-      chartSettings.marks[0].values = { group: ["Overall"] };
+    if (outcome === 'rate') {
+      chartSettings.marks[0].values = { group: ['Overall'] };
 
       //Group marks
       chartSettings.marks[1] = clone(chartSettings.marks[0]);
@@ -1118,39 +1118,39 @@ function createDotPlot(this_, d) {
         }) };
     }
 
-    chartSettings.color_by = "group";
+    chartSettings.color_by = 'group';
     chartSettings.legend = {
-      label: "",
+      label: '',
       order: d.groups.map(function (d) {
         return d.group;
       }),
-      mark: "circle"
+      mark: 'circle'
     };
   }
 
   var chart = webcharts.createChart(chartContainer, chartSettings);
-  chart.on("resize", onResize$2);
+  chart.on('resize', onResize$2);
   chart.init(chartData.filter(function (d) {
-    return !(outcome === "frequency" && d.group === "Overall");
+    return !(outcome === 'frequency' && d.group === 'Overall');
   }));
 }
 
 function createHorizontalBarsControls(this_, d) {
-  var controlsContainer = d3.select(this_).append("div").classed("row-controls", true);
+  var controlsContainer = d3.select(this_).append('div').classed('row-controls', true);
 
   //add control that changes y-axis scale
-  var outcomes = ["rate", "frequency"];
-  var outcomeWrap = controlsContainer.append("div").classed("x-axis-outcome", true);
-  outcomeWrap.append("small").text("Summarize by: ");
-  var outcomeSelect = outcomeWrap.append("select");
-  outcomeSelect.selectAll("option").data(outcomes).enter().append("option").text(function (d) {
+  var outcomes = ['rate', 'frequency'];
+  var outcomeWrap = controlsContainer.append('div').classed('x-axis-outcome', true);
+  outcomeWrap.append('small').text('Summarize by: ');
+  var outcomeSelect = outcomeWrap.append('select');
+  outcomeSelect.selectAll('option').data(outcomes).enter().append('option').text(function (d) {
     return d;
   });
 
-  outcomeSelect.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
-    if (type_control.property("value") === "Paneled (Bar Charts)") {
+  outcomeSelect.on('change', function () {
+    d3.select(this_).selectAll('.wc-chart').remove();
+    d3.select(this_).selectAll('.panel-label').remove();
+    if (type_control.property('value') === 'Paneled (Bar Charts)') {
       createHorizontalBars(this_, d);
     } else {
       createDotPlot(this_, d);
@@ -1158,18 +1158,18 @@ function createHorizontalBarsControls(this_, d) {
   });
 
   //add control that change chart type
-  var chart_type_values = ["Paneled (Bar Charts)", "Grouped (Dot Plot)"];
-  var chartTypeWrap = controlsContainer.append("div").classed("chart-type", true).classed("hidden", !d.groups); // hide the controls if the chart isn't Grouped
-  chartTypeWrap.append("small").text("Display Type: ");
-  var type_control = chartTypeWrap.append("select");
-  type_control.selectAll("option").data(chart_type_values).enter().append("option").text(function (d) {
+  var chart_type_values = ['Paneled (Bar Charts)', 'Grouped (Dot Plot)'];
+  var chartTypeWrap = controlsContainer.append('div').classed('chart-type', true).classed('hidden', !d.groups); // hide the controls if the chart isn't Grouped
+  chartTypeWrap.append('small').text('Display Type: ');
+  var type_control = chartTypeWrap.append('select');
+  type_control.selectAll('option').data(chart_type_values).enter().append('option').text(function (d) {
     return d;
   });
 
-  type_control.on("change", function () {
-    d3.select(this_).selectAll(".wc-chart").remove();
-    d3.select(this_).selectAll(".panel-label").remove();
-    if (this.value == "Paneled (Bar Charts)") {
+  type_control.on('change', function () {
+    d3.select(this_).selectAll('.wc-chart').remove();
+    d3.select(this_).selectAll('.panel-label').remove();
+    if (this.value == 'Paneled (Bar Charts)') {
       createHorizontalBars(this_, d);
     } else {
       createDotPlot(this_, d);
@@ -1177,12 +1177,12 @@ function createHorizontalBarsControls(this_, d) {
   });
 }
 
-if (typeof Object.assign != "function") {
+if (typeof Object.assign != 'function') {
   (function () {
     Object.assign = function (target) {
-      "use strict";
+      'use strict';
 
-      if (target === undefined || target === null) throw new TypeError("Cannot convert undefined or null to object");
+      if (target === undefined || target === null) throw new TypeError('Cannot convert undefined or null to object');
 
       var output = Object(target);
 
@@ -1591,7 +1591,7 @@ function defineHistogram(element, settings) {
 function createHistogramBoxPlot(this_, d) {
   var chartContainer = d3.select(this_).node();
   var chartSettings = {
-    measure: " ",
+    measure: ' ',
     resizable: false,
     height: 100,
     margin: this_.margin,
@@ -1600,17 +1600,17 @@ function createHistogramBoxPlot(this_, d) {
   var chartData = [];
 
   if (d.groups) {
-    chartSettings.panel = "group";
+    chartSettings.panel = 'group';
     chartSettings.group_col = d.group;
     chartSettings.group_label = d.groupLabel;
     d.groups.forEach(function (group) {
       group.values.forEach(function (value) {
-        chartData.push({ group: group.group || "<no value>", " ": value });
+        chartData.push({ group: group.group || '<no value>', ' ': value });
       });
     });
   } else {
     d.values.forEach(function (d) {
-      chartData.push({ " ": d });
+      chartData.push({ ' ': d });
     });
   }
 
@@ -1956,8 +1956,8 @@ var defaultSettings$1 = {
   autobins: true,
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
-  controlVisibility: "visible",
-  tabs: ["codebook", "listing", "settings"]
+  controlVisibility: 'visible',
+  tabs: ['codebook', 'listing', 'settings']
 };
 
 function setDefaults(codebook) {
@@ -2433,7 +2433,7 @@ function init$9() {
   var settings = this.config;
 
   //create wrapper in specified div
-  this.wrap = d3.select(this.element).append("div").attr("class", "web-codebook-explorer");
+  this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
 
   //layout the divs
   this.layout(this);
@@ -2450,9 +2450,9 @@ function init$9() {
 \------------------------------------------------------------------------------------------------*/
 
 function layout$3() {
-  this.controls.wrap = this.wrap.append("div").attr("class", "controls");
+  this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
 
-  this.codebookWrap = this.wrap.append("div").attr("class", "codebookWrap");
+  this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
 function init$10(explorer) {
@@ -2489,8 +2489,8 @@ var controls$1 = {
 };
 
 function makeCodebook(meta) {
-  this.codebookWrap.selectAll("*").remove();
-  var codebook = webcodebook.createCodebook(".web-codebook-explorer .codebookWrap", meta.settings);
+  this.codebookWrap.selectAll('*').remove();
+  var codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
   d3.csv(meta.path, function (error, data) {
     codebook.init(data);
   });
