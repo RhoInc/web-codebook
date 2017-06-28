@@ -28,19 +28,11 @@ export default function onResize() {
     //Annotate quantiles
     if (this.config.boxPlot) {
       const quantiles = [
-<<<<<<< HEAD
-        { probability: 0.05, label: "5th percentile" },
-        { probability: 0.25, label: "1st quartile" },
-        { probability: 0.5, label: "Median" },
-        { probability: 0.75, label: "3rd quartile" },
-        { probability: 0.95, label: "95th percentile" }
-=======
         { probability: 0.05, label: '5th percentile' },
         { probability: 0.25, label: '1st quartile' },
         { probability: 0.5, label: 'Median' },
         { probability: 0.75, label: '3rd quartile' },
         { probability: 0.95, label: '95th percentile' }
->>>>>>> v1.1-dev
       ];
 
       for (const item in quantiles) {
