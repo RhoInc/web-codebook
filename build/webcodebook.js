@@ -1241,9 +1241,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -2292,14 +2291,13 @@ function layout$2(codebook) {
       Filter: {
         type: "checkbox",
         checked: filterColumns.indexOf(column) > -1
-      }
-      /*,'Visibility':
-                          {type: 'checkbox'
-                          ,checked: true}
-                      ,'Label':
-                          {type: 'text'
-                          ,checked: filterColumns.indexOf(column) > -1}*/
-    };
+        /*,'Visibility':
+                            {type: 'checkbox'
+                            ,checked: true}
+                        ,'Label':
+                            {type: 'text'
+                            ,checked: filterColumns.indexOf(column) > -1}*/
+      } };
 
     return columnDatum;
   }),
