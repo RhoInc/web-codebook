@@ -33,7 +33,7 @@ export function init(data) {
 
   //wait by the quarter second until the loading indicator is visible
   const loading = setInterval(() => {
-    const laidOut = this.controls.wrap.property("offsetwidth") > 0;
+    const laidOut = this.controls.wrap.property('offsetwidth') > 0;
     if (!laidOut) {
       //initialize and then draw the codebook
       this.summaryTable.draw(this);
@@ -46,7 +46,7 @@ export function init(data) {
 
       //loading is complete
       clearInterval(loading);
-      this.loadingIndicator.style("display", "none");
+      this.loadingIndicator.style('display', 'none');
     }
   }, 250);
 }

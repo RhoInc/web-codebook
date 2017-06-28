@@ -72,7 +72,6 @@ export function update(codebook) {
     .attr("selected", d => (d.selected ? "selected" : null));
 
   //Initialize event listeners
-<<<<<<< HEAD
   filterCustom.on("change", function() {
     //display the loading indicator
     codebook.loadingIndicator.style("display", "block");
@@ -93,13 +92,6 @@ export function update(codebook) {
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
-=======
-  filterCustom.on("change", function(d) {
-    // flag the selected options in the config
-    d3select(this).selectAll("option").each(function(option_d) {
-      option_d.selected = d3select(this).property("selected");
-    });
->>>>>>> v1.1-dev
 
         //loading complete
         clearInterval(loading);
