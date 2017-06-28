@@ -22,12 +22,36 @@ export function setDefaults(codebook) {
     else return d;
   });
 
+  /********************* Variable Label Settings *********************/
+  codebook.config.variableLabels =
+    codebook.config.variableLabels || defaultSettings.variableLabels;
+  codebook.config.variableLabels = codebook.config.variableLabels.filter(
+    (label, i) => {
+      const is_object = typeof label === "object",
+        has_value_col = label.hasOwnProperty("value_col"),
+        has_label = label.hasOwnProperty("label"),
+        legit = is_object && has_value_col && has_label;
+      if (!legit)
+        console.warn(
+          `Item ${i} of settings.variableLabels (${JSON.stringify(
+            label
+          )}) must be an object with both a "value_col" and a "label" property.`
+        );
+
+      return legit;
+    }
+  );
+
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
     ? false
     : codebook.config.autogroups == null
       ? defaultSettings.autogroups
       : codebook.config.autogroups;
+
+  /********************* Hidden Variable Settings ***************/
+  codebook.config.hiddenVariables =
+    codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;

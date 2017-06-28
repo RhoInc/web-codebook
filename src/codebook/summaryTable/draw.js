@@ -17,6 +17,12 @@ export function draw(codebook) {
     return "variable-row hiddenChart " + d.type;
   });
 
+  //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
+  varRows.classed(
+    "hidden",
+    d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+  );
+
   //ENTER + Update
   varRows.each(codebook.summaryTable.renderRow);
 
