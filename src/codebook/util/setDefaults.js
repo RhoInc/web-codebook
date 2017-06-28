@@ -49,6 +49,10 @@ export function setDefaults(codebook) {
       ? defaultSettings.autogroups
       : codebook.config.autogroups;
 
+  /********************* Hidden Variable Settings ***************/
+  codebook.config.hiddenVariables =
+    codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
+
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;
   codebook.config.autobins = codebook.config.autobins == null

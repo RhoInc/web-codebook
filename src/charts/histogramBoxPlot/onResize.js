@@ -1,12 +1,12 @@
-import makeTooltip from "./makeTooltip";
-import moveYaxis from "./moveYaxis";
+import makeTooltip from './makeTooltip';
+import moveYaxis from './moveYaxis';
 import {
   format as d3format,
   quantile as d3quantile,
   mean as d3mean,
   deviation as d3deviation,
   mouse as d3mouse
-} from "d3";
+} from 'd3';
 
 export default function onResize() {
   const context = this;
@@ -15,24 +15,32 @@ export default function onResize() {
   moveYaxis(this);
 
   //Hide overall plot if [settings.overall] is set to false.
-  if (!this.config.overall && !this.group) this.wrap.style("display", "none");
+  if (!this.config.overall && !this.group) this.wrap.style('display', 'none');
   else {
     //Clear custom marks.
-    this.svg.selectAll("g.svg-tooltip").remove();
-    this.svg.selectAll(".statistic").remove();
+    this.svg.selectAll('g.svg-tooltip').remove();
+    this.svg.selectAll('.statistic').remove();
 
-    this.svg.selectAll("g.bar-group").each(function(d, i) {
+    this.svg.selectAll('g.bar-group').each(function(d, i) {
       makeTooltip(d, i, context);
     });
 
     //Annotate quantiles
     if (this.config.boxPlot) {
       const quantiles = [
+<<<<<<< HEAD
         { probability: 0.05, label: "5th percentile" },
         { probability: 0.25, label: "1st quartile" },
         { probability: 0.5, label: "Median" },
         { probability: 0.75, label: "3rd quartile" },
         { probability: 0.95, label: "95th percentile" }
+=======
+        { probability: 0.05, label: '5th percentile' },
+        { probability: 0.25, label: '1st quartile' },
+        { probability: 0.5, label: 'Median' },
+        { probability: 0.75, label: '3rd quartile' },
+        { probability: 0.95, label: '95th percentile' }
+>>>>>>> v1.1-dev
       ];
 
       for (const item in quantiles) {
@@ -44,21 +52,21 @@ export default function onResize() {
           const rProbability = quantiles[+item + 1].probability;
           const rQuantile = d3quantile(this.values, rProbability);
           const whisker = this.svg
-            .append("line")
+            .append('line')
             .attr({
-              class: "statistic",
+              class: 'statistic',
               x1: this.x(quantile.quantile),
               y1: this.plot_height + this.config.boxPlotHeight / 2,
               x2: this.x(rQuantile),
               y2: this.plot_height + this.config.boxPlotHeight / 2
             })
             .style({
-              stroke: "red",
-              "stroke-width": "2px",
+              stroke: 'black',
+              'stroke-width': '2px',
               opacity: 0.25
             });
           whisker
-            .append("title")
+            .append('title')
             .text(
               `Q${quantile.probability}-Q${rProbability}: ${format(
                 quantile.quantile
@@ -70,20 +78,20 @@ export default function onResize() {
         if (quantile.probability === 0.25) {
           const q3 = d3quantile(this.values, 0.75);
           const interQ = this.svg
-            .append("rect")
+            .append('rect')
             .attr({
-              class: "statistic",
+              class: 'statistic',
               x: this.x(quantile.quantile),
               y: this.plot_height,
               width: this.x(q3) - this.x(quantile.quantile),
               height: this.config.boxPlotHeight
             })
             .style({
-              fill: "#7BAFD4",
+              fill: '#ccc',
               opacity: 0.25
             });
           interQ
-            .append("title")
+            .append('title')
             .text(
               `Interquartile range: ${format(quantile.quantile)}-${format(q3)}`
             );
@@ -91,9 +99,9 @@ export default function onResize() {
 
         //Vertical lines
         quantile.mark = this.svg
-          .append("line")
+          .append('line')
           .attr({
-            class: "statistic",
+            class: 'statistic',
             x1: this.x(quantile.quantile),
             y1: this.plot_height,
             x2: this.x(quantile.quantile),
@@ -101,16 +109,53 @@ export default function onResize() {
           })
           .style({
             stroke: [0.05, 0.95].indexOf(quantile.probability) > -1
-              ? "red"
+              ? 'black'
               : [0.25, 0.75].indexOf(quantile.probability) > -1
-                ? "blue"
-                : "black",
-            "stroke-width": "3px"
+                ? 'black'
+                : 'black',
+            'stroke-width': '3px'
           });
         quantile.mark
-          .append("title")
+          .append('title')
           .text(`${quantile.label}: ${format(quantile.quantile)}`);
       }
+
+      var outliers = this.values.filter(function(f) {
+        var low_outlier =
+          f <
+          quantiles.filter(q => {
+            if (q.probability == 0.05) {
+              return q;
+            }
+          })[0]['quantile'];
+        var high_outlier =
+          f >
+          quantiles.filter(q => {
+            if (q.probability == 0.95) {
+              return q;
+            }
+          })[0]['quantile'];
+        return low_outlier || high_outlier;
+      });
+
+      this.svg
+        .selectAll('line.outlier')
+        .data(outliers)
+        .enter()
+        .append('line')
+        .attr('class', 'outlier')
+        .attr('x1', d => this.x(d))
+        .attr('x2', d => this.x(d))
+        .attr('y1', d => this.plot_height * 1.07)
+        .attr(
+          'y2',
+          d => (this.plot_height + this.config.boxPlotHeight) / 1.07
+        )
+        .style({
+          fill: '#000000',
+          stroke: 'black',
+          'stroke-width': '1px'
+        });
     }
 
     //Annotate mean.
@@ -118,20 +163,20 @@ export default function onResize() {
       const mean = d3mean(this.values);
       const sd = d3deviation(this.values);
       const meanMark = this.svg
-        .append("circle")
+        .append('circle')
         .attr({
-          class: "statistic",
+          class: 'statistic',
           cx: this.x(mean),
           cy: this.plot_height + this.config.boxPlotHeight / 2,
           r: this.config.boxPlotHeight / 3
         })
         .style({
-          fill: "#ccc",
-          stroke: "black",
-          "stroke-width": "1px"
+          fill: '#000000',
+          stroke: 'black',
+          'stroke-width': '1px'
         });
       meanMark
-        .append("title")
+        .append('title')
         .text(
           `n: ${this.values.length}\nMean: ${format(mean)}\nSD: ${format(sd)}`
         );
@@ -139,49 +184,29 @@ export default function onResize() {
 
     //Rotate y-axis labels.
 
-    this.svg.select("g.y.axis text.axis-title").remove();
-    /*
-    this.svg
-      .select("g.y.axis")
-      .insert("text", ":first-child")
-      .attr({
-        class: "axis-title",
-        x: this.plot_width,
-        y: this.plot_height / 2,
-        dx: "1em"
-      })
-      .style("text-anchor", "start")
-      .text(
-        this.group
-          ? "Level: " +
-              this.config.y.label +
-              " \n(n=" +
-              this.values.length +
-              ")"
-          : ""
-      );
-*/
+    this.svg.select('g.y.axis text.axis-title').remove();
+
     //Hide legends.
-    this.wrap.select("ul.legend").remove();
+    this.wrap.select('ul.legend').remove();
 
     //Shift x-axis tick labels downward.
-    var yticks = this.svg.select(".x.axis").selectAll("g.tick");
-    yticks.select("text").remove();
+    var yticks = this.svg.select('.x.axis').selectAll('g.tick');
+    yticks.select('text').remove();
     yticks
-      .append("text")
-      .attr("y", context.config.boxPlotHeight)
-      .attr("dy", "1em")
-      .attr("x", 0)
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "top")
+      .append('text')
+      .attr('y', context.config.boxPlotHeight)
+      .attr('dy', '1em')
+      .attr('x', 0)
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'top')
       .text(d => d);
 
     //Add modal to nearest mark.
-    const bars = this.svg.selectAll(".bar-group");
-    const tooltips = this.svg.selectAll(".svg-tooltip");
-    const statistics = this.svg.selectAll(".statistic");
+    const bars = this.svg.selectAll('.bar-group');
+    const tooltips = this.svg.selectAll('.svg-tooltip');
+    const statistics = this.svg.selectAll('.statistic');
     this.svg
-      .on("mousemove", function() {
+      .on('mousemove', function() {
         //Highlight closest bar.
         const mouse = d3mouse(this);
         const x = context.x.invert(mouse[0]);
@@ -198,17 +223,17 @@ export default function onResize() {
         const closest = bars
           .filter(d => d.distance === minimum)
           .filter((d, i) => i === 0)
-          .select("rect")
-          .style("fill", "#7BAFD4");
+          .select('rect')
+          .style('fill', '#000000');
 
         //Activate tooltip.
         const d = closest.datum();
-        tooltips.classed("active", false);
-        context.svg.select("#" + d.selector).classed("active", true);
+        tooltips.classed('active', false);
+        context.svg.select('#' + d.selector).classed('active', true);
       })
-      .on("mouseout", function() {
-        bars.select("rect").style("fill", "#999");
-        context.svg.selectAll("g.svg-tooltip").classed("active", false);
+      .on('mouseout', function() {
+        bars.select('rect').style('fill', '#999');
+        context.svg.selectAll('g.svg-tooltip').classed('active', false);
       });
   }
 }
