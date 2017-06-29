@@ -347,18 +347,29 @@ function init$6(codebook) {
         }).classed('active', t.active); //style the active nav element
         t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
       });
-      if (d.label == 'Data Listing' || d.label == '&#x2699;') {
+      // Control chart menu visiblity based on Nav menu selection
+      // For 'Settings' Nav selection, hide the title, filters, & toggle controls button
+      if (d.label == '&#x2699;') {
         codebook.config.controlVisibility = 'minimized';
         codebook.controls.controlToggle.set(codebook);
-        /*var selectors = codebook.controls.wrap
-          .selectAll('button')
-          .text('Show All Charts')
-          .remove();*/
-        //.attr('class', 'chart-toggle');
+        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'hidden');
+        codebook.controls.wrap.select('div.controls-title').style('visibility', 'hidden');
       }
+      // For 'Data Listing' Nav selection, hide the 'Show/Hide all chart buttons', ensure visibility to filters & toggle controls button
+      if (d.label == 'Data Listing') {
+        codebook.config.controlVisibility = 'visible';
+        codebook.controls.controlToggle.set(codebook);
+        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'visible');
+        codebook.controls.wrap.select('div.chart-toggle').style('visibility', 'hidden');
+        codebook.controls.wrap.select('div.controls-title').style('visibility', 'visible');
+      }
+      // For 'Codebook' Nav selection, ensure visibility to the 'Show/Hide all chart buttons', filters & toggle controls button
       if (d.label == 'Codebook') {
         codebook.config.controlVisibility = 'visible';
         codebook.controls.controlToggle.set(codebook);
+        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'visible');
+        codebook.controls.wrap.select('div.chart-toggle').style('visibility', 'visible');
+        codebook.controls.wrap.select('div.controls-title').style('visibility', 'visible');
       }
     }
   });
