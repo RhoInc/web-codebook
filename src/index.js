@@ -1,6 +1,6 @@
-import { createCodebook } from "./createCodebook";
-import { createExplorer } from "./createExplorer";
-import { charts } from "./charts";
+import { createCodebook } from './createCodebook';
+import { createExplorer } from './createExplorer';
+import { charts } from './charts';
 
 export default {
   createCodebook: createCodebook,

@@ -1,10 +1,10 @@
-import defaultSettings from "../defaultSettings";
+import defaultSettings from '../defaultSettings';
 
 export function setDefaults(codebook) {
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
   codebook.config.filters = codebook.config.filters.map(function(d) {
-    if (typeof d == "string") return { value_col: d };
+    if (typeof d == 'string') return { value_col: d };
     else return d;
   });
 
@@ -18,7 +18,7 @@ export function setDefaults(codebook) {
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
   codebook.config.groups = codebook.config.groups.map(function(d) {
-    if (typeof d == "string") return { value_col: d };
+    if (typeof d == 'string') return { value_col: d };
     else return d;
   });
 
@@ -27,9 +27,9 @@ export function setDefaults(codebook) {
     codebook.config.variableLabels || defaultSettings.variableLabels;
   codebook.config.variableLabels = codebook.config.variableLabels.filter(
     (label, i) => {
-      const is_object = typeof label === "object",
-        has_value_col = label.hasOwnProperty("value_col"),
-        has_label = label.hasOwnProperty("label"),
+      const is_object = typeof label === 'object',
+        has_value_col = label.hasOwnProperty('value_col'),
+        has_label = label.hasOwnProperty('label'),
         legit = is_object && has_value_col && has_label;
       if (!legit)
         console.warn(

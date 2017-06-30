@@ -2,7 +2,7 @@ export function makeAutomaticFilters(codebook) {
   //make filters for all categorical variables with less than autofilter levels
   if (codebook.config.autofilter > 1) {
     var autofilters = codebook.data.summary
-      .filter(f => f.type == "categorical") //categorical filters only
+      .filter(f => f.type == 'categorical') //categorical filters only
       .filter(f => f.statistics.values.length <= codebook.config.autofilter) //no huge filters
       .filter(f => f.statistics.values.length > 1) //no silly 1 item filters
       .map(function(m) {
