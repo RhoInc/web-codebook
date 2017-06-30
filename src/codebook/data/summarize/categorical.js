@@ -1,4 +1,4 @@
-import { nest as d3nest, format as d3format } from 'd3';
+import { nest as d3nest, format as d3format, set as d3set } from 'd3';
 
 export default function categorical(vector) {
   const statistics = {};
@@ -18,7 +18,7 @@ export default function categorical(vector) {
       };
     })
     .entries(nonMissing);
-  statistics.Unique = d3.set(vector).values().length;
+  statistics.Unique = d3set(vector).values().length;
 
   statistics.values.forEach(value => {
     for (var statistic in value.values) {
