@@ -6,7 +6,7 @@ export function makeFiltered(data, filters) {
       var currentValues = filter_d.values
         .filter(f => f.selected)
         .map(m => m.value);
-      return currentValues.indexOf("" + rowData[filter_d.value_col]) > -1;
+      return currentValues.indexOf('' + rowData[filter_d.value_col]) > -1;
     });
   });
   return filtered;

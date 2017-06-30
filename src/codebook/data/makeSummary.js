@@ -1,5 +1,5 @@
-import { set as d3set } from "d3";
-import summarize from "./summarize/index";
+import { set as d3set } from 'd3';
+import summarize from './summarize/index';
 
 export function makeSummary(codebook) {
   var data = codebook.data.filtered;
@@ -12,8 +12,8 @@ export function makeSummary(codebook) {
 
     return nonMissingValues.length === numericValues.length &&
       distinctValues.length > codebook.config.levelSplit
-      ? "continuous"
-      : "categorical";
+      ? 'continuous'
+      : 'categorical';
   }
 
   if (codebook.data.filtered.length > 0) {
@@ -26,6 +26,8 @@ export function makeSummary(codebook) {
         variables[i].values,
         codebook.config.levelSplit
       );
+      variables[i].hidden =
+        codebook.config.hiddenVariables.indexOf(variable) > -1;
       variables[i].label = codebook.config.variableLabels
         .map(variableLabel => variableLabel.value_col)
         .indexOf(variable) > -1
@@ -33,19 +35,19 @@ export function makeSummary(codebook) {
             variableLabel => variableLabel.value_col === variable
           )[0].label
         : variable;
-      variables[i].statistics = variables[i].type === "continuous"
+      variables[i].statistics = variables[i].type === 'continuous'
         ? summarize.continuous(variables[i].values)
         : summarize.categorical(variables[i].values);
-      variables[i].chartType = variables[i].type == "continuous"
-        ? "histogramBoxPlot"
-        : (variables[i].type == "categorical") &
+      variables[i].chartType = variables[i].type == 'continuous'
+        ? 'histogramBoxPlot'
+        : (variables[i].type == 'categorical') &
             (variables[i].statistics.values.length > codebook.config.levelSplit)
-          ? "verticalBars"
-          : (variables[i].type == "categorical") &
+          ? 'verticalBars'
+          : (variables[i].type == 'categorical') &
               (variables[i].statistics.values.length <=
                 codebook.config.levelSplit)
-            ? "horizontalBars"
-            : "error";
+            ? 'horizontalBars'
+            : 'error';
 
       //Handle groups.
       if (group) {
@@ -70,7 +72,7 @@ export function makeSummary(codebook) {
           g.type = variables[i].type;
 
           //Calculate statistics.
-          if (variables[i].type === "categorical")
+          if (variables[i].type === 'categorical')
             g.statistics = summarize.categorical(g.values);
           else g.statistics = summarize.continuous(g.values);
         });
