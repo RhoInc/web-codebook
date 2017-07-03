@@ -1,4 +1,4 @@
-import { set as d3set } from "d3";
+import { set as d3set } from 'd3';
 
 export default function determineType(vector, levelSplit) {
   const nonMissingValues = vector.filter(d => !/^\s*$/.test(d));
@@ -7,6 +7,6 @@ export default function determineType(vector, levelSplit) {
 
   return nonMissingValues.length === numericValues.length &&
     distinctValues.length > levelSplit
-    ? "continuous"
-    : "categorical";
+    ? 'continuous'
+    : 'categorical';
 }

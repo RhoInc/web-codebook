@@ -1,4 +1,4 @@
-import { format as d3format } from "d3";
+import { format as d3format } from 'd3';
 
 export function updateSummaryText(codebook) {
   //Chart Summary Span
@@ -6,20 +6,20 @@ export function updateSummaryText(codebook) {
     var nCols = codebook.data.summary.length;
     var nShown = codebook.data.summary[0].statistics.N;
     var nTot = codebook.data.raw.length;
-    var percent = d3format("0.1%")(nShown / nTot);
+    var percent = d3format('0.1%')(nShown / nTot);
     var tableSummary =
-      "Data summary for " +
+      'Data summary for ' +
       nCols +
-      " columns and " +
+      ' columns and ' +
       nShown +
-      " of " +
+      ' of ' +
       nTot +
-      " (" +
+      ' (' +
       percent +
-      ") rows shown below.";
+      ') rows shown below.';
   } else {
     tableSummary =
-      "No values selected. Update the filters above or load a different data set.";
+      'No values selected. Update the filters above or load a different data set.';
   }
 
   codebook.summaryTable.summaryText.text(tableSummary);
