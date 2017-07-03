@@ -1,10 +1,10 @@
-import clone from "../../util/clone";
+import clone from '../../util/clone';
 
 export default //Custom settings
 {
   measure: null,
   panel: null,
-  measureFormat: ",.2f",
+  measureFormat: ',.2f',
   boxPlot: true,
   nBins: null,
   mean: true,
@@ -14,30 +14,30 @@ export default //Custom settings
   //Webcharts settings
   x: {
     column: null, // set in syncSettings()
-    type: "linear",
-    label: "",
+    type: 'linear',
+    label: '',
     bin: null
   }, // set in syncSettings()
   y: {
     column: null, // set in syncSettings()
-    type: "linear",
-    label: "",
+    type: 'linear',
+    label: '',
     domain: [0, null]
   },
   marks: [
     {
-      type: "bar",
+      type: 'bar',
       per: null, // set in syncSettings()
-      summarizeX: "mean",
-      summarizeY: "count",
+      summarizeX: 'mean',
+      summarizeY: 'count',
       attributes: {
-        fill: "#999",
-        stroke: "#333",
-        "stroke-width": "2px"
+        fill: '#999',
+        stroke: '#333',
+        'stroke-width': '2px'
       }
     }
   ],
-  gridlines: "y",
+  gridlines: 'y',
   resizable: true,
   aspect: 12,
   margin: {

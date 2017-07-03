@@ -1,37 +1,37 @@
-import { select as d3select } from "d3";
+import { select as d3select } from 'd3';
 
 export default function updateHidden(codebook) {
   const hiddenCheckBoxes = codebook.settings.wrap.selectAll(
-    ".column-table td.Hidden"
+    '.column-table td.Hidden'
   );
 
   //Add click functionality to each list item.
-  hiddenCheckBoxes.on("change", function() {
+  hiddenCheckBoxes.on('change', function() {
     codebook.config.hiddenVariables = hiddenCheckBoxes
       .filter(function() {
-        return d3.select(this).select("input").property("checked");
+        return d3.select(this).select('input').property('checked');
       })
       .data()
       .map(d => d.column);
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
-      .selectAll(".group-select option")
-      .classed("hidden", d => codebook.config.hiddenVariables.indexOf(d) > -1);
+      .selectAll('.group-select option')
+      .classed('hidden', d => codebook.config.hiddenVariables.indexOf(d) > -1);
 
     //Hide filters corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
-      .selectAll(".filter-list li.filterCustom")
+      .selectAll('.filter-list li.filterCustom')
       .classed(
-        "hidden",
+        'hidden',
         d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
       );
 
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
     codebook.summaryTable.wrap
-      .selectAll("div.variable-row")
+      .selectAll('div.variable-row')
       .classed(
-        "hidden",
+        'hidden',
         d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
       );
 

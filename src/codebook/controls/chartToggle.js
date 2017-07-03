@@ -2,6 +2,6 @@
   Define chart toggle object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from "./chartToggle/init";
+import { init } from './chartToggle/init';
 
 export const chartToggle = { init: init };
