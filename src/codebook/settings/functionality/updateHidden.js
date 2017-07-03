@@ -9,10 +9,15 @@ export default function updateHidden(codebook) {
   hiddenCheckBoxes.on('change', function() {
     codebook.config.hiddenVariables = hiddenCheckBoxes
       .filter(function() {
-        return d3.select(this).select('input').property('checked');
+        return d3select(this).select('input').property('checked');
       })
       .data()
       .map(d => d.column);
+
+    //update hidden attribute in variable summary data array
+    codebook.data.summary.forEach(d => {
+      d.hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+    });
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
@@ -26,6 +31,9 @@ export default function updateHidden(codebook) {
         'hidden',
         d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
       );
+
+    //update summary text
+    codebook.summaryTable.updateSummaryText(codebook);
 
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
     codebook.summaryTable.wrap

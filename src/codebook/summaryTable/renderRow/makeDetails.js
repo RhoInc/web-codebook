@@ -8,6 +8,7 @@ export default function makeDetails(d) {
   var statNames = Object.keys(d.statistics).filter(f => f != 'values');
   var statList = statNames
     .map(stat => {
+      console.log(stat);
       return {
         key: stat !== 'nMissing' ? stat : 'Missing',
         value: d.statistics[stat]
