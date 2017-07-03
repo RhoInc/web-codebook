@@ -26,6 +26,8 @@ export function makeSummary(codebook) {
         variables[i].values,
         codebook.config.levelSplit
       );
+      variables[i].hidden =
+        codebook.config.hiddenVariables.indexOf(variable) > -1;
       variables[i].label = codebook.config.variableLabels
         .map(variableLabel => variableLabel.value_col)
         .indexOf(variable) > -1
