@@ -14,6 +14,11 @@ export default function updateHidden(codebook) {
       .data()
       .map(d => d.column);
 
+    //update hidden attribute in variable summary data array
+    codebook.data.summary.forEach(d => {
+      d.hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+    });
+
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
       .selectAll('.group-select option')
@@ -26,6 +31,9 @@ export default function updateHidden(codebook) {
         'hidden',
         d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
       );
+
+    //update summary text
+    codebook.summaryTable.updateSummaryText(codebook);
 
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
     codebook.summaryTable.wrap
