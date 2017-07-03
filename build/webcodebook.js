@@ -125,6 +125,8 @@ function update(codebook) {
   var columns = Object.keys(codebook.data.raw[0]);
   var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
     return 'custom-' + d.value_col + ' filterCustom';
+  }).classed('hidden', function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
   allFilterItem.exit().remove();
   allFilterItem.sort(function (a, b) {
@@ -227,6 +229,8 @@ function update$1(codebook) {
   });
   groupOptions.enter().append('option').property('label', function (d) {
     return d.value_col !== d.label ? d.value_col + ' (' + d.label + ')' : d.value_col;
+  }).classed('hidden', function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   }).text(function (d) {
     return d.value_col;
   });
@@ -1729,7 +1733,6 @@ function makeDetails(d) {
     return f != 'values';
   });
   var statList = statNames.map(function (stat) {
-    console.log(stat);
     return {
       key: stat !== 'nMissing' ? stat : 'Missing',
       value: d.statistics[stat]
@@ -2491,7 +2494,7 @@ function updateHidden(codebook) {
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
-      return codebook.config.hiddenVariables.indexOf(d) > -1;
+      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
     });
 
     //Hide filters corresponding to variables specified in settings.hiddenVariables.

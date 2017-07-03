@@ -22,7 +22,10 @@ export default function updateHidden(codebook) {
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
       .selectAll('.group-select option')
-      .classed('hidden', d => codebook.config.hiddenVariables.indexOf(d) > -1);
+      .classed(
+        'hidden',
+        d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+      );
 
     //Hide filters corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
