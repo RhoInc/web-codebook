@@ -9,8 +9,9 @@ export function makeAutomaticFilters(codebook) {
         return { value_col: m.value_col };
       });
 
-    codebook.config.filters = autofilters.length > 0 ? autofilters : null;
+    codebook.config.filters = autofilters.length > 0 ? autofilters : [];
   }
+
   codebook.data.summary.forEach(variable => {
     variable.filter =
       codebook.config.filters

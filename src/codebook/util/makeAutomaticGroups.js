@@ -9,8 +9,9 @@ export function makeAutomaticGroups(codebook) {
         return { value_col: m.value_col };
       });
 
-    codebook.config.groups = autogroups.length > 0 ? autogroups : null;
+    codebook.config.groups = autogroups.length > 0 ? autogroups : [];
   }
+
   codebook.data.summary.forEach(variable => {
     variable.groupOption =
       codebook.config.groups
