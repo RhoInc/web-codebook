@@ -52,6 +52,7 @@ export function setDefaults(codebook) {
   /********************* Hidden Variable Settings ***************/
   codebook.config.hiddenVariables =
     codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
+  codebook.config.hiddenVariables.push('web-codebook-index'); // internal variables should always be hidden
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;

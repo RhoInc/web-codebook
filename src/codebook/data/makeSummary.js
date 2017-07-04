@@ -21,7 +21,11 @@ export function makeSummary(codebook) {
     variables.forEach((variable, i) => {
       //Define variable data vector and metadata.
       variables[i] = { value_col: variable };
-      variables[i].values = data.map(d => d[variable]);
+      variables[i].values = data.map(d => {
+          return {
+              index: d['web-codebook-index'],
+              value: d[variable]};
+      });
       variables[i].type = summarize.determineType(
         variables[i].values,
         codebook.config.levelSplit
@@ -68,7 +72,11 @@ export function makeSummary(codebook) {
           g.value_col = variable;
           g.values = data
             .filter(d => d[group] === g.group)
-            .map(d => d[variable]);
+            .map(d => {
+                return {
+                    index: d['web-codebook-index'],
+                    value: d[variable]};
+            });
           g.type = variables[i].type;
 
           //Calculate statistics.

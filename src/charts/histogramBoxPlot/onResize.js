@@ -7,6 +7,7 @@ import {
   deviation as d3deviation,
   mouse as d3mouse
 } from 'd3';
+import highlightData from '../util/highlightData.js';
 
 export default function onResize() {
   const context = this;
@@ -214,8 +215,7 @@ export default function onResize() {
         const closest = bars
           .filter(d => d.distance === minimum)
           .filter((d, i) => i === 0)
-          .select('rect')
-          .style('fill', '#000000');
+          .select('rect');
 
         //Activate tooltip.
         const d = closest.datum();
@@ -223,8 +223,10 @@ export default function onResize() {
         context.svg.select('#' + d.selector).classed('active', true);
       })
       .on('mouseout', function() {
-        bars.select('rect').style('fill', '#999');
         context.svg.selectAll('g.svg-tooltip').classed('active', false);
       });
   }
+
+  //Add event listener to marks to highlight data.
+    highlightData(this);
 }

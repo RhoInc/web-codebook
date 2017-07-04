@@ -8,7 +8,8 @@ export function createHistogramBoxPlot(this_, d) {
     resizable: false,
     height: 100,
     margin: this_.margin,
-    nBins: d.bins
+    nBins: d.bins,
+    chartType: d.chartType
   };
   let chartData = [];
 
@@ -18,12 +19,12 @@ export function createHistogramBoxPlot(this_, d) {
     chartSettings.group_label = d.groupLabel;
     d.groups.forEach(group => {
       group.values.forEach(value => {
-        chartData.push({ group: group.group || '<no value>', ' ': value });
+        chartData.push({ group: group.group || '<no value>', ' ': value.value, index: d.index });
       });
     });
   } else {
     d.values.forEach(d => {
-      chartData.push({ ' ': d });
+      chartData.push({ ' ': d.value, index: d.index });
     });
   }
 

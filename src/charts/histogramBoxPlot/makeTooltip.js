@@ -5,11 +5,17 @@ export default function makeTooltip(d, i, context) {
   d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
   d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
   d.selector = `bar` + i;
+  d.side = context.x(d.midpoint) < context.plot_width / 2
+    ? 'left'
+    : 'right';
+  d.xPosition = d.side === 'left'
+    ? context.x(d.midpoint) + context.plot_width/context.config.x.bin
+    : context.x(d.midpoint) - context.plot_width/context.config.x.bin
   //Define tooltips.
   const tooltip = context.svg.append('g').attr('id', d.selector);
   const text = tooltip.append('text').attr({
     id: 'text',
-    x: context.x(d.midpoint),
+    x: d.xPosition,
     y: context.plot_height,
     dy: '-.75em',
     'font-size': '75%',
@@ -19,9 +25,8 @@ export default function makeTooltip(d, i, context) {
   text
     .append('tspan')
     .attr({
-      x: context.x(d.midpoint),
-      dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
-      'text-anchor': context.x(d.midpoint) < context.plot_width / 2
+      x: d.xPosition,
+      'text-anchor': d.side === 'left'
         ? 'start'
         : 'end'
     })
@@ -29,10 +34,9 @@ export default function makeTooltip(d, i, context) {
   text
     .append('tspan')
     .attr({
-      x: context.x(d.midpoint),
-      dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+      x: d.xPosition,
       dy: '-1.5em',
-      'text-anchor': context.x(d.midpoint) < context.plot_width / 2
+      'text-anchor': d.side === 'left'
         ? 'start'
         : 'end'
     })

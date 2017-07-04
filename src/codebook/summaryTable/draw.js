@@ -14,7 +14,7 @@ export function draw(codebook) {
 
   //ENTER
   varRows.enter().append('div').attr('class', function(d) {
-    return 'variable-row hiddenChart ' + d.type;
+    return 'variable-row ' + d.type;
   });
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.

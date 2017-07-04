@@ -42,7 +42,8 @@ export function createHorizontalBars(this_, d) {
       value_col: d.value_col,
       group_col: d.group || null,
       group_label: d.groupLabel || null,
-      overall: d.statistics.values
+      overall: d.statistics.values,
+      chartType: d.chartType
     },
     chartData = d.statistics.values.sort(
       (a, b) =>

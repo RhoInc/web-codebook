@@ -46,7 +46,8 @@ export function createVerticalBars(this_, d) {
     group_label: d.groupLabel || null,
     overall: d.statistics.values,
     gridlines: 'y',
-    sort: sortType //Alphabetical, Ascending, Descending
+    sort: sortType, //Alphabetical, Ascending, Descending
+    chartType: d.chartType
   };
 
   chartSettings.margin.bottom = 10;

@@ -9,8 +9,8 @@ export default function continuous(vector) {
   const statistics = {};
   statistics.N = vector.length;
   const nonMissing = vector
-    .filter(d => !isNaN(+d) && !/^\s*$/.test(d))
-    .map(d => +d)
+    .filter(d => !isNaN(+d.value) && !/^\s*$/.test(d.value))
+    .map(d => +d.value)
     .sort((a, b) => a - b);
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;

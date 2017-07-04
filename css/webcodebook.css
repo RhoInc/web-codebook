@@ -306,9 +306,9 @@ Chart layout
   margin-bottom:0.2em;
 }
 
-.web-codebook .summaryTable .variable-row.categorical .row-chart svg g.bar-group rect:hover {
+.web-codebook .summaryTable .variable-row .row-chart svg g.bar-group rect:hover {
+  cursor: pointer;
   fill:#7BAFD4;
-  stroke:#7BAFD4;
 }
 
 
