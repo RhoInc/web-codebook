@@ -1,6 +1,11 @@
 /*------------------------------------------------------------------------------------------------\
 General
 \------------------------------------------------------------------------------------------------*/
+
+.web-codebook {
+  position: relative;
+}
+
 .web-codebook > * {
     display: block;
     width:1024px;
@@ -22,6 +27,11 @@ General
 
 .web-codebook .hidden {
   display: none !important; /* all .hidden elements should be hidden/display:none */
+}
+
+.web-codebook .clear-highlight {
+    position: fixed;
+    z-index: 9999;
 }
 
 /*------------------------------------------------------------------------------------------------\

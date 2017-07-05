@@ -16,10 +16,9 @@ export function init(data) {
 
   //save raw data
   this.data.raw = clone(data);
-  this.data.raw
-    .forEach((d,i) => {
-        d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
-    });
+  this.data.raw.forEach((d, i) => {
+    d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
+  });
   this.data.filtered = this.data.raw; //assume no filters active on init :/
   this.data.highlighted = [];
 

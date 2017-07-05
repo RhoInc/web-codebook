@@ -4,8 +4,7 @@ import { mouse as d3mouse } from 'd3';
 import highlightData from '../util/highlightData.js';
 
 export default function onResize() {
-  const
-    context = this;
+  const context = this;
 
   moveYaxis(this);
   //remove x-axis text
@@ -51,5 +50,5 @@ export default function onResize() {
     });
 
   //Add event listener to marks to highlight data.
-    highlightData(this);
+  highlightData(this);
 }

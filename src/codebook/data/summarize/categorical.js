@@ -3,7 +3,9 @@ import { nest as d3nest, format as d3format, set as d3set } from 'd3';
 export default function categorical(vector) {
   const statistics = {};
   statistics.N = vector.length;
-  const nonMissing = vector.filter(d => !/^\s*$/.test(d.value) && d.value !== 'NA');
+  const nonMissing = vector.filter(
+    d => !/^\s*$/.test(d.value) && d.value !== 'NA'
+  );
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;
   statistics.values = d3nest()

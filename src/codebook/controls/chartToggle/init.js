@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------\
-  Initialize custom controls.
+  Initialize show/hide all charts toggles.
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {

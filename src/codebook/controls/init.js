@@ -17,6 +17,7 @@ export function init(codebook) {
   codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
+  codebook.controls.clearHighlight.init(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
   codebook.controls.wrap

@@ -19,7 +19,11 @@ export function createHistogramBoxPlot(this_, d) {
     chartSettings.group_label = d.groupLabel;
     d.groups.forEach(group => {
       group.values.forEach(value => {
-        chartData.push({ group: group.group || '<no value>', ' ': value.value, index: d.index });
+        chartData.push({
+          group: group.group || '<no value>',
+          ' ': value.value,
+          index: d.index
+        });
       });
     });
   } else {

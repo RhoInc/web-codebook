@@ -4,8 +4,7 @@ import drawDifferences from './drawDifferences';
 import highlightData from '../util/highlightData.js';
 
 export default function onResize() {
-  const
-    context = this;
+  const context = this;
 
   moveYaxis(this);
   if (this.config.x.column === 'prop_n') {
@@ -15,5 +14,5 @@ export default function onResize() {
   }
 
   //Add event listener to marks to highlight data.
-    highlightData(this);
+  highlightData(this);
 }

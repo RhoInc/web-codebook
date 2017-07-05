@@ -216,6 +216,8 @@ export default function onResize() {
           .filter(d => d.distance === minimum)
           .filter((d, i) => i === 0)
           .select('rect');
+        bars.select('rect').style('stroke-width', '1px');
+        closest.style('stroke-width', '3px');
 
         //Activate tooltip.
         const d = closest.datum();
@@ -223,10 +225,11 @@ export default function onResize() {
         context.svg.select('#' + d.selector).classed('active', true);
       })
       .on('mouseout', function() {
+        bars.select('rect').style('stroke-width', '1px');
         context.svg.selectAll('g.svg-tooltip').classed('active', false);
       });
   }
 
   //Add event listener to marks to highlight data.
-    highlightData(this);
+  highlightData(this);
 }
