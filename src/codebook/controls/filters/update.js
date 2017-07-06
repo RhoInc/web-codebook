@@ -36,6 +36,10 @@ export function update(codebook) {
       return 'custom-' + d.value_col + ' filterCustom';
     });
   allFilterItem.exit().remove();
+  allFilterItem.classed(
+    'hidden',
+    d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+  );
   allFilterItem.sort((a, b) => {
     const aSort = columns.indexOf(a.value_col),
       bSort = columns.indexOf(b.value_col);
