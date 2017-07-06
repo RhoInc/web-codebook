@@ -1,4 +1,4 @@
-import updatePagination from "./updatePagination";
+import updatePagination from './updatePagination';
 
 export default function addLinks(dataListing) {
   //Count rows.
@@ -8,17 +8,17 @@ export default function addLinks(dataListing) {
   dataListing.pagination.numPages = Math.ceil(
     dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown
   );
-  dataListing.pagination.wrap.selectAll("a").remove();
+  dataListing.pagination.wrap.selectAll('a').remove();
   for (let i = 0; i < dataListing.pagination.numPages; i++) {
     dataListing.pagination.wrap
-      .append("a")
+      .append('a')
       .datum({ rel: i })
       .attr({
-        href: "#",
+        href: '#',
         rel: i
       })
       .text(i + 1)
-      .classed("active", d => d.rel == dataListing.pagination.activeLink);
+      .classed('active', d => d.rel == dataListing.pagination.activeLink);
   }
-  dataListing.pagination.links = dataListing.pagination.wrap.selectAll("a");
+  dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
 }

@@ -1,12 +1,12 @@
-import clone from "../../util/clone";
-import onResize from "./onResize";
-import { createChart } from "webcharts";
+import clone from '../../util/clone';
+import onResize from './onResize';
+import { createChart } from 'webcharts';
 import {
   extent as d3extent,
   nest as d3nest,
   max as d3max,
   set as d3set
-} from "d3";
+} from 'd3';
 
 export default function onInit() {
   const context = this;
@@ -17,10 +17,13 @@ export default function onInit() {
   //Add a label
   if (this.group) {
     const groupTitle = this.wrap
-      .append("p")
-      .attr("class", "panel-label")
-      .style("margin-left", context.config.margin.left + "px")
-      .text("Group: " + this.group + " (n=" + this.raw_data.length + ")");
+      .append('p')
+      .attr('class', 'panel-label')
+      .style('margin-left', context.config.margin.left + 'px')
+      .html(
+        `${this.config.group_col}: <strong>${this.group}</strong> (n=${this
+          .raw_data.length})`
+      );
     this.wrap
       .node()
       .parentNode.insertBefore(groupTitle.node(), this.wrap.node());
@@ -85,8 +88,8 @@ export default function onInit() {
       group.webChart = new createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
-      group.webChart.on("init", onInit);
-      group.webChart.on("resize", onResize);
+      group.webChart.on('init', onInit);
+      group.webChart.on('resize', onResize);
       group.webChart.init(group.data);
     });
   }

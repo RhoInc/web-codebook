@@ -1,25 +1,26 @@
-import layout from "./layout";
-import onDraw from "./onDraw";
-import { createTable } from "webcharts";
+import layout from './layout';
+import onDraw from './onDraw';
+import { createTable } from 'webcharts';
 
 export function init(codebook) {
   const dataListing = codebook.dataListing;
+  dataListing.config = codebook.config;
   layout(dataListing);
   //sort config
   dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select(".sort-container");
+  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
   dataListing.sort.order = [];
   //pagination config
   dataListing.pagination = {};
   dataListing.pagination.wrap = dataListing.wrap.select(
-    ".pagination-container"
+    '.pagination-container'
   );
   dataListing.pagination.rowsShown = 25;
   dataListing.pagination.activeLink = 0;
 
   //Define table.
   dataListing.table = createTable(
-    ".web-codebook .dataListing .listing-container",
+    '.web-codebook .dataListing .listing-container',
     {}
   );
 

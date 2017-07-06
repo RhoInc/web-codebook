@@ -2,7 +2,7 @@ export default function clone(obj) {
   let copy;
 
   //boolean, number, string, null, undefined
-  if ("object" != typeof obj || null == obj) return obj;
+  if ('object' != typeof obj || null == obj) return obj;
 
   //date
   if (obj instanceof Date) {
@@ -29,5 +29,5 @@ export default function clone(obj) {
     return copy;
   }
 
-  throw new Error("Unable to copy [obj]! Its type is not supported.");
+  throw new Error('Unable to copy [obj]! Its type is not supported.');
 }

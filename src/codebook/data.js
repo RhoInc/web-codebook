@@ -2,10 +2,10 @@
   Define data object.
 \------------------------------------------------------------------------------------------------*/
 
-import { makeSummary } from "./data/makeSummary";
-import { makeFiltered } from "./data/makeFiltered";
+import { makeFiltered } from './data/makeFiltered';
+import { makeSummary } from './data/makeSummary';
 
 export const data = {
-  makeSummary: makeSummary,
-  makeFiltered: makeFiltered
+  makeFiltered: makeFiltered,
+  makeSummary: makeSummary
 };
