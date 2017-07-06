@@ -3,7 +3,7 @@ import reset from './updateSettings/reset';
 
 export default function updateSettings(codebook, column) {
   const setting = column !== 'Hidden'
-    ? column.toLowerCase()
+    ? `${column.toLowerCase()}s`
     : 'hiddenVariables',
     checkBoxes = codebook.settings.wrap.selectAll(`.column-table td.${column}`);
 

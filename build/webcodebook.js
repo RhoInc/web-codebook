@@ -191,7 +191,6 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -2374,11 +2373,10 @@ function reset(codebook) {
   codebook.data.makeSummary(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
-  console.log(codebook.config.hiddenVariables);
 }
 
 function updateSettings(codebook, column) {
-  var setting = column !== 'Hidden' ? column.toLowerCase() : 'hiddenVariables',
+  var setting = column !== 'Hidden' ? column.toLowerCase() + 's' : 'hiddenVariables',
       checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
 
   //redefine filter array

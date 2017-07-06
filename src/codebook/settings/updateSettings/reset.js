@@ -18,5 +18,4 @@ export default function reset(codebook) {
   codebook.data.makeSummary(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
-  console.log(codebook.config.hiddenVariables);
 }
