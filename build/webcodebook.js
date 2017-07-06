@@ -352,27 +352,26 @@ function init$6(codebook) {
       if (d.label == '&#x2699;') {
         codebook.config.controlVisibility = 'minimized';
         codebook.controls.controlToggle.set(codebook);
-        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'hidden');
-        codebook.controls.wrap.select('div.controls-title').style('visibility', 'hidden');
+        codebook.controls.wrap.select('button.control-toggle').classed('hidden', true);
+        codebook.controls.wrap.select('div.controls-title').classed('hidden', true);
       }
       // For 'Data Listing' Nav selection, hide the 'Show/Hide all chart buttons', ensure visibility to filters & toggle controls button
       if (d.label == 'Data Listing') {
         codebook.config.controlVisibility = 'visible';
         codebook.controls.controlToggle.set(codebook);
-        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'visible');
-        codebook.controls.wrap.select('div.chart-toggle').style('visibility', 'hidden');
-        codebook.controls.wrap.select('div.controls-title').style('visibility', 'visible');
+        codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
+        codebook.controls.wrap.select('div.chart-toggle').classed('hidden', true);
+        codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
         codebook.controls.wrap.select('div.group-select').classed('hidden', true);
-        //.style('visibility', 'hidden');
       }
       // For 'Codebook' Nav selection, ensure visibility to the 'Show/Hide all chart buttons', filters & toggle controls button
       if (d.label == 'Codebook') {
         codebook.config.controlVisibility = 'visible';
         codebook.controls.controlToggle.set(codebook);
-        codebook.controls.wrap.select('button.control-toggle').style('visibility', 'visible');
-        codebook.controls.wrap.select('div.chart-toggle').style('visibility', 'visible');
-        codebook.controls.wrap.select('div.controls-title').style('visibility', 'visible');
-        codebook.controls.wrap.select('div.group-select').style('visibility', 'visible');
+        codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
+        codebook.controls.wrap.select('div.chart-toggle').classed('hidden', false);
+        codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
+        codebook.controls.wrap.select('div.group-select').classed('hidden', false);
       }
     }
   });

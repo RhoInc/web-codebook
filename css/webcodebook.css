@@ -470,7 +470,23 @@ Chart layout
     .web-codebook .nav ul.nav-tabs li.active a, ul.nav-tabs li.active:hover a{
         color:black;
     }
+	
+	.web-codebook .control-toggle.hidden{
+		display:none;
+	}
 
+	.web-codebook .chart-toggle.hidden{
+		display:none;
+	}
+
+	.web-codebook .controls-title.hidden{
+		display:none;
+	}
+
+	.web-codebook .group-select.hidden{
+		display:none;
+	}
+	
 /*------------------------------------------------------------------------------------------------\
   Settings
 \------------------------------------------------------------------------------------------------*/
