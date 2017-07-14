@@ -1,5 +1,10 @@
 const availableTabs = [
   {
+    key: 'files',
+    label: 'Files',
+    selector: '.web-codebook .fileListing'
+  },
+  {
     key: 'codebook',
     label: 'Codebook',
     selector: '.web-codebook .summaryTable'

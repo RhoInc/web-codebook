@@ -67,6 +67,9 @@ function layout() {
 
   this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
 
+  this.fileListing = {};
+  this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
+
   this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
 
   this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
@@ -191,6 +194,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -363,6 +367,10 @@ var controls = {
 };
 
 var availableTabs = [{
+  key: 'files',
+  label: 'Files',
+  selector: '.web-codebook .fileListing'
+}, {
   key: 'codebook',
   label: 'Codebook',
   selector: '.web-codebook .summaryTable'
@@ -1303,9 +1311,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -2500,18 +2507,17 @@ function createCodebook() {
 
 function init$9() {
   var settings = this.config;
-
   //create wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
 
   //layout the divs
   this.layout(this);
 
-  //draw controls
-  this.controls.init(this);
-
   //draw first codebook
   this.makeCodebook(this.config.files[0]);
+
+  //draw controls
+  this.controls.init(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2559,6 +2565,10 @@ var controls$1 = {
 
 function makeCodebook(meta) {
   this.codebookWrap.selectAll('*').remove();
+
+  //add the Files section to the nav for each config
+  meta.settings.tabs = meta.settings.tabs ? d3.merge([['files'], meta.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
+
   var codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
   d3.csv(meta.path, function (error, data) {
     codebook.init(data);

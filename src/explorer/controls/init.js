@@ -1,3 +1,5 @@
+import { createTable } from 'webcharts';
+
 export function init(explorer) {
   explorer.controls.wrap.attr('onsubmit', 'return false;');
   explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
