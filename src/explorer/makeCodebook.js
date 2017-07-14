@@ -1,17 +1,17 @@
 import { csv as d3csv } from 'd3';
 import { merge as d3merge } from 'd3';
 
-export function makeCodebook(explorer, meta) {
+export function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
-  meta.settings.tabs = meta.settings.tabs
-    ? d3merge([['files'], meta.settings.tabs])
+  this.current.settings.tabs = this.current.settings.tabs
+    ? d3merge([['files'], this.current.settings.tabs])
     : ['files', 'codebook', 'listing', 'settings'];
 
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',
-    meta.settings
+    this.current.settings
   );
 
   explorer.codebook.on('init', function() {
@@ -20,10 +20,10 @@ export function makeCodebook(explorer, meta) {
 
   explorer.codebook.on('complete', function() {
     console.log('complete fired');
-    explorer.fileListing.init(explorer, meta);
+    explorer.fileListing.init(explorer);
   });
 
-  d3csv(meta.path, function(error, data) {
+  d3csv(this.current.path, function(error, data) {
     explorer.codebook.init(data);
   });
 }

@@ -2528,6 +2528,10 @@ function createCodebook() {
 
 function init$9() {
   var settings = this.config;
+
+  //draw the codebook for the first file
+  this.current = this.config.files[0];
+
   //create wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
 
@@ -2535,7 +2539,7 @@ function init$9() {
   this.layout(this);
 
   //draw first codebook
-  this.makeCodebook(this, this.config.files[0]);
+  this.makeCodebook(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2546,30 +2550,48 @@ function layout$3() {
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function init$10(explorer, meta) {
+function onDraw$1(explorer) {
+  explorer.codebook.fileListing.table.on('draw', function () {
+    //highlight the current row
+    this.table.select('tbody').selectAll('tr').filter(function (f) {
+      return f.raw == explorer.current;
+    }).classed('selected', true);
+
+    //Linkify the labelColumn
+    var labelCells = this.table.selectAll('td').filter(function (f) {
+      return f.col == explorer.config.labelColumn;
+    }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
+      var current_text = d3.select(this).text();
+      console.log(current_text);
+      explorer.current = explorer.config.files.filter(function (f) {
+        return f[explorer.config.labelColumn] == current_text;
+      })[0];
+      explorer.makeCodebook(explorer);
+    });
+  });
+}
+
+function init$10(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
-  var file_select_wrap = fileWrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
+  var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
-  file_select_wrap.append('span').text('Pick a file: ');
+  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', {});
 
-  var select$$1 = file_select_wrap.append('select');
+  onDraw$1(explorer);
+  explorer.codebook.fileListing.table.init(explorer.config.files);
 
-  select$$1.selectAll('option').data(explorer.config.files).enter().append('option').text(function (d) {
-    return d.label;
-  }).attr('selected', function (d) {
-    return d == meta ? 'selected' : null;
-  });
-
-  select$$1.on('change', function (d) {
+  /*
+  select.on('change', function(d) {
     var current_text = this.value;
-    var current_obj = explorer.config.files.filter(function (f) {
-      return f.label == current_text;
-    })[0];
+    var current_obj = explorer.config.files.filter(
+      f => f.label == current_text
+    )[0];
     explorer.makeCodebook(explorer, current_obj);
-  });
+  })
+  */
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2580,13 +2602,13 @@ var fileListing = {
   init: init$10
 };
 
-function makeCodebook(explorer, meta) {
+function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
-  meta.settings.tabs = meta.settings.tabs ? d3.merge([['files'], meta.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
+  this.current.settings.tabs = this.current.settings.tabs ? d3.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
 
-  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
+  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
 
   explorer.codebook.on('init', function () {
     console.log('init fired');
@@ -2594,10 +2616,10 @@ function makeCodebook(explorer, meta) {
 
   explorer.codebook.on('complete', function () {
     console.log('complete fired');
-    explorer.fileListing.init(explorer, meta);
+    explorer.fileListing.init(explorer);
   });
 
-  d3.csv(meta.path, function (error, data) {
+  d3.csv(this.current.path, function (error, data) {
     explorer.codebook.init(data);
   });
 }

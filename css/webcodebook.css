@@ -385,25 +385,25 @@ Chart layout
         Table
     \--------------------------------------------------------------------------------------***/
 
-        .web-codebook .dataListing .listing-container {
+        .web-codebook .listing-container {
             padding: 1% 0;
             clear: both;
         }
 
-        .web-codebook .dataListing .listing-container table {
+        .web-codebook  .listing-container table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .web-codebook .dataListing .listing-container thead tr {
+        .web-codebook  .listing-container thead tr {
             border-bottom: 2px solid black;
         }
 
-        .web-codebook .dataListing .listing-container tbody tr {
+        .web-codebook  .listing-container tbody tr {
             border-bottom: 1px dotted #ccc;
         }
 
-        .web-codebook .dataListing .listing-container tbody tr.filtered {
+        .web-codebook  .listing-container tbody tr.filtered {
             display: none;
         }
 
@@ -411,17 +411,17 @@ Chart layout
             background: #eee;
         }*/
 
-        .web-codebook .dataListing .listing-container th {
+        .web-codebook  .listing-container th {
             cursor: pointer;
             text-align: left;
             padding: 2px 5px;
         }
 
-        .web-codebook .dataListing .listing-container th:hover {
+        .web-codebook  .listing-container th:hover {
             background: rgb(123,175,212);
         }
 
-        .web-codebook .dataListing .listing-container td {
+        .web-codebook .listing-container td {
             text-align: left;
             padding: 2px 5px;
         }
@@ -526,4 +526,15 @@ Chart layout
 
     .web-codebook .settings table.column-table td.Column {
         text-align: right;
+    }
+
+/*------------------------------------------------------------------------------------------------\
+  Data Listing
+\------------------------------------------------------------------------------------------------*/
+.web-codebook .fileListing{
+
+}
+    .web-codebook .fileListing tr.selected{
+      background: #008CBA;
+      color:white;
     }
