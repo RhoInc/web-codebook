@@ -1269,6 +1269,13 @@ function makeTooltip$1(d, i, context) {
     dy: '-1.5em',
     'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end'
   }).text('n: ' + d.total);
+  text.append('tspan').attr({
+    x: context.x(d.midpoint),
+    dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+    dy: '-1.5em',
+    'text-anchor': context.x(d.midpoint) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('new: ' + d.olier);
+  //console.log(d);
   var dimensions = text[0][0].getBBox();
   tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
@@ -1460,6 +1467,9 @@ function onResize$3() {
 
     //Add modal to nearest mark.
     var bars = this.svg.selectAll('.bar-group');
+    var oliers = this.svg.selectAll('line.outlier');
+    var olierstest = this.svg.selectAll('.outlier');
+
     var tooltips = this.svg.selectAll('.svg-tooltip');
     var statistics = this.svg.selectAll('.statistic');
     this.svg.on('mousemove', function () {
@@ -1468,28 +1478,91 @@ function onResize$3() {
       var x = context.x.invert(mouse$$1[0]);
       var y = context.y.invert(mouse$$1[1]);
       var minimum = void 0;
+      var min_dist = void 0;
+      var minimum_outlier = void 0;
+      var dist = void 0;
+      var olier = void 0;
       var bar = {};
       bars.each(function (d, i) {
+        //console.log(d);
+        //console.log(oliers);
         d.distance = Math.abs(d.midpoint - x);
+        oliers.each(function (e, i) {
+          dist = Math.abs(e - x);
+          console.log(e);
+          //console.log(dist);
+          if (i === 0 || dist < min_dist) {
+            min_dist = dist;
+            d.olier = e;
+            olier = e;
+            bar = d;
+            //console.log(olier);
+          }
+          //console.log(Math.abs(oliers - x));
+        });
         if (i === 0 || d.distance < minimum) {
           minimum = d.distance;
           bar = d;
+          //console.log(d);
         }
       });
+
+      console.log(olierstest);
+
+      /*const closestsss = oliers
+        //.filter(d => dist === min_dist)
+        //.filter((d, i) => i === 0)
+        .select('line')
+        .style({
+          fill: '#000000',
+          stroke: 'red',
+          'stroke-width': '1px'
+        });*/
+
+      outlier.selectAll('line.outlier')
+      //.data(outliers)
+      //.enter()
+      .select('line')
+      // .attr('class', 'outlier')
+      //.attr('x1', d => this.x(d))
+      //.attr('x2', d => this.x(d))
+      //.attr('y1', d => this.plot_height * 1.07)
+      //.attr(
+      //'y2',
+      //d => (this.plot_height + this.config.boxPlotHeight) / 1.07
+      // )
+      .style({
+        fill: '#000000',
+        stroke: 'red',
+        'stroke-width': '1px'
+      });
+      // outlier.append('title').text(function(d) {
+      // return d;
+      //  });
+
       var closest = bars.filter(function (d) {
         return d.distance === minimum;
       }).filter(function (d, i) {
         return i === 0;
-      }).select('rect').style('fill', '#000000');
+      }).select('rect').style('fill', '#ea1010');
+
+      //console.log(bars.datum());
 
       //Activate tooltip.
       var d = closest.datum();
+      //console.log(d);
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
     }).on('mouseout', function () {
       bars.select('rect').style('fill', '#999');
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
+    /*
+    const oliers = this.svg.selectAll('line.outlier');
+    this.svg.on('mousemove', function() {
+      // Highlight all the outliers for testing/practice
+      oliers.select('line').style('fill', '#ea1010');
+    });*/
   }
 }
 

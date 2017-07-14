@@ -215,6 +215,7 @@ export default function onResize() {
 
     //Add modal to nearest mark.
     const bars = this.svg.selectAll('.bar-group');
+    const oliers = this.svg.selectAll('line.outlier');
     const tooltips = this.svg.selectAll('.svg-tooltip');
     const statistics = this.svg.selectAll('.statistic');
     this.svg
@@ -224,19 +225,49 @@ export default function onResize() {
         const x = context.x.invert(mouse[0]);
         const y = context.y.invert(mouse[1]);
         let minimum;
+        let min_dist;
+        let minimum_outlier;
+        let dist;
+        let olier;
         let bar = {};
         bars.each(function(d, i) {
           d.distance = Math.abs(d.midpoint - x);
+          oliers.each(function(e, i) {
+            dist = Math.abs(e - x);
+            console.log(e);
+            //console.log(dist);
+            if (i === 0 || dist < min_dist) {
+              min_dist = dist;
+              d.olier = e;
+              olier = e;
+              //console.log(olier);
+            }
+          });
           if (i === 0 || d.distance < minimum) {
             minimum = d.distance;
             bar = d;
           }
         });
+
+        console.log(olierstest);
+
+        const closestsss = oliers
+          //.filter(d => dist === min_dist)
+          //.filter((d, i) => i === 0)
+		  // Trying to highlight all outliers on mouseover (for getting the highlighting feature off the ground)
+          .select('line')
+          .style({
+            fill: '#ea1010',
+            stroke: 'red',
+            'stroke-width': '1px'
+          });
+
         const closest = bars
           .filter(d => d.distance === minimum)
           .filter((d, i) => i === 0)
           .select('rect')
           .style('fill', '#000000');
+
 
         //Activate tooltip.
         const d = closest.datum();

@@ -37,6 +37,18 @@ export default function makeTooltip(d, i, context) {
         : 'end'
     })
     .text(`n: ${d.total}`);
+  text
+    .append('tspan')
+    .attr({
+      x: context.x(d.midpoint),
+      dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
+      dy: '-1.5em',
+      'text-anchor': context.x(d.midpoint) < context.plot_width / 2
+        ? 'start'
+        : 'end'
+    })
+    .text(`new: ${d.olier}`);
+  //console.log(d);
   const dimensions = text[0][0].getBBox();
   tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
