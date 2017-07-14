@@ -1,12 +1,10 @@
 import { createTable } from 'webcharts';
 
-export function init(explorer) {
-  console.log(explorer);
+export function init(explorer, meta) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
-
   var file_select_wrap = fileWrap
     .append('div')
     .style('padding', '.5em')
@@ -23,6 +21,9 @@ export function init(explorer) {
     .append('option')
     .text(function(d) {
       return d.label;
+    })
+    .attr('selected', function(d) {
+      return d == meta ? 'selected' : null;
     });
 
   select.on('change', function(d) {

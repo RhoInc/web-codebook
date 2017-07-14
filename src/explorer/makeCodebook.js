@@ -20,7 +20,7 @@ export function makeCodebook(explorer, meta) {
 
   explorer.codebook.on('complete', function() {
     console.log('complete fired');
-    explorer.fileListing.init(explorer);
+    explorer.fileListing.init(explorer, meta);
   });
 
   d3csv(meta.path, function(error, data) {

@@ -2546,13 +2546,11 @@ function layout$3() {
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function init$10(explorer) {
-  console.log(explorer);
+function init$10(explorer, meta) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
-
   var file_select_wrap = fileWrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
 
   file_select_wrap.append('span').text('Pick a file: ');
@@ -2561,6 +2559,8 @@ function init$10(explorer) {
 
   select$$1.selectAll('option').data(explorer.config.files).enter().append('option').text(function (d) {
     return d.label;
+  }).attr('selected', function (d) {
+    return d == meta ? 'selected' : null;
   });
 
   select$$1.on('change', function (d) {
@@ -2594,7 +2594,7 @@ function makeCodebook(explorer, meta) {
 
   explorer.codebook.on('complete', function () {
     console.log('complete fired');
-    explorer.fileListing.init(explorer);
+    explorer.fileListing.init(explorer, meta);
   });
 
   d3.csv(meta.path, function (error, data) {
