@@ -16,6 +16,9 @@ function init(data) {
   //create chart wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook');
 
+  // call the before callback (if any)
+  this.events.init.call(this);
+
   //save raw data
   this.data.raw = data;
   this.data.filtered = data; //assume no filters active on init :/
@@ -34,6 +37,9 @@ function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
+
+  //call after event (if any)
+  this.events.complete.call(this);
 
   //wait by the quarter second until the loading indicator is visible
   var loading = setInterval(function () {
@@ -2498,6 +2504,21 @@ function createCodebook() {
     settings: settings
   };
 
+  codebook.events = {
+    init: function init$$1() {},
+    complete: function complete() {}
+  };
+
+  codebook.on = function (event, callback) {
+    var possible_events = ['init', 'complete'];
+    if (possible_events.indexOf(event) < 0) {
+      return;
+    }
+    if (callback) {
+      codebook.events[event] = callback;
+    }
+  };
+
   return codebook;
 }
 
@@ -2514,10 +2535,7 @@ function init$9() {
   this.layout(this);
 
   //draw first codebook
-  this.makeCodebook(this.config.files[0]);
-
-  //draw controls
-  this.controls.init(this);
+  this.makeCodebook(this, this.config.files[0]);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2525,18 +2543,17 @@ function init$9() {
 \------------------------------------------------------------------------------------------------*/
 
 function layout$3() {
-  this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
-
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
 function init$10(explorer) {
-  explorer.controls.wrap.attr('onsubmit', 'return false;');
-  explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
+  console.log(explorer);
+  var fileWrap = explorer.codebook.fileListing.wrap;
+  fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
 
-  var file_select_wrap = explorer.controls.wrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
+  var file_select_wrap = fileWrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
 
   file_select_wrap.append('span').text('Pick a file: ');
 
@@ -2551,7 +2568,7 @@ function init$10(explorer) {
     var current_obj = explorer.config.files.filter(function (f) {
       return f.label == current_text;
     })[0];
-    explorer.makeCodebook(current_obj);
+    explorer.makeCodebook(explorer, current_obj);
   });
 }
 
@@ -2559,19 +2576,29 @@ function init$10(explorer) {
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var controls$1 = {
+var fileListing = {
   init: init$10
 };
 
-function makeCodebook(meta) {
-  this.codebookWrap.selectAll('*').remove();
+function makeCodebook(explorer, meta) {
+  explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
   meta.settings.tabs = meta.settings.tabs ? d3.merge([['files'], meta.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
 
-  var codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
+  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
+
+  explorer.codebook.on('init', function () {
+    console.log('init fired');
+  });
+
+  explorer.codebook.on('complete', function () {
+    console.log('complete fired');
+    explorer.fileListing.init(explorer);
+  });
+
   d3.csv(meta.path, function (error, data) {
-    codebook.init(data);
+    explorer.codebook.init(data);
   });
 }
 
@@ -2584,7 +2611,7 @@ function createExplorer() {
     config: config,
     init: init$9,
     layout: layout$3,
-    controls: controls$1,
+    fileListing: fileListing,
     makeCodebook: makeCodebook
   };
 

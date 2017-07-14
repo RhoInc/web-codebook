@@ -15,8 +15,5 @@ export function init() {
   this.layout(this);
 
   //draw first codebook
-  this.makeCodebook(this.config.files[0]);
-
-  //draw controls
-  this.controls.init(this);
+  this.makeCodebook(this, this.config.files[0]);
 }

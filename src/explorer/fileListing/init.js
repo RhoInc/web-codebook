@@ -1,12 +1,13 @@
 import { createTable } from 'webcharts';
 
 export function init(explorer) {
-  explorer.controls.wrap.attr('onsubmit', 'return false;');
-  explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
+  console.log(explorer);
+  var fileWrap = explorer.codebook.fileListing.wrap;
+  fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
 
-  var file_select_wrap = explorer.controls.wrap
+  var file_select_wrap = fileWrap
     .append('div')
     .style('padding', '.5em')
     .style('border-bottom', '2px solid black');
@@ -29,6 +30,6 @@ export function init(explorer) {
     var current_obj = explorer.config.files.filter(
       f => f.label == current_text
     )[0];
-    explorer.makeCodebook(current_obj);
+    explorer.makeCodebook(explorer, current_obj);
   });
 }
