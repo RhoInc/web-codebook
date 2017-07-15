@@ -14,16 +14,13 @@ export function init(explorer) {
     {}
   );
 
-  onDraw(explorer);
-  explorer.codebook.fileListing.table.init(explorer.config.files);
+  //show the selected file first
+  explorer.config.files.forEach(d => (d.selected = d == explorer.current));
+  var sortedFiles = explorer.config.files.sort(function(a, b) {
+    return a.selected ? -1 : b.selected ? 1 : 0;
+  });
 
-  /*
-  select.on('change', function(d) {
-    var current_text = this.value;
-    var current_obj = explorer.config.files.filter(
-      f => f.label == current_text
-    )[0];
-    explorer.makeCodebook(explorer, current_obj);
-  })
-  */
+  //assign callbacks and initialize
+  onDraw(explorer);
+  explorer.codebook.fileListing.table.init(sortedFiles);
 }
