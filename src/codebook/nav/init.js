@@ -46,6 +46,12 @@ export function init(codebook) {
         navItems.filter(f => f == t).classed('active', t.active); //style the active nav element
         t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
       });
+
+      //show/hide the controls (unless they are disabled)
+      if (codebook.config.controlVisibility != 'disabled') {
+        codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+        codebook.controls.controlToggle.set(codebook);
+      }
     }
   });
 }

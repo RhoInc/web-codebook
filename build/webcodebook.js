@@ -348,7 +348,7 @@ function set$1(codebook) {
   codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
 
   // unless control visibility is hidden, in which case just hide it all
-  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden');
+  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden' || codebook.config.controlVisibility == 'disabled');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -375,16 +375,24 @@ var controls = {
 var availableTabs = [{
   key: 'files',
   label: 'Files',
-  selector: '.web-codebook .fileListing'
+  selector: '.web-codebook .fileListing',
+  controls: false
 }, {
   key: 'codebook',
   label: 'Codebook',
-  selector: '.web-codebook .summaryTable'
+  selector: '.web-codebook .summaryTable',
+  controls: true
 }, {
   key: 'listing',
   label: 'Data Listing',
-  selector: '.web-codebook .dataListing'
-}, { key: 'settings', label: '&#x2699;', selector: '.web-codebook .settings' }];
+  selector: '.web-codebook .dataListing',
+  controls: true
+}, {
+  key: 'settings',
+  label: '&#x2699;',
+  selector: '.web-codebook .settings',
+  controls: false
+}];
 
 function init$6(codebook) {
   codebook.nav.wrap.selectAll('*').remove();
@@ -431,6 +439,12 @@ function init$6(codebook) {
         }).classed('active', t.active); //style the active nav element
         t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
       });
+
+      //show/hide the controls (unless they are disabled)
+      if (codebook.config.controlVisibility != 'disabled') {
+        codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+        codebook.controls.controlToggle.set(codebook);
+      }
     }
   });
 }
@@ -2094,11 +2108,7 @@ function setDefaults(codebook) {
   codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
   codebook.config.autobins = codebook.config.autobins == null ? defaultSettings$1.autobins : codebook.config.autobins;
 
-  /********************* Histogram Settings *********************/
   codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
-
-  /********************* Histogram Settings *********************/
-  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
@@ -2106,6 +2116,17 @@ function setDefaults(codebook) {
   if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
     console.warn("Invalid starting tab of '" + codebook.config.defaultTab + "' specified. Using '" + codebook.config.tabs[0] + "' instead.");
     codebook.config.defaultTab = codebook.config.tabs[0];
+  }
+
+  /********************* Control Visibility Settings *********************/
+  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
+
+  //hide the controls appropriately according to the start tab
+  if (codebook.config.controlVisibility != 'disabled') {
+    var startTab = availableTabs.filter(function (f) {
+      return f.key == codebook.config.defaultTab;
+    });
+    codebook.config.controlVisibility = startTab.controls ? codebook.config.controlVisibility : 'hidden';
   }
 }
 

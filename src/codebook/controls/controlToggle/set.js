@@ -22,6 +22,7 @@ export function set(codebook) {
   // unless control visibility is hidden, in which case just hide it all
   codebook.controls.wrap.classed(
     'hidden',
-    codebook.config.controlVisibility == 'hidden'
+    codebook.config.controlVisibility == 'hidden' ||
+      codebook.config.controlVisibility == 'disabled'
   );
 }
