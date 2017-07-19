@@ -14,12 +14,7 @@ export function makeCodebook(explorer) {
     this.current.settings
   );
 
-  explorer.codebook.on('init', function() {
-    console.log('init fired');
-  });
-
   explorer.codebook.on('complete', function() {
-    console.log('complete fired');
     explorer.fileListing.init(explorer);
   });
 

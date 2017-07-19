@@ -3,11 +3,13 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { select as d3select } from 'd3';
+import { setDefaults } from './setDefaults';
 
 export function init() {
   var settings = this.config;
+  setDefaults(this);
 
-  //draw the codebook for the first file
+  //prepare to draw the codebook for the first file
   this.current = this.config.files[0];
 
   //create wrapper in specified div

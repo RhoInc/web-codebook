@@ -2543,14 +2543,29 @@ function createCodebook() {
   return codebook;
 }
 
+var defaultSettings$3 = {
+  labelColumn: 'path'
+};
+
+function setDefaults$1(explorer) {
+  /********************* labelColumn *********************/
+  explorer.config.labelColumn = explorer.config.labelColumn || defaultSettings$3.labelColumn;
+
+  /********************* files[].settings ***************/
+  explorer.config.files.forEach(function (f) {
+    f.settings = f.settings || {};
+  });
+}
+
 /*------------------------------------------------------------------------------------------------\
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
 function init$9() {
   var settings = this.config;
+  setDefaults$1(this);
 
-  //draw the codebook for the first file
+  //prepare to draw the codebook for the first file
   this.current = this.config.files[0];
 
   //create wrapper in specified div
@@ -2630,12 +2645,7 @@ function makeCodebook(explorer) {
 
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
 
-  explorer.codebook.on('init', function () {
-    console.log('init fired');
-  });
-
   explorer.codebook.on('complete', function () {
-    console.log('complete fired');
     explorer.fileListing.init(explorer);
   });
 
