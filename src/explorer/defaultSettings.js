@@ -1,5 +1,5 @@
 const defaultSettings = {
-  labelColumn: 'path'
+  ignoredColumns: []
 };
 
 export default defaultSettings;

@@ -9,9 +9,15 @@ export function init(explorer) {
     .append('div')
     .classed('listing-container', true);
 
+  //drop ignoredColumns and system variables
+  var cols = Object.keys(explorer.config.files[0])
+    .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
+    .filter(f => ['settings', 'selected', 'event'].indexOf(f) == -1); //drop system variables from table
+
+  //Create the table
   explorer.codebook.fileListing.table = createTable(
     '.web-codebook .fileListing .listing-container',
-    {}
+    { cols: cols }
   );
 
   //show the selected file first

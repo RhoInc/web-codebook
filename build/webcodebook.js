@@ -2544,10 +2544,14 @@ function createCodebook() {
 }
 
 var defaultSettings$3 = {
-  labelColumn: 'path'
+  ignoredColumns: []
 };
 
 function setDefaults$1(explorer) {
+  /********************* ignoredColumns *********************/
+  var firstKey = Object.keys(explorer.config.files[0])[0];
+  explorer.config.ignoredColumns = explorer.config.ignoredColumns || firstKey;
+
   /********************* labelColumn *********************/
   explorer.config.labelColumn = explorer.config.labelColumn || defaultSettings$3.labelColumn;
 
@@ -2615,7 +2619,15 @@ function init$10(explorer) {
   //Make file selector
   var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
-  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', {});
+  //drop ignoredColumns and system variables
+  var cols = Object.keys(explorer.config.files[0]).filter(function (f) {
+    return explorer.config.ignoredColumns.indexOf(f) == -1;
+  }).filter(function (f) {
+    return ['settings', 'selected', 'event'].indexOf(f) == -1;
+  }); //drop system variables from table
+
+  //Create the table
+  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', { cols: cols });
 
   //show the selected file first
   explorer.config.files.forEach(function (d) {
