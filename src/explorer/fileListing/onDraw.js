@@ -19,10 +19,10 @@ export function onDraw(explorer) {
       .style('cursor', 'pointer')
       .on('click', function() {
         var current_text = d3select(this).text();
-        console.log(current_text);
         explorer.current = explorer.config.files.filter(
           f => f[explorer.config.labelColumn] == current_text
         )[0];
+        explorer.current.event = 'click';
         explorer.makeCodebook(explorer);
       });
   });

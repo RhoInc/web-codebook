@@ -2567,6 +2567,7 @@ function init$9() {
 
   //prepare to draw the codebook for the first file
   this.current = this.config.files[0];
+  this.current.event = 'load';
 
   //create wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
@@ -2598,10 +2599,10 @@ function onDraw$1(explorer) {
       return f.col == explorer.config.labelColumn;
     }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
       var current_text = d3.select(this).text();
-      console.log(current_text);
       explorer.current = explorer.config.files.filter(function (f) {
         return f[explorer.config.labelColumn] == current_text;
       })[0];
+      explorer.current.event = 'click';
       explorer.makeCodebook(explorer);
     });
   });
@@ -2643,6 +2644,12 @@ function makeCodebook(explorer) {
   //add the Files section to the nav for each config
   this.current.settings.tabs = this.current.settings.tabs ? d3.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
 
+  //set the default tab to the codebook or listing view assuming they are visible
+  if (this.current.event == 'click') {
+    this.current.settings.defaultTab = this.current.settings.tabs.indexOf('codebook') > -1 ? 'codebook' : this.current.settings.tabs.indexOf('listing') > -1 ? 'listing' : 'files';
+  }
+
+  //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
 
   explorer.codebook.on('complete', function () {

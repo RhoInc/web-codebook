@@ -9,6 +9,18 @@ export function makeCodebook(explorer) {
     ? d3merge([['files'], this.current.settings.tabs])
     : ['files', 'codebook', 'listing', 'settings'];
 
+  //set the default tab to the codebook or listing view assuming they are visible
+  if (this.current.event == 'click') {
+    this.current.settings.defaultTab = this.current.settings.tabs.indexOf(
+      'codebook'
+    ) > -1
+      ? 'codebook'
+      : this.current.settings.tabs.indexOf('listing') > -1
+        ? 'listing'
+        : 'files';
+  }
+
+  //create the codebook
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',
     this.current.settings

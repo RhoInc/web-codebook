@@ -11,6 +11,7 @@ export function init() {
 
   //prepare to draw the codebook for the first file
   this.current = this.config.files[0];
+  this.current.event = 'load';
 
   //create wrapper in specified div
   this.wrap = d3select(this.element)
