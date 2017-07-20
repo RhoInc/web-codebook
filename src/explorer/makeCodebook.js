@@ -20,6 +20,9 @@ export function makeCodebook(explorer) {
         : 'files';
   }
 
+  this.current.settings.dataName =
+    '"' + this.current[this.config.labelColumn] + '"';
+
   //create the codebook
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',

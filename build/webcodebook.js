@@ -2721,6 +2721,8 @@ function makeCodebook(explorer) {
     this.current.settings.defaultTab = this.current.settings.tabs.indexOf('codebook') > -1 ? 'codebook' : this.current.settings.tabs.indexOf('listing') > -1 ? 'listing' : 'files';
   }
 
+  this.current.settings.dataName = '"' + this.current[this.config.labelColumn] + '"';
+
   //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
 
