@@ -2610,10 +2610,10 @@ var defaultSettings$3 = {
 function setDefaults$1(explorer) {
   /********************* ignoredColumns *********************/
   var firstKey = Object.keys(explorer.config.files[0])[0];
-  explorer.config.ignoredColumns = explorer.config.ignoredColumns || firstKey;
+  explorer.config.ignoredColumns = explorer.config.ignoredColumns || defaultSettings$3.ignoredColumns;
 
   /********************* labelColumn *********************/
-  explorer.config.labelColumn = explorer.config.labelColumn || defaultSettings$3.labelColumn;
+  explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
 
   /********************* files[].settings ***************/
   explorer.config.files.forEach(function (f) {
