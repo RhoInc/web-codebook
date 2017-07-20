@@ -23,9 +23,6 @@ export function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
-  //initialize nav
-  this.nav.init(this);
-
   //prepare the data summaries
   this.data.makeSummary(this);
 
@@ -33,6 +30,11 @@ export function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
+
+  //initialize nav, title and instructions
+  this.title.init(this);
+  this.nav.init(this);
+  this.instructions.init(this);
 
   //call after event (if any)
   this.events.complete.call(this);

@@ -27,9 +27,6 @@ function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
-  //initialize nav
-  this.nav.init(this);
-
   //prepare the data summaries
   this.data.makeSummary(this);
 
@@ -37,6 +34,11 @@ function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
+
+  //initialize nav, title and instructions
+  this.title.init(this);
+  this.nav.init(this);
+  this.instructions.init(this);
 
   //call after event (if any)
   this.events.complete.call(this);
@@ -66,9 +68,10 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
+  this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
-
+  this.instructions.wrap = this.wrap.append('div').attr('class', 'instructions section');
   this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
 
   this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
@@ -88,7 +91,10 @@ function init$1(codebook) {
   codebook.loadingIndicator = codebook.controls.wrap.insert('div', ':first-child').attr('id', 'loading-indicator');
 
   //Draw title
-  codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Codebook Controls');
+  codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
+
+  codebook.controls.rowCount = codebook.controls.title.append('span').attr('class', 'rowCount');
+  codebook.controls.updateRowCount(codebook);
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
@@ -184,7 +190,9 @@ function update(codebook) {
 
         //update the codebook
         codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+
         codebook.data.makeSummary(codebook);
+        codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
 
@@ -360,6 +368,18 @@ var controlToggle = {
   set: set$1
 };
 
+function updateRowCount(codebook) {
+  if (codebook.data.summary.length > 0) {
+    var nShown = codebook.data.summary[0].statistics.N;
+    var nTot = codebook.data.raw.length;
+    var percent = d3.format('0.1%')(nShown / nTot);
+    var tableSummary = nShown + ' of ' + nTot + ' (' + percent + ') rows selected';
+    codebook.controls.rowCount.text(tableSummary).classed('warn', false);
+  } else {
+    codebook.controls.rowCount.text('No rows selected.').classed('warn', true);
+  }
+}
+
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
@@ -369,29 +389,34 @@ var controls = {
   filters: filters,
   groups: groups,
   chartToggle: chartToggle,
-  controlToggle: controlToggle
+  controlToggle: controlToggle,
+  updateRowCount: updateRowCount
 };
 
 var availableTabs = [{
   key: 'files',
   label: 'Files',
   selector: '.web-codebook .fileListing',
-  controls: false
+  controls: false,
+  instructions: 'Click a row to see the codebook for the file.'
 }, {
   key: 'codebook',
   label: 'Codebook',
   selector: '.web-codebook .summaryTable',
-  controls: true
+  controls: true,
+  instructions: ''
 }, {
   key: 'listing',
   label: 'Data Listing',
   selector: '.web-codebook .dataListing',
-  controls: true
+  controls: true,
+  instructions: 'Click any column header to sort that column.'
 }, {
   key: 'settings',
   label: '&#x2699;',
   selector: '.web-codebook .settings',
-  controls: false
+  controls: false,
+  instructions: "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
 }];
 
 function init$6(codebook) {
@@ -413,6 +438,15 @@ function init$6(codebook) {
     t.active = t.key == codebook.config.defaultTab;
     t.wrap.classed('hidden', !t.active);
   });
+
+  //set control visibility
+  var activeTab = codebook.nav.tabs.filter(function (f) {
+    return f.active;
+  })[0];
+  if (codebook.config.controlVisibility != 'disabled') {
+    codebook.config.controlVisibility = activeTab.controls ? 'visible' : 'hidden';
+    codebook.controls.controlToggle.set(codebook);
+  }
 
   //draw the nav
   var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
@@ -440,6 +474,8 @@ function init$6(codebook) {
         t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
       });
 
+      codebook.instructions.update(codebook);
+
       //show/hide the controls (unless they are disabled)
       if (codebook.config.controlVisibility != 'disabled') {
         codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
@@ -462,9 +498,6 @@ var nav = {
 \------------------------------------------------------------------------------------------------*/
 
 function draw(codebook) {
-  //update Summary Text
-  codebook.summaryTable.updateSummaryText(codebook);
-
   //enter/update/exit for variableDivs
   //BIND the newest data
   var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
@@ -1814,30 +1847,12 @@ function renderRow(d) {
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
-function updateSummaryText(codebook) {
-  //Chart Summary Span
-  if (codebook.data.summary.length > 0) {
-    var nCols = codebook.data.summary.filter(function (d) {
-      return !d.hidden;
-    }).length;
-    var nShown = codebook.data.summary[0].statistics.N;
-    var nTot = codebook.data.raw.length;
-    var percent = d3.format('0.1%')(nShown / nTot);
-    var tableSummary = 'Data summary for ' + nCols + ' columns and ' + nShown + ' of ' + nTot + ' (' + percent + ') rows shown below.';
-  } else {
-    tableSummary = 'No values selected. Update the filters above or load a different data set.';
-  }
-
-  codebook.summaryTable.summaryText.text(tableSummary);
-}
-
 /*------------------------------------------------------------------------------------------------\
   Define summaryTable object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 var summaryTable = {
   draw: draw,
-  renderRow: renderRow,
-  updateSummaryText: updateSummaryText
+  renderRow: renderRow
 };
 
 function layout$1(dataListing) {
@@ -1846,7 +1861,6 @@ function layout$1(dataListing) {
 
   //Add sort container.
   var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
-  sortContainer.append('span').classed('description', true).text('Click any column header to sort that column.');
 
   //Add search container.
   var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
@@ -2067,7 +2081,8 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  tabs: ['codebook', 'listing', 'settings']
+  tabs: ['codebook', 'listing', 'settings'],
+  dataName: ''
 };
 
 function setDefaults(codebook) {
@@ -2405,19 +2420,20 @@ function reset(codebook) {
 
   //redraw data summary, codebook, and listing.
   codebook.data.makeSummary(codebook);
+  codebook.title.updateColumnCount(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
 }
 
 function updateSettings(codebook, column) {
-  var setting = column !== 'Hidden' ? column.toLowerCase() + 's' : 'hiddenVariables',
+  var setting = column !== 'Hide' ? column.toLowerCase() + 's' : 'hiddenVariables',
       checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
 
   //redefine filter array
   codebook.config[setting] = checkBoxes.filter(function () {
     return d3.select(this).select('input').property('checked');
   }).data().map(function (d) {
-    return column !== 'Hidden' ? { value_col: d.column } : d.column;
+    return column !== 'Hide' ? { value_col: d.column } : d.column;
   });
 
   //reset
@@ -2436,7 +2452,7 @@ function layout$2(codebook) {
     return d.value_col;
   }),
       hiddenColumns = codebook.config.hiddenVariables,
-      columnTableColumns = ['Column', 'Group', 'Filter', 'Hidden'],
+      columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
       columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
@@ -2448,7 +2464,7 @@ function layout$2(codebook) {
         type: 'checkbox',
         checked: filterColumns.indexOf(column) > -1
       },
-      Hidden: {
+      Hide: {
         type: 'checkbox',
         checked: hiddenColumns.indexOf(column) > -1
       }
@@ -2493,9 +2509,6 @@ function layout$2(codebook) {
         });
     }
   });
-
-  //Add descriptive footnote.
-  columnTable.select('tbody').append('tr').style('border-bottom', 'none').append('td').attr('colspan', columnTableColumns.length).html("This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing.");
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2505,6 +2518,54 @@ function layout$2(codebook) {
 var settings = {
   init: init$8,
   layout: layout$2
+};
+
+function init$9(codebook) {
+  codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
+
+  codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
+
+  codebook.title.updateColumnCount(codebook);
+}
+
+function updateColumnCount(codebook) {
+  var nCols_sub = codebook.data.summary.filter(function (d) {
+    return !d.hidden;
+  }).length;
+  var nCols_all = codebook.data.summary.length;
+  var percent = d3.format('0.1%')(nCols_sub / nCols_all);
+  var tableSummary = nCols_sub + ' of ' + nCols_all + ' (' + percent + ') columns selected.';
+  codebook.title.countSpan.text(tableSummary);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define title object.
+\------------------------------------------------------------------------------------------------*/
+
+var title = {
+  init: init$9,
+  updateColumnCount: updateColumnCount
+};
+
+function init$10(codebook) {
+  //no action needed on init, just update to the current text
+  codebook.instructions.update(codebook);
+}
+
+function update$2(codebook) {
+  var instructionText = codebook.nav.tabs.filter(function (d) {
+    return d.active;
+  })[0].instructions;
+  codebook.instructions.wrap.text(instructionText);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define instructions object.
+\------------------------------------------------------------------------------------------------*/
+
+var instructions = {
+  init: init$10,
+  update: update$2
 };
 
 function createCodebook() {
@@ -2517,7 +2578,9 @@ function createCodebook() {
     init: init,
     layout: layout,
     controls: controls,
+    title: title,
     nav: nav,
+    instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
@@ -2565,7 +2628,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$9() {
+function init$11() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -2612,7 +2675,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$10(explorer) {
+function init$12(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -2647,7 +2710,7 @@ function init$10(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$10
+  init: init$12
 };
 
 function makeCodebook(explorer) {
@@ -2680,7 +2743,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$9,
+    init: init$11,
     layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook

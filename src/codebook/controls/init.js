@@ -7,10 +7,15 @@ export function init(codebook) {
     .attr('id', 'loading-indicator');
 
   //Draw title
-  codebook.controls.wrap
+  codebook.controls.title = codebook.controls.wrap
     .append('div')
     .attr('class', 'controls-title')
-    .text('Codebook Controls');
+    .text('Controls');
+
+  codebook.controls.rowCount = codebook.controls.title
+    .append('span')
+    .attr('class', 'rowCount');
+  codebook.controls.updateRowCount(codebook);
 
   //Draw controls.
   codebook.controls.groups.init(codebook);

@@ -6,10 +6,6 @@ export default function layout(dataListing) {
   const sortContainer = dataListing.wrap
     .append('div')
     .classed('sort-container', true);
-  sortContainer
-    .append('span')
-    .classed('description', true)
-    .text('Click any column header to sort that column.');
 
   //Add search container.
   const searchContainer = dataListing.wrap
