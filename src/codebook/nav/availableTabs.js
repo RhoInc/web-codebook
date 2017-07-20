@@ -11,7 +11,7 @@ const availableTabs = [
     label: 'Codebook',
     selector: '.web-codebook .summaryTable',
     controls: true,
-    instructions: ''
+    instructions: 'Click rows to see charts, or use these buttons: '
   },
   {
     key: 'listing',

@@ -19,7 +19,6 @@ export function init(codebook) {
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
-  codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
 

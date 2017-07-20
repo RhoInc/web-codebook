@@ -98,7 +98,6 @@ function init$1(codebook) {
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
-  codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
 
@@ -299,36 +298,10 @@ var groups = {
 };
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize custom controls.
-\------------------------------------------------------------------------------------------------*/
-
-//export function init(selector, data, vars, settings) {
-function init$4(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.append('div').attr('class', 'chart-toggle');
-
-  var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
-    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
-    codebook.wrap.selectAll('.row-toggle').html('&#9660;');
-  });
-
-  var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
-    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
-    codebook.wrap.selectAll('.row-toggle').html('&#9658;');
-  });
-}
-
-/*------------------------------------------------------------------------------------------------\
-  Define chart toggle object.
-\------------------------------------------------------------------------------------------------*/
-
-var chartToggle = { init: init$4 };
-
-/*------------------------------------------------------------------------------------------------\
   Initialize group controls.
 \------------------------------------------------------------------------------------------------*/
 
-function init$5(codebook) {
+function init$4(codebook) {
   //render the control
   var controlToggle = codebook.controls.wrap.append('button').attr('class', 'control-toggle');
 
@@ -364,7 +337,7 @@ function set$1(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var controlToggle = {
-  init: init$5,
+  init: init$4,
   set: set$1
 };
 
@@ -388,7 +361,6 @@ var controls = {
   init: init$1,
   filters: filters,
   groups: groups,
-  chartToggle: chartToggle,
   controlToggle: controlToggle,
   updateRowCount: updateRowCount
 };
@@ -404,7 +376,7 @@ var availableTabs = [{
   label: 'Codebook',
   selector: '.web-codebook .summaryTable',
   controls: true,
-  instructions: ''
+  instructions: 'Click rows to see charts, or use these buttons: '
 }, {
   key: 'listing',
   label: 'Data Listing',
@@ -419,7 +391,7 @@ var availableTabs = [{
   instructions: "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
 }];
 
-function init$6(codebook) {
+function init$5(codebook) {
   codebook.nav.wrap.selectAll('*').remove();
 
   //permanently hide the codebook sections that aren't included
@@ -490,7 +462,7 @@ function init$6(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var nav = {
-  init: init$6
+  init: init$5
 };
 
 /*------------------------------------------------------------------------------------------------\
@@ -2035,7 +2007,7 @@ function onDraw(dataListing) {
   });
 }
 
-function init$7(codebook) {
+function init$6(codebook) {
   var dataListing = codebook.dataListing;
   dataListing.config = codebook.config;
   layout$1(dataListing);
@@ -2068,7 +2040,7 @@ function init$7(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { init: init$7 };
+var dataListing = { init: init$6 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -2401,7 +2373,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$8(codebook) {
+function init$7(codebook) {
   codebook.settings.layout(codebook);
 }
 
@@ -2516,11 +2488,11 @@ function layout$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$8,
+  init: init$7,
   layout: layout$2
 };
 
-function init$9(codebook) {
+function init$8(codebook) {
   codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
 
   codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
@@ -2543,20 +2515,45 @@ function updateColumnCount(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var title = {
-  init: init$9,
+  init: init$8,
   updateColumnCount: updateColumnCount
 };
 
-function init$10(codebook) {
+function init$9(codebook) {
   //no action needed on init, just update to the current text
   codebook.instructions.update(codebook);
 }
 
+/*------------------------------------------------------------------------------------------------\
+  Initialize custom controls.
+\------------------------------------------------------------------------------------------------*/
+
+//export function init(selector, data, vars, settings) {
+function init$10(codebook) {
+  //initialize the wrapper
+  var selector = codebook.instructions.wrap.append('span').attr('class', 'chart-toggle');
+
+  var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+    codebook.wrap.selectAll('.row-toggle').html('&#9660;');
+  });
+
+  var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+    codebook.wrap.selectAll('.row-toggle').html('&#9658;');
+  });
+}
+
 function update$2(codebook) {
-  var instructionText = codebook.nav.tabs.filter(function (d) {
+  var activeTab = codebook.nav.tabs.filter(function (d) {
     return d.active;
-  })[0].instructions;
-  codebook.instructions.wrap.text(instructionText);
+  })[0];
+
+  //add instructions text
+  codebook.instructions.wrap.text(activeTab.instructions);
+
+  //add tab-specific controls
+  if (activeTab.key == 'codebook') init$10(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2564,7 +2561,7 @@ function update$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var instructions = {
-  init: init$10,
+  init: init$9,
   update: update$2
 };
 
