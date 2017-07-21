@@ -94,6 +94,9 @@ export function update(codebook) {
           codebook.config.filters
         );
 
+        //clear highlights
+        codebook.data.highlighted = [];
+
         codebook.data.makeSummary(codebook);
         codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);

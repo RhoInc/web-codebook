@@ -269,6 +269,9 @@ function update(codebook) {
         //update the codebook
         codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
 
+        //clear highlights
+        codebook.data.highlighted = [];
+
         codebook.data.makeSummary(codebook);
         codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
@@ -2497,6 +2500,7 @@ function reset(codebook) {
   });
 
   //remove filtering and select all filter options
+  codebook.data.highlighted = [];
   codebook.data.filtered = codebook.data.raw;
   codebook.controls.filters.update(codebook);
   codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
@@ -2506,6 +2510,7 @@ function reset(codebook) {
   codebook.title.updateColumnCount(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 }
 
 function updateSettings(codebook, column) {
