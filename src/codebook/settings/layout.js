@@ -1,4 +1,6 @@
 import { select as d3select } from 'd3';
+import updateSettings from './updateSettings';
+
 export function layout(codebook) {
   //Create list of columns in the data file.
   const columns = codebook.data.summary.map(d => d.value_col),
@@ -25,9 +27,11 @@ export function layout(codebook) {
 
       return columnDatum;
     }),
+    //define table
     columnTable = codebook.settings.wrap
       .append('table')
       .classed('column-table', true),
+    //define table headers
     columnTableHeader = columnTable.append('thead').append('tr'),
     columnTableHeaders = columnTableHeader
       .selectAll('th')
@@ -36,6 +40,7 @@ export function layout(codebook) {
       .append('th')
       .attr('class', d => d)
       .text(d => d),
+    //define table rows
     columnTableRows = columnTable
       .append('tbody')
       .selectAll('tr')
@@ -68,10 +73,11 @@ export function layout(codebook) {
                 ? 'from'
                 : 'to'} ${d.key.toLowerCase()} list`
             );
-            cell
+            const checkbox = cell
               .append('input')
               .attr('type', d.value.type)
               .property('checked', d.value.checked);
+            checkbox.on('change', () => updateSettings(codebook, d.key));
         }
       });
 
@@ -81,8 +87,8 @@ export function layout(codebook) {
     .append('tr')
     .style('border-bottom', 'none')
     .append('td')
-    .attr('colspan', '5')
-    .text(
-      "This interactive table allows users to modify each column's metadata."
+    .attr('colspan', columnTableColumns.length)
+    .html(
+      "This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing."
     );
 }

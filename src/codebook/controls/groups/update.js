@@ -31,12 +31,12 @@ export function update(codebook) {
       d =>
         d.value_col !== d.label ? `${d.value_col} (${d.label})` : d.value_col
     )
-    .classed(
-      'hidden',
-      d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
-    )
     .text(d => d.value_col);
   groupOptions.exit().remove();
+  groupOptions.classed(
+    'hidden',
+    d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
+  );
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
   groupSelect.on('change', function() {
     //display loading indicator

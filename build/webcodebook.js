@@ -203,10 +203,11 @@ function update(codebook) {
   var columns = Object.keys(codebook.data.raw[0]);
   var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
     return 'custom-' + d.value_col + ' filterCustom';
-  }).classed('hidden', function (d) {
-    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
   allFilterItem.exit().remove();
+  allFilterItem.classed('hidden', function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+  });
   allFilterItem.sort(function (a, b) {
     var aSort = columns.indexOf(a.value_col),
         bSort = columns.indexOf(b.value_col);
@@ -306,12 +307,13 @@ function update$1(codebook) {
   });
   groupOptions.enter().append('option').property('label', function (d) {
     return d.value_col !== d.label ? d.value_col + ' (' + d.label + ')' : d.value_col;
-  }).classed('hidden', function (d) {
-    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   }).text(function (d) {
     return d.value_col;
   });
   groupOptions.exit().remove();
+  groupOptions.classed('hidden', function (d) {
+    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+  });
   groupOptions.sort(function (a, b) {
     return columns.indexOf(a) - columns.indexOf(b);
   });
@@ -2450,9 +2452,40 @@ var data = {
 
 function init$9(codebook) {
   codebook.settings.layout(codebook);
-  for (var funk in codebook.settings.functionality) {
-    codebook.settings.functionality[funk](codebook);
-  }
+}
+
+function reset(codebook) {
+  //remove grouping and select 'None' group option
+  delete codebook.config.group;
+  codebook.controls.groups.update(codebook);
+  codebook.controls.wrap.select('.group-select').selectAll('option').property('selected', function (d) {
+    return d.value_col === 'None';
+  });
+
+  //remove filtering and select all filter options
+  codebook.data.filtered = codebook.data.raw;
+  codebook.controls.filters.update(codebook);
+  codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
+
+  //redraw data summary, codebook, and listing.
+  codebook.data.makeSummary(codebook);
+  codebook.summaryTable.draw(codebook);
+  codebook.dataListing.init(codebook);
+}
+
+function updateSettings(codebook, column) {
+  var setting = column !== 'Hidden' ? column.toLowerCase() + 's' : 'hiddenVariables',
+      checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
+
+  //redefine filter array
+  codebook.config[setting] = checkBoxes.filter(function () {
+    return d3.select(this).select('input').property('checked');
+  }).data().map(function (d) {
+    return column !== 'Hidden' ? { value_col: d.column } : d.column;
+  });
+
+  //reset
+  reset(codebook);
 }
 
 function layout$2(codebook) {
@@ -2487,8 +2520,12 @@ function layout$2(codebook) {
 
     return columnDatum;
   }),
-      columnTable = codebook.settings.wrap.append('table').classed('column-table', true),
-      columnTableHeader = columnTable.append('thead').append('tr'),
+
+  //define table
+  columnTable = codebook.settings.wrap.append('table').classed('column-table', true),
+
+  //define table headers
+  columnTableHeader = columnTable.append('thead').append('tr'),
       columnTableHeaders = columnTableHeader.selectAll('th').data(columnTableColumns).enter().append('th').attr('class', function (d) {
     return d;
   }).text(function (d) {
@@ -2512,113 +2549,16 @@ function layout$2(codebook) {
         break;
       default:
         cell.attr('title', (d.value.checked ? 'Remove' : 'Add') + ' ' + d.column + ' ' + (d.value.checked ? 'from' : 'to') + ' ' + d.key.toLowerCase() + ' list');
-        cell.append('input').attr('type', d.value.type).property('checked', d.value.checked);
+        var checkbox = cell.append('input').attr('type', d.value.type).property('checked', d.value.checked);
+        checkbox.on('change', function () {
+          return updateSettings(codebook, d.key);
+        });
     }
   });
 
   //Add descriptive footnote.
-  columnTable.select('tbody').append('tr').style('border-bottom', 'none').append('td').attr('colspan', '5').text("This interactive table allows users to modify each column's metadata.");
+  columnTable.select('tbody').append('tr').style('border-bottom', 'none').append('td').attr('colspan', columnTableColumns.length).html("This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing.");
 }
-
-function updateGroups(codebook) {
-  var groupCheckBoxes = codebook.settings.wrap.selectAll('.column-table td.Group');
-
-  //Add click functionality to each list item.
-  groupCheckBoxes.on('change', function () {
-    var groups = groupCheckBoxes.filter(function () {
-      return d3.select(this).select('input').property('checked');
-    }).data().map(function (d) {
-      return d.column;
-    });
-    codebook.config.groups = groups.map(function (d) {
-      return { value_col: d };
-    });
-    codebook.controls.groups.update(codebook);
-
-    //Redraw codebook if currently grouped by former group column.
-    if (codebook.config.group && groups.indexOf(codebook.config.group) === -1) {
-      delete codebook.config.group;
-      codebook.data.makeSummary(codebook);
-      codebook.summaryTable.draw(codebook);
-    }
-  });
-}
-
-function updateFilters(codebook) {
-  var filterCheckBoxes = codebook.settings.wrap.selectAll('.column-table td.Filter');
-
-  //Add click functionality to each list item.
-  filterCheckBoxes.on('change', function () {
-    var filters = filterCheckBoxes.filter(function () {
-      return d3.select(this).select('input').property('checked');
-    }).data().map(function (d) {
-      return d.column;
-    });
-
-    //Add new filters to settings.filters.
-    filters.forEach(function (filter) {
-      if (codebook.config.filters.map(function (d) {
-        return d.value_col;
-      }).indexOf(filter) === -1) codebook.config.filters.push({ value_col: filter });
-    });
-    //Remove old  filters from settings.filters.
-    codebook.config.filters.forEach(function (filter, i) {
-      if (filters.indexOf(filter.value_col) === -1) codebook.config.filters.splice(i, 1);
-    });
-    codebook.controls.filters.update(codebook);
-
-    //Update filtered data and redraw codebook.
-    codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
-    codebook.data.makeSummary(codebook);
-    codebook.summaryTable.draw(codebook);
-    codebook.dataListing.init(codebook);
-  });
-}
-
-function updateHidden(codebook) {
-  var hiddenCheckBoxes = codebook.settings.wrap.selectAll('.column-table td.Hidden');
-
-  //Add click functionality to each list item.
-  hiddenCheckBoxes.on('change', function () {
-    codebook.config.hiddenVariables = hiddenCheckBoxes.filter(function () {
-      return d3.select(this).select('input').property('checked');
-    }).data().map(function (d) {
-      return d.column;
-    });
-
-    //update hidden attribute in variable summary data array
-    codebook.data.summary.forEach(function (d) {
-      d.hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-    });
-
-    //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
-      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-    });
-
-    //Hide filters corresponding to variables specified in settings.hiddenVariables.
-    codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
-      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-    });
-
-    //update summary text
-    codebook.summaryTable.updateSummaryText(codebook);
-
-    //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
-    codebook.summaryTable.wrap.selectAll('div.variable-row').classed('hidden', function (d) {
-      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-    });
-
-    //Redraw data listing because columns corresponding to hidden variables will not be hidden until dataListing.onDraw() is called.
-    codebook.dataListing.init(codebook);
-  });
-}
-
-var functionality = {
-  updateGroups: updateGroups,
-  updateFilters: updateFilters,
-  updateHidden: updateHidden
-};
 
 /*------------------------------------------------------------------------------------------------\
   Define settings object.
