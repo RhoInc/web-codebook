@@ -2620,7 +2620,7 @@ function updateColumnCount(codebook) {
   var nCols_sub = codebook.data.summary.filter(function (d) {
     return !d.hidden;
   }).length;
-  var nCols_all = codebook.data.summary.length;
+  var nCols_all = codebook.data.summary.length - 1; //-1 is for the index var
   var percent = d3.format('0.1%')(nCols_sub / nCols_all);
   var tableSummary = nCols_sub + ' of ' + nCols_all + ' (' + percent + ') columns selected.';
   codebook.title.countSpan.text(tableSummary);
