@@ -2119,7 +2119,6 @@ function init$7(codebook) {
   dataListing.sorted_raw_data = codebook.data.filtered.sort(function (a, b) {
     var a_highlight = codebook.data.highlighted.indexOf(a) > -1;
     var b_highlight = codebook.data.highlighted.indexOf(b) > -1;
-    console.log(a_highlight);
     if (a_highlight == b_highlight) {
       return 0;
     } else if (a_highlight) {
