@@ -775,7 +775,14 @@ function onResize() {
         bar = d;
       }
     });
+    var closest = bars.filter(function (d) {
+      return d.distance === minimum;
+    }).filter(function (d, i) {
+      return i === 0;
+    }).select('rect');
 
+    //Activate tooltip.		        //Activate tooltip.
+    var d = closest.datum();
     //Activate tooltip.
     tooltips.classed('active', false);
     context.svg.select('#' + d.selector).classed('active', true);

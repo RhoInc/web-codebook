@@ -33,7 +33,13 @@ export default function onResize() {
           bar = d;
         }
       });
+      const closest = bars
+        .filter(d => d.distance === minimum)
+        .filter((d, i) => i === 0)
+        .select('rect');
 
+      //Activate tooltip.		        //Activate tooltip.
+      const d = closest.datum();
       //Activate tooltip.
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
