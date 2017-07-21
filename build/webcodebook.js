@@ -269,6 +269,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -1375,9 +1376,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -2531,7 +2531,9 @@ function layout$2(codebook) {
   }).text(function (d) {
     return d;
   }),
-      columnTableRows = columnTable.append('tbody').selectAll('tr').data(columnMetadata).enter().append('tr').classed('hidden', function (d) {
+
+  //define table rows
+  columnTableRows = columnTable.append('tbody').selectAll('tr').data(columnMetadata).enter().append('tr').classed('hidden', function (d) {
     return d.Column === 'web-codebook-index';
   }),
       columnTableCells = columnTableRows.selectAll('td').data(function (d) {
@@ -2566,8 +2568,7 @@ function layout$2(codebook) {
 
 var settings = {
   init: init$9,
-  layout: layout$2,
-  functionality: functionality
+  layout: layout$2
 };
 
 function createCodebook() {
