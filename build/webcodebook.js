@@ -85,7 +85,7 @@ function init(data) {
   var _this = this;
 
   var settings = this.config;
-  var codebook = this;
+
   //create chart wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook').datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
 
@@ -111,21 +111,14 @@ function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //initialize nav, title and instructions
   this.title.init(this);
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
-
   this.nav.init(this);
-
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
   this.instructions.init(this);
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //call after event (if any)
   this.events.complete.call(this);
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //wait by the quarter second until the loading indicator is visible
   var loading = setInterval(function () {
@@ -439,7 +432,6 @@ function init$5(codebook) {
     codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);
   });
-  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -737,7 +729,6 @@ function highlightData(chart) {
   bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function (d) {
-    console.log('clicked');
     codebook.wrap.selectAll('.bar-group').classed('highlighted', false);
     d3.select(this).classed('highlighted', true);
 
@@ -749,7 +740,7 @@ function highlightData(chart) {
     });
 
     //Display highlighted data in listing & codebook.
-    //codebook.dataListing.init(codebook);
+    codebook.dataListing.init(codebook);
     //codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);
   });
@@ -1914,6 +1905,7 @@ var summaryTable = {
 
 function layout$1(dataListing) {
   //Add sort container.
+  dataListing.wrap.selectAll('*').remove();
   var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
 
   //Add search container.
@@ -2086,11 +2078,17 @@ function onDraw(dataListing) {
     this.table.selectAll('th,td').classed('hidden', function (d) {
       return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
     });
+
+    //highlight columns
+    this.table.selectAll('tr').classed('highlight', function (d) {
+      return dataListing.codebook.data.highlighted.indexOf(d.raw) > -1;
+    });
   });
 }
 
 function init$7(codebook) {
   var dataListing = codebook.dataListing;
+  dataListing.codebook = codebook;
   dataListing.config = codebook.config;
   layout$1(dataListing);
   //sort config
@@ -2110,8 +2108,8 @@ function init$7(codebook) {
   onDraw(dataListing);
 
   //Initialize table.
-  dataListing.super_raw_data = codebook.data.highlighted.length ? codebook.data.highlighted : codebook.data.filtered;
-  dataListing.sorted_raw_data = codebook.data.highlighted.length ? codebook.data.highlighted : codebook.data.filtered;
+  dataListing.super_raw_data = codebook.data.filtered;
+  dataListing.sorted_raw_data = codebook.data.filtered;
   var sub = dataListing.sorted_raw_data.filter(function (d, i) {
     return i < 25;
   });

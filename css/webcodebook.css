@@ -450,6 +450,10 @@ Chart layout
             display: none;
         }
 
+        .web-codebook  .listing-container tbody tr.highlight {
+             background:orange;
+        }
+
         /*.web-codebook .dataListing .listing-container tbody tr:nth-child(even) {
             background: #eee;
         }*/

@@ -4,6 +4,7 @@ import { createTable } from 'webcharts';
 
 export function init(codebook) {
   const dataListing = codebook.dataListing;
+  dataListing.codebook = codebook;
   dataListing.config = codebook.config;
   layout(dataListing);
   //sort config
@@ -28,12 +29,8 @@ export function init(codebook) {
   onDraw(dataListing);
 
   //Initialize table.
-  dataListing.super_raw_data = codebook.data.highlighted.length
-    ? codebook.data.highlighted
-    : codebook.data.filtered;
-  dataListing.sorted_raw_data = codebook.data.highlighted.length
-    ? codebook.data.highlighted
-    : codebook.data.filtered;
+  dataListing.super_raw_data = codebook.data.filtered;
+  dataListing.sorted_raw_data = codebook.data.filtered;
   var sub = dataListing.sorted_raw_data.filter(function(d, i) {
     return i < 25;
   });

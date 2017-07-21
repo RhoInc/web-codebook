@@ -15,4 +15,4 @@ export function init(codebook) {
       codebook.summaryTable.draw(codebook);
       codebook.controls.updateRowCount(codebook);
     });
-  }
+}
