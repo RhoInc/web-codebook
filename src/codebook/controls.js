@@ -5,7 +5,6 @@
 import { init } from './controls/init';
 import { filters } from './controls/filters';
 import { groups } from './controls/groups';
-import { chartToggle } from './controls/chartToggle';
 import { controlToggle } from './controls/controlToggle';
 import { clearHighlight } from './controls/clearHighlight';
 
@@ -15,5 +14,6 @@ export const controls = {
   groups: groups,
   chartToggle: chartToggle,
   controlToggle: controlToggle,
-  clearHighlight: clearHighlight
+  clearHighlight: clearHighlight,
+  updateRowCount: updateRowCount
 };

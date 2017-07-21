@@ -89,6 +89,9 @@ function init(data) {
   //create chart wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook').datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
 
+  // call the before callback (if any)
+  this.events.init.call(this);
+
   //save raw data
   this.data.raw = clone(data);
   this.data.raw.forEach(function (d, i) {
@@ -101,9 +104,6 @@ function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
-  //initialize nav
-  this.nav.init(this);
-
   //prepare the data summaries
   this.data.makeSummary(this);
 
@@ -111,6 +111,14 @@ function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
+
+  //initialize nav, title and instructions
+  this.title.init(this);
+  this.nav.init(this);
+  this.instructions.init(this);
+
+  //call after event (if any)
+  this.events.complete.call(this);
 
   //wait by the quarter second until the loading indicator is visible
   var loading = setInterval(function () {
@@ -137,12 +145,16 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
+  this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
-
+  this.instructions.wrap = this.wrap.append('div').attr('class', 'instructions section');
   this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
 
   this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
+
+  this.fileListing = {};
+  this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
 
   this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
 
@@ -156,11 +168,13 @@ function init$1(codebook) {
   codebook.loadingIndicator = codebook.controls.wrap.insert('div', ':first-child').attr('id', 'loading-indicator');
 
   //Draw title
-  codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Codebook Controls');
+  codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
+
+  codebook.controls.rowCount = codebook.controls.title.append('span').attr('class', 'rowCount');
+  codebook.controls.updateRowCount(codebook);
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
-  codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
   codebook.controls.clearHighlight.init(codebook);
@@ -253,7 +267,9 @@ function update(codebook) {
 
         //update the codebook
         codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+
         codebook.data.makeSummary(codebook);
+        codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
 
@@ -360,36 +376,10 @@ var groups = {
 };
 
 /*------------------------------------------------------------------------------------------------\
-  Initialize show/hide all charts toggles.
-\------------------------------------------------------------------------------------------------*/
-
-//export function init(selector, data, vars, settings) {
-function init$4(codebook) {
-  //initialize the wrapper
-  var selector = codebook.controls.wrap.append('div').attr('class', 'chart-toggle');
-
-  var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
-    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
-    codebook.wrap.selectAll('.row-toggle').html('&#9660;');
-  });
-
-  var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
-    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
-    codebook.wrap.selectAll('.row-toggle').html('&#9658;');
-  });
-}
-
-/*------------------------------------------------------------------------------------------------\
-  Define chart toggle object.
-\------------------------------------------------------------------------------------------------*/
-
-var chartToggle = { init: init$4 };
-
-/*------------------------------------------------------------------------------------------------\
   Initialize controls container hide/show toggle.
 \------------------------------------------------------------------------------------------------*/
 
-function init$5(codebook) {
+function init$4(codebook) {
   //render the control
   var controlToggle = codebook.controls.wrap.append('button').attr('class', 'control-toggle');
 
@@ -417,7 +407,7 @@ function set$2(codebook) {
   codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
 
   // unless control visibility is hidden, in which case just hide it all
-  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden');
+  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden' || codebook.config.controlVisibility == 'disabled');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -425,7 +415,7 @@ function set$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var controlToggle = {
-  init: init$5,
+  init: init$4,
   set: set$2
 };
 
@@ -433,7 +423,7 @@ var controlToggle = {
   Initialize clear highlighting button.
 \------------------------------------------------------------------------------------------------*/
 
-function init$6(codebook) {
+function init$5(codebook) {
   //initialize the wrapper
   var selector = codebook.wrap.insert('div', ':first-child').classed('clear-highlight hidden', true);
 
@@ -448,7 +438,7 @@ function init$6(codebook) {
   Define clear highlighting button object.
 \------------------------------------------------------------------------------------------------*/
 
-var clearHighlight = { init: init$6 };
+var clearHighlight = { init: init$5 };
 
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
@@ -460,20 +450,37 @@ var controls = {
   groups: groups,
   chartToggle: chartToggle,
   controlToggle: controlToggle,
-  clearHighlight: clearHighlight
+  clearHighlight: clearHighlight,
+  updateRowCount: updateRowCount
 };
 
 var availableTabs = [{
+  key: 'files',
+  label: 'Files',
+  selector: '.web-codebook .fileListing',
+  controls: false,
+  instructions: 'Click a row to see the codebook for the file.'
+}, {
   key: 'codebook',
   label: 'Codebook',
-  selector: '.web-codebook .summaryTable'
+  selector: '.web-codebook .summaryTable',
+  controls: true,
+  instructions: 'Click rows to see charts, or use these buttons: '
 }, {
   key: 'listing',
   label: 'Data Listing',
-  selector: '.web-codebook .dataListing'
-}, { key: 'settings', label: '&#x2699;', selector: '.web-codebook .settings' }];
+  selector: '.web-codebook .dataListing',
+  controls: true,
+  instructions: 'Click any column header to sort that column.'
+}, {
+  key: 'settings',
+  label: '&#x2699;',
+  selector: '.web-codebook .settings',
+  controls: false,
+  instructions: "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
+}];
 
-function init$7(codebook) {
+function init$6(codebook) {
   codebook.nav.wrap.selectAll('*').remove();
 
   //permanently hide the codebook sections that aren't included
@@ -492,6 +499,15 @@ function init$7(codebook) {
     t.active = t.key == codebook.config.defaultTab;
     t.wrap.classed('hidden', !t.active);
   });
+
+  //set control visibility
+  var activeTab = codebook.nav.tabs.filter(function (f) {
+    return f.active;
+  })[0];
+  if (codebook.config.controlVisibility != 'disabled') {
+    codebook.config.controlVisibility = activeTab.controls ? 'visible' : 'hidden';
+    codebook.controls.controlToggle.set(codebook);
+  }
 
   //draw the nav
   if (codebook.nav.tabs.length > 1) {
@@ -519,6 +535,14 @@ function init$7(codebook) {
           }).classed('active', t.active); //style the active nav element
           t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
         });
+
+        codebook.instructions.update(codebook);
+
+        //show/hide the controls (unless they are disabled)
+        if (codebook.config.controlVisibility != 'disabled') {
+          codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+          codebook.controls.controlToggle.set(codebook);
+        }
       }
     });
   }
@@ -529,7 +553,7 @@ function init$7(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var nav = {
-  init: init$7
+  init: init$6
 };
 
 /*------------------------------------------------------------------------------------------------\
@@ -537,9 +561,6 @@ var nav = {
 \------------------------------------------------------------------------------------------------*/
 
 function draw(codebook) {
-  //update Summary Text
-  codebook.summaryTable.updateSummaryText(codebook);
-
   //enter/update/exit for variableDivs
   //BIND the newest data
   var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
@@ -1871,30 +1892,12 @@ function renderRow(d) {
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
-function updateSummaryText(codebook) {
-  //Chart Summary Span
-  if (codebook.data.summary.length > 0) {
-    var nCols = codebook.data.summary.filter(function (d) {
-      return !d.hidden;
-    }).length;
-    var nShown = codebook.data.summary[0].statistics.N;
-    var nTot = codebook.data.raw.length;
-    var percent = d3.format('0.1%')(nShown / nTot);
-    var tableSummary = 'Data summary for ' + nCols + ' columns and ' + nShown + ' of ' + nTot + ' (' + percent + ') rows shown below.';
-  } else {
-    tableSummary = 'No values selected. Update the filters above or load a different data set.';
-  }
-
-  codebook.summaryTable.summaryText.text(tableSummary);
-}
-
 /*------------------------------------------------------------------------------------------------\
   Define summaryTable object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 var summaryTable = {
   draw: draw,
-  renderRow: renderRow,
-  updateSummaryText: updateSummaryText
+  renderRow: renderRow
 };
 
 function layout$1(dataListing) {
@@ -1903,7 +1906,6 @@ function layout$1(dataListing) {
 
   //Add sort container.
   var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
-  sortContainer.append('span').classed('description', true).text('Click any column header to sort that column.');
 
   //Add search container.
   var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
@@ -2078,7 +2080,7 @@ function onDraw(dataListing) {
   });
 }
 
-function init$8(codebook) {
+function init$7(codebook) {
   var dataListing = codebook.dataListing;
   dataListing.config = codebook.config;
   layout$1(dataListing);
@@ -2111,7 +2113,7 @@ function init$8(codebook) {
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-var dataListing = { init: init$8 };
+var dataListing = { init: init$7 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -2124,7 +2126,8 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  tabs: ['codebook', 'listing', 'settings']
+  tabs: ['codebook', 'listing', 'settings'],
+  dataName: ''
 };
 
 function setDefaults(codebook) {
@@ -2166,11 +2169,7 @@ function setDefaults(codebook) {
   codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
   codebook.config.autobins = codebook.config.autobins == null ? defaultSettings$1.autobins : codebook.config.autobins;
 
-  /********************* Histogram Settings *********************/
   codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
-
-  /********************* Histogram Settings *********************/
-  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
@@ -2178,6 +2177,17 @@ function setDefaults(codebook) {
   if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
     console.warn("Invalid starting tab of '" + codebook.config.defaultTab + "' specified. Using '" + codebook.config.tabs[0] + "' instead.");
     codebook.config.defaultTab = codebook.config.tabs[0];
+  }
+
+  /********************* Control Visibility Settings *********************/
+  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
+
+  //hide the controls appropriately according to the start tab
+  if (codebook.config.controlVisibility != 'disabled') {
+    var startTab = availableTabs.filter(function (f) {
+      return f.key == codebook.config.defaultTab;
+    });
+    codebook.config.controlVisibility = startTab.controls ? codebook.config.controlVisibility : 'hidden';
   }
 }
 
@@ -2450,7 +2460,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$9(codebook) {
+function init$8(codebook) {
   codebook.settings.layout(codebook);
 }
 
@@ -2469,19 +2479,20 @@ function reset(codebook) {
 
   //redraw data summary, codebook, and listing.
   codebook.data.makeSummary(codebook);
+  codebook.title.updateColumnCount(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
 }
 
 function updateSettings(codebook, column) {
-  var setting = column !== 'Hidden' ? column.toLowerCase() + 's' : 'hiddenVariables',
+  var setting = column !== 'Hide' ? column.toLowerCase() + 's' : 'hiddenVariables',
       checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
 
   //redefine filter array
   codebook.config[setting] = checkBoxes.filter(function () {
     return d3.select(this).select('input').property('checked');
   }).data().map(function (d) {
-    return column !== 'Hidden' ? { value_col: d.column } : d.column;
+    return column !== 'Hide' ? { value_col: d.column } : d.column;
   });
 
   //reset
@@ -2500,7 +2511,7 @@ function layout$2(codebook) {
     return d.value_col;
   }),
       hiddenColumns = codebook.config.hiddenVariables,
-      columnTableColumns = ['Column', 'Group', 'Filter', 'Hidden'],
+      columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
       columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
@@ -2512,7 +2523,7 @@ function layout$2(codebook) {
         type: 'checkbox',
         checked: filterColumns.indexOf(column) > -1
       },
-      Hidden: {
+      Hide: {
         type: 'checkbox',
         checked: hiddenColumns.indexOf(column) > -1
       }
@@ -2557,9 +2568,6 @@ function layout$2(codebook) {
         });
     }
   });
-
-  //Add descriptive footnote.
-  columnTable.select('tbody').append('tr').style('border-bottom', 'none').append('td').attr('colspan', columnTableColumns.length).html("This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing.");
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2567,8 +2575,81 @@ function layout$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$9,
+  init: init$8,
   layout: layout$2
+};
+
+function init$9(codebook) {
+  codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
+
+  codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
+
+  codebook.title.updateColumnCount(codebook);
+}
+
+function updateColumnCount(codebook) {
+  var nCols_sub = codebook.data.summary.filter(function (d) {
+    return !d.hidden;
+  }).length;
+  var nCols_all = codebook.data.summary.length;
+  var percent = d3.format('0.1%')(nCols_sub / nCols_all);
+  var tableSummary = nCols_sub + ' of ' + nCols_all + ' (' + percent + ') columns selected.';
+  codebook.title.countSpan.text(tableSummary);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define title object.
+\------------------------------------------------------------------------------------------------*/
+
+var title = {
+  init: init$9,
+  updateColumnCount: updateColumnCount
+};
+
+function init$10(codebook) {
+  //no action needed on init, just update to the current text
+  codebook.instructions.update(codebook);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize show/hide all charts toggles.
+\------------------------------------------------------------------------------------------------*/
+
+//export function init(selector, data, vars, settings) {
+function init$11(codebook) {
+  //initialize the wrapper
+  var selector = codebook.instructions.wrap.append('span').attr('class', 'chart-toggle');
+
+  var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+    codebook.wrap.selectAll('.row-toggle').html('&#9660;');
+  });
+
+  var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
+    codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+    codebook.wrap.selectAll('.row-toggle').html('&#9658;');
+  });
+}
+
+function update$2(codebook) {
+  var activeTab = codebook.nav.tabs.filter(function (d) {
+    return d.active;
+  })[0];
+
+  //add instructions text
+  codebook.instructions.wrap.text(activeTab.instructions);
+
+  //add tab-specific controls
+  if (activeTab.key == 'codebook') init$11(codebook);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define instructions object.
+\------------------------------------------------------------------------------------------------*/
+
+var instructions = {
+  init: init$10,
+  update: update$2
 };
 
 function createCodebook() {
@@ -2581,7 +2662,9 @@ function createCodebook() {
     init: init,
     layout: layout,
     controls: controls,
+    title: title,
     nav: nav,
+    instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
@@ -2589,15 +2672,53 @@ function createCodebook() {
     settings: settings
   };
 
+  codebook.events = {
+    init: function init$$1() {},
+    complete: function complete() {}
+  };
+
+  codebook.on = function (event, callback) {
+    var possible_events = ['init', 'complete'];
+    if (possible_events.indexOf(event) < 0) {
+      return;
+    }
+    if (callback) {
+      codebook.events[event] = callback;
+    }
+  };
+
   return codebook;
+}
+
+var defaultSettings$3 = {
+  ignoredColumns: []
+};
+
+function setDefaults$1(explorer) {
+  /********************* ignoredColumns *********************/
+  var firstKey = Object.keys(explorer.config.files[0])[0];
+  explorer.config.ignoredColumns = explorer.config.ignoredColumns || defaultSettings$3.ignoredColumns;
+
+  /********************* labelColumn *********************/
+  explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
+
+  /********************* files[].settings ***************/
+  explorer.config.files.forEach(function (f) {
+    f.settings = f.settings || {};
+  });
 }
 
 /*------------------------------------------------------------------------------------------------\
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$10() {
+function init$12() {
   var settings = this.config;
+  setDefaults$1(this);
+
+  //prepare to draw the codebook for the first file
+  this.current = this.config.files[0];
+  this.current.event = 'load';
 
   //create wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
@@ -2605,11 +2726,8 @@ function init$10() {
   //layout the divs
   this.layout(this);
 
-  //draw controls
-  this.controls.init(this);
-
   //draw first codebook
-  this.makeCodebook(this.config.files[0]);
+  this.makeCodebook(this);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2617,49 +2735,90 @@ function init$10() {
 \------------------------------------------------------------------------------------------------*/
 
 function layout$3() {
-  this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
-
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function init$11(explorer) {
-  explorer.controls.wrap.attr('onsubmit', 'return false;');
-  explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
+function onDraw$1(explorer) {
+  explorer.codebook.fileListing.table.on('draw', function () {
+    //highlight the current row
+    this.table.select('tbody').selectAll('tr').filter(function (f) {
+      return f.raw == explorer.current;
+    }).classed('selected', true);
+
+    //Linkify the labelColumn
+    var labelCells = this.table.selectAll('td').filter(function (f) {
+      return f.col == explorer.config.labelColumn;
+    }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
+      var current_text = d3.select(this).text();
+      explorer.current = explorer.config.files.filter(function (f) {
+        return f[explorer.config.labelColumn] == current_text;
+      })[0];
+      explorer.current.event = 'click';
+      explorer.makeCodebook(explorer);
+    });
+  });
+}
+
+function init$13(explorer) {
+  var fileWrap = explorer.codebook.fileListing.wrap;
+  fileWrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
+  var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
-  var file_select_wrap = explorer.controls.wrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
+  //drop ignoredColumns and system variables
+  var cols = Object.keys(explorer.config.files[0]).filter(function (f) {
+    return explorer.config.ignoredColumns.indexOf(f) == -1;
+  }).filter(function (f) {
+    return ['settings', 'selected', 'event'].indexOf(f) == -1;
+  }); //drop system variables from table
 
-  file_select_wrap.append('span').text('Pick a file: ');
+  //Create the table
+  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', { cols: cols });
 
-  var select$$1 = file_select_wrap.append('select');
-
-  select$$1.selectAll('option').data(explorer.config.files).enter().append('option').text(function (d) {
-    return d.label;
+  //show the selected file first
+  explorer.config.files.forEach(function (d) {
+    return d.selected = d == explorer.current;
+  });
+  var sortedFiles = explorer.config.files.sort(function (a, b) {
+    return a.selected ? -1 : b.selected ? 1 : 0;
   });
 
-  select$$1.on('change', function (d) {
-    var current_text = this.value;
-    var current_obj = explorer.config.files.filter(function (f) {
-      return f.label == current_text;
-    })[0];
-    explorer.makeCodebook(current_obj);
-  });
+  //assign callbacks and initialize
+  onDraw$1(explorer);
+  explorer.codebook.fileListing.table.init(sortedFiles);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var controls$1 = {
-  init: init$11
+var fileListing = {
+  init: init$13
 };
 
-function makeCodebook(meta) {
-  this.codebookWrap.selectAll('*').remove();
-  var codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
-  d3.csv(meta.path, function (error, data) {
-    codebook.init(data);
+function makeCodebook(explorer) {
+  explorer.codebookWrap.selectAll('*').remove();
+
+  //add the Files section to the nav for each config
+  this.current.settings.tabs = this.current.settings.tabs ? d3.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
+
+  //set the default tab to the codebook or listing view assuming they are visible
+  if (this.current.event == 'click') {
+    this.current.settings.defaultTab = this.current.settings.tabs.indexOf('codebook') > -1 ? 'codebook' : this.current.settings.tabs.indexOf('listing') > -1 ? 'listing' : 'files';
+  }
+
+  this.current.settings.dataName = '"' + this.current[this.config.labelColumn] + '"';
+
+  //create the codebook
+  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
+
+  explorer.codebook.on('complete', function () {
+    explorer.fileListing.init(explorer);
+  });
+
+  d3.csv(this.current.path, function (error, data) {
+    explorer.codebook.init(data);
   });
 }
 
@@ -2670,9 +2829,9 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$10,
+    init: init$12,
     layout: layout$3,
-    controls: controls$1,
+    fileListing: fileListing,
     makeCodebook: makeCodebook
   };
 

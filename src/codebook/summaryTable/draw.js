@@ -3,9 +3,6 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function draw(codebook) {
-  //update Summary Text
-  codebook.summaryTable.updateSummaryText(codebook);
-
   //enter/update/exit for variableDivs
   //BIND the newest data
   var varRows = codebook.summaryTable.wrap
