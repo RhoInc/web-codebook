@@ -85,7 +85,7 @@ function init(data) {
   var _this = this;
 
   var settings = this.config;
-
+  var codebook = this;
   //create chart wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook').datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
 
@@ -111,14 +111,21 @@ function init(data) {
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //initialize nav, title and instructions
   this.title.init(this);
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
+
   this.nav.init(this);
+
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
   this.instructions.init(this);
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //call after event (if any)
   this.events.complete.call(this);
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 
   //wait by the quarter second until the loading indicator is visible
   var loading = setInterval(function () {
@@ -169,15 +176,16 @@ function init$1(codebook) {
 
   //Draw title
   codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
-
-  codebook.controls.rowCount = codebook.controls.title.append('span').attr('class', 'rowCount');
-  codebook.controls.updateRowCount(codebook);
+  codebook.controls.summaryWrap = codebook.controls.title.append('span');
+  codebook.controls.rowCount = codebook.controls.summaryWrap.append('span').attr('class', 'rowCount');
+  codebook.controls.highlightCount = codebook.controls.summaryWrap.append('span').attr('class', 'highlightCount');
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
-  codebook.controls.clearHighlight.init(codebook);
+  codebook.controls.highlight.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
   codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
@@ -400,7 +408,7 @@ function set$2(codebook) {
   codebook.controls.wrap.attr('class', 'controls section ' + codebook.config.controlVisibility);
 
   //hide the controls if controlVisibility isn't "visible" ...
-  codebook.controls.wrap.selectAll('*').classed('hidden', !(codebook.config.controlVisibility == 'visible'));
+  codebook.controls.wrap.selectAll('div').classed('hidden', !(codebook.config.controlVisibility == 'visible'));
 
   // but show the title and the toggle ...
   codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
@@ -425,20 +433,20 @@ var controlToggle = {
 
 function init$5(codebook) {
   //initialize the wrapper
-  var selector = codebook.wrap.insert('div', ':first-child').classed('clear-highlight hidden', true);
-
-  var button = selector.append('button').classed('clear-highlight', true).text('Clear Highlighting').on('click', function () {
+  codebook.controls.highlight.clearButton = codebook.controls.summaryWrap.append('button').classed('clear-highlight', true).classed('hidden', codebook.data.highlighted.length == 0).text('Clear Highlighting').on('click', function () {
     codebook.data.highlighted = [];
     codebook.dataListing.init(codebook);
-    selector.classed('hidden', true);
+    codebook.summaryTable.draw(codebook);
+    codebook.controls.updateRowCount(codebook);
   });
+  console.log(codebook.controls.highlight.clearButton.classed('hidden'));
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define clear highlighting button object.
 \------------------------------------------------------------------------------------------------*/
 
-var clearHighlight = { init: init$5 };
+var highlight = { init: init$5 };
 
 function updateRowCount(codebook) {
   if (codebook.data.summary.length > 0) {
@@ -449,6 +457,15 @@ function updateRowCount(codebook) {
     codebook.controls.rowCount.text(tableSummary).classed('warn', false);
   } else {
     codebook.controls.rowCount.text('No rows selected.').classed('warn', true);
+  }
+
+  //Add note regarding highlighted cells and show/hide the clear highlight button
+  if (codebook.data.highlighted.length > 0) {
+    codebook.controls.highlightCount.text(' and ' + codebook.data.highlighted.length + ' highlighted. ');
+    codebook.controls.highlight.clearButton.classed('hidden', false);
+  } else {
+    codebook.controls.highlightCount.text('');
+    codebook.controls.highlight.clearButton.classed('hidden', true);
   }
 }
 
@@ -461,7 +478,7 @@ var controls = {
   filters: filters,
   groups: groups,
   controlToggle: controlToggle,
-  clearHighlight: clearHighlight,
+  highlight: highlight,
   updateRowCount: updateRowCount
 };
 
@@ -715,14 +732,15 @@ function makeTooltip(d, i, context) {
 }
 
 function highlightData(chart) {
-  var _this = this;
-
   var codebook = d3.select(chart.wrap.node().parentNode.parentNode.parentNode).datum(),
       // codebook object is attached to .summaryTable element
   bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function (d) {
-    d3.select(_this).classed('active', true);
+    console.log('clicked');
+    codebook.wrap.selectAll('.bar-group').classed('highlighted', false);
+    d3.select(this).classed('highlighted', true);
+
     var indexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
       return di.index;
     }) : [];
@@ -730,20 +748,10 @@ function highlightData(chart) {
       return indexes.indexOf(di['web-codebook-index']) > -1;
     });
 
-    //Display highlighted data in listing.
-    codebook.dataListing.init(codebook);
-
-    //Active data listing tab.
-    codebook.nav.tabs.forEach(function (t) {
-      t.active = t.label === 'Data Listing'; // set the clicked tab to active
-      codebook.nav.wrap.selectAll('li').filter(function (f) {
-        return f == t;
-      }).classed('active', t.active); // style the active nav element
-      t.wrap.classed('hidden', !t.active); // hide all of the wraps (except for the active one)
-    });
-
-    //Add button to clear highlighted data.
-    codebook.wrap.select('.clear-highlight').classed('hidden', false);
+    //Display highlighted data in listing & codebook.
+    //codebook.dataListing.init(codebook);
+    //codebook.summaryTable.draw(codebook);
+    codebook.controls.updateRowCount(codebook);
   });
 }
 
@@ -776,18 +784,11 @@ function onResize() {
         bar = d;
       }
     });
-    var closest = bars.filter(function (d) {
-      return d.distance === minimum;
-    }).filter(function (d, i) {
-      return i === 0;
-    }).select('rect').style('fill', '#7BAFD4');
 
     //Activate tooltip.
-    var d = closest.datum();
     tooltips.classed('active', false);
     context.svg.select('#' + d.selector).classed('active', true);
   }).on('mouseout', function () {
-    bars.select('rect').style('fill', '#999');
     context.svg.selectAll('g.svg-tooltip').classed('active', false);
   });
 
@@ -1912,9 +1913,6 @@ var summaryTable = {
 };
 
 function layout$1(dataListing) {
-  //Clear data listing.
-  dataListing.wrap.selectAll('*:not(.clear-highlight)').remove();
-
   //Add sort container.
   var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
 

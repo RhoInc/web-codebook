@@ -4,17 +4,15 @@
 
 export function init(codebook) {
   //initialize the wrapper
-  var selector = codebook.wrap
-    .insert('div', ':first-child')
-    .classed('clear-highlight hidden', true);
-
-  var button = selector
+  codebook.controls.highlight.clearButton = codebook.controls.summaryWrap
     .append('button')
     .classed('clear-highlight', true)
+    .classed('hidden', codebook.data.highlighted.length == 0)
     .text('Clear Highlighting')
     .on('click', function() {
       codebook.data.highlighted = [];
       codebook.dataListing.init(codebook);
-      selector.classed('hidden', true);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
     });
-}
+  }

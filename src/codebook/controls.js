@@ -6,7 +6,7 @@ import { init } from './controls/init';
 import { filters } from './controls/filters';
 import { groups } from './controls/groups';
 import { controlToggle } from './controls/controlToggle';
-import { clearHighlight } from './controls/clearHighlight';
+import { highlight } from './controls/highlight';
 import { updateRowCount } from './controls/updateRowCount';
 
 export const controls = {
@@ -14,6 +14,6 @@ export const controls = {
   filters: filters,
   groups: groups,
   controlToggle: controlToggle,
-  clearHighlight: clearHighlight,
+  highlight: highlight,
   updateRowCount: updateRowCount
 };

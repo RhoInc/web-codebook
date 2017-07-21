@@ -2,6 +2,6 @@
   Define clear highlighting button object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './clearHighlight/init';
+import { init } from './highlight/init';
 
-export const clearHighlight = { init: init };
+export const highlight = { init: init };

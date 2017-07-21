@@ -33,19 +33,12 @@ export default function onResize() {
           bar = d;
         }
       });
-      const closest = bars
-        .filter(d => d.distance === minimum)
-        .filter((d, i) => i === 0)
-        .select('rect')
-        .style('fill', '#7BAFD4');
 
       //Activate tooltip.
-      const d = closest.datum();
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
     })
     .on('mouseout', function() {
-      bars.select('rect').style('fill', '#999');
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
 

@@ -1,7 +1,4 @@
 export default function layout(dataListing) {
-  //Clear data listing.
-  dataListing.wrap.selectAll('*:not(.clear-highlight)').remove();
-
   //Add sort container.
   const sortContainer = dataListing.wrap
     .append('div')

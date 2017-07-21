@@ -11,17 +11,20 @@ export function init(codebook) {
     .append('div')
     .attr('class', 'controls-title')
     .text('Controls');
-
-  codebook.controls.rowCount = codebook.controls.title
+  codebook.controls.summaryWrap = codebook.controls.title.append('span');
+  codebook.controls.rowCount = codebook.controls.summaryWrap
     .append('span')
     .attr('class', 'rowCount');
-  codebook.controls.updateRowCount(codebook);
+  codebook.controls.highlightCount = codebook.controls.summaryWrap
+    .append('span')
+    .attr('class', 'highlightCount');
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
-  codebook.controls.clearHighlight.init(codebook);
+  codebook.controls.highlight.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
   codebook.controls.wrap
