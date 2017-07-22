@@ -23,7 +23,7 @@ export default function highlightData(chart) {
     //Display highlighted data in listing & codebook.
     codebook.data.makeSummary(codebook);
     codebook.dataListing.init(codebook);
-    //codebook.summaryTable.draw(codebook);
+    codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);
   });
 }

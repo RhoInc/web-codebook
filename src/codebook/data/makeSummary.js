@@ -19,7 +19,6 @@ export function makeSummary(codebook) {
           highlighted: codebook.data.highlighted.indexOf(d) > -1
         };
       });
-      console.log(variables[i].values);
 
       //get variable type
       variables[i].type = summarize.determineType(
@@ -98,7 +97,6 @@ export function makeSummary(codebook) {
     codebook.data.summary = variables;
     //get bin counts
     codebook.util.getBinCounts(codebook);
-    console.log(codebook);
   } else {
     codebook.data.summary = [];
   }

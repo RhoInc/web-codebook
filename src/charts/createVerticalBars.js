@@ -32,11 +32,11 @@ export function createVerticalBars(this_, d) {
         type: 'bar',
         per: ['key'],
         attributes: {
-          stroke: null,
-          fill: '#999'
+          stroke: null
         }
       }
     ],
+    colors: ['#999'],
     gridlines: '',
     resizable: false,
     height: this_.height,
@@ -52,12 +52,28 @@ export function createVerticalBars(this_, d) {
 
   chartSettings.margin.bottom = 10;
 
-  const chartData = d.statistics.values.sort(function(a, b) {
+  var chartData = d.statistics.values.sort(function(a, b) {
     return axisSort(a, b, chartSettings.sort);
   });
-
   chartSettings.x.order = chartData.map(d => d.key);
   var x_dom = chartData.map(d => d.key);
+
+  //Add highlight values (if any)
+  chartData.forEach(function(d) {
+    d.type = 'Main';
+  });
+
+  if (d.statistics.highlightValues) {
+    d.statistics.highlightValues.forEach(function(d) {
+      d.type = 'sub';
+    });
+    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+
+    chartSettings.marks[0].per = ['key', 'type'];
+    chartSettings.marks[0].arrange = 'nested';
+    chartSettings.color_by = 'type';
+    chartSettings.colors = ['#999', 'orange'];
+  }
 
   if (d.groups) {
     //Set upper limit of y-axis domain to the maximum group rate.
@@ -71,8 +87,6 @@ export function createVerticalBars(this_, d) {
       group.chartSettings = clone(chartSettings);
       group.chartSettings.group_val = group.group;
       group.chartSettings.n = group.values.length;
-
-      //Sort data by descending rate and keep only the first five categories.
       group.data = group.statistics.values;
 
       //Define chart.

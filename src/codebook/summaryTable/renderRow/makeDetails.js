@@ -5,7 +5,9 @@ export default function makeDetails(d) {
 
   //Render Summary Stats
   var stats_div = wrap.append('div').attr('class', 'stat-row');
-  var statNames = Object.keys(d.statistics).filter(f => f != 'values');
+  var statNames = Object.keys(d.statistics).filter(
+    f => (f != 'values') & (f != 'highlightValues')
+  );
   var statList = statNames
     .map(stat => {
       return {
