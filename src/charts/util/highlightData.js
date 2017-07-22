@@ -15,11 +15,13 @@ export default function highlightData(chart) {
       : chart.config.chartType === 'histogramBoxPlot'
         ? d.values.raw.map(di => di.index)
         : [];
+
     codebook.data.highlighted = codebook.data.filtered.filter(di => {
       return indexes.indexOf(di['web-codebook-index']) > -1;
     });
 
     //Display highlighted data in listing & codebook.
+    codebook.data.makeSummary(codebook);
     codebook.dataListing.init(codebook);
     //codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);

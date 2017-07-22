@@ -738,11 +738,13 @@ function highlightData(chart) {
     var indexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
       return di.index;
     }) : [];
+
     codebook.data.highlighted = codebook.data.filtered.filter(function (di) {
       return indexes.indexOf(di['web-codebook-index']) > -1;
     });
 
     //Display highlighted data in listing & codebook.
+    codebook.data.makeSummary(codebook);
     codebook.dataListing.init(codebook);
     //codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);
@@ -2347,7 +2349,7 @@ function determineType(vector, levelSplit) {
   return nonMissingValues.length === numericValues.length && distinctValues.length > levelSplit ? 'continuous' : 'categorical';
 }
 
-function categorical(vector) {
+function categorical(vector, sub) {
   var statistics = {};
   statistics.N = vector.length;
   var nonMissing = vector.filter(function (d) {
@@ -2358,7 +2360,7 @@ function categorical(vector) {
   statistics.values = d3.nest().key(function (d) {
     return d.value;
   }).rollup(function (d) {
-    return {
+    var stats = {
       n: d.length,
       prop_N: d.length / statistics.N,
       prop_n: d.length / statistics.n,
@@ -2368,6 +2370,15 @@ function categorical(vector) {
         return di.index;
       })
     };
+    if (sub) {
+      var d_sub = d.filter(sub);
+      stats.n_sub = d_sub.length;
+      stats.prop_n_sub = d_sub.length / statistics.n;
+      stats.prop_N_sub = d_sub.length / statistics.N;
+      stats.prop_N_sub_text = d3.format('0.1%')(d_sub.length / statistics.N);
+      stats.prop_n_sub_text = d3.format('0.1%')(d_sub.length / statistics.n);
+    }
+    return stats;
   }).entries(nonMissing);
   statistics.Unique = d3.set(vector.map(function (d) {
     return d.value;
@@ -2383,7 +2394,7 @@ function categorical(vector) {
   return statistics;
 }
 
-function continuous(vector) {
+function continuous(vector, sub) {
   var statistics = {};
   statistics.N = vector.length;
   var nonMissing = vector.filter(function (d) {
@@ -2403,6 +2414,22 @@ function continuous(vector) {
     statistics[statistic] = d3.format('0.1f')(d3.quantile(nonMissing, quantile$$1[1]));
   });
 
+  if (sub) {
+    var sub_vector = vector.filter(sub).filter(function (d) {
+      return !isNaN(+d.value) && !/^\s*$/.test(d.value);
+    }).map(function (d) {
+      return +d.value;
+    }).sort(function (a, b) {
+      return a - b;
+    });
+    statistics.mean_sub = d3.format('0.2f')(d3.mean(sub_vector));
+    statistics.SD_sub = d3.format('0.2f')(d3.deviation(sub_vector));
+    quantiles.forEach(function (quantile$$1) {
+      var statistic = quantile$$1[0];
+      statistics[statistic + '_sub'] = d3.format('0.1f')(d3.quantile(sub_vector, quantile$$1[1]));
+    });
+  }
+
   return statistics;
 }
 
@@ -2419,22 +2446,39 @@ function makeSummary(codebook) {
   if (codebook.data.filtered.length > 0) {
     var variables = Object.keys(data[0]);
     variables.forEach(function (variable, i) {
-      //Define variable data vector and metadata.
+      //change from string to object
       variables[i] = { value_col: variable };
+
+      //get a list of values
       variables[i].values = data.map(function (d) {
         return {
           index: d['web-codebook-index'],
-          value: d[variable]
+          value: d[variable],
+          highlighted: codebook.data.highlighted.indexOf(d) > -1
         };
       });
+      console.log(variables[i].values);
+
+      //get variable type
       variables[i].type = summarize.determineType(variables[i].values, codebook.config.levelSplit);
+
+      //get hidden status
       variables[i].hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
+
+      //get variable label
       variables[i].label = codebook.config.variableLabels.map(function (variableLabel) {
         return variableLabel.value_col;
       }).indexOf(variable) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
         return variableLabel.value_col === variable;
       })[0].label : variable;
-      variables[i].statistics = variables[i].type === 'continuous' ? summarize.continuous(variables[i].values) : summarize.categorical(variables[i].values);
+
+      //calculate variable statistics (including for highlights - if any)
+      var sub = codebook.data.highlighted.length > 0 ? function (d) {
+        return d.highlighted;
+      } : null;
+      variables[i].statistics = variables[i].type === 'continuous' ? summarize.continuous(variables[i].values, sub) : summarize.categorical(variables[i].values, sub);
+
+      //get chart type
       variables[i].chartType = variables[i].type == 'continuous' ? 'histogramBoxPlot' : variables[i].type == 'categorical' & variables[i].statistics.values.length > codebook.config.levelSplit ? 'verticalBars' : variables[i].type == 'categorical' & variables[i].statistics.values.length <= codebook.config.levelSplit ? 'horizontalBars' : 'error';
 
       //Handle groups.
@@ -2473,6 +2517,7 @@ function makeSummary(codebook) {
     codebook.data.summary = variables;
     //get bin counts
     codebook.util.getBinCounts(codebook);
+    console.log(codebook);
   } else {
     codebook.data.summary = [];
   }
