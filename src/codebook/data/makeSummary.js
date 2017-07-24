@@ -81,15 +81,16 @@ export function makeSummary(codebook) {
           g.values = data.filter(d => d[group] === g.group).map(d => {
             return {
               index: d['web-codebook-index'],
-              value: d[variable]
+              value: d[variable],
+              highlighted: codebook.data.highlighted.indexOf(d) > -1
             };
           });
           g.type = variables[i].type;
 
           //Calculate statistics.
           if (variables[i].type === 'categorical')
-            g.statistics = summarize.categorical(g.values);
-          else g.statistics = summarize.continuous(g.values);
+            g.statistics = summarize.categorical(g.values, sub);
+          else g.statistics = summarize.continuous(g.values, sub);
         });
       }
     });

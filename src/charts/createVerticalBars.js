@@ -88,6 +88,20 @@ export function createVerticalBars(this_, d) {
       group.chartSettings.group_val = group.group;
       group.chartSettings.n = group.values.length;
       group.data = group.statistics.values;
+      group.data.forEach(function(d) {
+        d.type = 'main';
+      });
+      if (group.statistics.highlightValues) {
+        group.statistics.highlightValues.forEach(function(d) {
+          d.type = 'sub';
+        });
+        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+
+        group.chartSettings.marks[0].per = ['key', 'type'];
+        group.chartSettings.marks[0].arrange = 'nested';
+        group.chartSettings.color_by = 'type';
+        group.chartSettings.colors = ['#999', 'orange'];
+      }
 
       //Define chart.
       group.chart = createChart(chartContainer, group.chartSettings);

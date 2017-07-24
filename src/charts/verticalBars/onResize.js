@@ -18,6 +18,7 @@ export default function onResize() {
   const bars = this.svg.selectAll('.bar-group');
   const tooltips = this.svg.selectAll('.svg-tooltip');
   const statistics = this.svg.selectAll('.statistic');
+  /*
   this.svg
     .on('mousemove', function() {
       //Highlight closest bar.
@@ -47,7 +48,7 @@ export default function onResize() {
     .on('mouseout', function() {
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
-
+    */
   //Add event listener to marks to highlight data.
   highlightData(this);
 }

@@ -766,35 +766,36 @@ function onResize() {
   var bars = this.svg.selectAll('.bar-group');
   var tooltips = this.svg.selectAll('.svg-tooltip');
   var statistics = this.svg.selectAll('.statistic');
-  this.svg.on('mousemove', function () {
-    //Highlight closest bar.
-    var mouse$$1 = d3$1.mouse(this);
-    var x = mouse$$1[0];
-    var y = mouse$$1[1];
-    var minimum = void 0;
-    var bar = {};
-    bars.each(function (d, i) {
-      d.distance = Math.abs(context.x(d.key) - x);
-      if (i === 0 || d.distance < minimum) {
-        minimum = d.distance;
-        bar = d;
-      }
+  /*
+  this.svg
+    .on('mousemove', function() {
+      //Highlight closest bar.
+      const mouse = d3mouse(this);
+      const x = mouse[0];
+      const y = mouse[1];
+      let minimum;
+      let bar = {};
+      bars.each(function(d, i) {
+        d.distance = Math.abs(context.x(d.key) - x);
+        if (i === 0 || d.distance < minimum) {
+          minimum = d.distance;
+          bar = d;
+        }
+      });
+      const closest = bars
+        .filter(d => d.distance === minimum)
+        .filter((d, i) => i === 0)
+        .select('rect');
+       //Activate tooltip.		        //Activate tooltip.
+      const d = closest.datum();
+      //Activate tooltip.
+      tooltips.classed('active', false);
+      context.svg.select('#' + d.selector).classed('active', true);
+    })
+    .on('mouseout', function() {
+      context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
-    var closest = bars.filter(function (d) {
-      return d.distance === minimum;
-    }).filter(function (d, i) {
-      return i === 0;
-    }).select('rect');
-
-    //Activate tooltip.		        //Activate tooltip.
-    var d = closest.datum();
-    //Activate tooltip.
-    tooltips.classed('active', false);
-    context.svg.select('#' + d.selector).classed('active', true);
-  }).on('mouseout', function () {
-    context.svg.selectAll('g.svg-tooltip').classed('active', false);
-  });
-
+    */
   //Add event listener to marks to highlight data.
   highlightData(this);
 }
@@ -900,9 +901,21 @@ function createVerticalBars(this_, d) {
       group.chartSettings = clone(chartSettings);
       group.chartSettings.group_val = group.group;
       group.chartSettings.n = group.values.length;
-
-      //Sort data by descending rate and keep only the first five categories.
       group.data = group.statistics.values;
+      group.data.forEach(function (d) {
+        d.type = 'main';
+      });
+      if (group.statistics.highlightValues) {
+        group.statistics.highlightValues.forEach(function (d) {
+          d.type = 'sub';
+        });
+        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+
+        group.chartSettings.marks[0].per = ['key', 'type'];
+        group.chartSettings.marks[0].arrange = 'nested';
+        group.chartSettings.color_by = 'type';
+        group.chartSettings.colors = ['#999', 'orange'];
+      }
 
       //Define chart.
       group.chart = webcharts.createChart(chartContainer, group.chartSettings);
@@ -921,8 +934,6 @@ function createVerticalBars(this_, d) {
     chart.on('init', onInit);
     chart.on('resize', onResize);
     chart.init(chartData);
-    console.log(chartData);
-    console.log(chartSettings.marks);
   }
 }
 
@@ -2538,13 +2549,14 @@ function makeSummary(codebook) {
           }).map(function (d) {
             return {
               index: d['web-codebook-index'],
-              value: d[variable]
+              value: d[variable],
+              highlighted: codebook.data.highlighted.indexOf(d) > -1
             };
           });
           g.type = variables[i].type;
 
           //Calculate statistics.
-          if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values);else g.statistics = summarize.continuous(g.values);
+          if (variables[i].type === 'categorical') g.statistics = summarize.categorical(g.values, sub);else g.statistics = summarize.continuous(g.values, sub);
         });
       }
     });
