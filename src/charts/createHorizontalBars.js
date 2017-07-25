@@ -34,7 +34,7 @@ export function createHorizontalBars(this_, d) {
           }
         }
       ],
-      colors: ['#999', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
+      colors: ['#999'],
       gridlines: 'x',
       resizable: false,
       height: custom_height,
@@ -44,15 +44,32 @@ export function createHorizontalBars(this_, d) {
       group_label: d.groupLabel || null,
       overall: d.statistics.values,
       chartType: d.chartType
-    },
-    chartData = d.statistics.values.sort(
-      (a, b) =>
-        a.prop_n > b.prop_n
-          ? -2
-          : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
-    ); // sort data by descending rate and keep only the first five categories.
+    };
+  var chartData = d.statistics.values.sort(
+    (a, b) =>
+      a.prop_n > b.prop_n
+        ? -2
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
+  ); // sort data by descending rate and keep only the first five categories.
 
   chartSettings.y.order = chartData.map(d => d.key).reverse();
+
+  //Add highlight values (if any)
+  chartData.forEach(function(d) {
+    d.type = 'Main';
+  });
+
+  if (d.statistics.highlightValues) {
+    d.statistics.highlightValues.forEach(function(d) {
+      d.type = 'sub';
+    });
+    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+
+    chartSettings.marks[0].per = ['key', 'type'];
+    chartSettings.marks[0].arrange = 'nested';
+    chartSettings.color_by = 'type';
+    chartSettings.colors = ['#999', 'orange'];
+  }
 
   if (d.groups) {
     //Set upper limit of x-axis domain to the maximum group rate.
@@ -75,6 +92,21 @@ export function createHorizontalBars(this_, d) {
               ? -2
               : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         );
+
+      group.data.forEach(function(d) {
+        d.type = 'main';
+      });
+      if (group.statistics.highlightValues) {
+        group.statistics.highlightValues.forEach(function(d) {
+          d.type = 'sub';
+        });
+        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+
+        group.chartSettings.marks[0].per = ['key', 'type'];
+        group.chartSettings.marks[0].arrange = 'nested';
+        group.chartSettings.color_by = 'type';
+        group.chartSettings.colors = ['#999', 'orange'];
+      }
 
       //Define chart.
       group.chart = createChart(chartContainer, group.chartSettings);

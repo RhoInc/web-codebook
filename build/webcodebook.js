@@ -1030,9 +1030,11 @@ function drawDifferences(chart) {
   chart.svg.selectAll('.difference-from-total').remove();
 
   //For each mark draw a difference mark and annotation.
-  chart.current_data.forEach(function (d) {
+  chart.current_data.filter(function (d) {
+    return d.values.raw[0].type == 'main';
+  }).forEach(function (d) {
     var overall = chart.config.overall.filter(function (di) {
-      return di.key === d.key;
+      return di.key === d.values.raw[0].key;
     })[0],
         g = chart.svg.append('g').classed('difference-from-total', true).style('display', 'none'),
         x = overall[chart.config.x.column],
@@ -1111,7 +1113,7 @@ function createHorizontalBars(this_, d) {
         stroke: null
       }
     }],
-    colors: ['#999', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
+    colors: ['#999'],
     gridlines: 'x',
     resizable: false,
     height: custom_height,
@@ -1121,14 +1123,31 @@ function createHorizontalBars(this_, d) {
     group_label: d.groupLabel || null,
     overall: d.statistics.values,
     chartType: d.chartType
-  },
-      chartData = d.statistics.values.sort(function (a, b) {
+  };
+  var chartData = d.statistics.values.sort(function (a, b) {
     return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
   }); // sort data by descending rate and keep only the first five categories.
 
   chartSettings.y.order = chartData.map(function (d) {
     return d.key;
   }).reverse();
+
+  //Add highlight values (if any)
+  chartData.forEach(function (d) {
+    d.type = 'Main';
+  });
+
+  if (d.statistics.highlightValues) {
+    d.statistics.highlightValues.forEach(function (d) {
+      d.type = 'sub';
+    });
+    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+
+    chartSettings.marks[0].per = ['key', 'type'];
+    chartSettings.marks[0].arrange = 'nested';
+    chartSettings.color_by = 'type';
+    chartSettings.colors = ['#999', 'orange'];
+  }
 
   if (d.groups) {
     //Set upper limit of x-axis domain to the maximum group rate.
@@ -1150,6 +1169,21 @@ function createHorizontalBars(this_, d) {
       }).sort(function (a, b) {
         return a.prop_n > b.prop_n ? -2 : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
       });
+
+      group.data.forEach(function (d) {
+        d.type = 'main';
+      });
+      if (group.statistics.highlightValues) {
+        group.statistics.highlightValues.forEach(function (d) {
+          d.type = 'sub';
+        });
+        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+
+        group.chartSettings.marks[0].per = ['key', 'type'];
+        group.chartSettings.marks[0].arrange = 'nested';
+        group.chartSettings.color_by = 'type';
+        group.chartSettings.colors = ['#999', 'orange'];
+      }
 
       //Define chart.
       group.chart = webcharts.createChart(chartContainer, group.chartSettings);
