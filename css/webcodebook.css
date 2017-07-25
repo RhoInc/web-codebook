@@ -7,7 +7,7 @@ General
 }
 
 .web-codebook > .section {
-  margin-top:1em;
+  margin-top:0.5em;
 }
 
 .web-codebook .small {
@@ -20,9 +20,34 @@ General
   margin:0;
 }
 
+
 .web-codebook .hidden {
   display: none !important; /* all .hidden elements should be hidden/display:none */
 }
+
+/*------------------------------------------------------------------------------------------------\
+Instructions and Title layout
+\------------------------------------------------------------------------------------------------*/
+
+.web-codebook .nav{
+  margin-top:0.1em
+}
+
+.web-codebook .title .file{
+  font-weight:500;
+  font-size:1.4em;
+}
+
+.web-codebook .rowCount,.web-codebook .columnCount{
+  padding-left:1em;
+  font-size:0.8em;
+  color:#999;
+}
+
+.web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
+  color:red;
+}
+
 
 /*------------------------------------------------------------------------------------------------\
 Controls layout

@@ -2,7 +2,7 @@ import { select as d3select } from 'd3';
 import reset from './updateSettings/reset';
 
 export default function updateSettings(codebook, column) {
-  const setting = column !== 'Hidden'
+  const setting = column !== 'Hide'
     ? `${column.toLowerCase()}s`
     : 'hiddenVariables',
     checkBoxes = codebook.settings.wrap.selectAll(`.column-table td.${column}`);
@@ -14,7 +14,7 @@ export default function updateSettings(codebook, column) {
     })
     .data()
     .map(d => {
-      return column !== 'Hidden' ? { value_col: d.column } : d.column;
+      return column !== 'Hide' ? { value_col: d.column } : d.column;
     });
 
   //reset

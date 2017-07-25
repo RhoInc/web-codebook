@@ -7,6 +7,8 @@ import { dataListing } from './codebook/dataListing';
 import { util } from './codebook/util';
 import { data } from './codebook/data';
 import { settings } from './codebook/settings';
+import { title } from './codebook/title';
+import { instructions } from './codebook/instructions';
 
 export function createCodebook(element = 'body', config) {
   let codebook = {
@@ -15,7 +17,9 @@ export function createCodebook(element = 'body', config) {
     init: init,
     layout: layout,
     controls: controls,
+    title: title,
     nav: nav,
+    instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
     data: data,
