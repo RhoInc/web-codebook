@@ -385,25 +385,25 @@ Chart layout
         Table
     \--------------------------------------------------------------------------------------***/
 
-        .web-codebook .listing-container {
+        .web-codebook .dataListing .listing-container {
             padding: 1% 0;
             clear: both;
         }
 
-        .web-codebook  .listing-container table {
+        .web-codebook .dataListing .listing-container table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .web-codebook  .listing-container thead tr {
+        .web-codebook .dataListing .listing-container thead tr {
             border-bottom: 2px solid black;
         }
 
-        .web-codebook  .listing-container tbody tr {
+        .web-codebook .dataListing .listing-container tbody tr {
             border-bottom: 1px dotted #ccc;
         }
 
-        .web-codebook  .listing-container tbody tr.filtered {
+        .web-codebook .dataListing .listing-container tbody tr.filtered {
             display: none;
         }
 
@@ -411,17 +411,17 @@ Chart layout
             background: #eee;
         }*/
 
-        .web-codebook  .listing-container th {
+        .web-codebook .dataListing .listing-container th {
             cursor: pointer;
             text-align: left;
             padding: 2px 5px;
         }
 
-        .web-codebook  .listing-container th:hover {
+        .web-codebook .dataListing .listing-container th:hover {
             background: rgb(123,175,212);
         }
 
-        .web-codebook .listing-container td {
+        .web-codebook .dataListing .listing-container td {
             text-align: left;
             padding: 2px 5px;
         }
@@ -459,16 +459,14 @@ Chart layout
         float: left;
         cursor:pointer;
         border:2px solid black;
-        height:2.5em;
-        padding:0 10px 0 10px;
-        line-height: 2.5em;
-        text-align: center;
+        font-size: 24px;
     }
 
     .web-codebook .nav ul.nav-tabs li a {
         display: block;
         text-align: center;
         color:white;
+        padding: 16px;
         text-decoration: none;
     }
 
@@ -526,15 +524,4 @@ Chart layout
 
     .web-codebook .settings table.column-table td.Column {
         text-align: right;
-    }
-
-/*------------------------------------------------------------------------------------------------\
-  Data Listing
-\------------------------------------------------------------------------------------------------*/
-.web-codebook .fileListing{
-
-}
-    .web-codebook .fileListing tr.selected{
-      background: #008CBA;
-      color:white;
     }
