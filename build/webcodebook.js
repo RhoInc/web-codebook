@@ -415,19 +415,20 @@ function init$6(codebook) {
   });
 
   //draw the nav
-  var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
-  var navItems = chartNav.selectAll('li').data(codebook.nav.tabs) //make this a setting
-  .enter().append('li').attr('class', function (d) {
-    return d.key;
-  }).classed('active', function (d, i) {
-    return d.active; //make this a setting
-  }).attr('title', function (d) {
-    return 'View ' + d.key;
-  });
+  if (codebook.nav.tabs.length > 1) {
+    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
+    var navItems = chartNav.selectAll('li').data(codebook.nav.tabs) //make this a setting
+    .enter().append('li').attr('class', function (d) {
+      return d.key;
+    }).classed('active', function (d, i) {
+      return d.active; //make this a setting
+    }).attr('title', function (d) {
+      return 'View ' + d.key;
+    });
 
-  navItems.append('a').html(function (d) {
-    return d.label;
-  });
+    navItems.append('a').html(function (d) {
+      return d.label;
+    });
 
   //event listener for nav clicks
   navItems.on('click', function (d) {
