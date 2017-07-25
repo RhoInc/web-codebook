@@ -1,5 +1,4 @@
 import { csv as d3csv } from 'd3';
-import { merge as d3merge } from 'd3';
 
 export function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
@@ -26,14 +25,9 @@ export function makeCodebook(explorer) {
   //create the codebook
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',
-    this.current.settings
+    meta.settings
   );
-
-  explorer.codebook.on('complete', function() {
-    explorer.fileListing.init(explorer);
-  });
-
-  d3csv(this.current.path, function(error, data) {
-    explorer.codebook.init(data);
+  d3csv(meta.path, function(error, data) {
+    codebook.init(data);
   });
 }

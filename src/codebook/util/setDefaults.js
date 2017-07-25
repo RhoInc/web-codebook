@@ -1,5 +1,4 @@
 import defaultSettings from '../defaultSettings';
-import availableTabs from '../nav/availableTabs';
 
 export function setDefaults(codebook) {
   /********************* Filter Settings *********************/
@@ -60,8 +59,13 @@ export function setDefaults(codebook) {
     ? defaultSettings.autobins
     : codebook.config.autobins;
 
+  /********************* Histogram Settings *********************/
   codebook.config.levelSplit =
     codebook.config.levelSplit || defaultSettings.levelSplit;
+
+  /********************* Histogram Settings *********************/
+  codebook.config.controlVisibility =
+    codebook.config.controlVisibility || defaultSettings.controlVisibility;
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
@@ -76,19 +80,5 @@ export function setDefaults(codebook) {
         "' instead."
     );
     codebook.config.defaultTab = codebook.config.tabs[0];
-  }
-
-  /********************* Control Visibility Settings *********************/
-  codebook.config.controlVisibility =
-    codebook.config.controlVisibility || defaultSettings.controlVisibility;
-
-  //hide the controls appropriately according to the start tab
-  if (codebook.config.controlVisibility != 'disabled') {
-    var startTab = availableTabs.filter(
-      f => f.key == codebook.config.defaultTab
-    );
-    codebook.config.controlVisibility = startTab.controls
-      ? codebook.config.controlVisibility
-      : 'hidden';
   }
 }

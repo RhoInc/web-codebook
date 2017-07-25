@@ -16,9 +16,6 @@ function init(data) {
   //create chart wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook');
 
-  // call the before callback (if any)
-  this.events.init.call(this);
-
   //save raw data
   this.data.raw = data;
   this.data.filtered = data; //assume no filters active on init :/
@@ -75,9 +72,6 @@ function layout() {
   this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
 
   this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
-
-  this.fileListing = {};
-  this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
 
   this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
 
@@ -329,7 +323,7 @@ function set$1(codebook) {
   codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
 
   // unless control visibility is hidden, in which case just hide it all
-  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden' || codebook.config.controlVisibility == 'disabled');
+  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -436,26 +430,27 @@ function init$5(codebook) {
       return d.label;
     });
 
-  //event listener for nav clicks
-  navItems.on('click', function (d) {
-    if (!d.active) {
-      codebook.nav.tabs.forEach(function (t) {
-        t.active = d.label == t.label; //set the clicked tab to active
-        navItems.filter(function (f) {
-          return f == t;
-        }).classed('active', t.active); //style the active nav element
-        t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
-      });
+    //event listener for nav clicks
+    navItems.on('click', function (d) {
+      if (!d.active) {
+        codebook.nav.tabs.forEach(function (t) {
+          t.active = d.label == t.label; //set the clicked tab to active
+          navItems.filter(function (f) {
+            return f == t;
+          }).classed('active', t.active); //style the active nav element
+          t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
+        });
 
-      codebook.instructions.update(codebook);
+        codebook.instructions.update(codebook);
 
-      //show/hide the controls (unless they are disabled)
-      if (codebook.config.controlVisibility != 'disabled') {
-        codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
-        codebook.controls.controlToggle.set(codebook);
+        //show/hide the controls (unless they are disabled)
+        if (codebook.config.controlVisibility != 'disabled') {
+          codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+          codebook.controls.controlToggle.set(codebook);
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2096,7 +2091,11 @@ function setDefaults(codebook) {
   codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
   codebook.config.autobins = codebook.config.autobins == null ? defaultSettings$1.autobins : codebook.config.autobins;
 
+  /********************* Histogram Settings *********************/
   codebook.config.levelSplit = codebook.config.levelSplit || defaultSettings$1.levelSplit;
+
+  /********************* Histogram Settings *********************/
+  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings$1.tabs;
@@ -2104,17 +2103,6 @@ function setDefaults(codebook) {
   if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
     console.warn("Invalid starting tab of '" + codebook.config.defaultTab + "' specified. Using '" + codebook.config.tabs[0] + "' instead.");
     codebook.config.defaultTab = codebook.config.tabs[0];
-  }
-
-  /********************* Control Visibility Settings *********************/
-  codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
-
-  //hide the controls appropriately according to the start tab
-  if (codebook.config.controlVisibility != 'disabled') {
-    var startTab = availableTabs.filter(function (f) {
-      return f.key == codebook.config.defaultTab;
-    });
-    codebook.config.controlVisibility = startTab.controls ? codebook.config.controlVisibility : 'hidden';
   }
 }
 
@@ -2586,40 +2574,7 @@ function createCodebook() {
     settings: settings
   };
 
-  codebook.events = {
-    init: function init$$1() {},
-    complete: function complete() {}
-  };
-
-  codebook.on = function (event, callback) {
-    var possible_events = ['init', 'complete'];
-    if (possible_events.indexOf(event) < 0) {
-      return;
-    }
-    if (callback) {
-      codebook.events[event] = callback;
-    }
-  };
-
   return codebook;
-}
-
-var defaultSettings$3 = {
-  ignoredColumns: []
-};
-
-function setDefaults$1(explorer) {
-  /********************* ignoredColumns *********************/
-  var firstKey = Object.keys(explorer.config.files[0])[0];
-  explorer.config.ignoredColumns = explorer.config.ignoredColumns || defaultSettings$3.ignoredColumns;
-
-  /********************* labelColumn *********************/
-  explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
-
-  /********************* files[].settings ***************/
-  explorer.config.files.forEach(function (f) {
-    f.settings = f.settings || {};
-  });
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2628,11 +2583,6 @@ function setDefaults$1(explorer) {
 
 function init$11() {
   var settings = this.config;
-  setDefaults$1(this);
-
-  //prepare to draw the codebook for the first file
-  this.current = this.config.files[0];
-  this.current.event = 'load';
 
   //create wrapper in specified div
   this.wrap = d3.select(this.element).append('div').attr('class', 'web-codebook-explorer');
@@ -2640,8 +2590,11 @@ function init$11() {
   //layout the divs
   this.layout(this);
 
+  //draw controls
+  this.controls.init(this);
+
   //draw first codebook
-  this.makeCodebook(this);
+  this.makeCodebook(this.config.files[0]);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2649,65 +2602,41 @@ function init$11() {
 \------------------------------------------------------------------------------------------------*/
 
 function layout$3() {
+  this.controls.wrap = this.wrap.append('div').attr('class', 'controls');
+
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
-function onDraw$1(explorer) {
-  explorer.codebook.fileListing.table.on('draw', function () {
-    //highlight the current row
-    this.table.select('tbody').selectAll('tr').filter(function (f) {
-      return f.raw == explorer.current;
-    }).classed('selected', true);
-
-    //Linkify the labelColumn
-    var labelCells = this.table.selectAll('td').filter(function (f) {
-      return f.col == explorer.config.labelColumn;
-    }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
-      var current_text = d3.select(this).text();
-      explorer.current = explorer.config.files.filter(function (f) {
-        return f[explorer.config.labelColumn] == current_text;
-      })[0];
-      explorer.current.event = 'click';
-      explorer.makeCodebook(explorer);
-    });
-  });
-}
-
 function init$12(explorer) {
-  var fileWrap = explorer.codebook.fileListing.wrap;
-  fileWrap.selectAll('*').remove(); //Clear controls.
+  explorer.controls.wrap.attr('onsubmit', 'return false;');
+  explorer.controls.wrap.selectAll('*').remove(); //Clear controls.
 
   //Make file selector
-  var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
-  //drop ignoredColumns and system variables
-  var cols = Object.keys(explorer.config.files[0]).filter(function (f) {
-    return explorer.config.ignoredColumns.indexOf(f) == -1;
-  }).filter(function (f) {
-    return ['settings', 'selected', 'event'].indexOf(f) == -1;
-  }); //drop system variables from table
+  var file_select_wrap = explorer.controls.wrap.append('div').style('padding', '.5em').style('border-bottom', '2px solid black');
 
-  //Create the table
-  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', { cols: cols });
+  file_select_wrap.append('span').text('Pick a file: ');
 
-  //show the selected file first
-  explorer.config.files.forEach(function (d) {
-    return d.selected = d == explorer.current;
-  });
-  var sortedFiles = explorer.config.files.sort(function (a, b) {
-    return a.selected ? -1 : b.selected ? 1 : 0;
+  var select$$1 = file_select_wrap.append('select');
+
+  select$$1.selectAll('option').data(explorer.config.files).enter().append('option').text(function (d) {
+    return d.label;
   });
 
-  //assign callbacks and initialize
-  onDraw$1(explorer);
-  explorer.codebook.fileListing.table.init(sortedFiles);
+  select$$1.on('change', function (d) {
+    var current_text = this.value;
+    var current_obj = explorer.config.files.filter(function (f) {
+      return f.label == current_text;
+    })[0];
+    explorer.makeCodebook(current_obj);
+  });
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
-var fileListing = {
+var controls$1 = {
   init: init$12
 };
 
@@ -2715,7 +2644,7 @@ function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
-  this.current.settings.tabs = this.current.settings.tabs ? d3.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
+  this.current.settings.tabs = this.current.settings.tabs ? d3merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
 
   //set the default tab to the codebook or listing view assuming they are visible
   if (this.current.event == 'click') {
@@ -2725,14 +2654,9 @@ function makeCodebook(explorer) {
   this.current.settings.dataName = '"' + this.current[this.config.labelColumn] + '"';
 
   //create the codebook
-  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
-
-  explorer.codebook.on('complete', function () {
-    explorer.fileListing.init(explorer);
-  });
-
-  d3.csv(this.current.path, function (error, data) {
-    explorer.codebook.init(data);
+  explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', meta.settings);
+  d3.csv(meta.path, function (error, data) {
+    codebook.init(data);
   });
 }
 
@@ -2745,7 +2669,7 @@ function createExplorer() {
     config: config,
     init: init$11,
     layout: layout$3,
-    fileListing: fileListing,
+    controls: controls$1,
     makeCodebook: makeCodebook
   };
 

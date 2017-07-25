@@ -12,9 +12,6 @@ export function init(data) {
     .append('div')
     .attr('class', 'web-codebook');
 
-  // call the before callback (if any)
-  this.events.init.call(this);
-
   //save raw data
   this.data.raw = data;
   this.data.filtered = data; //assume no filters active on init :/

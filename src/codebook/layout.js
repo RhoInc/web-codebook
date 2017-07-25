@@ -20,12 +20,6 @@ export function layout() {
     .append('strong')
     .attr('class', 'summaryText section');
 
-  this.fileListing = {};
-  this.fileListing.wrap = this.wrap
-    .append('div')
-    .attr('class', 'fileListing section')
-    .classed('hidden', true);
-
   this.dataListing.wrap = this.wrap
     .append('div')
     .attr('class', 'dataListing section')
