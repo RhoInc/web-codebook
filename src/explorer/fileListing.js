@@ -2,8 +2,8 @@
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './controls/init';
+import { init } from './fileListing/init';
 
-export const controls = {
+export const fileListing = {
   init: init
 };

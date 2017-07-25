@@ -39,15 +39,20 @@ export function init(codebook) {
       return d.label;
     });
 
-    //event listener for nav clicks
-    navItems.on('click', function(d) {
-      if (!d.active) {
-        codebook.nav.tabs.forEach(function(t) {
-          t.active = d.label == t.label; //set the clicked tab to active
-          navItems.filter(f => f == t).classed('active', t.active); //style the active nav element
-          t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
-        });
+  //event listener for nav clicks
+  navItems.on('click', function(d) {
+    if (!d.active) {
+      codebook.nav.tabs.forEach(function(t) {
+        t.active = d.label == t.label; //set the clicked tab to active
+        navItems.filter(f => f == t).classed('active', t.active); //style the active nav element
+        t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
+      });
+
+      //show/hide the controls (unless they are disabled)
+      if (codebook.config.controlVisibility != 'disabled') {
+        codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+        codebook.controls.controlToggle.set(codebook);
       }
-    });
-  }
+    }
+  });
 }
