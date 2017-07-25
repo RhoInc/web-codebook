@@ -5,8 +5,8 @@
 //export function init(selector, data, vars, settings) {
 export function init(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap
-    .append('div')
+  var selector = codebook.instructions.wrap
+    .append('span')
     .attr('class', 'chart-toggle');
 
   var showAllButton = selector
