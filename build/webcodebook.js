@@ -1691,7 +1691,7 @@ function onResize$3() {
     });
 
     //Add modal to nearest mark.
-    var bars = this.svg.selectAll('.bar-group');
+    var _bars = this.svg.selectAll('.bar-group');
     var tooltips = this.svg.selectAll('.svg-tooltip');
     var statistics = this.svg.selectAll('.statistic');
     this.svg.on('mousemove', function () {
@@ -1701,19 +1701,19 @@ function onResize$3() {
       var y = context.y.invert(mouse$$1[1]);
       var minimum = void 0;
       var bar = {};
-      bars.each(function (d, i) {
+      _bars.each(function (d, i) {
         d.distance = Math.abs(d.midpoint - x);
         if (i === 0 || d.distance < minimum) {
           minimum = d.distance;
           bar = d;
         }
       });
-      var closest = bars.filter(function (d) {
+      var closest = _bars.filter(function (d) {
         return d.distance === minimum;
       }).filter(function (d, i) {
         return i === 0;
       }).select('rect');
-      bars.select('rect').style('stroke-width', '1px');
+      _bars.select('rect').style('stroke-width', '1px');
       closest.style('stroke-width', '3px');
 
       //Activate tooltip.
@@ -1721,13 +1721,30 @@ function onResize$3() {
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
     }).on('mouseout', function () {
-      bars.select('rect').style('stroke-width', '1px');
+      _bars.select('rect').style('stroke-width', '1px');
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
   }
 
   //Add event listener to marks to highlight data.
   highlightData(this);
+
+  //add highlights for each bar (if any exist)
+  var chart = this;
+  var bars = this.svg.selectAll('g.bar-group').each(function (d) {
+    console.log(d);
+    var highlightCount = d3.sum(d.values.raw, function (d) {
+      return d.highlighted ? 1 : 0;
+    });
+    //Clone the rect (if there are highlights)
+    if (highlightCount > 0) {
+      var rect = d3.select(this).select('rect');
+      var rectNode = rect.node();
+      var highlightRect = d3.select(this).append('rect');
+
+      highlightRect.attr('x', chart.x(d.rangeLow) + 1).attr('y', chart.y(highlightCount)).attr('height', chart.y(0) - chart.y(highlightCount)).attr('width', chart.x(d.rangeHigh) - 1 - (chart.x(d.rangeLow) + 1)).attr('fill', 'orange');
+    }
+  });
 }
 
 function onInit$2() {
@@ -1862,13 +1879,18 @@ function createHistogramBoxPlot(this_, d) {
         chartData.push({
           group: group.group || '<no value>',
           ' ': value.value,
-          index: d.index
+          index: d.index,
+          highlighted: d.highlighted
         });
       });
     });
   } else {
     d.values.forEach(function (d) {
-      chartData.push({ ' ': d.value, index: d.index });
+      chartData.push({
+        ' ': d.value,
+        index: d.index,
+        highlighted: d.highlighted
+      });
     });
   }
 
