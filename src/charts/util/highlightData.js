@@ -7,9 +7,6 @@ export default function highlightData(chart) {
     bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function(d) {
-    codebook.wrap.selectAll('.bar-group').classed('highlighted', false);
-    d3select(this).classed('highlighted', true);
-
     const indexes = chart.config.chartType.indexOf('Bars') > -1
       ? d.values.raw[0].indexes
       : chart.config.chartType === 'histogramBoxPlot'

@@ -435,6 +435,8 @@ function init$5(codebook) {
   //initialize the wrapper
   codebook.controls.highlight.clearButton = codebook.controls.summaryWrap.append('button').classed('clear-highlight', true).classed('hidden', codebook.data.highlighted.length == 0).text('Clear Highlighting').on('click', function () {
     codebook.data.highlighted = [];
+
+    codebook.data.makeSummary(codebook);
     codebook.dataListing.init(codebook);
     codebook.summaryTable.draw(codebook);
     codebook.controls.updateRowCount(codebook);
@@ -736,9 +738,6 @@ function highlightData(chart) {
   bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function (d) {
-    codebook.wrap.selectAll('.bar-group').classed('highlighted', false);
-    d3$1.select(this).classed('highlighted', true);
-
     var indexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
       return di.index;
     }) : [];
