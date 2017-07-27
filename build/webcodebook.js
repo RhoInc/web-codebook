@@ -343,13 +343,17 @@ function update$1(codebook) {
 
     //display loading indicator
     codebook.loadingIndicator.style('display', 'block');
+
     //wait by the quarter second until the loading indicator is visible to re-render everything
     var loading = setInterval(function () {
       var display = codebook.loadingIndicator.style('display');
       if (display === 'block') {
         if (_this.value !== 'None') codebook.config.group = _this.value;else delete codebook.config.group;
+
+        codebook.data.highlighted = [];
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
+        codebook.controls.updateRowCount(codebook);
 
         //loading complete
         clearInterval(loading);
