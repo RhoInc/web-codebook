@@ -16,7 +16,7 @@ export function renderRow(d) {
   rowHead
     .append('div')
     .attr('class', 'row-toggle')
-    .html('&#9658;')
+    .html('&#9660;')
     .on('click', function() {
       var rowDiv = d3select(this.parentNode.parentNode);
       var chartDiv = rowDiv.select('.row-chart');

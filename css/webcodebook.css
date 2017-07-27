@@ -1,6 +1,11 @@
 /*------------------------------------------------------------------------------------------------\
 General
 \------------------------------------------------------------------------------------------------*/
+
+.web-codebook {
+  position: relative;
+}
+
 .web-codebook > * {
     display: block;
     width:1024px;
@@ -25,6 +30,10 @@ General
   display: none !important; /* all .hidden elements should be hidden/display:none */
 }
 
+.web-codebook .clear-highlight {
+  margin-right:1em
+}
+
 /*------------------------------------------------------------------------------------------------\
 Instructions and Title layout
 \------------------------------------------------------------------------------------------------*/
@@ -38,7 +47,7 @@ Instructions and Title layout
   font-size:1.4em;
 }
 
-.web-codebook .rowCount,.web-codebook .columnCount{
+.web-codebook .rowCount,.web-codebook .columnCount  {
   padding-left:1em;
   font-size:0.8em;
   color:#999;
@@ -47,6 +56,12 @@ Instructions and Title layout
 .web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
   color:red;
 }
+
+.web-codebook .highlightCount{
+  font-size:0.8em;
+  color:#999;
+}
+
 
 
 /*------------------------------------------------------------------------------------------------\
@@ -330,10 +345,13 @@ Chart layout
   margin-top:0.2em;
   margin-bottom:0.2em;
 }
+.web-codebook .summaryTable g.bar-group.highlighted rect{
+  fill:orange;
+}
 
-.web-codebook .summaryTable .variable-row.categorical .row-chart svg g.bar-group rect:hover {
+.web-codebook .summaryTable g.bar-group rect:hover {
+  cursor: pointer;
   fill:#7BAFD4;
-  stroke:#7BAFD4;
 }
 
 
@@ -430,6 +448,10 @@ Chart layout
 
         .web-codebook  .listing-container tbody tr.filtered {
             display: none;
+        }
+
+        .web-codebook  .listing-container tbody tr.highlight {
+             background:orange;
         }
 
         /*.web-codebook .dataListing .listing-container tbody tr:nth-child(even) {

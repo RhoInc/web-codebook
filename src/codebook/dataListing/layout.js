@@ -1,8 +1,6 @@
 export default function layout(dataListing) {
-  //Clear data listing.
-  dataListing.wrap.selectAll('*').remove();
-
   //Add sort container.
+  dataListing.wrap.selectAll('*').remove();
   const sortContainer = dataListing.wrap
     .append('div')
     .classed('sort-container', true);

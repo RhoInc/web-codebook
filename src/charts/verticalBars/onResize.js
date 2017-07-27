@@ -1,6 +1,7 @@
 import moveYaxis from './moveYaxis';
 import makeTooltip from './makeTooltip.js';
 import { mouse as d3mouse } from 'd3';
+import highlightData from '../util/highlightData.js';
 
 export default function onResize() {
   const context = this;
@@ -17,6 +18,7 @@ export default function onResize() {
   const bars = this.svg.selectAll('.bar-group');
   const tooltips = this.svg.selectAll('.svg-tooltip');
   const statistics = this.svg.selectAll('.statistic');
+  /*
   this.svg
     .on('mousemove', function() {
       //Highlight closest bar.
@@ -35,16 +37,18 @@ export default function onResize() {
       const closest = bars
         .filter(d => d.distance === minimum)
         .filter((d, i) => i === 0)
-        .select('rect')
-        .style('fill', '#7BAFD4');
+        .select('rect');
 
-      //Activate tooltip.
+      //Activate tooltip.		        //Activate tooltip.
       const d = closest.datum();
+      //Activate tooltip.
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
     })
     .on('mouseout', function() {
-      bars.select('rect').style('fill', '#999');
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
     });
+    */
+  //Add event listener to marks to highlight data.
+  highlightData(this);
 }

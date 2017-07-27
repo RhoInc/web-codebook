@@ -41,14 +41,18 @@ export function update(codebook) {
   groupSelect.on('change', function() {
     //display loading indicator
     codebook.loadingIndicator.style('display', 'block');
+
     //wait by the quarter second until the loading indicator is visible to re-render everything
     const loading = setInterval(() => {
       const display = codebook.loadingIndicator.style('display');
       if (display === 'block') {
         if (this.value !== 'None') codebook.config.group = this.value;
         else delete codebook.config.group;
+
+        codebook.data.highlighted = [];
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
+        codebook.controls.updateRowCount(codebook);
 
         //loading complete
         clearInterval(loading);

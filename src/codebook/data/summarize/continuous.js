@@ -5,12 +5,12 @@ import {
   quantile as d3quantile
 } from 'd3';
 
-export default function continuous(vector) {
+export default function continuous(vector, sub) {
   const statistics = {};
   statistics.N = vector.length;
   const nonMissing = vector
-    .filter(d => !isNaN(+d) && !/^\s*$/.test(d))
-    .map(d => +d)
+    .filter(d => !isNaN(+d.value) && !/^\s*$/.test(d.value))
+    .map(d => +d.value)
     .sort((a, b) => a - b);
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;
@@ -31,6 +31,22 @@ export default function continuous(vector) {
       d3quantile(nonMissing, quantile[1])
     );
   });
+
+  if (sub) {
+    var sub_vector = vector
+      .filter(sub)
+      .filter(d => !isNaN(+d.value) && !/^\s*$/.test(d.value))
+      .map(d => +d.value)
+      .sort((a, b) => a - b);
+    statistics.mean_sub = d3format('0.2f')(d3mean(sub_vector));
+    statistics.SD_sub = d3format('0.2f')(d3deviation(sub_vector));
+    quantiles.forEach(quantile => {
+      let statistic = quantile[0];
+      statistics[statistic + '_sub'] = d3format('0.1f')(
+        d3quantile(sub_vector, quantile[1])
+      );
+    });
+  }
 
   return statistics;
 }

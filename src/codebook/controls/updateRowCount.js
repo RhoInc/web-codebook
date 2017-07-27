@@ -11,4 +11,15 @@ export function updateRowCount(codebook) {
   } else {
     codebook.controls.rowCount.text('No rows selected.').classed('warn', true);
   }
+
+  //Add note regarding highlighted cells and show/hide the clear highlight button
+  if (codebook.data.highlighted.length > 0) {
+    codebook.controls.highlightCount.text(
+      ' and ' + codebook.data.highlighted.length + ' highlighted. '
+    );
+    codebook.controls.highlight.clearButton.classed('hidden', false);
+  } else {
+    codebook.controls.highlightCount.text('');
+    codebook.controls.highlight.clearButton.classed('hidden', true);
+  }
 }

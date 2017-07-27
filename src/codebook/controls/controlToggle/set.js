@@ -10,7 +10,7 @@ export function set(codebook) {
 
   //hide the controls if controlVisibility isn't "visible" ...
   codebook.controls.wrap
-    .selectAll('*')
+    .selectAll('div')
     .classed('hidden', !(codebook.config.controlVisibility == 'visible'));
 
   // but show the title and the toggle ...

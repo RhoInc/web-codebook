@@ -33,7 +33,7 @@ export default //Custom settings
       attributes: {
         fill: '#999',
         stroke: '#333',
-        'stroke-width': '2px'
+        'stroke-width': '1px'
       }
     }
   ],

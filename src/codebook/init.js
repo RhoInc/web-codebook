@@ -3,6 +3,7 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { select as d3select } from 'd3';
+import clone from '../util/clone';
 
 export function init(data) {
   var settings = this.config;
@@ -10,14 +11,19 @@ export function init(data) {
   //create chart wrapper in specified div
   this.wrap = d3select(this.element)
     .append('div')
-    .attr('class', 'web-codebook');
+    .attr('class', 'web-codebook')
+    .datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
 
   // call the before callback (if any)
   this.events.init.call(this);
 
   //save raw data
-  this.data.raw = data;
-  this.data.filtered = data; //assume no filters active on init :/
+  this.data.raw = clone(data);
+  this.data.raw.forEach((d, i) => {
+    d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
+  });
+  this.data.filtered = this.data.raw; //assume no filters active on init :/
+  this.data.highlighted = [];
 
   //settings and defaults
   this.util.setDefaults(this);
