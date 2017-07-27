@@ -2993,6 +2993,9 @@ function makeCodebook(explorer) {
 
   this.current.settings.dataName = '"' + this.current[this.config.labelColumn] + '"';
 
+  //reset the group to null (only matters the 2nd time the file is clicked)
+  delete this.current.settings.group;
+
   //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
 
