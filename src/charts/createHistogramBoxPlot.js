@@ -22,8 +22,8 @@ export function createHistogramBoxPlot(this_, d) {
         chartData.push({
           group: group.group || '<no value>',
           ' ': value.value,
-          index: d.index,
-          highlighted: d.highlighted
+          index: group.index,
+          highlighted: group.highlighted
         });
       });
     });
