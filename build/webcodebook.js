@@ -1887,8 +1887,8 @@ function createHistogramBoxPlot(this_, d) {
         chartData.push({
           group: group.group || '<no value>',
           ' ': value.value,
-          index: group.index,
-          highlighted: group.highlighted
+          index: value.index,
+          highlighted: value.highlighted
         });
       });
     });
