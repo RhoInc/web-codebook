@@ -1,4 +1,5 @@
 import makeTooltip from './makeTooltip';
+import { makeBoxPlotTooltip } from './makeTooltip';
 import moveYaxis from './moveYaxis';
 import {
   format as d3format,
@@ -19,6 +20,7 @@ export default function onResize() {
   else {
     //Clear custom marks.
     this.svg.selectAll('g.svg-tooltip').remove();
+    this.svg.selectAll('g.svg-boxplottooltip').remove();
     this.svg.selectAll('.statistic').remove();
 
     this.svg.selectAll('g.bar-group').each(function(d, i) {
@@ -140,6 +142,7 @@ export default function onResize() {
         .attr('x2', d => this.x(d))
         .attr('y1', d => this.plot_height * 1.07)
         .attr('y2', d => (this.plot_height + this.config.boxPlotHeight) / 1.07)
+        .attr('id', d => 'outlier' + d)
         .style({
           fill: '#000000',
           stroke: 'black',
@@ -149,6 +152,19 @@ export default function onResize() {
         return d;
       });
     }
+
+    this.svg.selectAll('line.outlier').each(function(d, i) {
+      makeBoxPlotTooltip(d, i, context);
+    });
+
+    var bbox = this.svg.node().getBBox();
+    this.svg
+      .insert('rect', ':first-child')
+      .attr('x', bbox.x)
+      .attr('y', bbox.y)
+      .attr('width', bbox.width)
+      .attr('height', bbox.height)
+      .style('fill', 'white');
 
     //Annotate mean.
     if (this.config.mean) {
@@ -217,62 +233,104 @@ export default function onResize() {
     const bars = this.svg.selectAll('.bar-group');
     const oliers = this.svg.selectAll('line.outlier');
     const tooltips = this.svg.selectAll('.svg-tooltip');
-    const statistics = this.svg.selectAll('.statistic');
+    const boxplottooltips = this.svg.selectAll('.svg-boxplottooltip');
+    const statistics = this.svg.selectAll('line.statistic');
+    //this.svg.selectAll('g.svg-boxplottooltip').remove();
+	boxplottooltips.classed('active', false);
+	context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
+
     this.svg
       .on('mousemove', function() {
         //Highlight closest bar.
         const mouse = d3mouse(this);
         const x = context.x.invert(mouse[0]);
         const y = context.y.invert(mouse[1]);
-        let minimum;
-        let min_dist;
-        let minimum_outlier;
-        let dist;
-        let olier;
-        let bar = {};
-        bars.each(function(d, i) {
-          d.distance = Math.abs(d.midpoint - x);
-          oliers.each(function(e, i) {
-            dist = Math.abs(e - x);
-            console.log(e);
-            //console.log(dist);
-            if (i === 0 || dist < min_dist) {
-              min_dist = dist;
-              d.olier = e;
-              olier = e;
-              //console.log(olier);
-            }
-          });
-          if (i === 0 || d.distance < minimum) {
-            minimum = d.distance;
-            bar = d;
+        let boxplot_lines;
+
+        statistics.each(function(e, i) {
+          if (i === 0 || e < boxplot_lines) {
+            boxplot_lines = e;
           }
         });
 
-        console.log(olierstest);
+        if ((
+          (x > boxplot_lines.statistics['95th percentile'] ||
+            x < boxplot_lines.statistics['5th percentile']) &&
+          (x > boxplot_lines.statistics['min'] &&
+            x < boxplot_lines.statistics['max']) &&
+          y < 0
+        ) && y > -25) {
+          let min_dist;
+          let dist;
+          let olier;
 
-        const closestsss = oliers
-          //.filter(d => dist === min_dist)
-          //.filter((d, i) => i === 0)
-		  // Trying to highlight all outliers on mouseover (for getting the highlighting feature off the ground)
-          .select('line')
-          .style({
-            fill: '#ea1010',
-            stroke: 'red',
+          // Calculate closest outlier to mouse
+          oliers.each(function(e, i) {
+            dist = Math.abs(e - x);
+            if (i === 0 || dist < min_dist) {
+              min_dist = dist;
+              olier = e;
+            }
+          });
+
+          oliers.style({
+            fill: '#000000',
+            stroke: 'black',
             'stroke-width': '1px'
           });
 
-        const closest = bars
-          .filter(d => d.distance === minimum)
-          .filter((d, i) => i === 0)
-          .select('rect')
-          .style('fill', '#000000');
+          const closestolier = oliers
+            .filter(d => d === olier)
+            //.filter((d, i) => i === 0)
+            // What characteristics does the above line filter out ?
+            // if two are equidistant, arbitrary first value
+            .style({
+              fill: '#ea1010',
+              stroke: 'red',
+              'stroke-width': '4px'
+            });
 
+          //Activate -x axis tooltip.
+          const d = closestolier.datum();
+          boxplottooltips.classed('active', false);
+          context.svg.select('#' + d.selector).classed('active', true);
+		  
+		  boxplottooltips.classed('active', false);
 
-        //Activate tooltip.
-        const d = closest.datum();
-        tooltips.classed('active', false);
-        context.svg.select('#' + d.selector).classed('active', true);
+					
+        } else {
+          oliers.style({
+            fill: '#000000',
+            stroke: 'black',
+            'stroke-width': '1px'
+          });
+		  boxplottooltips.classed('active', false);
+        }
+
+        if (y > 0) {
+          let minimum;
+          let bar = {};
+          // Calculate closest bar to mouse
+          bars.each(function(d, i) {
+            d.distance = Math.abs(d.midpoint - x);
+
+            if (i === 0 || d.distance < minimum) {
+              minimum = d.distance;
+              bar = d;
+            }
+          });
+
+          const closest = bars
+            .filter(d => d.distance === minimum)
+            .filter((d, i) => i === 0)
+            .select('rect')
+            .style('fill', '#000000');
+
+          //Activate +x axis tooltip.
+          const d = closest.datum();
+          tooltips.classed('active', false);
+          context.svg.select('#' + d.selector).classed('active', true);
+        }
       })
       .on('mouseout', function() {
         bars.select('rect').style('fill', '#999');

@@ -7,6 +7,7 @@ export default function makeTooltip(d, i, context) {
   d.selector = `bar` + i;
   //Define tooltips.
   const tooltip = context.svg.append('g').attr('id', d.selector);
+  console.log(tooltip);
   const text = tooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
@@ -37,18 +38,7 @@ export default function makeTooltip(d, i, context) {
         : 'end'
     })
     .text(`n: ${d.total}`);
-  text
-    .append('tspan')
-    .attr({
-      x: context.x(d.midpoint),
-      dx: context.x(d.midpoint) < context.plot_width / 2 ? '1em' : '-1em',
-      dy: '-1.5em',
-      'text-anchor': context.x(d.midpoint) < context.plot_width / 2
-        ? 'start'
-        : 'end'
-    })
-    .text(`new: ${d.olier}`);
-  //console.log(d);
+
   const dimensions = text[0][0].getBBox();
   tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
@@ -66,4 +56,46 @@ export default function makeTooltip(d, i, context) {
       stroke: 'white'
     });
   tooltip[0][0].insertBefore(background[0][0], text[0][0]);
+}
+
+export function makeBoxPlotTooltip(d, i, context) {
+  const format = d3format(context.config.measureFormat);
+  //Define tooltips dss.
+  const boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d);
+  console.log(boxplottooltip);
+  const text = boxplottooltip.append('text').attr({
+    id: 'text',
+    x: context.x(d.midpoint),
+    y: context.plot_height + 22,
+    dy: '-.75em',
+    'font-size': '75%',
+    'font-weight': 'bold',
+    fill: 'white'
+  });
+  text
+    .append('tspan')
+    .attr({
+      x: context.x(d),
+      dx: context.x(d) < context.plot_width / 2 ? '1em' : '-1em',
+      'text-anchor': context.x(d) < context.plot_width / 2 ? 'start' : 'end'
+    })
+    .text(`Outlier: ${d}`);
+
+  const dimensions = text[0][0].getBBox();
+  boxplottooltip.classed('svg-boxplottooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
+
+  const background = boxplottooltip
+    .append('rect')
+    .attr({
+      id: 'background',
+      x: dimensions.x - 5,
+      y: dimensions.y - 2,
+      width: dimensions.width + 10,
+      height: dimensions.height + 4
+    })
+    .style({
+      fill: 'black',
+      stroke: 'white'
+    });
+  boxplottooltip[0][0].insertBefore(background[0][0], text[0][0]);
 }
