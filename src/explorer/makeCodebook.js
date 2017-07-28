@@ -1,8 +1,29 @@
 import { csv as d3csv } from 'd3';
 
-export function makeCodebook(meta) {
-  this.codebookWrap.selectAll('*').remove();
-  var codebook = webcodebook.createCodebook(
+export function makeCodebook(explorer) {
+  explorer.codebookWrap.selectAll('*').remove();
+
+  //add the Files section to the nav for each config
+  this.current.settings.tabs = this.current.settings.tabs
+    ? d3merge([['files'], this.current.settings.tabs])
+    : ['files', 'codebook', 'listing', 'settings'];
+
+  //set the default tab to the codebook or listing view assuming they are visible
+  if (this.current.event == 'click') {
+    this.current.settings.defaultTab = this.current.settings.tabs.indexOf(
+      'codebook'
+    ) > -1
+      ? 'codebook'
+      : this.current.settings.tabs.indexOf('listing') > -1
+        ? 'listing'
+        : 'files';
+  }
+
+  this.current.settings.dataName =
+    '"' + this.current[this.config.labelColumn] + '"';
+
+  //create the codebook
+  explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',
     meta.settings
   );

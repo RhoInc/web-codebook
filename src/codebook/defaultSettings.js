@@ -9,7 +9,8 @@ const defaultSettings = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  tabs: ['codebook', 'listing', 'settings']
+  tabs: ['codebook', 'listing', 'settings'],
+  dataName: ''
 };
 
 export default defaultSettings;

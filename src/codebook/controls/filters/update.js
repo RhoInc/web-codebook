@@ -93,7 +93,9 @@ export function update(codebook) {
           codebook.data.raw,
           codebook.config.filters
         );
+
         codebook.data.makeSummary(codebook);
+        codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
 
