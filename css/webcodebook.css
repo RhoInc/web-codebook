@@ -303,6 +303,14 @@ Chart layout
     display: block;
 }
 
+.web-codebook .summaryTable .variable-row .row-chart .svg-boxplottooltip {
+    display: none;
+}
+
+.web-codebook .summaryTable .variable-row .row-chart .svg-boxplottooltip.active {
+    display: block;
+}
+
 /*------------------------------------------------------------------------------------------------\
   Data listing
 \------------------------------------------------------------------------------------------------*/

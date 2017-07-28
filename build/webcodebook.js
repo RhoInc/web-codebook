@@ -1248,7 +1248,7 @@ function makeTooltip$1(d, i, context) {
   d.selector = 'bar' + i;
   //Define tooltips.
   var tooltip = context.svg.append('g').attr('id', d.selector);
-  console.log(tooltip);
+  //console.log(tooltip);
   var text = tooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
@@ -1289,8 +1289,9 @@ function makeTooltip$1(d, i, context) {
 function makeBoxPlotTooltip(d, i, context) {
   var format$$1 = d3$1.format(context.config.measureFormat);
   //Define tooltips dss.
+  //d.selector = `outlier` + d;
   var boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d);
-  console.log(boxplottooltip);
+  //console.log(boxplottooltip);
   var text = boxplottooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
@@ -1359,6 +1360,10 @@ function onResize$3() {
 
     //Annotate quantiles
     if (this.config.boxPlot) {
+      var onlyUnique = function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+      };
+
       var quantiles = [{ probability: 0.05, label: '5th percentile' }, { probability: 0.25, label: '1st quartile' }, { probability: 0.5, label: 'Median' }, { probability: 0.75, label: '3rd quartile' }, { probability: 0.95, label: '95th percentile' }];
 
       for (var item in quantiles) {
@@ -1427,7 +1432,9 @@ function onResize$3() {
         return low_outlier || high_outlier;
       });
 
-      var outlier = this.svg.selectAll('line.outlier').data(outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
+      var unique_outliers = outliers.filter(onlyUnique);
+
+      var outlier = this.svg.selectAll('line.outlier').data(unique_outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
         return _this.x(d);
       }).attr('x2', function (d) {
         return _this.x(d);
@@ -1512,8 +1519,8 @@ function onResize$3() {
     var boxplottooltips = this.svg.selectAll('.svg-boxplottooltip');
     var statistics = this.svg.selectAll('line.statistic');
     //this.svg.selectAll('g.svg-boxplottooltip').remove();
-    boxplottooltips.classed('active', false);
-    context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
+    //boxplottooltips.classed('active', false);
+    //context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
 
     this.svg.on('mousemove', function () {
       //Highlight closest bar.
@@ -1563,9 +1570,10 @@ function onResize$3() {
         //Activate -x axis tooltip.
         var d = closestolier.datum();
         boxplottooltips.classed('active', false);
-        context.svg.select('#' + d.selector).classed('active', true);
+        //context.svg.select('g#outlier' + d).classed('active', true);
 
-        boxplottooltips.classed('active', false);
+        var active_outlier = context.svg.select('g#outlier' + d).classed('active', true);
+        console.log(active_outlier);
       } else {
         oliers.style({
           fill: '#000000',
@@ -1601,7 +1609,7 @@ function onResize$3() {
       }
     }).on('mouseout', function () {
       bars.select('rect').style('fill', '#999');
-      context.svg.selectAll('g.svg-tooltip').classed('active', false);
+      context.svg.selectAll('g.svg-tooltip, g.svg-boxplottooltip').classed('active', false);
     });
   }
 }

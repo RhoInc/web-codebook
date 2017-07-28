@@ -129,12 +129,18 @@ export default function onResize() {
               return q;
             }
           })[0]['quantile'];
-        return low_outlier || high_outlier;
+        return low_outlier || high_outlier;		
       });
+	  
+	  function onlyUnique(value, index, self) {
+		  return self.indexOf(value) === index;
+	  }
 
+	  var unique_outliers = outliers.filter( onlyUnique );
+	  	  
       var outlier = this.svg
         .selectAll('line.outlier')
-        .data(outliers)
+        .data(unique_outliers)
         .enter()
         .append('line')
         .attr('class', 'outlier')
@@ -236,8 +242,8 @@ export default function onResize() {
     const boxplottooltips = this.svg.selectAll('.svg-boxplottooltip');
     const statistics = this.svg.selectAll('line.statistic');
     //this.svg.selectAll('g.svg-boxplottooltip').remove();
-	boxplottooltips.classed('active', false);
-	context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
+	//boxplottooltips.classed('active', false);
+	//context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
 
     this.svg
       .on('mousemove', function() {
@@ -293,11 +299,11 @@ export default function onResize() {
           //Activate -x axis tooltip.
           const d = closestolier.datum();
           boxplottooltips.classed('active', false);
-          context.svg.select('#' + d.selector).classed('active', true);
-		  
-		  boxplottooltips.classed('active', false);
+          //context.svg.select('g#outlier' + d).classed('active', true);
 
-					
+		  var active_outlier = context.svg.select('g#outlier' + d).classed('active', true);
+		  console.log(active_outlier);
+		  
         } else {
           oliers.style({
             fill: '#000000',
@@ -334,7 +340,7 @@ export default function onResize() {
       })
       .on('mouseout', function() {
         bars.select('rect').style('fill', '#999');
-        context.svg.selectAll('g.svg-tooltip').classed('active', false);
+        context.svg.selectAll('g.svg-tooltip, g.svg-boxplottooltip').classed('active', false);
       });
   }
 }

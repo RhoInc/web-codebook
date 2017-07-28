@@ -7,7 +7,7 @@ export default function makeTooltip(d, i, context) {
   d.selector = `bar` + i;
   //Define tooltips.
   const tooltip = context.svg.append('g').attr('id', d.selector);
-  console.log(tooltip);
+  //console.log(tooltip);
   const text = tooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
@@ -61,8 +61,9 @@ export default function makeTooltip(d, i, context) {
 export function makeBoxPlotTooltip(d, i, context) {
   const format = d3format(context.config.measureFormat);
   //Define tooltips dss.
+  //d.selector = `outlier` + d;
   const boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d);
-  console.log(boxplottooltip);
+  //console.log(boxplottooltip);
   const text = boxplottooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
