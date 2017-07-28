@@ -21,6 +21,15 @@ export function init(codebook) {
     t.wrap.classed('hidden', !t.active);
   });
 
+  //set control visibility
+  var activeTab = codebook.nav.tabs.filter(f => f.active)[0];
+  if (codebook.config.controlVisibility != 'disabled') {
+    codebook.config.controlVisibility = activeTab.controls
+      ? 'visible'
+      : 'hidden';
+    codebook.controls.controlToggle.set(codebook);
+  }
+
   //draw the nav
   var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
   var navItems = chartNav
@@ -46,6 +55,14 @@ export function init(codebook) {
         navItems.filter(f => f == t).classed('active', t.active); //style the active nav element
         t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
       });
+
+      codebook.instructions.update(codebook);
+
+      //show/hide the controls (unless they are disabled)
+      if (codebook.config.controlVisibility != 'disabled') {
+        codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+        codebook.controls.controlToggle.set(codebook);
+      }
     }
   });
 }

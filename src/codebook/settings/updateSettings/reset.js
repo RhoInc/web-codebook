@@ -16,6 +16,7 @@ export default function reset(codebook) {
 
   //redraw data summary, codebook, and listing.
   codebook.data.makeSummary(codebook);
+  codebook.title.updateColumnCount(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
 }

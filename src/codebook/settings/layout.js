@@ -7,7 +7,7 @@ export function layout(codebook) {
     groupColumns = codebook.config.groups.map(d => d.value_col),
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
-    columnTableColumns = ['Column', 'Group', 'Filter', 'Hidden'],
+    columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
@@ -19,7 +19,7 @@ export function layout(codebook) {
           type: 'checkbox',
           checked: filterColumns.indexOf(column) > -1
         },
-        Hidden: {
+        Hide: {
           type: 'checkbox',
           checked: hiddenColumns.indexOf(column) > -1
         }
@@ -80,15 +80,4 @@ export function layout(codebook) {
             checkbox.on('change', () => updateSettings(codebook, d.key));
         }
       });
-
-  //Add descriptive footnote.
-  columnTable
-    .select('tbody')
-    .append('tr')
-    .style('border-bottom', 'none')
-    .append('td')
-    .attr('colspan', columnTableColumns.length)
-    .html(
-      "This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing."
-    );
 }

@@ -1,7 +1,11 @@
 /*------------------------------------------------------------------------------------------------\
-  Define chart toggle object.
+  Define title object.
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './chartToggle/init';
+import { init } from './title/init';
+import { updateColumnCount } from './title/updateColumnCount';
 
-export const chartToggle = { init: init };
+export const title = {
+  init: init,
+  updateColumnCount: updateColumnCount
+};
