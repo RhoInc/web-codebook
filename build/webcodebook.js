@@ -191,6 +191,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -1303,9 +1304,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
