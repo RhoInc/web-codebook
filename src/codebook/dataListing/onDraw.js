@@ -29,5 +29,10 @@ export default function onDraw(dataListing) {
         'hidden',
         d => dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1
       );
+
+    //highlight columns
+    this.table.selectAll('tr').classed('highlight', function(d) {
+      return dataListing.codebook.data.highlighted.indexOf(d.raw) > -1;
+    });
   });
 }

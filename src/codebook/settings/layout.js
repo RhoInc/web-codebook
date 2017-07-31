@@ -46,8 +46,8 @@ export function layout(codebook) {
       .selectAll('tr')
       .data(columnMetadata)
       .enter()
-      .append('tr'),
-    //define table cells
+      .append('tr')
+      .classed('hidden', d => d.Column === 'web-codebook-index'),
     columnTableCells = columnTableRows
       .selectAll('td')
       .data(d =>

@@ -8,6 +8,7 @@ export default function reset(codebook) {
     .property('selected', d => d.value_col === 'None');
 
   //remove filtering and select all filter options
+  codebook.data.highlighted = [];
   codebook.data.filtered = codebook.data.raw;
   codebook.controls.filters.update(codebook);
   codebook.controls.wrap
@@ -19,4 +20,5 @@ export default function reset(codebook) {
   codebook.title.updateColumnCount(codebook);
   codebook.summaryTable.draw(codebook);
   codebook.dataListing.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 }
