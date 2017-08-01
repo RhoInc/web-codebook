@@ -580,10 +580,14 @@ Chart layout
 /*------------------------------------------------------------------------------------------------\
   Data Listing
 \------------------------------------------------------------------------------------------------*/
-.web-codebook .fileListing{
 
-}
-    .web-codebook .fileListing tr.selected{
+  .web-codebook .fileListing tr.selected{
       background: #008CBA;
       color:white;
-    }
+  }
+
+  .web-codebook .fileListing td.link{
+    color:blue;
+    text-decoration:underline;
+    cursor:pointer;
+  }

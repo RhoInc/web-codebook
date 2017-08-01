@@ -2936,7 +2936,7 @@ function onDraw$1(explorer) {
     //Linkify the labelColumn
     var labelCells = this.table.selectAll('td').filter(function (f) {
       return f.col == explorer.config.labelColumn;
-    }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
+    }).classed('link', true).on('click', function () {
       var current_text = d3$1.select(this).text();
       explorer.current = explorer.config.files.filter(function (f) {
         return f[explorer.config.labelColumn] == current_text;
