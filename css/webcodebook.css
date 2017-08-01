@@ -353,7 +353,8 @@ Chart layout
 
 .web-codebook .summaryTable g.bar-group rect:hover {
   cursor: pointer;
-  fill:#7BAFD4;
+  stroke-width:3px;
+  stroke:black;
 }
 
 
