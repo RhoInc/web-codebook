@@ -51,9 +51,8 @@ export default function makeTitle(d) {
     }
   } else if (d.type == 'continuous') {
     //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3set(d.values)
+    var sortedValues = d3set(d.values.map(d => +d.value))
       .values() //get unique
-      .map(d => +d) //convert to numeric
       .sort(function(a, b) {
         return a - b;
       }); // sort low to high

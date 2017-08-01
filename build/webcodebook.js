@@ -648,10 +648,9 @@ function makeTitle(d) {
     }
   } else if (d.type == 'continuous') {
     //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3$1.set(d.values).values() //get unique
-    .map(function (d) {
-      return +d;
-    }) //convert to numeric
+    var sortedValues = d3$1.set(d.values.map(function (d) {
+      return +d.value;
+    })).values() //get unique
     .sort(function (a, b) {
       return a - b;
     }); // sort low to high
