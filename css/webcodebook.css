@@ -130,7 +130,7 @@ Controls layout
   padding-right:1em;
 }
 
-.web-codebook .controls button
+.web-codebook .controls button, .web-codebook .instructions button
 {
   margin-right:0.5em;
   background-color:white;
@@ -139,7 +139,7 @@ Controls layout
   padding:2px 4px;
 }
 
-.web-codebook .controls button:hover{
+.web-codebook .controls button:hover, .web-codebook .instructions button:hover{
   cursor:pointer;
   background-color:#008CBA;
   color:white;
