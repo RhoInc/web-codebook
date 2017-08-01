@@ -50,7 +50,7 @@ Instructions and Title layout
 .web-codebook .rowCount,.web-codebook .columnCount  {
   padding-left:1em;
   font-size:0.8em;
-  color:#999;
+  color:#666;
 }
 
 .web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
@@ -59,10 +59,12 @@ Instructions and Title layout
 
 .web-codebook .highlightCount{
   font-size:0.8em;
-  color:#999;
+  color:#666;
 }
 
-
+.web-codebook span.highlightLegend{
+  background-color:orange;
+}
 
 /*------------------------------------------------------------------------------------------------\
 Controls layout
