@@ -10,8 +10,8 @@ export function setDefaults(codebook) {
     var metaLabels = [];
     codebook.config.meta.forEach(function(m) {
       var mKeys = Object.keys(m);
-      if ((mKeys.indexOf('col_name') > -1) & (mKeys.indexOf('label') > -1)) {
-        metaLabels.push({ col_name: m['col_name'], label: m['label'] });
+      if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('label') > -1)) {
+        metaLabels.push({ col_name: m['value_col'], label: m['label'] });
       }
     });
     defaultSettings.variableLabels = metaLabels;

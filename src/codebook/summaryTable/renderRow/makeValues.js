@@ -5,22 +5,9 @@ import {
   merge as d3merge
 } from 'd3';
 
-export default function makeTitle(d) {
+export default function makeValues(d) {
   var wrap = d3select(this);
-  var titleDiv = wrap.append('div').attr('class', 'var-name');
   var valuesList = wrap.append('ul').attr('class', 'value-list');
-
-  //Title and type
-  titleDiv
-    .append('div')
-    .attr('class', 'name')
-    .html(
-      d =>
-        d.label && d.label !== d.value_col
-          ? `${d.value_col} (${d.label})`
-          : d.value_col
-    );
-  titleDiv.append('div').attr('class', 'type').html(d => d.type);
 
   //make a list of values
   if (d.type == 'categorical') {

@@ -613,18 +613,9 @@ function draw(codebook) {
   varRows.exit().remove();
 }
 
-function makeTitle(d) {
+function makeValues(d) {
   var wrap = d3$1.select(this);
-  var titleDiv = wrap.append('div').attr('class', 'var-name');
   var valuesList = wrap.append('ul').attr('class', 'value-list');
-
-  //Title and type
-  titleDiv.append('div').attr('class', 'name').html(function (d) {
-    return d.label && d.label !== d.value_col ? d.value_col + ' (' + d.label + ')' : d.value_col;
-  });
-  titleDiv.append('div').attr('class', 'type').html(function (d) {
-    return d.type;
-  });
 
   //make a list of values
   if (d.type == 'categorical') {
@@ -1940,40 +1931,49 @@ function makeChart(d) {
 function makeDetails(d) {
   var wrap = d3$1.select(this);
 
-  //Render Summary Stats
-  var stats_div = wrap.append('div').attr('class', 'stat-row');
-  var statNames = Object.keys(d.statistics).filter(function (f) {
-    return f != 'values' & f != 'highlightValues';
+  //Render Row Toggle
+  wrap.append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
+    var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
+    var chartDiv = rowDiv.select('.row-chart');
+    var hiddenFlag = rowDiv.classed('hiddenChart');
+    rowDiv.classed('hiddenChart', !hiddenFlag);
+    d3$1.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
   });
+
+  //Render metadata
+  var list = wrap.append('ul');
+  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true);
+
+  metaItems.append('div').text(function (d) {
+    return d.key;
+  }).attr('class', 'label');
+  metaItems.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
+
+  //Render Summary Stats
+  var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
+  var statNames = Object.keys(d.statistics).filter(function (f) {
+    return ignoreStats.indexOf(f) === -1;
+  }) //remove value lists
+  .filter(function (f) {
+    return f.indexOf('ile') === -1;
+  }); //remove "percentiles"
+
   var statList = statNames.map(function (stat) {
     return {
       key: stat !== 'nMissing' ? stat : 'Missing',
       value: d.statistics[stat]
     };
-  }).filter(function (statItem) {
-    return ['min', 'max'].indexOf(statItem.key) === -1;
   });
 
-  //Render Values
-  if (d.type == 'categorical') {
-    var stats = stats_div.selectAll('div').data(statList).enter().append('div').attr('class', 'stat');
-    stats.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    stats.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
-  } else if (d.type === 'continuous') {
-    var stats = stats_div.selectAll('div').data(statList.filter(function (statItem) {
-      return statItem.key.indexOf('ile') === -1;
-    })).enter().append('div').attr('class', 'stat');
-    stats.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    stats.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
-  }
+  var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
+  stats.append('div').text(function (d) {
+    return d.key;
+  }).attr('class', 'label');
+  stats.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1986,16 +1986,8 @@ function renderRow(d) {
 
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
-  rowHead.append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
-    var rowDiv = d3$1.select(this.parentNode.parentNode);
-    var chartDiv = rowDiv.select('.row-chart');
-    var hiddenFlag = rowDiv.classed('hiddenChart');
-    rowDiv.classed('hiddenChart', !hiddenFlag);
-    d3$1.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
-  });
-
-  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
   rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+  rowHead.append('div').attr('class', 'row-values').each(makeValues);
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
@@ -2261,8 +2253,8 @@ function setDefaults(codebook) {
     var metaLabels = [];
     codebook.config.meta.forEach(function (m) {
       var mKeys = Object.keys(m);
-      if (mKeys.indexOf('col_name') > -1 & mKeys.indexOf('label') > -1) {
-        metaLabels.push({ col_name: m['col_name'], label: m['label'] });
+      if (mKeys.indexOf('value_col') > -1 & mKeys.indexOf('label') > -1) {
+        metaLabels.push({ col_name: m['value_col'], label: m['label'] });
       }
     });
     defaultSettings$1.variableLabels = metaLabels;
@@ -2575,7 +2567,7 @@ function makeSummary(codebook) {
       //change from string to object
       variables[i] = { value_col: variable };
 
-      //get a list of values
+      //get a list of raw values
       variables[i].values = data.map(function (d) {
         return {
           index: d['web-codebook-index'],
@@ -2596,6 +2588,26 @@ function makeSummary(codebook) {
       }).indexOf(variable) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
         return variableLabel.value_col === variable;
       })[0].label : variable;
+
+      // Add metadata Object - all variables get "Column" and "Label" items. Others added from config.meta as provided.
+      variables[i].meta = [{ key: 'Column', value: variable ? variable : '<no value>' }, {
+        key: 'Label',
+        value: variables[i].label ? variables[i].label : '<no value>'
+      }, { key: 'Type', value: variables[i].type }];
+
+      var metaMatch = codebook.config.meta.filter(function (f) {
+        return f.value_col == variable;
+      });
+      console.log(codebook.config.meta);
+      console.log(metaMatch);
+      if (metaMatch.length == 1) {
+        var metaKeys = Object.keys(metaMatch[0]).filter(function (f) {
+          return ['value_col', 'label'].indexOf(f) === -1;
+        });
+        metaKeys.forEach(function (m) {
+          variables[i].meta.push({ key: m, value: metaMatch[0][m] });
+        });
+      }
 
       //calculate variable statistics (including for highlights - if any)
       var sub = codebook.data.highlighted.length > 0 ? function (d) {

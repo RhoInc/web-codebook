@@ -238,94 +238,76 @@ Header layout
 }
 
 .web-codebook .summaryTable .variable-row .row-head > * {
-  display:inline-block;
-  padding-left:0.2em;
+  display:block;
+  border-bottom:1px dashed #999;
 }
 
 /**-------------------------------------------------------------------------------------------\
 Header layout - Toggle
 \-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row .row-details > * {
+  display:inline-block;
+}
 
-.web-codebook .summaryTable .variable-row .row-toggle{
+.web-codebook .summaryTable .variable-row .row-details .row-toggle{
   font-size:0.5em;
   cursor:pointer;
   vertical-align: top;
-  margin: 0.5em 0.2em 0 0;
   color:#999;
+  padding-right:0.5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-toggle:hover{
+.web-codebook .summaryTable .variable-row .row-details .row-toggle:hover{
   background:#eee;
 }
 
 /**-------------------------------------------------------------------------------------------\
-Header layout - variable summary
-\-------------------------------------------------------------------------------------------**/
-.web-codebook .summaryTable .variable-row .row-head .row-title {
-  max-width:80%
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-title .var-name > * {
-  display: inline-block;
-}
-.web-codebook .summaryTable .variable-row .row-head .row-title .var-name .name{
-  font-weight: bold;
-}
-.web-codebook .summaryTable .variable-row .row-head .row-title .var-name .type{
-  border: 1px solid #999;
-  margin-left:0.4em;
-  padding:0.1em 0.3em 0.1em 0.3em;
-  font-size:0.6em;
-  border-radius:4px;
-  background: white;
-  vertical-align:middle;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-title .value-list{
-  margin-top:0.3em;
-  font-size: 0.7em;
-  list-style:none;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-title .value-list li{
-  display:inline-block;
-  padding:0 0.3em 0 0.3em;
-  border-right : 1px solid #333;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-title .value-list li:first-of-type{
-  padding-left:none;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-title .value-list li:last-of-type{
-  border-right:none;
-}
-/**-------------------------------------------------------------------------------------------\
 Header - Details layout
 \-------------------------------------------------------------------------------------------**/
-.web-codebook .summaryTable .variable-row .row-details {
-  float:right
-}
 
-.web-codebook .summaryTable .variable-row .row-details>div {
-  padding-bottom: 0.5em;
-}
 
-.web-codebook .summaryTable .variable-row .row-details .stat-row .stat {
+.web-codebook .summaryTable .variable-row .row-details ul li {
   display: inline-block;
   padding-right: .5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-details .stat-row .stat {
+.web-codebook .summaryTable .variable-row .row-details ul li div {
+  display: block
   text-align: center
 }
 
-.web-codebook .summaryTable .variable-row .row-details .stat-row .stat .label {
+.web-codebook .summaryTable .variable-row .row-details ul li div.label {
   display: inline-block;
   padding-right: .2em;
   font-size: 0.8em;
   color: #999;
 }
+
+/**-------------------------------------------------------------------------------------------\
+Header layout - variable summary
+\-------------------------------------------------------------------------------------------**/
+
+
+.web-codebook .summaryTable .variable-row .row-head .row-values .value-list{
+  margin-top:0.3em;
+  font-size: 0.7em;
+  list-style:none;
+}
+
+.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li{
+  display:inline-block;
+  padding:0 0.3em 0 0.3em;
+  border-right : 1px solid #333;
+}
+
+.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li:first-of-type{
+  padding-left:none;
+}
+
+.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li:last-of-type{
+  border-right:none;
+}
+
 
 /**-------------------------------------------------------------------------------------------\
 Chart layout
