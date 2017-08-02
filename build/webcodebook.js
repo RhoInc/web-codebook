@@ -462,7 +462,7 @@ function updateRowCount(codebook) {
 
   //Add note regarding highlighted cells and show/hide the clear highlight button
   if (codebook.data.highlighted.length > 0) {
-    codebook.controls.highlightCount.text(' and ' + codebook.data.highlighted.length + ' highlighted. ');
+    codebook.controls.highlightCount.html(' and ' + codebook.data.highlighted.length + ' <span class="highlightLegend">highlighted</span>. ');
     codebook.controls.highlight.clearButton.classed('hidden', false);
   } else {
     codebook.controls.highlightCount.text('');
@@ -648,10 +648,9 @@ function makeTitle(d) {
     }
   } else if (d.type == 'continuous') {
     //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3$1.set(d.values).values() //get unique
-    .map(function (d) {
-      return +d;
-    }) //convert to numeric
+    var sortedValues = d3$1.set(d.values.map(function (d) {
+      return +d.value;
+    })).values() //get unique
     .sort(function (a, b) {
       return a - b;
     }); // sort low to high
@@ -801,6 +800,9 @@ function onResize() {
     */
   //Add event listener to marks to highlight data.
   highlightData(this);
+
+  //hide legend
+  this.legend.remove();
 }
 
 function onInit() {
@@ -1087,6 +1089,9 @@ function onResize$1() {
 
   //Add event listener to marks to highlight data.
   highlightData(this);
+
+  //hide legend
+  this.legend.remove();
 }
 
 function createHorizontalBars(this_, d) {
@@ -1195,7 +1200,7 @@ function createHorizontalBars(this_, d) {
 
       if (group.data.length) group.chart.init(group.data);else {
         d3$1.select(chartContainer).append('p').text(chartSettings.group_col + ': ' + group.chartSettings.group_val + ' (n=' + group.chartSettings.n + ')');
-        d3$1.select(chartContainer).append('div').html('<em>This group does not contain any of the first 5 most prevalent levels of ' + d.value_col + '</em>.<br><br>');
+        d3$1.select(chartContainer).append('div').html('<em>All values missing in this group.</em>.<br><br>');
       }
     });
   } else {
@@ -1922,18 +1927,21 @@ function makeChart(d) {
   //Common chart settings
   this.height = 100;
   this.margin = { right: 200, left: 30 };
-
-  if (d.chartType === 'horizontalBars') {
-    charts.createHorizontalBarsControls(this, d);
-    charts.createHorizontalBars(this, d);
-  } else if (d.chartType === 'verticalBars') {
-    charts.createVerticalBarsControls(this, d);
-    charts.createVerticalBars(this, d);
-  } else if (d.chartType === 'histogramBoxPlot') {
-    // continuous outcomes
-    charts.createHistogramBoxPlot(this, d);
+  if (d.statistics.n > 0) {
+    if (d.chartType === 'horizontalBars') {
+      charts.createHorizontalBarsControls(this, d);
+      charts.createHorizontalBars(this, d);
+    } else if (d.chartType === 'verticalBars') {
+      charts.createVerticalBarsControls(this, d);
+      charts.createVerticalBars(this, d);
+    } else if (d.chartType === 'histogramBoxPlot') {
+      // continuous outcomes
+      charts.createHistogramBoxPlot(this, d);
+    } else {
+      console.warn('Invalid chart type for ' + d.key);
+    }
   } else {
-    console.warn('Invalid chart type for ' + d.key);
+    d3.select(this).append('div').attr('class', 'missingText').text('All values missing.');
   }
 }
 
@@ -2931,7 +2939,7 @@ function onDraw$1(explorer) {
     //Linkify the labelColumn
     var labelCells = this.table.selectAll('td').filter(function (f) {
       return f.col == explorer.config.labelColumn;
-    }).classed('link', true).style('color', 'blue ').style('text-decoration', 'underline').style('cursor', 'pointer').on('click', function () {
+    }).classed('link', true).on('click', function () {
       var current_text = d3$1.select(this).text();
       explorer.current = explorer.config.files.filter(function (f) {
         return f[explorer.config.labelColumn] == current_text;

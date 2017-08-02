@@ -15,4 +15,7 @@ export default function onResize() {
 
   //Add event listener to marks to highlight data.
   highlightData(this);
+
+  //hide legend
+  this.legend.remove();
 }

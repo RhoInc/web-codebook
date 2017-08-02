@@ -123,9 +123,7 @@ export function createHorizontalBars(this_, d) {
           );
         d3select(chartContainer)
           .append('div')
-          .html(
-            `<em>This group does not contain any of the first 5 most prevalent levels of ${d.value_col}</em>.<br><br>`
-          );
+          .html(`<em>All values missing in this group.</em>.<br><br>`);
       }
     });
   } else {

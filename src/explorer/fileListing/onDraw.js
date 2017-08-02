@@ -14,9 +14,6 @@ export function onDraw(explorer) {
       .selectAll('td')
       .filter(f => f.col == explorer.config.labelColumn)
       .classed('link', true)
-      .style('color', 'blue ')
-      .style('text-decoration', 'underline')
-      .style('cursor', 'pointer')
       .on('click', function() {
         var current_text = d3select(this).text();
         explorer.current = explorer.config.files.filter(
