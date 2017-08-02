@@ -2241,6 +2241,7 @@ var defaultSettings$1 = {
   groups: [],
   variableLabels: [],
   hiddenVariables: [],
+  meta: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
@@ -2252,6 +2253,21 @@ var defaultSettings$1 = {
 };
 
 function setDefaults(codebook) {
+  /**************** Column Metadata ************/
+  codebook.config.meta = codebook.config.meta || defaultSettings$1.meta;
+
+  // If labels are specified in the metadata, use them as the default
+  if (codebook.config.meta.length) {
+    var metaLabels = [];
+    codebook.config.meta.forEach(function (m) {
+      var mKeys = Object.keys(m);
+      if (mKeys.indexOf('col_name') > -1 & mKeys.indexOf('label') > -1) {
+        metaLabels.push({ col_name: m['col_name'], label: m['label'] });
+      }
+    });
+    defaultSettings$1.variableLabels = metaLabels;
+  }
+
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
   codebook.config.filters = codebook.config.filters.map(function (d) {

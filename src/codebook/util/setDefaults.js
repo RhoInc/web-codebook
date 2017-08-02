@@ -2,6 +2,21 @@ import defaultSettings from '../defaultSettings';
 import availableTabs from '../nav/availableTabs';
 
 export function setDefaults(codebook) {
+  /**************** Column Metadata ************/
+  codebook.config.meta = codebook.config.meta || defaultSettings.meta;
+
+  // If labels are specified in the metadata, use them as the default
+  if (codebook.config.meta.length) {
+    var metaLabels = [];
+    codebook.config.meta.forEach(function(m) {
+      var mKeys = Object.keys(m);
+      if ((mKeys.indexOf('col_name') > -1) & (mKeys.indexOf('label') > -1)) {
+        metaLabels.push({ col_name: m['col_name'], label: m['label'] });
+      }
+    });
+    defaultSettings.variableLabels = metaLabels;
+  }
+
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
   codebook.config.filters = codebook.config.filters.map(function(d) {
