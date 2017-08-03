@@ -45,22 +45,12 @@ export function init(data) {
   //call after event (if any)
   this.events.complete.call(this);
 
-  //wait by the quarter second until the loading indicator is visible
-  const loading = setInterval(() => {
-    const laidOut = this.controls.wrap.property('offsetwidth') > 0;
-    if (!laidOut) {
-      //initialize and then draw the codebook
-      this.summaryTable.draw(this);
+  //initialize and then draw the codebook
+  this.summaryTable.draw(this);
 
-      //initialize and then draw the data listing
-      this.dataListing.init(this);
+  //initialize and then draw the data listing
+  this.dataListing.init(this);
 
-      //initialize and then draw the data listing
-      this.settings.init(this);
-
-      //loading is complete
-      clearInterval(loading);
-      this.loadingIndicator.style('display', 'none');
-    }
-  }, 250);
+  //initialize and then draw the data listing
+  this.settings.init(this);
 }

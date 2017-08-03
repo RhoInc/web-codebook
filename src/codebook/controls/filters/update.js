@@ -3,6 +3,7 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { nest as d3nest, select as d3select } from 'd3';
+import indicateLoading from '../../util/indicateLoading';
 
 export function update(codebook) {
   const selector = codebook.controls.wrap.select('div.custom-filters'),
@@ -77,12 +78,7 @@ export function update(codebook) {
 
   //Initialize event listeners
   filterCustom.on('change', function() {
-    //display the loading indicator
-    codebook.loadingIndicator.style('display', 'block');
-    //wait by the quarter second until the loading indicator is visible to re-render everything
-    const loading = setInterval(() => {
-      const display = codebook.loadingIndicator.style('display');
-      if (display === 'block') {
+      indicateLoading(codebook, '#loading-indicator', () => {
         // flag the selected options in the config
         d3select(this).selectAll('option').each(function(option_d) {
           option_d.selected = d3select(this).property('selected');
@@ -101,11 +97,6 @@ export function update(codebook) {
         codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
-
-        //loading complete
-        clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
-      }
-    }, 250);
+      });
   });
 }

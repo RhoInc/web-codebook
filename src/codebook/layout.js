@@ -8,6 +8,10 @@ export function layout() {
   this.controls.wrap = this.wrap
     .append('div')
     .attr('class', 'controls section');
+  this.loadingIndicator = this.controls.wrap
+    .insert('div', ':first-child')
+    .attr('id', 'loading-indicator')
+    .style('display', 'none');
   this.instructions.wrap = this.wrap
     .append('div')
     .attr('class', 'instructions section');
