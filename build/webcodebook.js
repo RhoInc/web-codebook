@@ -289,7 +289,6 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -737,12 +736,18 @@ function highlightData(chart) {
   bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function (d) {
-    var indexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
+    var newIndexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
       return di.index;
     }) : [];
+    var currentIndexes = codebook.data.highlighted.map(function (di) {
+      return di['web-codebook-index'];
+    });
+    var removeIndexes = currentIndexes.filter(function (di) {
+      return newIndexes.indexOf(di) > -1;
+    });
 
     codebook.data.highlighted = codebook.data.filtered.filter(function (di) {
-      return indexes.indexOf(di['web-codebook-index']) > -1;
+      return removeIndexes.length ? currentIndexes.indexOf(di['web-codebook-index']) > -1 && removeIndexes.indexOf(di['web-codebook-index']) === -1 : currentIndexes.indexOf(di['web-codebook-index']) > -1 || newIndexes.indexOf(di['web-codebook-index']) > -1;
     });
 
     //Display highlighted data in listing & codebook.
@@ -788,7 +793,7 @@ function onResize() {
         .filter(d => d.distance === minimum)
         .filter((d, i) => i === 0)
         .select('rect');
-       //Activate tooltip.		        //Activate tooltip.
+        //Activate tooltip.		        //Activate tooltip.
       const d = closest.datum();
       //Activate tooltip.
       tooltips.classed('active', false);
@@ -1483,8 +1488,9 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100 // space for panel value
-  } };
+    left: 100
+  } // space for panel value
+};
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
