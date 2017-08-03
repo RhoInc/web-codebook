@@ -2922,6 +2922,9 @@ var defaultSettings$3 = {
 };
 
 function setDefaults$1(explorer) {
+  /********************* meta *********************/
+  explorer.config.meta = explorer.config.meta || defaultSettings$3.meta;
+
   /********************* ignoredColumns *********************/
   var firstKey = Object.keys(explorer.config.files[0])[0];
   explorer.config.ignoredColumns = explorer.config.ignoredColumns || defaultSettings$3.ignoredColumns;
@@ -3025,6 +3028,8 @@ var fileListing = {
 };
 
 function makeCodebook(explorer) {
+  var _this = this;
+
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
@@ -3039,6 +3044,13 @@ function makeCodebook(explorer) {
 
   //reset the group to null (only matters the 2nd time the file is clicked)
   delete this.current.settings.group;
+
+  //pass along any relevant column metadata
+  this.current.settings.meta = explorer.config.meta.filter(function (f) {
+    return f.file == _this.current[_this.config.labelColumn];
+  });
+
+  console.log(this.current.settings.meta);
 
   //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);

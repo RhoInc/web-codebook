@@ -26,6 +26,13 @@ export function makeCodebook(explorer) {
   //reset the group to null (only matters the 2nd time the file is clicked)
   delete this.current.settings.group;
 
+  //pass along any relevant column metadata
+  this.current.settings.meta = explorer.config.meta.filter(
+    f => f.file == this.current[this.config.labelColumn]
+  );
+
+  console.log(this.current.settings.meta);
+
   //create the codebook
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',
