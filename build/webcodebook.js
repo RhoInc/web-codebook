@@ -289,7 +289,6 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
-//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -788,7 +787,7 @@ function onResize() {
         .filter(d => d.distance === minimum)
         .filter((d, i) => i === 0)
         .select('rect');
-       //Activate tooltip.		        //Activate tooltip.
+        //Activate tooltip.		        //Activate tooltip.
       const d = closest.datum();
       //Activate tooltip.
       tooltips.classed('active', false);
@@ -884,7 +883,7 @@ function createVerticalBars(this_, d) {
     d.statistics.highlightValues.forEach(function (d) {
       d.type = 'sub';
     });
-    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+    chartData = d3$1.merge([chartData, d.statistics.highlightValues]);
 
     chartSettings.marks[0].per = ['key', 'type'];
     chartSettings.marks[0].arrange = 'nested';
@@ -914,7 +913,7 @@ function createVerticalBars(this_, d) {
         group.statistics.highlightValues.forEach(function (d) {
           d.type = 'sub';
         });
-        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+        group.data = d3$1.merge([group.data, group.statistics.highlightValues]);
 
         group.chartSettings.marks[0].per = ['key', 'type'];
         group.chartSettings.marks[0].arrange = 'nested';
@@ -1149,7 +1148,7 @@ function createHorizontalBars(this_, d) {
     d.statistics.highlightValues.forEach(function (d) {
       d.type = 'sub';
     });
-    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+    chartData = d3$1.merge([chartData, d.statistics.highlightValues]);
 
     chartSettings.marks[0].per = ['key', 'type'];
     chartSettings.marks[0].arrange = 'nested';
@@ -1185,7 +1184,7 @@ function createHorizontalBars(this_, d) {
         group.statistics.highlightValues.forEach(function (d) {
           d.type = 'sub';
         });
-        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+        group.data = d3$1.merge([group.data, group.statistics.highlightValues]);
 
         group.chartSettings.marks[0].per = ['key', 'type'];
         group.chartSettings.marks[0].arrange = 'nested';
@@ -1483,8 +1482,9 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100 // space for panel value
-  } };
+    left: 100
+  } // space for panel value
+};
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -1572,14 +1572,14 @@ function moveXaxis(chart) {
 function addHighlightMarks(chart) {
   //add highlights for each bar (if any exist)
   var bars = chart.svg.selectAll('g.bar-group').each(function (d) {
-    var highlightCount = d3.sum(d.values.raw, function (d) {
+    var highlightCount = d3$1.sum(d.values.raw, function (d) {
       return d.highlighted ? 1 : 0;
     });
     //Clone the rect (if there are highlights)
     if (highlightCount > 0) {
-      var rect = d3.select(this).select('rect');
+      var rect = d3$1.select(this).select('rect');
       var rectNode = rect.node();
-      var highlightRect = d3.select(this).append('rect');
+      var highlightRect = d3$1.select(this).append('rect');
 
       highlightRect.attr('x', chart.x(d.rangeLow) + 1).attr('y', chart.y(highlightCount)).attr('height', chart.y(0) - chart.y(highlightCount)).attr('width', chart.x(d.rangeHigh) - 1 - (chart.x(d.rangeLow) + 1)).attr('fill', 'orange');
     }
@@ -1941,7 +1941,7 @@ function makeChart(d) {
       console.warn('Invalid chart type for ' + d.key);
     }
   } else {
-    d3.select(this).append('div').attr('class', 'missingText').text('All values missing.');
+    d3$1.select(this).append('div').attr('class', 'missingText').text('All values missing.');
   }
 }
 
@@ -2676,18 +2676,27 @@ function reset(codebook) {
 }
 
 function updateSettings(codebook, column) {
-  var setting = column !== 'Hide' ? column.toLowerCase() + 's' : 'hiddenVariables',
-      checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
+    var setting = column === 'Label' ? 'variableLabels' : column === 'Group' ? 'groups' : column === 'Filter' ? 'filters' : column === 'Hide' ? 'hiddenVariables' : console.warn('Something unsetting has occurred...');
+    var inputs = codebook.settings.wrap.selectAll('.column-table td.' + column);
+    if (['Group', 'Filter', 'Hide'].indexOf(column) > -1) {
+        //redefine settings array
+        codebook.config[setting] = inputs.filter(function () {
+            return d3$1.select(this).select('input').property('checked');
+        }).data().map(function (d) {
+            return column !== 'Hide' ? { value_col: d.column } : d.column;
+        });
+    } else if (['Label'].indexOf(column) > -1) {
+        //redefine settings array
+        codebook.config[setting] = [];
+        inputs.map(function (d) {
+            console.log(d);
+            console.log(d3.select(this).select(input));
+            return { value_col: d.column, label: this.value };
+        });
+    }
 
-  //redefine filter array
-  codebook.config[setting] = checkBoxes.filter(function () {
-    return d3$1.select(this).select('input').property('checked');
-  }).data().map(function (d) {
-    return column !== 'Hide' ? { value_col: d.column } : d.column;
-  });
-
-  //reset
-  reset(codebook);
+    //reset
+    reset(codebook);
 }
 
 function layout$2(codebook) {
@@ -2702,10 +2711,17 @@ function layout$2(codebook) {
     return d.value_col;
   }),
       hiddenColumns = codebook.config.hiddenVariables,
-      columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
+      labeledColumns = codebook.config.variableLabels.map(function (d) {
+    return d.value_col;
+  }),
+      columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
       columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
+      Label: {
+        type: 'text',
+        label: labeledColumns.indexOf(column) > -1 ? codebook.config.variableLabels[labeledColumns.indexOf(column)].label : ''
+      },
       Group: {
         type: 'checkbox',
         checked: groupColumns.indexOf(column) > -1
@@ -2751,10 +2767,15 @@ function layout$2(codebook) {
       case 'Column':
         cell.text(d.value);
         break;
+      case 'Label':
+        cell.attr('title', 'Define variable label');
+        cell.append('input').attr('type', d.value.type).property('value', d.value.label).on('change', function () {
+          return updateSettings(codebook, d.key);
+        });
+        break;
       default:
         cell.attr('title', (d.value.checked ? 'Remove' : 'Add') + ' ' + d.column + ' ' + (d.value.checked ? 'from' : 'to') + ' ' + d.key.toLowerCase() + ' list');
-        var checkbox = cell.append('input').attr('type', d.value.type).property('checked', d.value.checked);
-        checkbox.on('change', function () {
+        var checkbox = cell.append('input').attr('type', d.value.type).property('checked', d.value.checked).on('change', function () {
           return updateSettings(codebook, d.key);
         });
     }
