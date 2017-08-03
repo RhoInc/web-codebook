@@ -765,7 +765,7 @@ function onResize() {
   });
 
   //Add modal to nearest mark.
-  var bars = this.svg.selectAll('.bar-group');
+  var bars = this.svg.selectAll('.bar-group:not(.sub)');
   var tooltips = this.svg.selectAll('.svg-tooltip');
   var statistics = this.svg.selectAll('.statistic');
 
@@ -795,15 +795,18 @@ function onResize() {
         return i === arbitrary;
       });
     }
+    bars.select('rect').style('stroke-width', null).style('stroke', null);
     closest = closest.select('rect');
 
-    //Activate tooltip.		        //Activate tooltip.
-    var d = closest.datum();
     //Activate tooltip.
+    var d = closest.datum();
     tooltips.classed('active', false);
     context.svg.select('#' + d.selector).classed('active', true);
+
+    closest.style('stroke-width', '3px').style('stroke', 'black');
   }).on('mouseout', function () {
     context.svg.selectAll('g.svg-tooltip').classed('active', false);
+    bars.select('rect').style('stroke-width', null).style('stroke', null);
   });
 
   //Add event listener to marks to highlight data.
@@ -1491,9 +1494,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
