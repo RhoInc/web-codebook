@@ -3,8 +3,7 @@ import updateSettings from './updateSettings';
 
 export function layout(codebook) {
   //Create list of columns in the data file.
-  const
-    columns = codebook.data.summary.map(d => d.value_col),
+  const columns = codebook.data.summary.map(d => d.value_col),
     groupColumns = codebook.config.groups.map(d => d.value_col),
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
@@ -16,7 +15,8 @@ export function layout(codebook) {
         Label: {
           type: 'text',
           label: labeledColumns.indexOf(column) > -1
-            ? codebook.config.variableLabels[labeledColumns.indexOf(column)].label
+            ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
+                .label
             : ''
         },
         Group: {
@@ -74,7 +74,7 @@ export function layout(codebook) {
             cell.text(d.value);
             break;
           case 'Label':
-            cell.attr('title', 'Define variable label')
+            cell.attr('title', 'Define variable label');
             cell
               .append('input')
               .attr('type', d.value.type)
