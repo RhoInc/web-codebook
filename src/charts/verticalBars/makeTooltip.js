@@ -7,7 +7,7 @@ export default function makeTooltip(d, i, context) {
   const tooltip = context.svg.append('g').attr('id', d.selector);
   const text = tooltip.append('text').attr({
     id: 'text',
-    x: context.x(d.key),
+    x: context.x(d.values.x),
     y: context.plot_height,
     dy: '-.75em',
     'font-size': '75%',
@@ -17,18 +17,22 @@ export default function makeTooltip(d, i, context) {
   text
     .append('tspan')
     .attr({
-      x: context.x(d.key),
-      dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
-      'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
+      x: context.x(d.values.x),
+      dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
+      'text-anchor': context.x(d.values.x) < context.plot_width / 2
+        ? 'start'
+        : 'end'
     })
-    .text(`${d.key}`);
+    .text(`${d.values.x}`);
   text
     .append('tspan')
     .attr({
-      x: context.x(d.key),
-      dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+      x: context.x(d.values.x),
+      dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
       dy: '-1.5em',
-      'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
+      'text-anchor': context.x(d.values.x) < context.plot_width / 2
+        ? 'start'
+        : 'end'
     })
     .text('n=' + d.values.raw[0].n + ' (' + d3format('0.1%')(d.total) + ')');
   const dimensions = text[0][0].getBBox();

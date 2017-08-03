@@ -696,7 +696,7 @@ function makeTooltip(d, i, context) {
   var tooltip = context.svg.append('g').attr('id', d.selector);
   var text = tooltip.append('text').attr({
     id: 'text',
-    x: context.x(d.key),
+    x: context.x(d.values.x),
     y: context.plot_height,
     dy: '-.75em',
     'font-size': '75%',
@@ -704,15 +704,15 @@ function makeTooltip(d, i, context) {
     fill: 'white'
   });
   text.append('tspan').attr({
-    x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
-    'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
-  }).text('' + d.key);
+    x: context.x(d.values.x),
+    dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
+    'text-anchor': context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
+  }).text('' + d.values.x);
   text.append('tspan').attr({
-    x: context.x(d.key),
-    dx: context.x(d.key) < context.plot_width / 2 ? '1em' : '-1em',
+    x: context.x(d.values.x),
+    dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
     dy: '-1.5em',
-    'text-anchor': context.x(d.key) < context.plot_width / 2 ? 'start' : 'end'
+    'text-anchor': context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
   }).text('n=' + d.values.raw[0].n + ' (' + d3$1.format('0.1%')(d.total) + ')');
   var dimensions = text[0][0].getBBox();
   tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
@@ -770,39 +770,50 @@ function onResize() {
   });
 
   //Add modal to nearest mark.
-  var bars = this.svg.selectAll('.bar-group');
+  var bars = this.svg.selectAll('.bar-group:not(.sub)');
   var tooltips = this.svg.selectAll('.svg-tooltip');
   var statistics = this.svg.selectAll('.statistic');
-  /*
-  this.svg
-    .on('mousemove', function() {
-      //Highlight closest bar.
-      const mouse = d3mouse(this);
-      const x = mouse[0];
-      const y = mouse[1];
-      let minimum;
-      let bar = {};
-      bars.each(function(d, i) {
-        d.distance = Math.abs(context.x(d.key) - x);
-        if (i === 0 || d.distance < minimum) {
-          minimum = d.distance;
-          bar = d;
-        }
-      });
-      const closest = bars
-        .filter(d => d.distance === minimum)
-        .filter((d, i) => i === 0)
-        .select('rect');
-        //Activate tooltip.		        //Activate tooltip.
-      const d = closest.datum();
-      //Activate tooltip.
-      tooltips.classed('active', false);
-      context.svg.select('#' + d.selector).classed('active', true);
-    })
-    .on('mouseout', function() {
-      context.svg.selectAll('g.svg-tooltip').classed('active', false);
+
+  this.svg.on('mousemove', function () {
+    //Highlight closest bar.
+    var mouse$$1 = d3$1.mouse(this);
+    var x = mouse$$1[0];
+    var y = mouse$$1[1];
+    var minimum = void 0;
+    var bar = {};
+    bars.each(function (d, i) {
+      d.distance = Math.abs(context.x(d.values.x) - x);
+      if (i === 0 || d.distance < minimum) {
+        minimum = d.distance;
+        bar = d;
+      }
     });
-    */
+
+    //In the instance of equally close bars, e.g. an unhighlighted and highlighted bar, choose one randomly.
+    var closest = bars.filter(function (d) {
+      return d.distance === minimum;
+    });
+    if (closest.size() > 1) {
+      var arbitrary = void 0;
+      closest = closest.filter(function (d, i) {
+        if (i === 0) arbitrary = Math.round(Math.random());
+        return i === arbitrary;
+      });
+    }
+    bars.select('rect').style('stroke-width', null).style('stroke', null);
+    closest = closest.select('rect');
+
+    //Activate tooltip.
+    var d = closest.datum();
+    tooltips.classed('active', false);
+    context.svg.select('#' + d.selector).classed('active', true);
+
+    closest.style('stroke-width', '3px').style('stroke', 'black');
+  }).on('mouseout', function () {
+    context.svg.selectAll('g.svg-tooltip').classed('active', false);
+    bars.select('rect').style('stroke-width', null).style('stroke', null);
+  });
+
   //Add event listener to marks to highlight data.
   highlightData(this);
 
