@@ -1941,8 +1941,26 @@ function makeDetails(d) {
   });
 
   //Render metadata
+  //don't render the label if it's the same as the col_name
+  d.meta.forEach(function (d) {
+    d.hidden = false;
+  });
+  var colname = d.meta.filter(function (f) {
+    return f.key == 'Column';
+  })[0].value;
+  var label = d.meta.filter(function (f) {
+    return f.key == 'Label';
+  })[0].value;
+  if (colname == label) {
+    d.meta.filter(function (f) {
+      return f.key == 'Label';
+    })[0].hidden = true;
+  }
+
   var list = wrap.append('ul');
-  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true);
+  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
+    return d.hidden;
+  });
 
   metaItems.append('div').text(function (d) {
     return d.key;
@@ -2598,8 +2616,6 @@ function makeSummary(codebook) {
       var metaMatch = codebook.config.meta.filter(function (f) {
         return f.value_col == variable;
       });
-      console.log(codebook.config.meta);
-      console.log(metaMatch);
       if (metaMatch.length == 1) {
         var metaKeys = Object.keys(metaMatch[0]).filter(function (f) {
           return ['value_col', 'label'].indexOf(f) === -1;
