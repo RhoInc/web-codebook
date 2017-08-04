@@ -144,6 +144,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -1290,7 +1291,7 @@ function makeBoxPlotTooltip(d, i, context) {
   var format$$1 = d3$1.format(context.config.measureFormat);
   //Define tooltips dss.
   //d.selector = `outlier` + d;
-  var boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d);
+  var boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d).attr('index', i);
   //console.log(boxplottooltip);
   var text = boxplottooltip.append('text').attr({
     id: 'text',
@@ -1434,6 +1435,8 @@ function onResize$3() {
 
       var unique_outliers = outliers.filter(onlyUnique);
 
+      //console.log(unique_outliers);
+
       var outlier = this.svg.selectAll('line.outlier').data(unique_outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
         return _this.x(d);
       }).attr('x2', function (d) {
@@ -1442,20 +1445,28 @@ function onResize$3() {
         return _this.plot_height * 1.07;
       }).attr('y2', function (d) {
         return (_this.plot_height + _this.config.boxPlotHeight) / 1.07;
-      }).attr('id', function (d) {
-        return 'outlier' + d;
+      })
+      //.attr('id', d => 'outlier' + d)
+      .attr('value', function (d) {
+        return d;
       }).style({
         fill: '#000000',
         stroke: 'black',
         'stroke-width': '1px'
       });
-      outlier.append('title').text(function (d) {
+
+      outlier.append('title').text(function (d, i) {
         return d;
+      });
+      //trying to add 'id' to 'line'
+      outlier.attr('index', function (d, i) {
+        return i;
       });
     }
 
     this.svg.selectAll('line.outlier').each(function (d, i) {
       makeBoxPlotTooltip(d, i, context);
+      //this.svg.attr('id', d => i);
     });
 
     var bbox = this.svg.node().getBBox();
@@ -1545,7 +1556,10 @@ function onResize$3() {
           dist = Math.abs(e - x);
           if (i === 0 || dist < min_dist) {
             min_dist = dist;
-            olier = e;
+            // Added below 8/3- changed from value to index ( e -> i)
+            olier = i;
+            console.log('Index of closest outlier');
+            console.log(i);
           }
         });
 
@@ -1555,8 +1569,10 @@ function onResize$3() {
           'stroke-width': '1px'
         });
 
-        var closestolier = oliers.filter(function (d) {
-          return d === olier;
+        var closestolier = oliers
+        // Added below 8/3
+        .filter(function (d, i) {
+          return i === olier;
         })
         //.filter((d, i) => i === 0)
         // What characteristics does the above line filter out ?
@@ -1570,9 +1586,14 @@ function onResize$3() {
         //Activate -x axis tooltip.
         var d = closestolier.datum();
         boxplottooltips.classed('active', false);
-        //context.svg.select('g#outlier' + d).classed('active', true);
 
-        var active_outlier = context.svg.select('g#outlier' + d).classed('active', true);
+        var active_outlier = context.svg.selectAll('g.svg-boxplottooltip')
+        // Added below 8/3
+        .filter(function (d, i) {
+          return i === olier;
+        })
+        //.select('g#outlier' + d)
+        .classed('active', true);
         console.log(active_outlier);
       } else {
         oliers.style({

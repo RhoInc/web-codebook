@@ -129,15 +129,17 @@ export default function onResize() {
               return q;
             }
           })[0]['quantile'];
-        return low_outlier || high_outlier;		
+        return low_outlier || high_outlier;
       });
-	  
-	  function onlyUnique(value, index, self) {
-		  return self.indexOf(value) === index;
-	  }
 
-	  var unique_outliers = outliers.filter( onlyUnique );
-	  	  
+      function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+      }
+
+      var unique_outliers = outliers.filter(onlyUnique);
+
+      //console.log(unique_outliers);
+
       var outlier = this.svg
         .selectAll('line.outlier')
         .data(unique_outliers)
@@ -148,19 +150,26 @@ export default function onResize() {
         .attr('x2', d => this.x(d))
         .attr('y1', d => this.plot_height * 1.07)
         .attr('y2', d => (this.plot_height + this.config.boxPlotHeight) / 1.07)
-        .attr('id', d => 'outlier' + d)
+        //.attr('id', d => 'outlier' + d)
+        .attr('value', d => d)
         .style({
           fill: '#000000',
           stroke: 'black',
           'stroke-width': '1px'
         });
-      outlier.append('title').text(function(d) {
+
+      outlier.append('title').text(function(d, i) {
         return d;
+      });
+      //trying to add 'id' to 'line'
+      outlier.attr('index', function(d, i) {
+        return i;
       });
     }
 
     this.svg.selectAll('line.outlier').each(function(d, i) {
       makeBoxPlotTooltip(d, i, context);
+      //this.svg.attr('id', d => i);
     });
 
     var bbox = this.svg.node().getBBox();
@@ -242,8 +251,8 @@ export default function onResize() {
     const boxplottooltips = this.svg.selectAll('.svg-boxplottooltip');
     const statistics = this.svg.selectAll('line.statistic');
     //this.svg.selectAll('g.svg-boxplottooltip').remove();
-	//boxplottooltips.classed('active', false);
-	//context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
+    //boxplottooltips.classed('active', false);
+    //context.svg.selectAll('g.svg-boxplottooltip').classed('active', false);
 
     this.svg
       .on('mousemove', function() {
@@ -259,13 +268,14 @@ export default function onResize() {
           }
         });
 
-        if ((
+        if (
           (x > boxplot_lines.statistics['95th percentile'] ||
             x < boxplot_lines.statistics['5th percentile']) &&
           (x > boxplot_lines.statistics['min'] &&
             x < boxplot_lines.statistics['max']) &&
-          y < 0
-        ) && y > -25) {
+          y < 0 &&
+          y > -25
+        ) {
           let min_dist;
           let dist;
           let olier;
@@ -275,7 +285,10 @@ export default function onResize() {
             dist = Math.abs(e - x);
             if (i === 0 || dist < min_dist) {
               min_dist = dist;
-              olier = e;
+              // Added below 8/3- changed from value to index ( e -> i)
+              olier = i;
+              console.log('Index of closest outlier');
+              console.log(i);
             }
           });
 
@@ -286,7 +299,8 @@ export default function onResize() {
           });
 
           const closestolier = oliers
-            .filter(d => d === olier)
+            // Added below 8/3
+            .filter((d, i) => i === olier)
             //.filter((d, i) => i === 0)
             // What characteristics does the above line filter out ?
             // if two are equidistant, arbitrary first value
@@ -299,18 +313,21 @@ export default function onResize() {
           //Activate -x axis tooltip.
           const d = closestolier.datum();
           boxplottooltips.classed('active', false);
-          //context.svg.select('g#outlier' + d).classed('active', true);
 
-		  var active_outlier = context.svg.select('g#outlier' + d).classed('active', true);
-		  console.log(active_outlier);
-		  
+          var active_outlier = context.svg
+            .selectAll('g.svg-boxplottooltip')
+            // Added below 8/3
+            .filter((d, i) => i === olier)
+            //.select('g#outlier' + d)
+            .classed('active', true);
+          console.log(active_outlier);
         } else {
           oliers.style({
             fill: '#000000',
             stroke: 'black',
             'stroke-width': '1px'
           });
-		  boxplottooltips.classed('active', false);
+          boxplottooltips.classed('active', false);
         }
 
         if (y > 0) {
@@ -340,7 +357,9 @@ export default function onResize() {
       })
       .on('mouseout', function() {
         bars.select('rect').style('fill', '#999');
-        context.svg.selectAll('g.svg-tooltip, g.svg-boxplottooltip').classed('active', false);
+        context.svg
+          .selectAll('g.svg-tooltip, g.svg-boxplottooltip')
+          .classed('active', false);
       });
   }
 }
