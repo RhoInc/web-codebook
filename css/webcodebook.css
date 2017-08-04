@@ -74,10 +74,7 @@ Controls layout
   vertical-align: top;
   border: 1px dashed #ccc;
   margin-bottom:0.5em;
-}
-
-.web-codebook .controls.minimized {
-  height:28px;
+  overflow:hidden;
 }
 
 .web-codebook .controls > * {
@@ -234,7 +231,8 @@ Header layout
 
 .web-codebook .summaryTable .variable-row .row-head {
   background:#eee;
-  padding:0.4em;
+  padding:0.1em;
+  overflow:hidden;
 }
 
 .web-codebook .summaryTable .variable-row .row-head > * {
@@ -285,8 +283,12 @@ Header - Details layout
   text-align:center;
 }
 
-.web-codebook .summaryTable .variable-row .row-details ul {
+.web-codebook .summaryTable .variable-row .row-details {
   float:right;
+}
+.web-codebook .summaryTable .variable-row .row-details ul  {
+  padding-right: 1.5em;
+
 }
 .web-codebook .summaryTable .variable-row .row-details ul li {
   display: inline-block;
@@ -312,7 +314,7 @@ Header layout - variable summary
 
 
 .web-codebook .summaryTable .variable-row .row-head .row-values .value-list{
-  margin-top:0.3em;
+  margin-top:0.1em;
   font-size: 0.7em;
   list-style:none;
 }
