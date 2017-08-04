@@ -3,7 +3,7 @@ import onResize from './verticalBars/onResize';
 import onInit from './verticalBars/onInit';
 import axisSort from './verticalBars/axisSort';
 import { createChart } from 'webcharts';
-import { select as d3select, max as d3max } from 'd3';
+import { select as d3select, max as d3max, merge as d3merge } from 'd3';
 
 export function createVerticalBars(this_, d) {
   const chartContainer = d3select(this_).node();
@@ -67,7 +67,7 @@ export function createVerticalBars(this_, d) {
     d.statistics.highlightValues.forEach(function(d) {
       d.type = 'sub';
     });
-    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+    chartData = d3merge([chartData, d.statistics.highlightValues]);
 
     chartSettings.marks[0].per = ['key', 'type'];
     chartSettings.marks[0].arrange = 'nested';
@@ -95,7 +95,7 @@ export function createVerticalBars(this_, d) {
         group.statistics.highlightValues.forEach(function(d) {
           d.type = 'sub';
         });
-        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+        group.data = d3merge([group.data, group.statistics.highlightValues]);
 
         group.chartSettings.marks[0].per = ['key', 'type'];
         group.chartSettings.marks[0].arrange = 'nested';

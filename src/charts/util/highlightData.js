@@ -12,16 +12,19 @@ export default function highlightData(chart) {
       : chart.config.chartType === 'histogramBoxPlot'
         ? d.values.raw.map(di => di.index)
         : [];
-    const currentIndexes = codebook.data.highlighted
-        .map(di => di['web-codebook-index']);
-    const removeIndexes = currentIndexes
-        .filter(di => newIndexes.indexOf(di) > -1);
+    const currentIndexes = codebook.data.highlighted.map(
+      di => di['web-codebook-index']
+    );
+    const removeIndexes = currentIndexes.filter(
+      di => newIndexes.indexOf(di) > -1
+    );
 
-    codebook.data.highlighted = codebook.data.filtered
-          .filter(di => {
-              return removeIndexes.length
-                  ? (currentIndexes.indexOf(di['web-codebook-index']) > -1 && removeIndexes.indexOf(di['web-codebook-index']) === -1)
-                  : (currentIndexes.indexOf(di['web-codebook-index']) > -1 || newIndexes.indexOf(di['web-codebook-index']) > -1);
+    codebook.data.highlighted = codebook.data.filtered.filter(di => {
+      return removeIndexes.length
+        ? currentIndexes.indexOf(di['web-codebook-index']) > -1 &&
+            removeIndexes.indexOf(di['web-codebook-index']) === -1
+        : currentIndexes.indexOf(di['web-codebook-index']) > -1 ||
+            newIndexes.indexOf(di['web-codebook-index']) > -1;
     });
 
     //Display highlighted data in listing & codebook.

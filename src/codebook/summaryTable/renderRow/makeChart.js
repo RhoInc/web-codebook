@@ -1,4 +1,5 @@
 import { charts } from '../../../charts';
+import { select as d3select } from 'd3';
 
 export default function makeChart(d) {
   //Common chart settings
@@ -18,8 +19,7 @@ export default function makeChart(d) {
       console.warn('Invalid chart type for ' + d.key);
     }
   } else {
-    d3
-      .select(this)
+    d3select(this)
       .append('div')
       .attr('class', 'missingText')
       .text('All values missing.');
