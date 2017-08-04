@@ -79,8 +79,7 @@ Controls layout
 }
 
 .web-codebook .controls.minimized {
-  height:28px;
-}
+  height:2em; }
 
 .web-codebook .controls > * {
     margin: .25em .5em;
@@ -136,7 +135,7 @@ Controls layout
   background-color:white;
   border:2px solid #008CBA;
   border-radius: 4px;
-  padding:2px 4px;
+  padding:.2em .4em;
 }
 
 .web-codebook .controls button:hover, .web-codebook .instructions button:hover{
