@@ -238,18 +238,21 @@ Header layout
 }
 
 .web-codebook .summaryTable .variable-row .row-head > * {
-  display:block;
-  border-bottom:1px dashed #999;
+  display:inline-block;
 }
 
 /**-------------------------------------------------------------------------------------------\
 Header layout - Toggle
 \-------------------------------------------------------------------------------------------**/
-.web-codebook .summaryTable .variable-row .row-details > * {
+.web-codebook .summaryTable .variable-row .row-title{
+padding-right: 1em
+}
+
+.web-codebook .summaryTable .variable-row .row-title > * {
   display:inline-block;
 }
 
-.web-codebook .summaryTable .variable-row .row-details .row-toggle{
+.web-codebook .summaryTable .variable-row .row-title .row-toggle{
   font-size:0.5em;
   cursor:pointer;
   vertical-align: top;
@@ -257,18 +260,38 @@ Header layout - Toggle
   padding-right:0.5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-details .row-toggle:hover{
+.web-codebook .summaryTable .variable-row .row-title .row-toggle:hover{
   background:#eee;
 }
 
 /**-------------------------------------------------------------------------------------------\
 Header - Details layout
 \-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row {
+  position:relative;
+}
 
+.web-codebook .summaryTable .variable-row .type-label{
+  position:absolute;
+  right:0;
+  width:25px;
+  top:0;
+  background:white;
+  border:1px solid #999;
+  border-radius:2px;
+  padding:2px;
+  cursor:pointer;
+  font-size:0.6em;
+  text-align:center;
+}
 
+.web-codebook .summaryTable .variable-row .row-details ul {
+  float:right;
+}
 .web-codebook .summaryTable .variable-row .row-details ul li {
   display: inline-block;
   padding-right: .5em;
+
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div {

@@ -39,15 +39,8 @@ export function makeSummary(codebook) {
           )[0].label
         : variable;
 
-      // Add metadata Object - all variables get "Column" and "Label" items. Others added from config.meta as provided.
-      variables[i].meta = [
-        { key: 'Column', value: variable ? variable : '<no value>' },
-        {
-          key: 'Label',
-          value: variables[i].label ? variables[i].label : '<no value>'
-        },
-        { key: 'Type', value: variables[i].type }
-      ];
+      // Add metadata Object
+      variables[i].meta = [{ key: 'Type', value: variables[i].type }];
 
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);
       if (metaMatch.length == 1) {

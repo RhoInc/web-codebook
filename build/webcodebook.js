@@ -613,59 +613,6 @@ function draw(codebook) {
   varRows.exit().remove();
 }
 
-function makeValues(d) {
-  var wrap = d3$1.select(this);
-  var valuesList = wrap.append('ul').attr('class', 'value-list');
-
-  //make a list of values
-  if (d.type == 'categorical') {
-    //valuesList.append("span").text( "Values (Most Frequent):")
-    var topValues = d.statistics.values.sort(function (a, b) {
-      return b.n - a.n;
-    }).filter(function (d, i) {
-      return i < 5;
-    });
-
-    valuesList.selectAll('li').data(topValues).enter().append('li').text(function (d) {
-      return d.key + ' (' + d3$1.format('0.1%')(d.prop_n) + ')';
-    }).attr('title', function (d) {
-      return 'n=' + d.n;
-    }).style('cursor', 'help');
-
-    if (d.statistics.values.length > 5) {
-      var totLength = d.statistics.values.length;
-      var extraCount = totLength - 5;
-      var extra_span = valuesList.append('span').html('and ' + extraCount + ' more.');
-    }
-  } else if (d.type == 'continuous') {
-    //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3$1.set(d.values).values() //get unique
-    .map(function (d) {
-      return +d;
-    }) //convert to numeric
-    .sort(function (a, b) {
-      return a - b;
-    }); // sort low to high
-
-    var minValues = sortedValues.filter(function (d, i) {
-      return i < 3;
-    });
-    var nValues = sortedValues.length;
-    var maxValues = sortedValues.filter(function (d, i) {
-      return i >= nValues - 3;
-    });
-    var valList = d3$1.merge([minValues, ['...'], maxValues]);
-
-    valuesList.selectAll('li').data(valList).enter().append('li').text(function (d) {
-      return d;
-    }).attr('title', function (d) {
-      return d == '...' ? nValues - 6 + ' other values' : '';
-    }).style('cursor', function (d) {
-      return d == '...' ? 'help' : null;
-    });
-  }
-}
-
 function moveYaxis(chart) {
   var ticks = chart.wrap.selectAll('g.y.axis g.tick');
   ticks.select('text').remove();
@@ -1929,10 +1876,72 @@ function makeChart(d) {
 }
 
 function makeDetails(d) {
+  var sections = ['Meta', 'Stats'];
   var wrap = d3$1.select(this);
+  var parent = d3$1.select(this.parentNode);
+  var list = wrap.append('div').append('ul');
+  var label = parent.append('div').attr('class', 'type-label');
 
-  //Render Row Toggle
-  wrap.append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
+  //Render metadata
+  function renderMeta(d) {
+    label.text('Meta');
+    list.selectAll('*').remove();
+    console.log(d);
+    var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
+      return d.hidden;
+    });
+
+    metaItems.append('div').text(function (d) {
+      return d.key;
+    }).attr('class', 'label');
+    metaItems.append('div').text(function (d) {
+      return d.value;
+    }).attr('class', 'value');
+  }
+
+  //Render Summary Stats
+  function renderStats(d) {
+    label.text('Stats');
+    list.selectAll('*').remove();
+
+    var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
+    var statNames = Object.keys(d.statistics).filter(function (f) {
+      return ignoreStats.indexOf(f) === -1;
+    }) //remove value lists
+    .filter(function (f) {
+      return f.indexOf('ile') === -1;
+    }); //remove "percentiles"
+
+    var statList = statNames.map(function (stat) {
+      return {
+        key: stat !== 'nMissing' ? stat : 'Missing',
+        value: d.statistics[stat]
+      };
+    });
+
+    console.log(statList);
+    var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
+    stats.append('div').text(function (d) {
+      return d.key;
+    }).attr('class', 'label');
+    stats.append('div').text(function (d) {
+      return d.value;
+    }).attr('class', 'value');
+  }
+
+  label.on('click', function () {
+    if (d3$1.select(this).text() == 'Meta') {
+      renderStats(d);
+    } else if (d3$1.select(this).text() == 'Stats') {
+      renderMeta(d);
+    }
+  });
+  //render stats on initial load
+  renderStats(d);
+}
+
+function makeTitle(d) {
+  d3$1.select(this).append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
     var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
     var chartDiv = rowDiv.select('.row-chart');
     var hiddenFlag = rowDiv.classed('hiddenChart');
@@ -1940,58 +1949,15 @@ function makeDetails(d) {
     d3$1.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
   });
 
-  //Render metadata
-  //don't render the label if it's the same as the col_name
-  d.meta.forEach(function (d) {
-    d.hidden = false;
+  d3$1.select(this).append('span').attr('class', 'title-span').text(function (d) {
+    return d.value_col;
   });
-  var colname = d.meta.filter(function (f) {
-    return f.key == 'Column';
-  })[0].value;
-  var label = d.meta.filter(function (f) {
-    return f.key == 'Label';
-  })[0].value;
-  if (colname == label) {
-    d.meta.filter(function (f) {
-      return f.key == 'Label';
-    })[0].hidden = true;
+
+  if (d.value_col != d.label) {
+    d3$1.select(this).append('span').attr('class', 'label-span').text(function (d) {
+      return d.label;
+    });
   }
-
-  var list = wrap.append('ul');
-  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
-    return d.hidden;
-  });
-
-  metaItems.append('div').text(function (d) {
-    return d.key;
-  }).attr('class', 'label');
-  metaItems.append('div').text(function (d) {
-    return d.value;
-  }).attr('class', 'value');
-
-  //Render Summary Stats
-  var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
-  var statNames = Object.keys(d.statistics).filter(function (f) {
-    return ignoreStats.indexOf(f) === -1;
-  }) //remove value lists
-  .filter(function (f) {
-    return f.indexOf('ile') === -1;
-  }); //remove "percentiles"
-
-  var statList = statNames.map(function (stat) {
-    return {
-      key: stat !== 'nMissing' ? stat : 'Missing',
-      value: d.statistics[stat]
-    };
-  });
-
-  var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
-  stats.append('div').text(function (d) {
-    return d.key;
-  }).attr('class', 'label');
-  stats.append('div').text(function (d) {
-    return d.value;
-  }).attr('class', 'value');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2004,8 +1970,10 @@ function renderRow(d) {
 
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
+  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
   rowHead.append('div').attr('class', 'row-details').each(makeDetails);
-  rowHead.append('div').attr('class', 'row-values').each(makeValues);
+  //rowHead.append('div').attr('class', 'row-values').each(makeValues);
+
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
 }
 
@@ -2607,11 +2575,8 @@ function makeSummary(codebook) {
         return variableLabel.value_col === variable;
       })[0].label : variable;
 
-      // Add metadata Object - all variables get "Column" and "Label" items. Others added from config.meta as provided.
-      variables[i].meta = [{ key: 'Column', value: variable ? variable : '<no value>' }, {
-        key: 'Label',
-        value: variables[i].label ? variables[i].label : '<no value>'
-      }, { key: 'Type', value: variables[i].type }];
+      // Add metadata Object
+      variables[i].meta = [{ key: 'Type', value: variables[i].type }];
 
       var metaMatch = codebook.config.meta.filter(function (f) {
         return f.value_col == variable;
