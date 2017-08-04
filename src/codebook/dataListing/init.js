@@ -1,8 +1,11 @@
 import layout from './layout';
 import onDraw from './onDraw';
 import { createTable } from 'webcharts';
+import indicateLoading from '../util/indicateLoading';
 
 export function init(codebook) {
+  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart');
+
   const dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
   dataListing.config = codebook.config;
