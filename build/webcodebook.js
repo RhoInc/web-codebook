@@ -106,6 +106,7 @@ function init(data) {
   this.data.makeSummary(this);
 
   //draw controls
+
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);
@@ -133,10 +134,11 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
+  this.loadingIndicator = this.wrap.insert('div', ':first-child').attr('id', 'loading-indicator').style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
-  this.loadingIndicator = this.controls.wrap.insert('div', ':first-child').attr('id', 'loading-indicator').style('display', 'none');
+
   this.instructions.wrap = this.wrap.append('div').attr('class', 'instructions section');
   this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
 
@@ -150,48 +152,51 @@ function layout() {
   this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
 }
 
-function indicateLoading(codebook, element, callback) {
-  codebook.loadingIndicator.style('display', 'block');
-  //wait by the centisecond until the loading indicator is visible
-  var loading = setInterval(function () {
-    var laidOut = d3.select(element).property('offsetwidth') > 0;
-    if (!laidOut) {
-      if (callback) callback();
-      //loading is complete
-      clearInterval(loading);
-      codebook.loadingIndicator.style('display', 'none');
-    }
-  }, 100);
+function indicateLoading(codebook, callback) {
+    var loadingIndicator = codebook.wrap.select('#loading-indicator').style('display', 'block');
+
+    //wait by the centisecond until the loading indicator is visible
+    var loading = setInterval(function () {
+        var laidOut = loadingIndicator.property('offsetwidth') > 0;
+
+        if (!laidOut) {
+            if (callback) callback();
+            //loading is complete
+            clearInterval(loading);
+            loadingIndicator.style('display', 'none');
+        }
+    }, 100);
 }
 
 function init$1(codebook) {
-  indicateLoading(codebook, '.web-codebook .controls .control-toggle');
+    indicateLoading(codebook, function () {
 
-  codebook.controls.wrap.attr('onsubmit', 'return false;');
-  codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
+        codebook.controls.wrap.attr('onsubmit', 'return false;');
+        codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
 
-  //Draw title
-  codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
-  codebook.controls.summaryWrap = codebook.controls.title.append('span');
-  codebook.controls.rowCount = codebook.controls.summaryWrap.append('span').attr('class', 'rowCount');
-  codebook.controls.highlightCount = codebook.controls.summaryWrap.append('span').attr('class', 'highlightCount');
+        //Draw title
+        codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
+        codebook.controls.summaryWrap = codebook.controls.title.append('span');
+        codebook.controls.rowCount = codebook.controls.summaryWrap.append('span').attr('class', 'rowCount');
+        codebook.controls.highlightCount = codebook.controls.summaryWrap.append('span').attr('class', 'highlightCount');
 
-  //Draw controls.
-  codebook.controls.groups.init(codebook);
-  codebook.controls.filters.init(codebook);
-  codebook.controls.controlToggle.init(codebook);
-  codebook.controls.highlight.init(codebook);
-  codebook.controls.updateRowCount(codebook);
+        //Draw controls.
+        codebook.controls.groups.init(codebook);
+        codebook.controls.filters.init(codebook);
+        codebook.controls.controlToggle.init(codebook);
+        codebook.controls.highlight.init(codebook);
+        codebook.controls.updateRowCount(codebook);
 
-  //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
-    return codebook.config.hiddenVariables.indexOf(d) > -1;
-  });
+        //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
+        codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
+            return codebook.config.hiddenVariables.indexOf(d) > -1;
+        });
 
-  //Hide filters corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
-    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-  });
+        //Hide filters corresponding to variables specified in settings.hiddenVariables.
+        codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
+            return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+        });
+    });
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -258,7 +263,7 @@ function update(codebook) {
   filterCustom.on('change', function () {
     var _this = this;
 
-    indicateLoading(codebook, '#loading-indicator', function () {
+    indicateLoading(codebook, function () {
       // flag the selected options in the config
       d3$1.select(_this).selectAll('option').each(function (option_d) {
         option_d.selected = d3$1.select(this).property('selected');
@@ -333,7 +338,7 @@ function update$1(codebook) {
   groupSelect.on('change', function () {
     var _this = this;
 
-    indicateLoading(codebook, '#loading-indicator', function () {
+    indicateLoading(codebook, function () {
 
       if (_this.value !== 'None') codebook.config.group = _this.value;else delete codebook.config.group;
 
@@ -571,29 +576,30 @@ var nav = {
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
 function draw(codebook) {
-  indicateLoading(codebook, '.web-codebook .summaryTable .variable-row .row-title');
+    indicateLoading(codebook, function () {
 
-  //enter/update/exit for variableDivs
-  //BIND the newest data
-  var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
-    return d.value_col;
-  });
+        //enter/update/exit for variableDivs
+        //BIND the newest data
+        var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
+            return d.value_col;
+        });
 
-  //ENTER
-  varRows.enter().append('div').attr('class', function (d) {
-    return 'variable-row ' + d.type;
-  });
+        //ENTER
+        varRows.enter().append('div').attr('class', function (d) {
+            return 'variable-row ' + d.type;
+        });
 
-  //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
-  varRows.classed('hidden', function (d) {
-    return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
-  });
+        //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
+        varRows.classed('hidden', function (d) {
+            return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+        });
 
-  //ENTER + Update
-  varRows.each(codebook.summaryTable.renderRow);
+        //ENTER + Update
+        varRows.each(codebook.summaryTable.renderRow);
 
-  //EXIT
-  varRows.exit().remove();
+        //EXIT
+        varRows.exit().remove();
+    });
 }
 
 function makeTitle(d) {
@@ -2202,45 +2208,46 @@ function onDraw(dataListing) {
 }
 
 function init$7(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart');
+    indicateLoading(codebook, function () {
 
-  var dataListing = codebook.dataListing;
-  dataListing.codebook = codebook;
-  dataListing.config = codebook.config;
-  layout$1(dataListing);
-  //sort config
-  dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
-  dataListing.sort.order = [];
-  //pagination config
-  dataListing.pagination = {};
-  dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
-  dataListing.pagination.rowsShown = 25;
-  dataListing.pagination.activeLink = 0;
+        var dataListing = codebook.dataListing;
+        dataListing.codebook = codebook;
+        dataListing.config = codebook.config;
+        layout$1(dataListing);
+        //sort config
+        dataListing.sort = {};
+        dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
+        dataListing.sort.order = [];
+        //pagination config
+        dataListing.pagination = {};
+        dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
+        dataListing.pagination.rowsShown = 25;
+        dataListing.pagination.activeLink = 0;
 
-  //Define table.
-  dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
+        //Define table.
+        dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
 
-  //Define callback.
-  onDraw(dataListing);
+        //Define callback.
+        onDraw(dataListing);
 
-  //Initialize table.
-  dataListing.super_raw_data = codebook.data.filtered;
-  dataListing.sorted_raw_data = codebook.data.filtered.sort(function (a, b) {
-    var a_highlight = codebook.data.highlighted.indexOf(a) > -1;
-    var b_highlight = codebook.data.highlighted.indexOf(b) > -1;
-    if (a_highlight == b_highlight) {
-      return 0;
-    } else if (a_highlight) {
-      return -1;
-    } else if (b_highlight) {
-      return 1;
-    }
-  });
-  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-    return i < 25;
-  });
-  dataListing.table.init(sub);
+        //Initialize table.
+        dataListing.super_raw_data = codebook.data.filtered;
+        dataListing.sorted_raw_data = codebook.data.filtered.sort(function (a, b) {
+            var a_highlight = codebook.data.highlighted.indexOf(a) > -1;
+            var b_highlight = codebook.data.highlighted.indexOf(b) > -1;
+            if (a_highlight == b_highlight) {
+                return 0;
+            } else if (a_highlight) {
+                return -1;
+            } else if (b_highlight) {
+                return 1;
+            }
+        });
+        var sub = dataListing.sorted_raw_data.filter(function (d, i) {
+            return i < 25;
+        });
+        dataListing.table.init(sub);
+    });
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2655,9 +2662,9 @@ var data = {
 };
 
 function init$8(codebook) {
-  indicateLoading(codebook, '.web-codebook .settings .column-table');
-
-  codebook.settings.layout(codebook);
+  indicateLoading(codebook, function () {
+    codebook.settings.layout(codebook);
+  });
 }
 
 function reset(codebook) {

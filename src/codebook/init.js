@@ -33,6 +33,7 @@ export function init(data) {
   this.data.makeSummary(this);
 
   //draw controls
+
   this.util.makeAutomaticFilters(this);
   this.util.makeAutomaticGroups(this);
   this.controls.init(this);

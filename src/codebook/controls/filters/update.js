@@ -78,7 +78,7 @@ export function update(codebook) {
 
   //Initialize event listeners
   filterCustom.on('change', function() {
-      indicateLoading(codebook, '#loading-indicator', () => {
+      indicateLoading(codebook, () => {
         // flag the selected options in the config
         d3select(this).selectAll('option').each(function(option_d) {
           option_d.selected = d3select(this).property('selected');

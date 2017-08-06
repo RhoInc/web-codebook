@@ -86,19 +86,17 @@ Controls layout
     margin: .25em .5em;
 }
 
-.web-codebook .controls #loading-indicator {
-  float: right;
+.web-codebook #loading-indicator {
   border: 10px solid #f3f3f3;
   border-radius: 50%;
   border-top: 10px solid #008CBA;
   width: 20px;
   height: 20px;
-  bottom: 0;
-  right: 0;
-  position: absolute;
+  margin: 50% 50%;
+  position: fixed;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
-  margin: 0 0.5em 0.5em 0;
+  z-index: 9999;
 }
 
 @-webkit-keyframes spin {
