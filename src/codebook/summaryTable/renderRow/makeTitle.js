@@ -16,7 +16,7 @@ export default function makeTitle(d) {
   d3select(this)
     .append('span')
     .attr('class', 'title-span')
-    .text(d => d.value_col);
+    .text(d => "'" + d.value_col + "'");
 
   if (d.value_col != d.label) {
     d3select(this)

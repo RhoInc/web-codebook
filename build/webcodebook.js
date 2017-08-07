@@ -1966,7 +1966,7 @@ function makeTitle(d) {
   });
 
   d3$1.select(this).append('span').attr('class', 'title-span').text(function (d) {
-    return d.value_col;
+    return "'" + d.value_col + "'";
   });
 
   if (d.value_col != d.label) {
