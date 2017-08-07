@@ -11,7 +11,7 @@ export function setDefaults(codebook) {
     codebook.config.meta.forEach(function(m) {
       var mKeys = Object.keys(m);
       if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('label') > -1)) {
-        metaLabels.push({ col_name: m['value_col'], label: m['label'] });
+        metaLabels.push({ value_col: m['value_col'], label: m['label'] });
       }
     });
     defaultSettings.variableLabels = metaLabels;
@@ -39,8 +39,8 @@ export function setDefaults(codebook) {
   });
 
   /********************* Variable Label Settings *********************/
-  codebook.config.variableLabels =
-    codebook.config.variableLabels || defaultSettings.variableLabels;
+
+  //check any user specified labels to make sure they are in the correct format
   codebook.config.variableLabels = codebook.config.variableLabels.filter(
     (label, i) => {
       const is_object = typeof label === 'object',
@@ -57,6 +57,25 @@ export function setDefaults(codebook) {
       return legit;
     }
   );
+
+  if (
+    codebook.config.variableLabels.length &&
+    defaultSettings.variableLabels.length
+  ) {
+    //merge the defaults with the user specified labels if both are populated
+    var userLabelVars = codebook.config.variableLabels.map(m => m.value_col);
+
+    //Keep the default label if the user hasn't specified a label for the column
+    defaultSettings.variableLabels.forEach(function(defaultLabel) {
+      if (userLabelVars.indexOf(defaultLabel.value_col) == -1) {
+        codebook.config.variableLabels.push(defaultLabel);
+      }
+    });
+  } else {
+    //otherwise just use whichever is populated or fallback to an empty object
+    codebook.config.variableLabels =
+      codebook.config.variableLabels || defaultSettings.variableLabels;
+  }
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
