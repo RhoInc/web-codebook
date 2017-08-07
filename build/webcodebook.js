@@ -1876,15 +1876,40 @@ function makeChart(d) {
 }
 
 function makeDetails(d) {
-  var sections = ['Meta', 'Stats'];
   var wrap = d3$1.select(this);
   var parent = d3$1.select(this.parentNode);
   var list = wrap.append('div').append('ul');
-  var label = parent.append('div').attr('class', 'type-label');
+  var labelNav = parent.append('ul').attr('class', 'type-label').classed('hidden', true);
+  parent.on('mouseover', function (d) {
+    labelNav.classed('hidden', false);
+  }).on('mouseout', function () {
+    labelNav.classed('hidden', true);
+  });
+
+  //Layout mini-nav
+  var navLevels = [{ key: 'Stats', selected: true }, { key: 'Meta', selected: false }, { key: 'Values', selected: false }];
+
+  var labelItems = labelNav.selectAll('li').data(navLevels).enter().append('li').html(function (d) {
+    return d.key;
+  }).classed('selected', function (d) {
+    return d.selected;
+  });
+
+  //Handlers for label events
+  labelItems.on('click', function () {
+    if (!d3$1.select(this).classed('selected')) {
+      labelItems.classed('selected', false);
+      d3$1.select(this).classed('selected', true);
+      if (d3$1.select(this).datum().key == 'Stats') {
+        renderStats(d);
+      } else if (d3$1.select(this).datum().key == 'Meta') {
+        renderMeta(d);
+      }
+    }
+  });
 
   //Render metadata
   function renderMeta(d) {
-    label.text('Meta');
     list.selectAll('*').remove();
     console.log(d);
     var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
@@ -1901,7 +1926,6 @@ function makeDetails(d) {
 
   //Render Summary Stats
   function renderStats(d) {
-    label.text('Stats');
     list.selectAll('*').remove();
 
     var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
@@ -1919,7 +1943,6 @@ function makeDetails(d) {
       };
     });
 
-    console.log(statList);
     var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
     stats.append('div').text(function (d) {
       return d.key;
@@ -1929,13 +1952,6 @@ function makeDetails(d) {
     }).attr('class', 'value');
   }
 
-  label.on('click', function () {
-    if (d3$1.select(this).text() == 'Meta') {
-      renderStats(d);
-    } else if (d3$1.select(this).text() == 'Stats') {
-      renderMeta(d);
-    }
-  });
   //render stats on initial load
   renderStats(d);
 }

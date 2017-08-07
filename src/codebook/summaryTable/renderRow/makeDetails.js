@@ -1,15 +1,51 @@
 import { select as d3select } from 'd3';
 
 export default function makeDetails(d) {
-  var sections = ['Meta', 'Stats'];
   var wrap = d3select(this);
   var parent = d3select(this.parentNode);
   var list = wrap.append('div').append('ul');
-  var label = parent.append('div').attr('class', 'type-label');
+  var labelNav = parent
+    .append('ul')
+    .attr('class', 'type-label')
+    .classed('hidden', true);
+  parent
+    .on('mouseover', function(d) {
+      labelNav.classed('hidden', false);
+    })
+    .on('mouseout', function() {
+      labelNav.classed('hidden', true);
+    });
+
+  //Layout mini-nav
+  var navLevels = [
+    { key: 'Stats', selected: true },
+    { key: 'Meta', selected: false },
+    { key: 'Values', selected: false }
+  ];
+
+  var labelItems = labelNav
+    .selectAll('li')
+    .data(navLevels)
+    .enter()
+    .append('li')
+    .html(d => d.key)
+    .classed('selected', d => d.selected);
+
+  //Handlers for label events
+  labelItems.on('click', function() {
+    if (!d3select(this).classed('selected')) {
+      labelItems.classed('selected', false);
+      d3select(this).classed('selected', true);
+      if (d3select(this).datum().key == 'Stats') {
+        renderStats(d);
+      } else if (d3select(this).datum().key == 'Meta') {
+        renderMeta(d);
+      }
+    }
+  });
 
   //Render metadata
   function renderMeta(d) {
-    label.text('Meta');
     list.selectAll('*').remove();
     console.log(d);
     var metaItems = list
@@ -26,7 +62,6 @@ export default function makeDetails(d) {
 
   //Render Summary Stats
   function renderStats(d) {
-    label.text('Stats');
     list.selectAll('*').remove();
 
     var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
@@ -41,7 +76,6 @@ export default function makeDetails(d) {
       };
     });
 
-    console.log(statList);
     var stats = list
       .selectAll('li.stat')
       .data(statList)
@@ -52,13 +86,6 @@ export default function makeDetails(d) {
     stats.append('div').text(d => d.value).attr('class', 'value');
   }
 
-  label.on('click', function() {
-    if (d3select(this).text() == 'Meta') {
-      renderStats(d);
-    } else if (d3select(this).text() == 'Stats') {
-      renderMeta(d);
-    }
-  });
   //render stats on initial load
   renderStats(d);
 }
