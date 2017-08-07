@@ -47,7 +47,17 @@ export default function makeDetails(d) {
   //Render metadata
   function renderMeta(d) {
     list.selectAll('*').remove();
-    console.log(d);
+
+    // don't renderer items with no
+    var dropped = [];
+    d.meta.forEach(function(d) {
+      if (!d.value) {
+        d.hidden = true;
+        dropped.push(' "' + d.key + '"');
+      }
+    });
+
+    //render the items
     var metaItems = list
       .selectAll('li.meta')
       .data(d.meta)
@@ -58,6 +68,22 @@ export default function makeDetails(d) {
 
     metaItems.append('div').text(d => d.key).attr('class', 'label');
     metaItems.append('div').text(d => d.value).attr('class', 'value');
+
+    if (dropped.length) {
+      list
+        .append('li')
+        .append('div')
+        .attr('class', 'details')
+        .html('&#9432;')
+        .property(
+          'title',
+          'Meta data for ' +
+            dropped.length +
+            ' item(s) (' +
+            dropped.toString() +
+            ') were empty and are hidden.'
+        );
+    }
   }
 
   //Render Summary Stats

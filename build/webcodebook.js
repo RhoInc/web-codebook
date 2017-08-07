@@ -1911,7 +1911,17 @@ function makeDetails(d) {
   //Render metadata
   function renderMeta(d) {
     list.selectAll('*').remove();
-    console.log(d);
+
+    // don't renderer items with no
+    var dropped = [];
+    d.meta.forEach(function (d) {
+      if (!d.value) {
+        d.hidden = true;
+        dropped.push(' "' + d.key + '"');
+      }
+    });
+
+    //render the items
     var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
       return d.hidden;
     });
@@ -1922,6 +1932,10 @@ function makeDetails(d) {
     metaItems.append('div').text(function (d) {
       return d.value;
     }).attr('class', 'value');
+
+    if (dropped.length) {
+      list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are hidden.');
+    }
   }
 
   //Render Summary Stats
@@ -2280,6 +2294,7 @@ function setDefaults(codebook) {
   /********************* Variable Label Settings *********************/
 
   //check any user specified labels to make sure they are in the correct format
+  codebook.config.variableLabels = codebook.config.variableLabels || [];
   codebook.config.variableLabels = codebook.config.variableLabels.filter(function (label, i) {
     var is_object = (typeof label === 'undefined' ? 'undefined' : _typeof(label)) === 'object',
         has_value_col = label.hasOwnProperty('value_col'),

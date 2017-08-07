@@ -325,12 +325,12 @@ Header - Details layout
 .web-codebook .summaryTable .variable-row .row-details ul li {
   display: inline-block;
   padding-right: .5em;
-
+  vertical-align:top;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div {
-  display: block
-  text-align: center
+  display: block;
+  text-align: left;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div.label {
@@ -338,6 +338,13 @@ Header - Details layout
   padding-right: .2em;
   font-size: 0.8em;
   color: #999;
+}
+
+.web-codebook .summaryTable .variable-row .row-details ul li div.details {
+  padding-right: .2em;
+  font-size:0.5em;
+  cursor:pointer;
+  color:blue;
 }
 
 /**-------------------------------------------------------------------------------------------\

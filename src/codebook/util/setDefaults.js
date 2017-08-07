@@ -41,6 +41,7 @@ export function setDefaults(codebook) {
   /********************* Variable Label Settings *********************/
 
   //check any user specified labels to make sure they are in the correct format
+  codebook.config.variableLabels = codebook.config.variableLabels || [];
   codebook.config.variableLabels = codebook.config.variableLabels.filter(
     (label, i) => {
       const is_object = typeof label === 'object',
