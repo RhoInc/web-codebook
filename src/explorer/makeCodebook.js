@@ -31,8 +31,6 @@ export function makeCodebook(explorer) {
     f => f.file == this.current[this.config.labelColumn]
   );
 
-  console.log(this.current.settings.meta);
-
   //create the codebook
   explorer.codebook = webcodebook.createCodebook(
     '.web-codebook-explorer .codebookWrap',

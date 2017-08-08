@@ -1,117 +1,33 @@
 import { select as d3select } from 'd3';
+import detailList from './details/detailList';
+import renderStats from './details/renderStats';
 
 export default function makeDetails(d) {
-  var wrap = d3select(this);
-  var parent = d3select(this.parentNode);
-  var list = wrap.append('div').append('ul');
-  var labelNav = parent
-    .append('ul')
-    .attr('class', 'type-label')
-    .classed('hidden', true);
-  parent
-    .on('mouseover', function(d) {
-      labelNav.classed('hidden', false);
-    })
-    .on('mouseout', function() {
-      labelNav.classed('hidden', true);
-    });
+  var list = d3select(this).append('div').append('ul');
+  var parent = d3select(this.parentNode.parentNode);
+  var controls = parent
+    .select('.row-chart')
+    .select('.row-controls')
+    .append('div')
+    .attr('class', 'detail-controls');
 
-  //Layout mini-nav
-  var navLevels = [
-    { key: 'Stats', selected: true },
-    { key: 'Meta', selected: false },
-    { key: 'Values', selected: false }
-  ];
+  controls.append('small').html('Header Details: ');
+  var detailSelect = controls.append('select');
 
-  var labelItems = labelNav
-    .selectAll('li')
-    .data(navLevels)
+  var detailItems = detailSelect
+    .selectAll('option')
+    .data(detailList)
     .enter()
-    .append('li')
-    .html(d => d.key)
-    .classed('selected', d => d.selected);
+    .append('option')
+    .html(d => d.key);
 
   //Handlers for label events
-  labelItems.on('click', function() {
-    if (!d3select(this).classed('selected')) {
-      labelItems.classed('selected', false);
-      d3select(this).classed('selected', true);
-      if (d3select(this).datum().key == 'Stats') {
-        renderStats(d);
-      } else if (d3select(this).datum().key == 'Meta') {
-        renderMeta(d);
-      }
-    }
+  detailSelect.on('change', function() {
+    var current = this.value;
+    var detailObj = detailList.filter(f => f.key == current)[0];
+    detailObj.action(d, list);
   });
 
-  //Render metadata
-  function renderMeta(d) {
-    list.selectAll('*').remove();
-
-    // don't renderer items with no
-    var dropped = [];
-    d.meta.forEach(function(d) {
-      if (!d.value) {
-        d.hidden = true;
-        dropped.push(' "' + d.key + '"');
-      }
-    });
-
-    //render the items
-    var metaItems = list
-      .selectAll('li.meta')
-      .data(d.meta)
-      .enter()
-      .append('li')
-      .classed('meta', true)
-      .classed('hidden', d => d.hidden);
-
-    metaItems.append('div').text(d => d.key).attr('class', 'label');
-    metaItems.append('div').text(d => d.value).attr('class', 'value');
-
-    if (dropped.length) {
-      list
-        .append('li')
-        .append('div')
-        .attr('class', 'details')
-        .html('&#9432;')
-        .property(
-          'title',
-          'Meta data for ' +
-            dropped.length +
-            ' item(s) (' +
-            dropped.toString() +
-            ') were empty and are hidden.'
-        );
-    }
-  }
-
-  //Render Summary Stats
-  function renderStats(d) {
-    list.selectAll('*').remove();
-
-    var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
-    var statNames = Object.keys(d.statistics)
-      .filter(f => ignoreStats.indexOf(f) === -1) //remove value lists
-      .filter(f => f.indexOf('ile') === -1); //remove "percentiles"
-
-    var statList = statNames.map(stat => {
-      return {
-        key: stat !== 'nMissing' ? stat : 'Missing',
-        value: d.statistics[stat]
-      };
-    });
-
-    var stats = list
-      .selectAll('li.stat')
-      .data(statList)
-      .enter()
-      .append('li')
-      .attr('class', 'stat');
-    stats.append('div').text(d => d.key).attr('class', 'label');
-    stats.append('div').text(d => d.value).attr('class', 'value');
-  }
-
   //render stats on initial load
-  renderStats(d);
+  renderStats(d, list);
 }

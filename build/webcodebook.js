@@ -1868,106 +1868,157 @@ function makeChart(d) {
     charts.createVerticalBarsControls(this, d);
     charts.createVerticalBars(this, d);
   } else if (d.chartType === 'histogramBoxPlot') {
-    // continuous outcomes
+    d3$1.select(this).append('div').classed('row-controls', true);
     charts.createHistogramBoxPlot(this, d);
   } else {
     console.warn('Invalid chart type for ' + d.key);
   }
 }
 
-function makeDetails(d) {
-  var wrap = d3$1.select(this);
-  var parent = d3$1.select(this.parentNode);
-  var list = wrap.append('div').append('ul');
-  var labelNav = parent.append('ul').attr('class', 'type-label').classed('hidden', true);
-  parent.on('mouseover', function (d) {
-    labelNav.classed('hidden', false);
-  }).on('mouseout', function () {
-    labelNav.classed('hidden', true);
+function renderValues(d, list) {
+  list.selectAll('*').remove();
+
+  //make a list of values
+  if (d.type == 'categorical') {
+    var topValues = d.statistics.values.sort(function (a, b) {
+      return b.n - a.n;
+    }).filter(function (d, i) {
+      return i < 5;
+    });
+
+    var valueItems = list.selectAll('li').data(topValues).enter().append('li');
+
+    valueItems.append('div').text(function (d) {
+      return d.key;
+    }).attr('class', 'label');
+    valueItems.append('div').text(function (d) {
+      return d.n + ' (' + d3$1.format('0.1%')(d.prop_n) + ')';
+    }).attr('class', 'value');
+
+    if (d.statistics.values.length > 5) {
+      var totLength = d.statistics.values.length;
+      var extraCount = totLength - 5;
+      var extra_span = list.append('li').append('div').attr('class', 'label').html('and ' + extraCount + ' more.');
+    }
+  } else if (d.type == 'continuous') {
+    var sortedValues = d3$1.set(d.values.map(function (d) {
+      return +d.value;
+    })).values() //get unique
+    .sort(function (a, b) {
+      return a - b;
+    }); // sort low to high
+
+    var minValues = sortedValues.filter(function (d, i) {
+      return i < 3;
+    });
+    var nValues = sortedValues.length;
+    var maxValues = sortedValues.filter(function (d, i) {
+      return i >= nValues - 3;
+    });
+    var valList = d3$1.merge([minValues, ['...'], maxValues]);
+
+    var valueItems = list.selectAll('li').data(valList).enter().append('li');
+
+    valueItems.append('div').attr('class', 'label').text(function (d, i) {
+      return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
+    });
+    valueItems.append('div').attr('class', 'value').text(function (d) {
+      return d;
+    }).attr('title', function (d) {
+      return d == '...' ? nValues - 6 + ' other values' : '';
+    }).style('cursor', function (d) {
+      return d == '...' ? 'help' : null;
+    });
+  }
+}
+
+//Render Summary Stats
+function renderStats(d, list) {
+  list.selectAll('*').remove();
+
+  var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
+  var statNames = Object.keys(d.statistics).filter(function (f) {
+    return ignoreStats.indexOf(f) === -1;
+  }) //remove value lists
+  .filter(function (f) {
+    return f.indexOf('ile') === -1;
+  }); //remove "percentiles"
+
+  var statList = statNames.map(function (stat) {
+    return {
+      key: stat !== 'nMissing' ? stat : 'Missing',
+      value: d.statistics[stat]
+    };
   });
 
-  //Layout mini-nav
-  var navLevels = [{ key: 'Stats', selected: true }, { key: 'Meta', selected: false }, { key: 'Values', selected: false }];
-
-  var labelItems = labelNav.selectAll('li').data(navLevels).enter().append('li').html(function (d) {
+  var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
+  stats.append('div').text(function (d) {
     return d.key;
-  }).classed('selected', function (d) {
-    return d.selected;
+  }).attr('class', 'label');
+  stats.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
+}
+
+//Render metadata
+function renderMeta(d, list) {
+  list.selectAll('*').remove();
+
+  // don't renderer items with no
+  var dropped = [];
+  d.meta.forEach(function (d) {
+    if (!d.value) {
+      d.hidden = true;
+      dropped.push(' "' + d.key + '"');
+    }
+  });
+
+  //render the items
+  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
+    return d.hidden;
+  });
+
+  metaItems.append('div').text(function (d) {
+    return d.key;
+  }).attr('class', 'label');
+  metaItems.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
+
+  if (dropped.length) {
+    list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are hidden.');
+  }
+}
+
+function clearDetails(d, list) {
+  list.selectAll('*').remove();
+}
+
+var detailList = [{ key: 'Stats', action: renderStats }, { key: 'Meta', action: renderMeta }, { key: 'Values', action: renderValues }, { key: 'None', action: clearDetails }];
+
+function makeDetails(d) {
+  var list = d3$1.select(this).append('div').append('ul');
+  var parent = d3$1.select(this.parentNode.parentNode);
+  var controls = parent.select('.row-chart').select('.row-controls').append('div').attr('class', 'detail-controls');
+
+  controls.append('small').html('Header Details: ');
+  var detailSelect = controls.append('select');
+
+  var detailItems = detailSelect.selectAll('option').data(detailList).enter().append('option').html(function (d) {
+    return d.key;
   });
 
   //Handlers for label events
-  labelItems.on('click', function () {
-    if (!d3$1.select(this).classed('selected')) {
-      labelItems.classed('selected', false);
-      d3$1.select(this).classed('selected', true);
-      if (d3$1.select(this).datum().key == 'Stats') {
-        renderStats(d);
-      } else if (d3$1.select(this).datum().key == 'Meta') {
-        renderMeta(d);
-      }
-    }
+  detailSelect.on('change', function () {
+    var current = this.value;
+    var detailObj = detailList.filter(function (f) {
+      return f.key == current;
+    })[0];
+    detailObj.action(d, list);
   });
 
-  //Render metadata
-  function renderMeta(d) {
-    list.selectAll('*').remove();
-
-    // don't renderer items with no
-    var dropped = [];
-    d.meta.forEach(function (d) {
-      if (!d.value) {
-        d.hidden = true;
-        dropped.push(' "' + d.key + '"');
-      }
-    });
-
-    //render the items
-    var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
-      return d.hidden;
-    });
-
-    metaItems.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    metaItems.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
-
-    if (dropped.length) {
-      list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are hidden.');
-    }
-  }
-
-  //Render Summary Stats
-  function renderStats(d) {
-    list.selectAll('*').remove();
-
-    var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
-    var statNames = Object.keys(d.statistics).filter(function (f) {
-      return ignoreStats.indexOf(f) === -1;
-    }) //remove value lists
-    .filter(function (f) {
-      return f.indexOf('ile') === -1;
-    }); //remove "percentiles"
-
-    var statList = statNames.map(function (stat) {
-      return {
-        key: stat !== 'nMissing' ? stat : 'Missing',
-        value: d.statistics[stat]
-      };
-    });
-
-    var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
-    stats.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    stats.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
-  }
-
   //render stats on initial load
-  renderStats(d);
+  renderStats(d, list);
 }
 
 function makeTitle(d) {
@@ -2001,10 +2052,11 @@ function renderRow(d) {
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
   rowHead.append('div').attr('class', 'row-title').each(makeTitle);
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
   //rowHead.append('div').attr('class', 'row-values').each(makeValues);
 
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+
+  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -3063,8 +3115,6 @@ function makeCodebook(explorer) {
   this.current.settings.meta = explorer.config.meta.filter(function (f) {
     return f.file == _this.current[_this.config.labelColumn];
   });
-
-  console.log(this.current.settings.meta);
 
   //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);

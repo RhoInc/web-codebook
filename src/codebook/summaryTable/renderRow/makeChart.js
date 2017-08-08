@@ -1,4 +1,5 @@
 import { charts } from '../../../charts';
+import { select as d3select } from 'd3';
 
 export default function makeChart(d) {
   //Common chart settings
@@ -12,7 +13,7 @@ export default function makeChart(d) {
     charts.createVerticalBarsControls(this, d);
     charts.createVerticalBars(this, d);
   } else if (d.chartType === 'histogramBoxPlot') {
-    // continuous outcomes
+    d3select(this).append('div').classed('row-controls', true);
     charts.createHistogramBoxPlot(this, d);
   } else {
     console.warn('Invalid chart type for ' + d.key);

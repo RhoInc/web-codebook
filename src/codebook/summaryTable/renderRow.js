@@ -2,7 +2,6 @@
   Intialize the summary table
 \------------------------------------------------------------------------------------------------*/
 
-import makeValues from './renderRow/makeValues.js';
 import makeChart from './renderRow/makeChart.js';
 import makeDetails from './renderRow/makeDetails.js';
 import makeTitle from './renderRow/makeTitle.js';
@@ -16,8 +15,9 @@ export function renderRow(d) {
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
   rowHead.append('div').attr('class', 'row-title').each(makeTitle);
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
   //rowHead.append('div').attr('class', 'row-values').each(makeValues);
 
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+
+  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
 }
