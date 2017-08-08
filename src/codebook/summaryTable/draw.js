@@ -4,7 +4,10 @@
 import indicateLoading from '../util/indicateLoading';
 
 export function draw(codebook) {
-    indicateLoading(codebook, '.web-codebook .summaryTable .variable-row .row-title');
+  indicateLoading(
+    codebook,
+    '.web-codebook .summaryTable .variable-row .row-title'
+  );
 
   //enter/update/exit for variableDivs
   //BIND the newest data

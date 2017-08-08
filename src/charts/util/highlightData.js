@@ -9,28 +9,31 @@ export default function highlightData(chart) {
 
   bars.on('click', function(d) {
     indicateLoading(codebook, '.highlightCount', () => {
-        const newIndexes = chart.config.chartType.indexOf('Bars') > -1
+      const newIndexes = chart.config.chartType.indexOf('Bars') > -1
         ? d.values.raw[0].indexes
         : chart.config.chartType === 'histogramBoxPlot'
-            ? d.values.raw.map(di => di.index)
-            : [];
-        const currentIndexes = codebook.data.highlighted
-            .map(di => di['web-codebook-index']);
-        const removeIndexes = currentIndexes
-            .filter(di => newIndexes.indexOf(di) > -1);
+          ? d.values.raw.map(di => di.index)
+          : [];
+      const currentIndexes = codebook.data.highlighted.map(
+        di => di['web-codebook-index']
+      );
+      const removeIndexes = currentIndexes.filter(
+        di => newIndexes.indexOf(di) > -1
+      );
 
-        codebook.data.highlighted = codebook.data.filtered
-            .filter(di => {
-                return removeIndexes.length
-                    ? (currentIndexes.indexOf(di['web-codebook-index']) > -1 && removeIndexes.indexOf(di['web-codebook-index']) === -1)
-                    : (currentIndexes.indexOf(di['web-codebook-index']) > -1 || newIndexes.indexOf(di['web-codebook-index']) > -1);
-        });
-
-        //Display highlighted data in listing & codebook.
-        codebook.data.makeSummary(codebook);
-        codebook.dataListing.init(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
+      codebook.data.highlighted = codebook.data.filtered.filter(di => {
+        return removeIndexes.length
+          ? currentIndexes.indexOf(di['web-codebook-index']) > -1 &&
+              removeIndexes.indexOf(di['web-codebook-index']) === -1
+          : currentIndexes.indexOf(di['web-codebook-index']) > -1 ||
+              newIndexes.indexOf(di['web-codebook-index']) > -1;
       });
+
+      //Display highlighted data in listing & codebook.
+      codebook.data.makeSummary(codebook);
+      codebook.dataListing.init(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
+    });
   });
 }

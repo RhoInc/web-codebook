@@ -78,25 +78,25 @@ export function update(codebook) {
 
   //Initialize event listeners
   filterCustom.on('change', function() {
-      indicateLoading(codebook, '#loading-indicator', () => {
-        // flag the selected options in the config
-        d3select(this).selectAll('option').each(function(option_d) {
-          option_d.selected = d3select(this).property('selected');
-        });
-
-        //update the codebook
-        codebook.data.filtered = codebook.data.makeFiltered(
-          codebook.data.raw,
-          codebook.config.filters
-        );
-
-        //clear highlights
-        codebook.data.highlighted = [];
-
-        codebook.data.makeSummary(codebook);
-        codebook.controls.updateRowCount(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.dataListing.init(codebook);
+    indicateLoading(codebook, '#loading-indicator', () => {
+      // flag the selected options in the config
+      d3select(this).selectAll('option').each(function(option_d) {
+        option_d.selected = d3select(this).property('selected');
       });
+
+      //update the codebook
+      codebook.data.filtered = codebook.data.makeFiltered(
+        codebook.data.raw,
+        codebook.config.filters
+      );
+
+      //clear highlights
+      codebook.data.highlighted = [];
+
+      codebook.data.makeSummary(codebook);
+      codebook.controls.updateRowCount(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.dataListing.init(codebook);
+    });
   });
 }

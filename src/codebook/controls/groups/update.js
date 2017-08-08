@@ -40,15 +40,14 @@ export function update(codebook) {
   );
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
   groupSelect.on('change', function() {
-      indicateLoading(codebook, '#loading-indicator', () => {
+    indicateLoading(codebook, '#loading-indicator', () => {
+      if (this.value !== 'None') codebook.config.group = this.value;
+      else delete codebook.config.group;
 
-        if (this.value !== 'None') codebook.config.group = this.value;
-        else delete codebook.config.group;
-
-        codebook.data.highlighted = [];
-        codebook.data.makeSummary(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
-      });
+      codebook.data.highlighted = [];
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
+    });
   });
 }

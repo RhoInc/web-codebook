@@ -4,11 +4,31 @@ General
 
 .web-codebook {
   position: relative;
+    width:1024px;
+}
+
+.web-codebook.loading {
+    cursor: wait !important;
 }
 
 .web-codebook > * {
     display: block;
-    width:1024px;
+    width: 100%;
+}
+
+.web-codebook #loading-indicator {
+  float: right;
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid #008CBA;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 512px;
+  position: fixed;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  z-index: 9999;
 }
 
 .web-codebook > .section {
@@ -84,21 +104,6 @@ Controls layout
 
 .web-codebook .controls > * {
     margin: .25em .5em;
-}
-
-.web-codebook .controls #loading-indicator {
-  float: right;
-  border: 10px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 10px solid #008CBA;
-  width: 20px;
-  height: 20px;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-  margin: 0 0.5em 0.5em 0;
 }
 
 @-webkit-keyframes spin {
