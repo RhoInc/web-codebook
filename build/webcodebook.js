@@ -1489,9 +1489,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -2689,15 +2688,24 @@ function reset(codebook) {
 }
 
 function updateSettings(codebook, column) {
-  var setting = column !== 'Hide' ? column.toLowerCase() + 's' : 'hiddenVariables',
-      checkBoxes = codebook.settings.wrap.selectAll('.column-table td.' + column);
-
-  //redefine filter array
-  codebook.config[setting] = checkBoxes.filter(function () {
-    return d3.select(this).select('input').property('checked');
-  }).data().map(function (d) {
-    return column !== 'Hide' ? { value_col: d.column } : d.column;
-  });
+  var setting = column === 'Label' ? 'variableLabels' : column === 'Group' ? 'groups' : column === 'Filter' ? 'filters' : column === 'Hide' ? 'hiddenVariables' : console.warn('Something unsetting has occurred...');
+  var inputs = codebook.settings.wrap.selectAll('.column-table td.' + column);
+  if (['Group', 'Filter', 'Hide'].indexOf(column) > -1) {
+    //redefine settings array
+    codebook.config[setting] = inputs.filter(function () {
+      return d3.select(this).select('input').property('checked');
+    }).data().map(function (d) {
+      return column !== 'Hide' ? { value_col: d.column } : d.column;
+    });
+  } else if (['Label'].indexOf(column) > -1) {
+    //redefine settings array
+    codebook.config[setting] = inputs.filter(function (d) {
+      d.value.label = d3.select(this).select('input').property('value');
+      return d.value.label !== '';
+    }).data().map(function (d) {
+      return { value_col: d.column, label: d.value.label };
+    });
+  }
 
   //reset
   reset(codebook);
@@ -2715,10 +2723,17 @@ function layout$2(codebook) {
     return d.value_col;
   }),
       hiddenColumns = codebook.config.hiddenVariables,
-      columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
+      labeledColumns = codebook.config.variableLabels.map(function (d) {
+    return d.value_col;
+  }),
+      columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
       columnMetadata = columns.map(function (column) {
     var columnDatum = {
       Column: column,
+      Label: {
+        type: 'text',
+        label: labeledColumns.indexOf(column) > -1 ? codebook.config.variableLabels[labeledColumns.indexOf(column)].label : ''
+      },
       Group: {
         type: 'checkbox',
         checked: groupColumns.indexOf(column) > -1
@@ -2764,10 +2779,15 @@ function layout$2(codebook) {
       case 'Column':
         cell.text(d.value);
         break;
+      case 'Label':
+        cell.attr('title', 'Define variable label');
+        cell.append('input').attr('type', d.value.type).property('value', d.value.label).on('change', function () {
+          return updateSettings(codebook, d.key);
+        });
+        break;
       default:
         cell.attr('title', (d.value.checked ? 'Remove' : 'Add') + ' ' + d.column + ' ' + (d.value.checked ? 'from' : 'to') + ' ' + d.key.toLowerCase() + ' list');
-        var checkbox = cell.append('input').attr('type', d.value.type).property('checked', d.value.checked);
-        checkbox.on('change', function () {
+        var checkbox = cell.append('input').attr('type', d.value.type).property('checked', d.value.checked).on('change', function () {
           return updateSettings(codebook, d.key);
         });
     }
