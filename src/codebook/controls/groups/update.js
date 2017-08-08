@@ -4,7 +4,6 @@
 
 import { merge as d3merge } from 'd3';
 import { select as d3select } from 'd3';
-import indicateLoading from '../../util/indicateLoading';
 
 export function update(codebook) {
   const groupControl = codebook.controls.wrap.select('div.group-select'),
@@ -40,8 +39,6 @@ export function update(codebook) {
   );
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
   groupSelect.on('change', function() {
-      indicateLoading(codebook, () => {
-
         if (this.value !== 'None') codebook.config.group = this.value;
         else delete codebook.config.group;
 
@@ -49,6 +46,5 @@ export function update(codebook) {
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.controls.updateRowCount(codebook);
-      });
   });
 }

@@ -1,8 +1,4 @@
-import indicateLoading from '../util/indicateLoading';
-
 export function init(codebook) {
-  indicateLoading(codebook, () => {
-
     codebook.controls.wrap.attr('onsubmit', 'return false;');
     codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
 
@@ -38,5 +34,4 @@ export function init(codebook) {
         'hidden',
         d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
         );
-  });
 }

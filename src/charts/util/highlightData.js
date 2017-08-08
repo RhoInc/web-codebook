@@ -1,5 +1,4 @@
 import { select as d3select } from 'd3';
-import indicateLoading from '../../codebook/util/indicateLoading';
 
 export default function highlightData(chart) {
   const codebook = d3select(
@@ -8,7 +7,6 @@ export default function highlightData(chart) {
     bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function(d) {
-    indicateLoading(codebook, '.highlightCount', () => {
         const newIndexes = chart.config.chartType.indexOf('Bars') > -1
         ? d.values.raw[0].indexes
         : chart.config.chartType === 'histogramBoxPlot'
@@ -32,5 +30,4 @@ export default function highlightData(chart) {
         codebook.summaryTable.draw(codebook);
         codebook.controls.updateRowCount(codebook);
       });
-  });
 }

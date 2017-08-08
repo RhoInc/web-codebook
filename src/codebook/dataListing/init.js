@@ -1,11 +1,8 @@
 import layout from './layout';
 import onDraw from './onDraw';
 import { createTable } from 'webcharts';
-import indicateLoading from '../util/indicateLoading';
 
 export function init(codebook) {
-  indicateLoading(codebook, () => {
-
     const dataListing = codebook.dataListing;
     dataListing.codebook = codebook;
     dataListing.config = codebook.config;
@@ -48,5 +45,4 @@ export function init(codebook) {
         return i < 25;
     });
     dataListing.table.init(sub);
-  });
 }

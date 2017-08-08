@@ -27,31 +27,63 @@ export function init(data) {
 
   //settings and defaults
   this.util.setDefaults(this);
+  this.loadingIndicator = this.wrap
+    .insert('div', ':first-child')
+    .attr('id', 'loading-indicator')
+    .style('display', 'none');
   this.layout();
+  var codebook = this;
+  var layoutPromise = new Promise(function(resolve, reject) {
+      if (codebook.wrap.size() === 1) {
+          resolve('web-codebook layout succeeded');
+          codebook.wrap.classed('loading', true);
+          console.log(
+          codebook.wrap
+              .append('div')
+              .attr('id', 'loading-indicator'));
+      } else
+          reject(Error('web-codebook layout failed'));
+  });
+  layoutPromise.then(function(result) {
+    //prepare the data summaries
+    codebook.data.makeSummary(codebook);
+    codebook.util.makeAutomaticFilters(codebook);
+    codebook.util.makeAutomaticGroups(codebook);
 
-  //prepare the data summaries
-  this.data.makeSummary(this);
+    //draw controls
+    codebook.controls.init(codebook);
 
-  //draw controls
+    //initialize nav, title and instructions
+    codebook.title.init(codebook);
+    codebook.nav.init(codebook);
+    codebook.instructions.init(codebook);
 
-  this.util.makeAutomaticFilters(this);
-  this.util.makeAutomaticGroups(this);
-  this.controls.init(this);
+    //call after event (if any)
+    codebook.events.complete.call(codebook);
 
-  //initialize nav, title and instructions
-  this.title.init(this);
-  this.nav.init(this);
-  this.instructions.init(this);
+    //initialize and then draw the codebook
+    codebook.summaryTable.draw(codebook);
 
-  //call after event (if any)
-  this.events.complete.call(this);
+    //initialize and then draw the data listing
+    codebook.dataListing.init(codebook);
 
-  //initialize and then draw the codebook
-  this.summaryTable.draw(this);
-
-  //initialize and then draw the data listing
-  this.dataListing.init(this);
-
-  //initialize and then draw the data listing
-  this.settings.init(this);
+    var settingsPromise = new Promise(function(resolve, reject) {
+        codebook.settings.init(codebook);
+        if (codebook.settings.wrap.select('table').size() === 1) {
+            resolve('web-codebook layout succeeded');
+        } else
+            reject(Error('web-codebook layout failed'));
+    });
+    settingsPromise.then(function(result) {
+        console.log('web-codebook loaded!');
+        codebook.wrap.classed('loading', false);
+        codebook.wrap
+            .select('#loading-indicator')
+            .remove();
+    }, (error) => {
+        console.log('web-codebook failed :(');
+    });
+  }, (error) => {
+      console.log(error);
+  });
 }

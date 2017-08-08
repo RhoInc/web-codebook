@@ -3,10 +3,6 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function layout() {
-  this.loadingIndicator = this.wrap
-    .insert('div', ':first-child')
-    .attr('id', 'loading-indicator')
-    .style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap

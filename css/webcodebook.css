@@ -3,7 +3,10 @@ General
 \------------------------------------------------------------------------------------------------*/
 
 .web-codebook {
-  position: relative;
+    position: relative;
+}
+.web-codebook.loading {
+    cursor: wait;
 }
 
 .web-codebook > * {
@@ -92,7 +95,8 @@ Controls layout
   border-top: 10px solid #008CBA;
   width: 20px;
   height: 20px;
-  margin: 50% 50%;
+  top: 50%;
+  left: 50%;
   position: fixed;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
