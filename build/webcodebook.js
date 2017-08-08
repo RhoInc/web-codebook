@@ -1291,8 +1291,7 @@ function makeBoxPlotTooltip(d, i, context) {
   var format$$1 = d3$1.format(context.config.measureFormat);
   //Define tooltips dss.
   //d.selector = `outlier` + d;
-  var boxplottooltip = context.svg.append('g').attr('id', 'outlier' + d).attr('index', i);
-  //console.log(boxplottooltip);
+  var boxplottooltip = context.svg.append('g').attr('index', i);
   var text = boxplottooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
@@ -1361,6 +1360,8 @@ function onResize$3() {
 
     //Annotate quantiles
     if (this.config.boxPlot) {
+
+      // onlyUnique function removes duplicate outliers
       var onlyUnique = function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
       };
@@ -1432,10 +1433,7 @@ function onResize$3() {
         })[0]['quantile'];
         return low_outlier || high_outlier;
       });
-
       var unique_outliers = outliers.filter(onlyUnique);
-
-      //console.log(unique_outliers);
 
       var outlier = this.svg.selectAll('line.outlier').data(unique_outliers).enter().append('line').attr('class', 'outlier').attr('x1', function (d) {
         return _this.x(d);
@@ -1446,8 +1444,12 @@ function onResize$3() {
       }).attr('y2', function (d) {
         return (_this.plot_height + _this.config.boxPlotHeight) / 1.07;
       })
-      //.attr('id', d => 'outlier' + d)
-      .attr('value', function (d) {
+      // 'index' attribute corresponds to the numerical index of the outliers
+      // Added to ensure highlighting when outlier data is floating point (avoid selection based on
+      //  data value with a decimal)
+      .attr('index', function (d, i) {
+        return i;
+      }).attr('value', function (d) {
         return d;
       }).style({
         fill: '#000000',
@@ -1458,15 +1460,10 @@ function onResize$3() {
       outlier.append('title').text(function (d, i) {
         return d;
       });
-      //trying to add 'id' to 'line'
-      outlier.attr('index', function (d, i) {
-        return i;
-      });
     }
 
     this.svg.selectAll('line.outlier').each(function (d, i) {
       makeBoxPlotTooltip(d, i, context);
-      //this.svg.attr('id', d => i);
     });
 
     var bbox = this.svg.node().getBBox();
@@ -1546,7 +1543,8 @@ function onResize$3() {
         }
       });
 
-      if ((x > boxplot_lines.statistics['95th percentile'] || x < boxplot_lines.statistics['5th percentile']) && x > boxplot_lines.statistics['min'] && x < boxplot_lines.statistics['max'] && y < 0 && y > -25) {
+      // If the mouse is outside the whiskers, but within the furthest outlier (inclusive)
+      if ((x > boxplot_lines.statistics['95th percentile'] || x < boxplot_lines.statistics['5th percentile']) && x > boxplot_lines.statistics['min'] && x < boxplot_lines.statistics['max'] && y < 0) {
         var min_dist = void 0;
         var dist = void 0;
         var olier = void 0;
@@ -1556,10 +1554,8 @@ function onResize$3() {
           dist = Math.abs(e - x);
           if (i === 0 || dist < min_dist) {
             min_dist = dist;
-            // Added below 8/3- changed from value to index ( e -> i)
+            // Select outlier to highlight based on index rather than outlier value
             olier = i;
-            console.log('Index of closest outlier');
-            console.log(i);
           }
         });
 
@@ -1570,14 +1566,10 @@ function onResize$3() {
         });
 
         var closestolier = oliers
-        // Added below 8/3
+        // Highlight closest outlier based on index selection
         .filter(function (d, i) {
           return i === olier;
-        })
-        //.filter((d, i) => i === 0)
-        // What characteristics does the above line filter out ?
-        // if two are equidistant, arbitrary first value
-        .style({
+        }).style({
           fill: '#ea1010',
           stroke: 'red',
           'stroke-width': '4px'
@@ -1588,14 +1580,14 @@ function onResize$3() {
         boxplottooltips.classed('active', false);
 
         var active_outlier = context.svg.selectAll('g.svg-boxplottooltip')
-        // Added below 8/3
+        // Filter based on index
         .filter(function (d, i) {
           return i === olier;
-        })
-        //.select('g#outlier' + d)
-        .classed('active', true);
-        console.log(active_outlier);
+        }).classed('active', true);
       } else {
+        // If the mouse is between the whiskers, above the x axis, or outside
+        //  the boxplot (Need a wider active highlight area (with regards to
+        //  x-range) than 'on mouseout' provides)
         oliers.style({
           fill: '#000000',
           stroke: 'black',
@@ -1630,6 +1622,22 @@ function onResize$3() {
       }
     }).on('mouseout', function () {
       bars.select('rect').style('fill', '#999');
+      // Following lines are for ensuring de-highlighting of outliers when mouse exits
+      //  boxplot space in the -x direction.  (Can't just do 'on mouseout' because then the highest
+      //  and lowest outlier can't be selected for highlighting (triggers mouseout on highest/lowest outlier)
+      var boxplot_lines = void 0;
+      statistics.each(function (e, i) {
+        if (i === 0 || e < boxplot_lines) {
+          boxplot_lines = e;
+        }
+      });
+      if (context.x.invert(d3$1.mouse(this)[0]) > boxplot_lines.statistics['min'] && context.x.invert(d3$1.mouse(this)[0]) < boxplot_lines.statistics['max']) {
+        oliers.style({
+          fill: '#000000',
+          stroke: 'black',
+          'stroke-width': '1px'
+        });
+      }
       context.svg.selectAll('g.svg-tooltip, g.svg-boxplottooltip').classed('active', false);
     });
   }

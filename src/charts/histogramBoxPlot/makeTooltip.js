@@ -62,11 +62,7 @@ export function makeBoxPlotTooltip(d, i, context) {
   const format = d3format(context.config.measureFormat);
   //Define tooltips dss.
   //d.selector = `outlier` + d;
-  const boxplottooltip = context.svg
-    .append('g')
-    .attr('id', 'outlier' + d)
-    .attr('index', i);
-  //console.log(boxplottooltip);
+  const boxplottooltip = context.svg.append('g').attr('index', i);
   const text = boxplottooltip.append('text').attr({
     id: 'text',
     x: context.x(d.midpoint),
