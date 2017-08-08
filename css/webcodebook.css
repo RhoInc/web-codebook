@@ -47,7 +47,7 @@ Instructions and Title layout
   font-size:1.4em;
 }
 
-.web-codebook .rowCount,.web-codebook .columnCount  {
+.web-codebook .rowCount, .web-codebook .columnCount  {
   padding-left:1em;
   font-size:0.8em;
   color:#999;
@@ -62,6 +62,10 @@ Instructions and Title layout
   color:#999;
 }
 
+.web-codebook .instructions .control {
+  padding-left:0.5em;
+
+}
 
 
 /*------------------------------------------------------------------------------------------------\

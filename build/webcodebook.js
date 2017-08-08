@@ -494,7 +494,7 @@ var availableTabs = [{
   label: 'Codebook',
   selector: '.web-codebook .summaryTable',
   controls: true,
-  instructions: 'Click rows to see charts, or use these buttons: '
+  instructions: 'Automatically generated data summaries for each column.'
 }, {
   key: 'listing',
   label: 'Data Listing',
@@ -2911,8 +2911,9 @@ function init$10(codebook) {
 //export function init(selector, data, vars, settings) {
 function init$11(codebook) {
   //initialize the wrapper
-  var selector = codebook.instructions.wrap.append('span').attr('class', 'chart-toggle');
+  var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
+  selector.append('small').text('Toggle Charts: ');
   var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
     codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
     codebook.wrap.selectAll('.row-toggle').html('&#9660;');
@@ -2921,6 +2922,40 @@ function init$11(codebook) {
   var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
     codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
     codebook.wrap.selectAll('.row-toggle').html('&#9658;');
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+//export function init(selector, data, vars, settings) {
+function init$12(codebook) {
+  //initialize the wrapper
+  var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
+
+  control.append('small').html('Header Details: ');
+  var detailSelect = control.append('select');
+
+  var detailItems = detailSelect.selectAll('option').data(detailList).enter().append('option').html(function (d) {
+    return d.key;
+  });
+
+  //Handlers for label events
+  detailSelect.on('change', function () {
+    var current = this.value;
+    var detailObj = detailList.filter(function (f) {
+      return f.key == current;
+    })[0];
+    console.log(current);
+
+    codebook.wrap.selectAll('.variable-row').each(function (d) {
+      //show the requested detail for each row
+      var list = d3$1.select(this).select('.row-head .row-details ul');
+      detailObj.action(d, list);
+
+      //update the select on each row
+      d3$1.select(this).select('.row-chart .row-controls .detail-controls select').property('value', current);
+    });
   });
 }
 
@@ -2933,7 +2968,10 @@ function update$2(codebook) {
   codebook.instructions.wrap.text(activeTab.instructions);
 
   //add tab-specific controls
-  if (activeTab.key == 'codebook') init$11(codebook);
+  if (activeTab.key == 'codebook') {
+    init$12(codebook);
+    init$11(codebook);
+  }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -3008,7 +3046,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$12() {
+function init$13() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -3055,7 +3093,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$13(explorer) {
+function init$14(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -3090,7 +3128,7 @@ function init$13(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$13
+  init: init$14
 };
 
 function makeCodebook(explorer) {
@@ -3135,7 +3173,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$12,
+    init: init$13,
     layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook
