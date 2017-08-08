@@ -223,10 +223,10 @@ function update(codebook) {
     return d.value_col;
   });
   var columns = Object.keys(codebook.data.raw[0]);
+  allFilterItem.exit().remove();
   var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
     return 'custom-' + d.value_col + ' filterCustom';
   });
-  allFilterItem.exit().remove();
   allFilterItem.classed('hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
@@ -259,14 +259,18 @@ function update(codebook) {
   });
 
   //Initialize event listeners
-  filterCustom.on('change', function () {
+  var filters = codebook.controls.wrap.selectAll('.filterCustom select').on('change', function (d) {
     var _this = this;
 
     indicateLoading(codebook, '#loading-indicator', function () {
       // flag the selected options in the config
-      d3.select(_this).selectAll('option').each(function (option_d) {
+      var options = d3.select(_this).selectAll('option');
+      options.each(function (option_d) {
         option_d.selected = d3.select(this).property('selected');
       });
+      codebook.config.filters.filter(function (filter) {
+        return filter.value_col === d.value_col;
+      })[0].values = options.data();
 
       //update the codebook
       codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
@@ -1489,8 +1493,9 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100 // space for panel value
-  } };
+    left: 100
+  } // space for panel value
+};
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {

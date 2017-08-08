@@ -30,13 +30,13 @@ export function update(codebook) {
     .selectAll('li')
     .data(codebook.config.filters, d => d.value_col);
   var columns = Object.keys(codebook.data.raw[0]);
+  allFilterItem.exit().remove();
   var filterItem = allFilterItem
     .enter()
     .append('li')
     .attr('class', function(d) {
       return 'custom-' + d.value_col + ' filterCustom';
     });
-  allFilterItem.exit().remove();
   allFilterItem.classed(
     'hidden',
     d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
@@ -77,26 +77,32 @@ export function update(codebook) {
     .attr('selected', d => (d.selected ? 'selected' : null));
 
   //Initialize event listeners
-  filterCustom.on('change', function() {
-    indicateLoading(codebook, '#loading-indicator', () => {
-      // flag the selected options in the config
-      d3select(this).selectAll('option').each(function(option_d) {
-        option_d.selected = d3select(this).property('selected');
+  var filters = codebook.controls.wrap
+    .selectAll('.filterCustom select')
+    .on('change', function(d) {
+      indicateLoading(codebook, '#loading-indicator', () => {
+        // flag the selected options in the config
+        var options = d3select(this).selectAll('option');
+        options.each(function(option_d) {
+          option_d.selected = d3select(this).property('selected');
+        });
+        codebook.config.filters.filter(
+          filter => filter.value_col === d.value_col
+        )[0].values = options.data();
+
+        //update the codebook
+        codebook.data.filtered = codebook.data.makeFiltered(
+          codebook.data.raw,
+          codebook.config.filters
+        );
+
+        //clear highlights
+        codebook.data.highlighted = [];
+
+        codebook.data.makeSummary(codebook);
+        codebook.controls.updateRowCount(codebook);
+        codebook.summaryTable.draw(codebook);
+        codebook.dataListing.init(codebook);
       });
-
-      //update the codebook
-      codebook.data.filtered = codebook.data.makeFiltered(
-        codebook.data.raw,
-        codebook.config.filters
-      );
-
-      //clear highlights
-      codebook.data.highlighted = [];
-
-      codebook.data.makeSummary(codebook);
-      codebook.controls.updateRowCount(codebook);
-      codebook.summaryTable.draw(codebook);
-      codebook.dataListing.init(codebook);
     });
-  });
 }
