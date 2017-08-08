@@ -78,19 +78,15 @@ function clone(obj) {
 }
 
 function indicateLoading(codebook, element, callback) {
-  console.log(codebook.width);
-  codebook.loadingIndicator.style('display', 'block').style('margin-left', '-' + codebook.wrap.node().offsetWidth / 2);
-  console.log(codebook.loadingIndicator.style('margin-left'));
-  codebook.wrap.classed('loading', true);
+  codebook.loadingIndicator.style('display', 'block');
   //wait by the centisecond until the loading indicator is visible
   var loading = setInterval(function () {
-    var laidOut = d3.select(element).property('offsetwidth') > 0;
+    var laidOut = d3$1.select(element).property('offsetwidth') > 0;
     if (!laidOut) {
       if (callback) callback();
       //loading is complete
       clearInterval(loading);
       codebook.loadingIndicator.style('display', 'none');
-      codebook.wrap.classed('loading', false);
     }
   }, 100);
 }
@@ -106,7 +102,6 @@ function init(data) {
 
   //create chart wrapper in specified div
   this.wrap = d3$1.select(this.element).append('div').attr('class', 'web-codebook').datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
-  this.width = this.wrap.node().offsetWidth;
 
   // call the before callback (if any)
   this.events.init.call(this);

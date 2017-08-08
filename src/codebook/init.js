@@ -14,7 +14,6 @@ export function init(data) {
     .append('div')
     .attr('class', 'web-codebook')
     .datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
-  this.width = this.wrap.node().offsetWidth;
 
   // call the before callback (if any)
   this.events.init.call(this);

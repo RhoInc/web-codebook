@@ -4,11 +4,7 @@ General
 
 .web-codebook {
   position: relative;
-    width:1024px;
-}
-
-.web-codebook.loading {
-    cursor: wait !important;
+  width:1024px;
 }
 
 .web-codebook > * {
