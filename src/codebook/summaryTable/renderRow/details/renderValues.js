@@ -42,15 +42,18 @@ export default function renderValues(d, list) {
         return a - b;
       }); // sort low to high
 
-    var minValues = sortedValues.filter(function(d, i) {
-      return i < 3;
-    });
-    var nValues = sortedValues.length;
-    var maxValues = sortedValues.filter(function(d, i) {
-      return i >= nValues - 3;
-    });
-    var valList = d3merge([minValues, ['...'], maxValues]);
-
+    if (sortedValues.length > 6) {
+      var minValues = sortedValues.filter(function(d, i) {
+        return i < 3;
+      });
+      var nValues = sortedValues.length;
+      var maxValues = sortedValues.filter(function(d, i) {
+        return i >= nValues - 3;
+      });
+      var valList = d3merge([minValues, ['...'], maxValues]);
+    } else {
+      var valList = sortedValues;
+    }
     var valueItems = list.selectAll('li').data(valList).enter().append('li');
 
     valueItems.append('div').attr('class', 'label').text(function(d, i) {
