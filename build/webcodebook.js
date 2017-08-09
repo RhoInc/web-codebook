@@ -494,7 +494,7 @@ var availableTabs = [{
   label: 'Codebook',
   selector: '.web-codebook .summaryTable',
   controls: true,
-  instructions: 'Click rows to see charts, or use these buttons: '
+  instructions: 'Automatically generated data summaries for each column.'
 }, {
   key: 'listing',
   label: 'Data Listing',
@@ -611,67 +611,6 @@ function draw(codebook) {
 
   //EXIT
   varRows.exit().remove();
-}
-
-function makeTitle(d) {
-  var wrap = d3.select(this);
-  var titleDiv = wrap.append('div').attr('class', 'var-name');
-  var valuesList = wrap.append('ul').attr('class', 'value-list');
-
-  //Title and type
-  titleDiv.append('div').attr('class', 'name').html(function (d) {
-    return d.label && d.label !== d.value_col ? d.value_col + ' (' + d.label + ')' : d.value_col;
-  });
-  titleDiv.append('div').attr('class', 'type').html(function (d) {
-    return d.type;
-  });
-
-  //make a list of values
-  if (d.type == 'categorical') {
-    //valuesList.append("span").text( "Values (Most Frequent):")
-    var topValues = d.statistics.values.sort(function (a, b) {
-      return b.n - a.n;
-    }).filter(function (d, i) {
-      return i < 5;
-    });
-
-    valuesList.selectAll('li').data(topValues).enter().append('li').text(function (d) {
-      return d.key + ' (' + d3.format('0.1%')(d.prop_n) + ')';
-    }).attr('title', function (d) {
-      return 'n=' + d.n;
-    }).style('cursor', 'help');
-
-    if (d.statistics.values.length > 5) {
-      var totLength = d.statistics.values.length;
-      var extraCount = totLength - 5;
-      var extra_span = valuesList.append('span').html('and ' + extraCount + ' more.');
-    }
-  } else if (d.type == 'continuous') {
-    //valuesList.append("span").text( "Values (Most Frequent):"
-    var sortedValues = d3.set(d.values.map(function (d) {
-      return +d.value;
-    })).values() //get unique
-    .sort(function (a, b) {
-      return a - b;
-    }); // sort low to high
-
-    var minValues = sortedValues.filter(function (d, i) {
-      return i < 3;
-    });
-    var nValues = sortedValues.length;
-    var maxValues = sortedValues.filter(function (d, i) {
-      return i >= nValues - 3;
-    });
-    var valList = d3.merge([minValues, ['...'], maxValues]);
-
-    valuesList.selectAll('li').data(valList).enter().append('li').text(function (d) {
-      return d;
-    }).attr('title', function (d) {
-      return d == '...' ? nValues - 6 + ' other values' : '';
-    }).style('cursor', function (d) {
-      return d == '...' ? 'help' : null;
-    });
-  }
 }
 
 function moveYaxis(chart) {
@@ -1953,6 +1892,7 @@ function makeChart(d) {
       charts.createVerticalBars(this, d);
     } else if (d.chartType === 'histogramBoxPlot') {
       // continuous outcomes
+      d3.select(this).append('div').classed('row-controls', true);
       charts.createHistogramBoxPlot(this, d);
     } else {
       console.warn('Invalid chart type for ' + d.key);
@@ -1962,42 +1902,172 @@ function makeChart(d) {
   }
 }
 
-function makeDetails(d) {
-  var wrap = d3.select(this);
+function renderValues(d, list) {
+  list.selectAll('*').remove();
 
-  //Render Summary Stats
-  var stats_div = wrap.append('div').attr('class', 'stat-row');
+  //make a list of values
+  if (d.type == 'categorical') {
+    var topValues = d.statistics.values.sort(function (a, b) {
+      return b.n - a.n;
+    }).filter(function (d, i) {
+      return i < 5;
+    });
+
+    var valueItems = list.selectAll('li').data(topValues).enter().append('li');
+
+    valueItems.append('div').text(function (d) {
+      return d.key;
+    }).attr('class', 'label');
+    valueItems.append('div').text(function (d) {
+      return d.n + ' (' + d3.format('0.1%')(d.prop_n) + ')';
+    }).attr('class', 'value');
+
+    if (d.statistics.values.length > 5) {
+      var totLength = d.statistics.values.length;
+      var extraCount = totLength - 5;
+      var extra_span = list.append('li').append('div').attr('class', 'label').html('and ' + extraCount + ' more.');
+    }
+  } else if (d.type == 'continuous') {
+    var sortedValues = d3.set(d.values.map(function (d) {
+      return +d.value;
+    })).values() //get unique
+    .sort(function (a, b) {
+      return a - b;
+    }); // sort low to high
+
+    if (sortedValues.length > 6) {
+      var minValues = sortedValues.filter(function (d, i) {
+        return i < 3;
+      });
+      var nValues = sortedValues.length;
+      var maxValues = sortedValues.filter(function (d, i) {
+        return i >= nValues - 3;
+      });
+      var valList = d3.merge([minValues, ['...'], maxValues]);
+    } else {
+      var valList = sortedValues;
+    }
+    var valueItems = list.selectAll('li').data(valList).enter().append('li');
+
+    valueItems.append('div').attr('class', 'label').text(function (d, i) {
+      return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
+    });
+    valueItems.append('div').attr('class', 'value').text(function (d) {
+      return d;
+    }).attr('title', function (d) {
+      return d == '...' ? nValues - 6 + ' other values' : '';
+    }).style('cursor', function (d) {
+      return d == '...' ? 'help' : null;
+    });
+  }
+}
+
+//Render Summary Stats
+function renderStats(d, list) {
+  list.selectAll('*').remove();
+
+  var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
   var statNames = Object.keys(d.statistics).filter(function (f) {
-    return f != 'values' & f != 'highlightValues';
-  });
+    return ignoreStats.indexOf(f) === -1;
+  }) //remove value lists
+  .filter(function (f) {
+    return f.indexOf('ile') === -1;
+  }); //remove "percentiles"
+
   var statList = statNames.map(function (stat) {
     return {
       key: stat !== 'nMissing' ? stat : 'Missing',
       value: d.statistics[stat]
     };
-  }).filter(function (statItem) {
-    return ['min', 'max'].indexOf(statItem.key) === -1;
   });
 
-  //Render Values
-  if (d.type == 'categorical') {
-    var stats = stats_div.selectAll('div').data(statList).enter().append('div').attr('class', 'stat');
-    stats.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    stats.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
-  } else if (d.type === 'continuous') {
-    var stats = stats_div.selectAll('div').data(statList.filter(function (statItem) {
-      return statItem.key.indexOf('ile') === -1;
-    })).enter().append('div').attr('class', 'stat');
-    stats.append('div').text(function (d) {
-      return d.key;
-    }).attr('class', 'label');
-    stats.append('div').text(function (d) {
-      return d.value;
-    }).attr('class', 'value');
+  var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
+  stats.append('div').text(function (d) {
+    return d.key;
+  }).attr('class', 'label');
+  stats.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
+}
+
+//Render metadata
+function renderMeta(d, list) {
+  list.selectAll('*').remove();
+
+  // don't renderer items with no
+  var dropped = [];
+  d.meta.forEach(function (d) {
+    if (!d.value) {
+      d.hidden = true;
+      dropped.push(' "' + d.key + '"');
+    }
+  });
+
+  //render the items
+  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
+    return d.hidden;
+  });
+
+  metaItems.append('div').text(function (d) {
+    return d.key;
+  }).attr('class', 'label');
+  metaItems.append('div').text(function (d) {
+    return d.value;
+  }).attr('class', 'value');
+
+  if (dropped.length) {
+    list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are hidden.');
+  }
+}
+
+function clearDetails(d, list) {
+  list.selectAll('*').remove();
+}
+
+var detailList = [{ key: 'Stats', action: renderStats }, { key: 'Meta', action: renderMeta }, { key: 'Values', action: renderValues }, { key: 'None', action: clearDetails }];
+
+function makeDetails(d) {
+  var list = d3.select(this).append('div').append('ul');
+  var parent = d3.select(this.parentNode.parentNode);
+  var controls = parent.select('.row-chart').select('.row-controls').append('div').attr('class', 'detail-controls');
+
+  controls.append('small').html('Header Details: ');
+  var detailSelect = controls.append('select');
+
+  var detailItems = detailSelect.selectAll('option').data(detailList).enter().append('option').html(function (d) {
+    return d.key;
+  });
+
+  //Handlers for label events
+  detailSelect.on('change', function () {
+    var current = this.value;
+    var detailObj = detailList.filter(function (f) {
+      return f.key == current;
+    })[0];
+    detailObj.action(d, list);
+  });
+
+  //render stats on initial load
+  renderStats(d, list);
+}
+
+function makeTitle(d) {
+  d3.select(this).append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
+    var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
+    var chartDiv = rowDiv.select('.row-chart');
+    var hiddenFlag = rowDiv.classed('hiddenChart');
+    rowDiv.classed('hiddenChart', !hiddenFlag);
+    d3.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
+  });
+
+  d3.select(this).append('span').attr('class', 'title-span').text(function (d) {
+    return "'" + d.value_col + "'";
+  });
+
+  if (d.value_col != d.label) {
+    d3.select(this).append('span').attr('class', 'label-span').text(function (d) {
+      return d.label;
+    });
   }
 }
 
@@ -2011,17 +2081,12 @@ function renderRow(d) {
 
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
-  rowHead.append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
-    var rowDiv = d3.select(this.parentNode.parentNode);
-    var chartDiv = rowDiv.select('.row-chart');
-    var hiddenFlag = rowDiv.classed('hiddenChart');
-    rowDiv.classed('hiddenChart', !hiddenFlag);
-    d3.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
-  });
-
   rowHead.append('div').attr('class', 'row-title').each(makeTitle);
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+  //rowHead.append('div').attr('class', 'row-values').each(makeValues);
+
   rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+
+  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2266,6 +2331,7 @@ var defaultSettings$1 = {
   groups: [],
   variableLabels: [],
   hiddenVariables: [],
+  meta: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
   autofilter: 10, //automatically make filters for categorical variables with 2-10 levels
   autobins: true,
@@ -2277,6 +2343,21 @@ var defaultSettings$1 = {
 };
 
 function setDefaults(codebook) {
+  /**************** Column Metadata ************/
+  codebook.config.meta = codebook.config.meta || defaultSettings$1.meta;
+
+  // If labels are specified in the metadata, use them as the default
+  if (codebook.config.meta.length) {
+    var metaLabels = [];
+    codebook.config.meta.forEach(function (m) {
+      var mKeys = Object.keys(m);
+      if (mKeys.indexOf('value_col') > -1 & mKeys.indexOf('label') > -1) {
+        metaLabels.push({ value_col: m['value_col'], label: m['label'] });
+      }
+    });
+    defaultSettings$1.variableLabels = metaLabels;
+  }
+
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings$1.filters;
   codebook.config.filters = codebook.config.filters.map(function (d) {
@@ -2293,7 +2374,9 @@ function setDefaults(codebook) {
   });
 
   /********************* Variable Label Settings *********************/
-  codebook.config.variableLabels = codebook.config.variableLabels || defaultSettings$1.variableLabels;
+
+  //check any user specified labels to make sure they are in the correct format
+  codebook.config.variableLabels = codebook.config.variableLabels || [];
   codebook.config.variableLabels = codebook.config.variableLabels.filter(function (label, i) {
     var is_object = (typeof label === 'undefined' ? 'undefined' : _typeof(label)) === 'object',
         has_value_col = label.hasOwnProperty('value_col'),
@@ -2303,6 +2386,22 @@ function setDefaults(codebook) {
 
     return legit;
   });
+
+  if (codebook.config.variableLabels.length && defaultSettings$1.variableLabels.length) {
+    //merge the defaults with the user specified labels if both are populated
+    var userLabelVars = codebook.config.variableLabels.map(function (m) {
+      return m.value_col;
+    });
+
+    //Keep the default label if the user hasn't specified a label for the column
+    defaultSettings$1.variableLabels.forEach(function (defaultLabel) {
+      if (userLabelVars.indexOf(defaultLabel.value_col) == -1) {
+        codebook.config.variableLabels.push(defaultLabel);
+      }
+    });
+  } else {
+    codebook.config.variableLabels = codebook.config.variableLabels.length ? codebook.config.variableLabels : defaultSettings$1.variableLabels.length;
+  }
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
@@ -2584,7 +2683,7 @@ function makeSummary(codebook) {
       //change from string to object
       variables[i] = { value_col: variable };
 
-      //get a list of values
+      //get a list of raw values
       variables[i].values = data.map(function (d) {
         return {
           index: d['web-codebook-index'],
@@ -2605,6 +2704,21 @@ function makeSummary(codebook) {
       }).indexOf(variable) > -1 ? codebook.config.variableLabels.filter(function (variableLabel) {
         return variableLabel.value_col === variable;
       })[0].label : variable;
+
+      // Add metadata Object
+      variables[i].meta = [{ key: 'Type', value: variables[i].type }];
+
+      var metaMatch = codebook.config.meta.filter(function (f) {
+        return f.value_col == variable;
+      });
+      if (metaMatch.length == 1) {
+        var metaKeys = Object.keys(metaMatch[0]).filter(function (f) {
+          return ['value_col', 'label'].indexOf(f) === -1;
+        });
+        metaKeys.forEach(function (m) {
+          variables[i].meta.push({ key: m, value: metaMatch[0][m] });
+        });
+      }
 
       //calculate variable statistics (including for highlights - if any)
       var sub = codebook.data.highlighted.length > 0 ? function (d) {
@@ -2847,8 +2961,9 @@ function init$10(codebook) {
 //export function init(selector, data, vars, settings) {
 function init$11(codebook) {
   //initialize the wrapper
-  var selector = codebook.instructions.wrap.append('span').attr('class', 'chart-toggle');
+  var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
+  selector.append('small').text('Toggle Charts: ');
   var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
     codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
     codebook.wrap.selectAll('.row-toggle').html('&#9660;');
@@ -2857,6 +2972,40 @@ function init$11(codebook) {
   var hideAllButton = selector.append('button').text('Hide All Charts').on('click', function () {
     codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
     codebook.wrap.selectAll('.row-toggle').html('&#9658;');
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+//export function init(selector, data, vars, settings) {
+function init$12(codebook) {
+  //initialize the wrapper
+  var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
+
+  control.append('small').html('Header Details: ');
+  var detailSelect = control.append('select');
+
+  var detailItems = detailSelect.selectAll('option').data(detailList).enter().append('option').html(function (d) {
+    return d.key;
+  });
+
+  //Handlers for label events
+  detailSelect.on('change', function () {
+    var current = this.value;
+    var detailObj = detailList.filter(function (f) {
+      return f.key == current;
+    })[0];
+    console.log(current);
+
+    codebook.wrap.selectAll('.variable-row').each(function (d) {
+      //show the requested detail for each row
+      var list = d3.select(this).select('.row-head .row-details ul');
+      detailObj.action(d, list);
+
+      //update the select on each row
+      d3.select(this).select('.row-chart .row-controls .detail-controls select').property('value', current);
+    });
   });
 }
 
@@ -2869,7 +3018,10 @@ function update$2(codebook) {
   codebook.instructions.wrap.text(activeTab.instructions);
 
   //add tab-specific controls
-  if (activeTab.key == 'codebook') init$11(codebook);
+  if (activeTab.key == 'codebook') {
+    init$12(codebook);
+    init$11(codebook);
+  }
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2924,6 +3076,9 @@ var defaultSettings$3 = {
 };
 
 function setDefaults$1(explorer) {
+  /********************* meta *********************/
+  explorer.config.meta = explorer.config.meta || defaultSettings$3.meta;
+
   /********************* ignoredColumns *********************/
   var firstKey = Object.keys(explorer.config.files[0])[0];
   explorer.config.ignoredColumns = explorer.config.ignoredColumns || defaultSettings$3.ignoredColumns;
@@ -2941,7 +3096,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$12() {
+function init$13() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -2988,7 +3143,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$13(explorer) {
+function init$14(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -3023,10 +3178,12 @@ function init$13(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$13
+  init: init$14
 };
 
 function makeCodebook(explorer) {
+  var _this = this;
+
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
@@ -3041,6 +3198,11 @@ function makeCodebook(explorer) {
 
   //reset the group to null (only matters the 2nd time the file is clicked)
   delete this.current.settings.group;
+
+  //pass along any relevant column metadata
+  this.current.settings.meta = explorer.config.meta.filter(function (f) {
+    return f.file == _this.current[_this.config.labelColumn];
+  });
 
   //create the codebook
   explorer.codebook = webcodebook.createCodebook('.web-codebook-explorer .codebookWrap', this.current.settings);
@@ -3061,7 +3223,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$12,
+    init: init$13,
     layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook

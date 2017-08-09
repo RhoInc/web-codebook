@@ -14,6 +14,7 @@ export default function makeChart(d) {
       charts.createVerticalBars(this, d);
     } else if (d.chartType === 'histogramBoxPlot') {
       // continuous outcomes
+      d3select(this).append('div').classed('row-controls', true);
       charts.createHistogramBoxPlot(this, d);
     } else {
       console.warn('Invalid chart type for ' + d.key);

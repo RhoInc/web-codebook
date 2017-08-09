@@ -11,7 +11,7 @@ export function makeSummary(codebook) {
       //change from string to object
       variables[i] = { value_col: variable };
 
-      //get a list of values
+      //get a list of raw values
       variables[i].values = data.map(d => {
         return {
           index: d['web-codebook-index'],
@@ -38,6 +38,19 @@ export function makeSummary(codebook) {
             variableLabel => variableLabel.value_col === variable
           )[0].label
         : variable;
+
+      // Add metadata Object
+      variables[i].meta = [{ key: 'Type', value: variables[i].type }];
+
+      var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);
+      if (metaMatch.length == 1) {
+        var metaKeys = Object.keys(metaMatch[0]).filter(
+          f => ['value_col', 'label'].indexOf(f) === -1
+        );
+        metaKeys.forEach(function(m) {
+          variables[i].meta.push({ key: m, value: metaMatch[0][m] });
+        });
+      }
 
       //calculate variable statistics (including for highlights - if any)
       var sub = codebook.data.highlighted.length > 0

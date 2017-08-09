@@ -2,6 +2,21 @@ import defaultSettings from '../defaultSettings';
 import availableTabs from '../nav/availableTabs';
 
 export function setDefaults(codebook) {
+  /**************** Column Metadata ************/
+  codebook.config.meta = codebook.config.meta || defaultSettings.meta;
+
+  // If labels are specified in the metadata, use them as the default
+  if (codebook.config.meta.length) {
+    var metaLabels = [];
+    codebook.config.meta.forEach(function(m) {
+      var mKeys = Object.keys(m);
+      if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('label') > -1)) {
+        metaLabels.push({ value_col: m['value_col'], label: m['label'] });
+      }
+    });
+    defaultSettings.variableLabels = metaLabels;
+  }
+
   /********************* Filter Settings *********************/
   codebook.config.filters = codebook.config.filters || defaultSettings.filters;
   codebook.config.filters = codebook.config.filters.map(function(d) {
@@ -24,8 +39,9 @@ export function setDefaults(codebook) {
   });
 
   /********************* Variable Label Settings *********************/
-  codebook.config.variableLabels =
-    codebook.config.variableLabels || defaultSettings.variableLabels;
+
+  //check any user specified labels to make sure they are in the correct format
+  codebook.config.variableLabels = codebook.config.variableLabels || [];
   codebook.config.variableLabels = codebook.config.variableLabels.filter(
     (label, i) => {
       const is_object = typeof label === 'object',
@@ -42,6 +58,25 @@ export function setDefaults(codebook) {
       return legit;
     }
   );
+
+  if (
+    codebook.config.variableLabels.length &&
+    defaultSettings.variableLabels.length
+  ) {
+    //merge the defaults with the user specified labels if both are populated
+    var userLabelVars = codebook.config.variableLabels.map(m => m.value_col);
+
+    //Keep the default label if the user hasn't specified a label for the column
+    defaultSettings.variableLabels.forEach(function(defaultLabel) {
+      if (userLabelVars.indexOf(defaultLabel.value_col) == -1) {
+        codebook.config.variableLabels.push(defaultLabel);
+      }
+    });
+  } else {
+    codebook.config.variableLabels = codebook.config.variableLabels.length
+      ? codebook.config.variableLabels
+      : defaultSettings.variableLabels.length;
+  }
 
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0

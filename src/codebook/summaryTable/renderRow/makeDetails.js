@@ -1,40 +1,33 @@
 import { select as d3select } from 'd3';
+import detailList from './details/detailList';
+import renderStats from './details/renderStats';
 
 export default function makeDetails(d) {
-  var wrap = d3select(this);
+  var list = d3select(this).append('div').append('ul');
+  var parent = d3select(this.parentNode.parentNode);
+  var controls = parent
+    .select('.row-chart')
+    .select('.row-controls')
+    .append('div')
+    .attr('class', 'detail-controls');
 
-  //Render Summary Stats
-  var stats_div = wrap.append('div').attr('class', 'stat-row');
-  var statNames = Object.keys(d.statistics).filter(
-    f => (f != 'values') & (f != 'highlightValues')
-  );
-  var statList = statNames
-    .map(stat => {
-      return {
-        key: stat !== 'nMissing' ? stat : 'Missing',
-        value: d.statistics[stat]
-      };
-    })
-    .filter(statItem => ['min', 'max'].indexOf(statItem.key) === -1);
+  controls.append('small').html('Header Details: ');
+  var detailSelect = controls.append('select');
 
-  //Render Values
-  if (d.type == 'categorical') {
-    var stats = stats_div
-      .selectAll('div')
-      .data(statList)
-      .enter()
-      .append('div')
-      .attr('class', 'stat');
-    stats.append('div').text(d => d.key).attr('class', 'label');
-    stats.append('div').text(d => d.value).attr('class', 'value');
-  } else if (d.type === 'continuous') {
-    var stats = stats_div
-      .selectAll('div')
-      .data(statList.filter(statItem => statItem.key.indexOf('ile') === -1))
-      .enter()
-      .append('div')
-      .attr('class', 'stat');
-    stats.append('div').text(d => d.key).attr('class', 'label');
-    stats.append('div').text(d => d.value).attr('class', 'value');
-  }
+  var detailItems = detailSelect
+    .selectAll('option')
+    .data(detailList)
+    .enter()
+    .append('option')
+    .html(d => d.key);
+
+  //Handlers for label events
+  detailSelect.on('change', function() {
+    var current = this.value;
+    var detailObj = detailList.filter(f => f.key == current)[0];
+    detailObj.action(d, list);
+  });
+
+  //render stats on initial load
+  renderStats(d, list);
 }
