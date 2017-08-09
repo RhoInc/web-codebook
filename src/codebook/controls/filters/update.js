@@ -80,7 +80,6 @@ export function update(codebook) {
   // Event listener for filter changes
   filterCustom.on('change', function() {
     //display the loading indicator
-    //codebook.loadingIndicator.style('display', 'block');
     //wait by the quarter second until the loading indicator is visible to re-render everything
     const loading = setInterval(() => {
       const display = codebook.loadingIndicator.style('display');
@@ -92,7 +91,6 @@ export function update(codebook) {
 
         //loading complete
         clearInterval(loading);
-        //codebook.loadingIndicator.style('display', 'none');
       }
     }, 250);
   });
