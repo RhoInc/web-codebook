@@ -7,6 +7,8 @@ import { nest as d3nest, select as d3select } from 'd3';
 export function update(codebook) {
   const selector = codebook.controls.wrap.select('div.custom-filters'),
     filterList = selector.select('ul.filter-list');
+  const updateChart = codebook.controls.wrap.select('div.chart-toggle'),
+    updateChartButton = updateChart.select('button.updateButton');
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function(e) {
@@ -75,7 +77,7 @@ export function update(codebook) {
     })
     .attr('selected', d => (d.selected ? 'selected' : null));
 
-  //Initialize event listeners
+  // Event listener for filter changes
   filterCustom.on('change', function() {
     //display the loading indicator
     codebook.loadingIndicator.style('display', 'block');
@@ -88,6 +90,21 @@ export function update(codebook) {
           option_d.selected = d3select(this).property('selected');
         });
 
+        //loading complete
+        clearInterval(loading);
+        codebook.loadingIndicator.style('display', 'none');
+      }
+    }, 250);
+  });
+
+  // Event listener for updating the codebook based on current filter selections
+  updateChartButton.on('click', function() {
+    //display the loading indicator
+    codebook.loadingIndicator.style('display', 'block');
+    //wait by the quarter second until the loading indicator is visible to re-render everything
+    const loading = setInterval(() => {
+      const display = codebook.loadingIndicator.style('display');
+      if (display === 'block') {
         //update the codebook
         codebook.data.filtered = codebook.data.makeFiltered(
           codebook.data.raw,

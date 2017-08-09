@@ -24,4 +24,9 @@ export function init(codebook) {
       codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
       codebook.wrap.selectAll('.row-toggle').html('&#9658;');
     });
+
+  var updateCharts = selector
+    .append('button')
+    .attr('class', 'updateButton')
+    .text('Update Charts');
 }

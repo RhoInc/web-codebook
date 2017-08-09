@@ -105,6 +105,8 @@ function init$1(codebook) {
 function update(codebook) {
   var selector = codebook.controls.wrap.select('div.custom-filters'),
       filterList = selector.select('ul.filter-list');
+  var updateChart = codebook.controls.wrap.select('div.chart-toggle'),
+      updateChartButton = updateChart.select('button.updateButton');
 
   //add a list of values to each filter object
   codebook.config.filters.forEach(function (e) {
@@ -158,7 +160,7 @@ function update(codebook) {
     return d.selected ? 'selected' : null;
   });
 
-  //Initialize event listeners
+  // Event listener for filter changes
   filterCustom.on('change', function () {
     var _this = this;
 
@@ -173,6 +175,21 @@ function update(codebook) {
           option_d.selected = d3.select(this).property('selected');
         });
 
+        //loading complete
+        clearInterval(loading);
+        codebook.loadingIndicator.style('display', 'none');
+      }
+    }, 250);
+  });
+
+  // Event listener for updating the codebook based on current filter selections
+  updateChartButton.on('click', function () {
+    //display the loading indicator
+    codebook.loadingIndicator.style('display', 'block');
+    //wait by the quarter second until the loading indicator is visible to re-render everything
+    var loading = setInterval(function () {
+      var display = codebook.loadingIndicator.style('display');
+      if (display === 'block') {
         //update the codebook
         codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
         codebook.data.makeSummary(codebook);
@@ -191,6 +208,7 @@ function update(codebook) {
   Initialize filters.
 \------------------------------------------------------------------------------------------------*/
 
+//export function init(selector, data, vars, settings) {
 function init$2(codebook) {
   //initialize the wrapper
   var selector = codebook.controls.wrap.append('div').attr('class', 'custom-filters'),
@@ -298,6 +316,8 @@ function init$4(codebook) {
     codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
     codebook.wrap.selectAll('.row-toggle').html('&#9658;');
   });
+
+  var updateCharts = selector.append('button').attr('class', 'updateButton').text('Update Charts');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -1303,9 +1323,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
