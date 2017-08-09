@@ -50,7 +50,7 @@ Instructions and Title layout
 .web-codebook .rowCount, .web-codebook .columnCount  {
   padding-left:1em;
   font-size:0.8em;
-  color:#999;
+  color:#666;
 }
 
 .web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
@@ -59,14 +59,16 @@ Instructions and Title layout
 
 .web-codebook .highlightCount{
   font-size:0.8em;
-  color:#999;
+  color:#666;
 }
 
 .web-codebook .instructions .control {
   padding-left:0.5em;
-
 }
 
+.web-codebook span.highlightLegend{
+  background-color:orange;
+}
 
 /*------------------------------------------------------------------------------------------------\
 Controls layout
@@ -129,16 +131,16 @@ Controls layout
   padding-right:1em;
 }
 
-.web-codebook .controls button
+.web-codebook .controls button, .web-codebook .instructions button
 {
   margin-right:0.5em;
   background-color:white;
   border:2px solid #008CBA;
   border-radius: 4px;
-  padding:2px 4px;
+  padding:.2em .4em;
 }
 
-.web-codebook .controls button:hover{
+.web-codebook .controls button:hover, .web-codebook .instructions button:hover{
   cursor:pointer;
   background-color:#008CBA;
   color:white;
@@ -392,17 +394,23 @@ Chart layout
     margin-right: .5em;
 }
 
+.web-codebook .summaryTable .variable-row .row-chart div.missingText{
+  padding:.5em;
+}
+
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
   margin-top:0.2em;
   margin-bottom:0.2em;
 }
+
 .web-codebook .summaryTable g.bar-group.highlighted rect{
   fill:orange;
 }
 
 .web-codebook .summaryTable g.bar-group rect:hover {
   cursor: pointer;
-  fill:#7BAFD4;
+  stroke-width:3px;
+  stroke:black;
 }
 
 
@@ -629,10 +637,14 @@ Chart layout
 /*------------------------------------------------------------------------------------------------\
   Data Listing
 \------------------------------------------------------------------------------------------------*/
-.web-codebook .fileListing{
 
-}
-    .web-codebook .fileListing tr.selected{
+  .web-codebook .fileListing tr.selected{
       background: #008CBA;
       color:white;
-    }
+  }
+
+  .web-codebook .fileListing td.link{
+    color:blue;
+    text-decoration:underline;
+    cursor:pointer;
+  }

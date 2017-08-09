@@ -7,14 +7,24 @@ export default function highlightData(chart) {
     bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function(d) {
-    const indexes = chart.config.chartType.indexOf('Bars') > -1
+    const newIndexes = chart.config.chartType.indexOf('Bars') > -1
       ? d.values.raw[0].indexes
       : chart.config.chartType === 'histogramBoxPlot'
         ? d.values.raw.map(di => di.index)
         : [];
+    const currentIndexes = codebook.data.highlighted.map(
+      di => di['web-codebook-index']
+    );
+    const removeIndexes = currentIndexes.filter(
+      di => newIndexes.indexOf(di) > -1
+    );
 
     codebook.data.highlighted = codebook.data.filtered.filter(di => {
-      return indexes.indexOf(di['web-codebook-index']) > -1;
+      return removeIndexes.length
+        ? currentIndexes.indexOf(di['web-codebook-index']) > -1 &&
+            removeIndexes.indexOf(di['web-codebook-index']) === -1
+        : currentIndexes.indexOf(di['web-codebook-index']) > -1 ||
+            newIndexes.indexOf(di['web-codebook-index']) > -1;
     });
 
     //Display highlighted data in listing & codebook.

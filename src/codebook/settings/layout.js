@@ -7,10 +7,18 @@ export function layout(codebook) {
     groupColumns = codebook.config.groups.map(d => d.value_col),
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
-    columnTableColumns = ['Column', 'Group', 'Filter', 'Hide'],
+    labeledColumns = codebook.config.variableLabels.map(d => d.value_col),
+    columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
+        Label: {
+          type: 'text',
+          label: labeledColumns.indexOf(column) > -1
+            ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
+                .label
+            : ''
+        },
         Group: {
           type: 'checkbox',
           checked: groupColumns.indexOf(column) > -1
@@ -65,6 +73,14 @@ export function layout(codebook) {
           case 'Column':
             cell.text(d.value);
             break;
+          case 'Label':
+            cell.attr('title', 'Define variable label');
+            cell
+              .append('input')
+              .attr('type', d.value.type)
+              .property('value', d.value.label)
+              .on('change', () => updateSettings(codebook, d.key));
+            break;
           default:
             cell.attr(
               'title',
@@ -76,8 +92,8 @@ export function layout(codebook) {
             const checkbox = cell
               .append('input')
               .attr('type', d.value.type)
-              .property('checked', d.value.checked);
-            checkbox.on('change', () => updateSettings(codebook, d.key));
+              .property('checked', d.value.checked)
+              .on('change', () => updateSettings(codebook, d.key));
         }
       });
 }

@@ -2,7 +2,7 @@ import clone from '../util/clone';
 import onInit from './horizontalBars/onInit';
 import onResize from './horizontalBars/onResize';
 import { createChart } from 'webcharts';
-import { select as d3select, max as d3max } from 'd3';
+import { select as d3select, max as d3max, merge as d3merge } from 'd3';
 
 export function createHorizontalBars(this_, d) {
   const rowSelector = d3select(this_).node().parentNode,
@@ -63,7 +63,7 @@ export function createHorizontalBars(this_, d) {
     d.statistics.highlightValues.forEach(function(d) {
       d.type = 'sub';
     });
-    chartData = d3.merge([chartData, d.statistics.highlightValues]);
+    chartData = d3merge([chartData, d.statistics.highlightValues]);
 
     chartSettings.marks[0].per = ['key', 'type'];
     chartSettings.marks[0].arrange = 'nested';
@@ -100,7 +100,7 @@ export function createHorizontalBars(this_, d) {
         group.statistics.highlightValues.forEach(function(d) {
           d.type = 'sub';
         });
-        group.data = d3.merge([group.data, group.statistics.highlightValues]);
+        group.data = d3merge([group.data, group.statistics.highlightValues]);
 
         group.chartSettings.marks[0].per = ['key', 'type'];
         group.chartSettings.marks[0].arrange = 'nested';
@@ -123,9 +123,7 @@ export function createHorizontalBars(this_, d) {
           );
         d3select(chartContainer)
           .append('div')
-          .html(
-            `<em>This group does not contain any of the first 5 most prevalent levels of ${d.value_col}</em>.<br><br>`
-          );
+          .html(`<em>All values missing in this group.</em>.<br><br>`);
       }
     });
   } else {
