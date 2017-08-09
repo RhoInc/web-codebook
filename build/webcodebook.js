@@ -2400,9 +2400,8 @@ function setDefaults(codebook) {
       }
     });
   } else {
-    codebook.config.variableLabels = codebook.config.variableLabels.length ? codebook.config.variableLabels : defaultSettings$1.variableLabels.length;
+    codebook.config.variableLabels = codebook.config.variableLabels.length ? codebook.config.variableLabels : defaultSettings$1.variableLabels;
   }
-
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0 ? false : codebook.config.autogroups == null ? defaultSettings$1.autogroups : codebook.config.autogroups;
 

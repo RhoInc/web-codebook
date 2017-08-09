@@ -75,9 +75,8 @@ export function setDefaults(codebook) {
   } else {
     codebook.config.variableLabels = codebook.config.variableLabels.length
       ? codebook.config.variableLabels
-      : defaultSettings.variableLabels.length;
+      : defaultSettings.variableLabels;
   }
-
   //autogroups - don't use automatic groups if user specifies groups object
   codebook.config.autogroups = codebook.config.groups.length > 0
     ? false
