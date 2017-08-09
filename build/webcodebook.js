@@ -79,16 +79,19 @@ function clone(obj) {
 
 function indicateLoading(codebook, element, callback) {
   codebook.loadingIndicator.style('display', 'block');
-  //wait by the centisecond until the loading indicator is visible
+  //wait until the loading indicator is visible
   var loading = setInterval(function () {
-    var laidOut = d3.select(element).property('offsetwidth') > 0;
-    if (!laidOut) {
+    var laidOut = d3.select(element).property('offsetwidth') > 0,
+        displayNone = d3.select(element).style('display') === 'none';
+
+    //loading is complete
+    if (!(laidOut && displayNone)) {
       if (callback) callback();
-      //loading is complete
       clearInterval(loading);
       codebook.loadingIndicator.style('display', 'none');
+      d3.select('#loading-text').remove();
     }
-  }, 100);
+  }, 25);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -151,7 +154,7 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
-  this.loadingIndicator = this.wrap.append('div', ':first-child').attr('id', 'loading-indicator').style('display', 'none');
+  this.loadingIndicator = this.wrap.append('div').attr('id', 'loading-indicator').style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');

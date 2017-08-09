@@ -4,7 +4,7 @@
 
 export function layout() {
   this.loadingIndicator = this.wrap
-    .append('div', ':first-child')
+    .append('div')
     .attr('id', 'loading-indicator')
     .style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
