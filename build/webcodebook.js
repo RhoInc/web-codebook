@@ -165,7 +165,7 @@ function update(codebook) {
     var _this = this;
 
     //display the loading indicator
-    codebook.loadingIndicator.style('display', 'block');
+    //codebook.loadingIndicator.style('display', 'block');
     //wait by the quarter second until the loading indicator is visible to re-render everything
     var loading = setInterval(function () {
       var display = codebook.loadingIndicator.style('display');
@@ -177,7 +177,7 @@ function update(codebook) {
 
         //loading complete
         clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
+        //codebook.loadingIndicator.style('display', 'none');
       }
     }, 250);
   });
