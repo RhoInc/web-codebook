@@ -73,9 +73,9 @@ export function setDefaults(codebook) {
       }
     });
   } else {
-    //otherwise just use whichever is populated or fallback to an empty object
-    codebook.config.variableLabels =
-      codebook.config.variableLabels || defaultSettings.variableLabels;
+    codebook.config.variableLabels = codebook.config.variableLabels.length
+      ? codebook.config.variableLabels
+      : defaultSettings.variableLabels.length;
   }
 
   //autogroups - don't use automatic groups if user specifies groups object
