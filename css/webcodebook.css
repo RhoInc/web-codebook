@@ -342,6 +342,7 @@ Header - Details layout
   padding-right: .2em;
   font-size: 0.8em;
   color: #999;
+  min-width:1em;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div.details {
