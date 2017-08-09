@@ -1,10 +1,10 @@
+import indicateLoading from '../util/indicateLoading';
+
 export function init(codebook) {
+  indicateLoading(codebook, '.web-codebook .controls .control-toggle');
+
   codebook.controls.wrap.attr('onsubmit', 'return false;');
   codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
-
-  codebook.loadingIndicator = codebook.controls.wrap
-    .insert('div', ':first-child')
-    .attr('id', 'loading-indicator');
 
   //Draw title
   codebook.controls.title = codebook.controls.wrap

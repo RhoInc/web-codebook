@@ -77,6 +77,23 @@ function clone(obj) {
   throw new Error('Unable to copy [obj]! Its type is not supported.');
 }
 
+function indicateLoading(codebook, element, callback) {
+  codebook.loadingIndicator.style('display', 'block');
+  //wait until the loading indicator is visible
+  var loading = setInterval(function () {
+    var laidOut = d3.select(element).property('offsetwidth') > 0,
+        displayNone = d3.select(element).style('display') === 'none';
+
+    //loading is complete
+    if (!(laidOut && displayNone)) {
+      if (callback) callback();
+      clearInterval(loading);
+      codebook.loadingIndicator.style('display', 'none');
+      d3.select('#loading-text').remove();
+    }
+  }, 25);
+}
+
 /*------------------------------------------------------------------------------------------------\
   Initialize codebook
 \------------------------------------------------------------------------------------------------*/
@@ -104,40 +121,32 @@ function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
-  //prepare the data summaries
-  this.data.makeSummary(this);
+  indicateLoading(this, '.web-codebook .settings', function () {
+    //prepare the data summaries
+    _this.data.makeSummary(_this);
 
-  //draw controls
-  this.util.makeAutomaticFilters(this);
-  this.util.makeAutomaticGroups(this);
-  this.controls.init(this);
+    //draw controls
+    _this.util.makeAutomaticFilters(_this);
+    _this.util.makeAutomaticGroups(_this);
+    _this.controls.init(_this);
 
-  //initialize nav, title and instructions
-  this.title.init(this);
-  this.nav.init(this);
-  this.instructions.init(this);
+    //initialize nav, title and instructions
+    _this.title.init(_this);
+    _this.nav.init(_this);
+    _this.instructions.init(_this);
 
-  //call after event (if any)
-  this.events.complete.call(this);
+    //call after event (if any)
+    _this.events.complete.call(_this);
 
-  //wait by the quarter second until the loading indicator is visible
-  var loading = setInterval(function () {
-    var laidOut = _this.controls.wrap.property('offsetwidth') > 0;
-    if (!laidOut) {
-      //initialize and then draw the codebook
-      _this.summaryTable.draw(_this);
+    //initialize and then draw the codebook
+    _this.summaryTable.draw(_this);
 
-      //initialize and then draw the data listing
-      _this.dataListing.init(_this);
+    //initialize and then draw the data listing
+    _this.dataListing.init(_this);
 
-      //initialize and then draw the data listing
-      _this.settings.init(_this);
-
-      //loading is complete
-      clearInterval(loading);
-      _this.loadingIndicator.style('display', 'none');
-    }
-  }, 250);
+    //initialize and then draw the data listing
+    _this.settings.init(_this);
+  });
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -145,6 +154,7 @@ function init(data) {
 \------------------------------------------------------------------------------------------------*/
 
 function layout() {
+  this.loadingIndicator = this.wrap.append('div').attr('id', 'loading-indicator').style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
@@ -162,10 +172,10 @@ function layout() {
 }
 
 function init$1(codebook) {
+  indicateLoading(codebook, '.web-codebook .controls .control-toggle');
+
   codebook.controls.wrap.attr('onsubmit', 'return false;');
   codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
-
-  codebook.loadingIndicator = codebook.controls.wrap.insert('div', ':first-child').attr('id', 'loading-indicator');
 
   //Draw title
   codebook.controls.title = codebook.controls.wrap.append('div').attr('class', 'controls-title').text('Controls');
@@ -216,10 +226,10 @@ function update(codebook) {
     return d.value_col;
   });
   var columns = Object.keys(codebook.data.raw[0]);
+  allFilterItem.exit().remove();
   var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
     return 'custom-' + d.value_col + ' filterCustom';
   });
-  allFilterItem.exit().remove();
   allFilterItem.classed('hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
@@ -252,36 +262,30 @@ function update(codebook) {
   });
 
   //Initialize event listeners
-  filterCustom.on('change', function () {
+  var filters = codebook.controls.wrap.selectAll('.filterCustom select').on('change', function (d) {
     var _this = this;
 
-    //display the loading indicator
-    codebook.loadingIndicator.style('display', 'block');
-    //wait by the quarter second until the loading indicator is visible to re-render everything
-    var loading = setInterval(function () {
-      var display = codebook.loadingIndicator.style('display');
-      if (display === 'block') {
-        // flag the selected options in the config
-        d3.select(_this).selectAll('option').each(function (option_d) {
-          option_d.selected = d3.select(this).property('selected');
-        });
+    indicateLoading(codebook, '#loading-indicator', function () {
+      // flag the selected options in the config
+      var options = d3.select(_this).selectAll('option');
+      options.each(function (option_d) {
+        option_d.selected = d3.select(this).property('selected');
+      });
+      codebook.config.filters.filter(function (filter) {
+        return filter.value_col === d.value_col;
+      })[0].values = options.data();
 
-        //update the codebook
-        codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
+      //update the codebook
+      codebook.data.filtered = codebook.data.makeFiltered(codebook.data.raw, codebook.config.filters);
 
-        //clear highlights
-        codebook.data.highlighted = [];
+      //clear highlights
+      codebook.data.highlighted = [];
 
-        codebook.data.makeSummary(codebook);
-        codebook.controls.updateRowCount(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.dataListing.init(codebook);
-
-        //loading complete
-        clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
-      }
-    }, 250);
+      codebook.data.makeSummary(codebook);
+      codebook.controls.updateRowCount(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.dataListing.init(codebook);
+    });
   });
 }
 
@@ -341,25 +345,14 @@ function update$1(codebook) {
   groupSelect.on('change', function () {
     var _this = this;
 
-    //display loading indicator
-    codebook.loadingIndicator.style('display', 'block');
+    indicateLoading(codebook, '#loading-indicator', function () {
+      if (_this.value !== 'None') codebook.config.group = _this.value;else delete codebook.config.group;
 
-    //wait by the quarter second until the loading indicator is visible to re-render everything
-    var loading = setInterval(function () {
-      var display = codebook.loadingIndicator.style('display');
-      if (display === 'block') {
-        if (_this.value !== 'None') codebook.config.group = _this.value;else delete codebook.config.group;
-
-        codebook.data.highlighted = [];
-        codebook.data.makeSummary(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
-
-        //loading complete
-        clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
-      }
-    }, 250);
+      codebook.data.highlighted = [];
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
+    });
   });
 }
 
@@ -588,8 +581,9 @@ var nav = {
 /*------------------------------------------------------------------------------------------------\
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
-
 function draw(codebook) {
+  indicateLoading(codebook, '.web-codebook .summaryTable .variable-row .row-title');
+
   //enter/update/exit for variableDivs
   //BIND the newest data
   var varRows = codebook.summaryTable.wrap.selectAll('div.variable-row').data(codebook.data.summary, function (d) {
@@ -676,25 +670,27 @@ function highlightData(chart) {
   bars = chart.svg.selectAll('.bar-group');
 
   bars.on('click', function (d) {
-    var newIndexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
-      return di.index;
-    }) : [];
-    var currentIndexes = codebook.data.highlighted.map(function (di) {
-      return di['web-codebook-index'];
-    });
-    var removeIndexes = currentIndexes.filter(function (di) {
-      return newIndexes.indexOf(di) > -1;
-    });
+    indicateLoading(codebook, '.highlightCount', function () {
+      var newIndexes = chart.config.chartType.indexOf('Bars') > -1 ? d.values.raw[0].indexes : chart.config.chartType === 'histogramBoxPlot' ? d.values.raw.map(function (di) {
+        return di.index;
+      }) : [];
+      var currentIndexes = codebook.data.highlighted.map(function (di) {
+        return di['web-codebook-index'];
+      });
+      var removeIndexes = currentIndexes.filter(function (di) {
+        return newIndexes.indexOf(di) > -1;
+      });
 
-    codebook.data.highlighted = codebook.data.filtered.filter(function (di) {
-      return removeIndexes.length ? currentIndexes.indexOf(di['web-codebook-index']) > -1 && removeIndexes.indexOf(di['web-codebook-index']) === -1 : currentIndexes.indexOf(di['web-codebook-index']) > -1 || newIndexes.indexOf(di['web-codebook-index']) > -1;
-    });
+      codebook.data.highlighted = codebook.data.filtered.filter(function (di) {
+        return removeIndexes.length ? currentIndexes.indexOf(di['web-codebook-index']) > -1 && removeIndexes.indexOf(di['web-codebook-index']) === -1 : currentIndexes.indexOf(di['web-codebook-index']) > -1 || newIndexes.indexOf(di['web-codebook-index']) > -1;
+      });
 
-    //Display highlighted data in listing & codebook.
-    codebook.data.makeSummary(codebook);
-    codebook.dataListing.init(codebook);
-    codebook.summaryTable.draw(codebook);
-    codebook.controls.updateRowCount(codebook);
+      //Display highlighted data in listing & codebook.
+      codebook.data.makeSummary(codebook);
+      codebook.dataListing.init(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
+    });
   });
 }
 
@@ -1439,8 +1435,9 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100 // space for panel value
-  } };
+    left: 100
+  } // space for panel value
+};
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {
@@ -2281,6 +2278,8 @@ function onDraw(dataListing) {
 }
 
 function init$7(codebook) {
+  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart');
+
   var dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
   dataListing.config = codebook.config;
@@ -2780,29 +2779,33 @@ var data = {
 };
 
 function init$8(codebook) {
+  indicateLoading(codebook, '.web-codebook .settings .column-table');
+
   codebook.settings.layout(codebook);
 }
 
 function reset(codebook) {
-  //remove grouping and select 'None' group option
-  delete codebook.config.group;
-  codebook.controls.groups.update(codebook);
-  codebook.controls.wrap.select('.group-select').selectAll('option').property('selected', function (d) {
-    return d.value_col === 'None';
+  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart', function () {
+    //remove grouping and select 'None' group option
+    delete codebook.config.group;
+    codebook.controls.groups.update(codebook);
+    codebook.controls.wrap.select('.group-select').selectAll('option').property('selected', function (d) {
+      return d.value_col === 'None';
+    });
+
+    //remove filtering and select all filter options
+    codebook.data.highlighted = [];
+    codebook.data.filtered = codebook.data.raw;
+    codebook.controls.filters.update(codebook);
+    codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
+
+    //redraw data summary, codebook, and listing.
+    codebook.data.makeSummary(codebook);
+    codebook.title.updateColumnCount(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
+    codebook.controls.updateRowCount(codebook);
   });
-
-  //remove filtering and select all filter options
-  codebook.data.highlighted = [];
-  codebook.data.filtered = codebook.data.raw;
-  codebook.controls.filters.update(codebook);
-  codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
-
-  //redraw data summary, codebook, and listing.
-  codebook.data.makeSummary(codebook);
-  codebook.title.updateColumnCount(codebook);
-  codebook.summaryTable.draw(codebook);
-  codebook.dataListing.init(codebook);
-  codebook.controls.updateRowCount(codebook);
 }
 
 function updateSettings(codebook, column) {
