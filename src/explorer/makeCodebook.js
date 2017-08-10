@@ -41,7 +41,13 @@ export function makeCodebook(explorer) {
     explorer.fileListing.init(explorer);
   });
 
-  d3csv(this.current.path, function(error, data) {
-    explorer.codebook.init(data);
-  });
+  if (this.current.json) {
+    explorer.codebook.init(this.current.json);
+  } else if (this.current.path) {
+    d3csv(this.current.path, function(error, data) {
+      explorer.codebook.init(data);
+    });
+  } else {
+    alert('No data provided for the selected file.');
+  }
 }
