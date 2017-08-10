@@ -113,9 +113,15 @@ export default function addBoxPlot(chart) {
       return low_outlier || high_outlier;
     });
 
-    chart.svg
+    // onlyUnique function removes duplicate outliers
+    function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+    }
+    var unique_outliers = outliers.filter(onlyUnique);
+
+    var outlier = chart.svg
       .selectAll('line.outlier')
-      .data(outliers)
+      .data(unique_outliers)
       .enter()
       .append('line')
       .attr('class', 'outlier')
@@ -123,11 +129,30 @@ export default function addBoxPlot(chart) {
       .attr('x2', d => chart.x(d))
       .attr('y1', d => chart.plot_height * 1.07)
       .attr('y2', d => (chart.plot_height + chart.config.boxPlotHeight) / 1.07)
+      // 'index' attribute corresponds to the numerical index of the outliers
+      // Added to ensure highlighting when outlier data is floating point (avoid selection based on
+      //  data value with a decimal)
+      .attr('index', function(d, i) {
+        return i;
+      })
+      .attr('value', d => d)
       .style({
         fill: '#000000',
         stroke: 'black',
         'stroke-width': '1px'
       });
+    outlier.append('title').text(function(d, i) {
+      return d;
+    });
+
+    var bbox = chart.svg.node().getBBox();
+    chart.svg
+      .insert('rect', ':first-child')
+      .attr('x', bbox.x)
+      .attr('y', bbox.y)
+      .attr('width', bbox.width)
+      .attr('height', bbox.height)
+      .style('fill', 'white');
   }
 
   //Annotate mean.
