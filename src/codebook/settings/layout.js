@@ -1,5 +1,6 @@
 import { select as d3select } from 'd3';
 import updateSettings from './updateSettings';
+import reset from './updateSettings/reset';
 
 export function layout(codebook) {
   //Create list of columns in the data file.
@@ -96,4 +97,12 @@ export function layout(codebook) {
               .on('change', () => updateSettings(codebook, d.key));
         }
       });
+
+  var saveSettingsButton = columnTable
+    .append('button')
+    .attr('class', 'saveSettingsButton')
+    .text('Save Settings')
+    .on('click', function() {
+      reset(codebook);
+    });
 }

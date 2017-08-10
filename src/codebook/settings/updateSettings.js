@@ -1,5 +1,4 @@
 import { select as d3select } from 'd3';
-import reset from './updateSettings/reset';
 
 export default function updateSettings(codebook, column) {
   const setting = column === 'Label'
@@ -34,7 +33,4 @@ export default function updateSettings(codebook, column) {
         return { value_col: d.column, label: d.value.label };
       });
   }
-
-  //reset
-  reset(codebook);
 }

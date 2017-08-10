@@ -2783,27 +2783,7 @@ function init$8(codebook) {
   codebook.settings.layout(codebook);
 }
 
-function reset(codebook) {
-  //remove grouping and select 'None' group option
-  delete codebook.config.group;
-  codebook.controls.groups.update(codebook);
-  codebook.controls.wrap.select('.group-select').selectAll('option').property('selected', function (d) {
-    return d.value_col === 'None';
-  });
-
-  //remove filtering and select all filter options
-  codebook.data.highlighted = [];
-  codebook.data.filtered = codebook.data.raw;
-  codebook.controls.filters.update(codebook);
-  codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
-
-  //redraw data summary, codebook, and listing.
-  codebook.data.makeSummary(codebook);
-  codebook.title.updateColumnCount(codebook);
-  codebook.summaryTable.draw(codebook);
-  codebook.dataListing.init(codebook);
-  codebook.controls.updateRowCount(codebook);
-}
+//import reset from './updateSettings/reset';
 
 function updateSettings(codebook, column) {
   var setting = column === 'Label' ? 'variableLabels' : column === 'Group' ? 'groups' : column === 'Filter' ? 'filters' : column === 'Hide' ? 'hiddenVariables' : console.warn('Something unsetting has occurred...');
@@ -2826,7 +2806,29 @@ function updateSettings(codebook, column) {
   }
 
   //reset
-  reset(codebook);
+  //reset(codebook);
+}
+
+function reset(codebook) {
+  //remove grouping and select 'None' group option
+  delete codebook.config.group;
+  codebook.controls.groups.update(codebook);
+  codebook.controls.wrap.select('.group-select').selectAll('option').property('selected', function (d) {
+    return d.value_col === 'None';
+  });
+
+  //remove filtering and select all filter options
+  codebook.data.highlighted = [];
+  codebook.data.filtered = codebook.data.raw;
+  codebook.controls.filters.update(codebook);
+  codebook.controls.wrap.selectAll('.filterCustom option').property('selected', true);
+
+  //redraw data summary, codebook, and listing.
+  codebook.data.makeSummary(codebook);
+  codebook.title.updateColumnCount(codebook);
+  codebook.summaryTable.draw(codebook);
+  codebook.dataListing.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 }
 
 function layout$2(codebook) {
@@ -2909,6 +2911,10 @@ function layout$2(codebook) {
           return updateSettings(codebook, d.key);
         });
     }
+  });
+
+  var saveSettingsButton = columnTable.append('button').attr('class', 'saveSettingsButton').text('Save Settings').on('click', function () {
+    reset(codebook);
   });
 }
 
