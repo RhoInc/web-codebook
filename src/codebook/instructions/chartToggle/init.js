@@ -1,14 +1,15 @@
 /*------------------------------------------------------------------------------------------------\
-  Initialize custom controls.
+  Initialize show/hide all charts toggles.
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
 export function init(codebook) {
   //initialize the wrapper
-  var selector = codebook.controls.wrap
-    .append('div')
-    .attr('class', 'chart-toggle');
+  var selector = codebook.instructions.wrap
+    .append('span')
+    .attr('class', 'control chart-toggle');
 
+  selector.append('small').text('Toggle Charts: ');
   var showAllButton = selector
     .append('button')
     .text('Show All Charts')

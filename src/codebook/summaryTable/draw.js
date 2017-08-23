@@ -1,10 +1,13 @@
 /*------------------------------------------------------------------------------------------------\
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
+import indicateLoading from '../util/indicateLoading';
 
 export function draw(codebook) {
-  //update Summary Text
-  codebook.summaryTable.updateSummaryText(codebook);
+  indicateLoading(
+    codebook,
+    '.web-codebook .summaryTable .variable-row .row-title'
+  );
 
   //enter/update/exit for variableDivs
   //BIND the newest data
@@ -14,7 +17,7 @@ export function draw(codebook) {
 
   //ENTER
   varRows.enter().append('div').attr('class', function(d) {
-    return 'variable-row hiddenChart ' + d.type;
+    return 'variable-row ' + d.type;
   });
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.

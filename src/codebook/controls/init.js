@@ -1,22 +1,30 @@
+import indicateLoading from '../util/indicateLoading';
+
 export function init(codebook) {
+  indicateLoading(codebook, '.web-codebook .controls .control-toggle');
+
   codebook.controls.wrap.attr('onsubmit', 'return false;');
   codebook.controls.wrap.selectAll('*:not(#loading-indicator)').remove(); //Clear controls.
 
-  codebook.loadingIndicator = codebook.controls.wrap
-    .insert('div', ':first-child')
-    .attr('id', 'loading-indicator');
-
   //Draw title
-  codebook.controls.wrap
+  codebook.controls.title = codebook.controls.wrap
     .append('div')
     .attr('class', 'controls-title')
-    .text('Codebook Controls');
+    .text('Controls');
+  codebook.controls.summaryWrap = codebook.controls.title.append('span');
+  codebook.controls.rowCount = codebook.controls.summaryWrap
+    .append('span')
+    .attr('class', 'rowCount');
+  codebook.controls.highlightCount = codebook.controls.summaryWrap
+    .append('span')
+    .attr('class', 'highlightCount');
 
   //Draw controls.
   codebook.controls.groups.init(codebook);
-  codebook.controls.chartToggle.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
+  codebook.controls.highlight.init(codebook);
+  codebook.controls.updateRowCount(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
   codebook.controls.wrap

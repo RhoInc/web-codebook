@@ -1,6 +1,6 @@
 import { init } from './explorer/init';
 import { layout } from './explorer/layout';
-import { controls } from './explorer/controls';
+import { fileListing } from './explorer/fileListing';
 import { makeCodebook } from './explorer/makeCodebook';
 
 export function createExplorer(element = 'body', config) {
@@ -9,7 +9,7 @@ export function createExplorer(element = 'body', config) {
     config: config,
     init: init,
     layout: layout,
-    controls: controls,
+    fileListing: fileListing,
     makeCodebook: makeCodebook
   };
 

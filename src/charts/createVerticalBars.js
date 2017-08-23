@@ -3,7 +3,7 @@ import onResize from './verticalBars/onResize';
 import onInit from './verticalBars/onInit';
 import axisSort from './verticalBars/axisSort';
 import { createChart } from 'webcharts';
-import { select as d3select, max as d3max } from 'd3';
+import { select as d3select, max as d3max, merge as d3merge } from 'd3';
 
 export function createVerticalBars(this_, d) {
   const chartContainer = d3select(this_).node();
@@ -32,11 +32,11 @@ export function createVerticalBars(this_, d) {
         type: 'bar',
         per: ['key'],
         attributes: {
-          stroke: null,
-          fill: '#999'
+          stroke: null
         }
       }
     ],
+    colors: ['#999'],
     gridlines: '',
     resizable: false,
     height: this_.height,
@@ -46,17 +46,34 @@ export function createVerticalBars(this_, d) {
     group_label: d.groupLabel || null,
     overall: d.statistics.values,
     gridlines: 'y',
-    sort: sortType //Alphabetical, Ascending, Descending
+    sort: sortType, //Alphabetical, Ascending, Descending
+    chartType: d.chartType
   };
 
   chartSettings.margin.bottom = 10;
 
-  const chartData = d.statistics.values.sort(function(a, b) {
+  var chartData = d.statistics.values.sort(function(a, b) {
     return axisSort(a, b, chartSettings.sort);
   });
-
   chartSettings.x.order = chartData.map(d => d.key);
   var x_dom = chartData.map(d => d.key);
+
+  //Add highlight values (if any)
+  chartData.forEach(function(d) {
+    d.type = 'Main';
+  });
+
+  if (d.statistics.highlightValues) {
+    d.statistics.highlightValues.forEach(function(d) {
+      d.type = 'sub';
+    });
+    chartData = d3merge([chartData, d.statistics.highlightValues]);
+
+    chartSettings.marks[0].per = ['key', 'type'];
+    chartSettings.marks[0].arrange = 'nested';
+    chartSettings.color_by = 'type';
+    chartSettings.colors = ['#999', 'orange'];
+  }
 
   if (d.groups) {
     //Set upper limit of y-axis domain to the maximum group rate.
@@ -70,9 +87,21 @@ export function createVerticalBars(this_, d) {
       group.chartSettings = clone(chartSettings);
       group.chartSettings.group_val = group.group;
       group.chartSettings.n = group.values.length;
-
-      //Sort data by descending rate and keep only the first five categories.
       group.data = group.statistics.values;
+      group.data.forEach(function(d) {
+        d.type = 'main';
+      });
+      if (group.statistics.highlightValues) {
+        group.statistics.highlightValues.forEach(function(d) {
+          d.type = 'sub';
+        });
+        group.data = d3merge([group.data, group.statistics.highlightValues]);
+
+        group.chartSettings.marks[0].per = ['key', 'type'];
+        group.chartSettings.marks[0].arrange = 'nested';
+        group.chartSettings.color_by = 'type';
+        group.chartSettings.colors = ['#999', 'orange'];
+      }
 
       //Define chart.
       group.chart = createChart(chartContainer, group.chartSettings);

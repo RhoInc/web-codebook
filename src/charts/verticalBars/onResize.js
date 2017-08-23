@@ -1,6 +1,7 @@
 import moveYaxis from './moveYaxis';
 import makeTooltip from './makeTooltip.js';
 import { mouse as d3mouse } from 'd3';
+import highlightData from '../util/highlightData.js';
 
 export default function onResize() {
   const context = this;
@@ -14,9 +15,10 @@ export default function onResize() {
   });
 
   //Add modal to nearest mark.
-  const bars = this.svg.selectAll('.bar-group');
+  const bars = this.svg.selectAll('.bar-group:not(.sub)');
   const tooltips = this.svg.selectAll('.svg-tooltip');
   const statistics = this.svg.selectAll('.statistic');
+
   this.svg
     .on('mousemove', function() {
       //Highlight closest bar.
@@ -26,25 +28,40 @@ export default function onResize() {
       let minimum;
       let bar = {};
       bars.each(function(d, i) {
-        d.distance = Math.abs(context.x(d.key) - x);
+        d.distance = Math.abs(context.x(d.values.x) - x);
         if (i === 0 || d.distance < minimum) {
           minimum = d.distance;
           bar = d;
         }
       });
-      const closest = bars
-        .filter(d => d.distance === minimum)
-        .filter((d, i) => i === 0)
-        .select('rect')
-        .style('fill', '#7BAFD4');
+
+      //In the instance of equally close bars, e.g. an unhighlighted and highlighted bar, choose one randomly.
+      let closest = bars.filter(d => d.distance === minimum);
+      if (closest.size() > 1) {
+        let arbitrary;
+        closest = closest.filter((d, i) => {
+          if (i === 0) arbitrary = Math.round(Math.random());
+          return i === arbitrary;
+        });
+      }
+      bars.select('rect').style('stroke-width', null).style('stroke', null);
+      closest = closest.select('rect');
 
       //Activate tooltip.
       const d = closest.datum();
       tooltips.classed('active', false);
       context.svg.select('#' + d.selector).classed('active', true);
+
+      closest.style('stroke-width', '3px').style('stroke', 'black');
     })
     .on('mouseout', function() {
-      bars.select('rect').style('fill', '#999');
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
+      bars.select('rect').style('stroke-width', null).style('stroke', null);
     });
+
+  //Add event listener to marks to highlight data.
+  highlightData(this);
+
+  //hide legend
+  this.legend.remove();
 }

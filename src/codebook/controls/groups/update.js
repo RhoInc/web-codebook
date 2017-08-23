@@ -4,6 +4,7 @@
 
 import { merge as d3merge } from 'd3';
 import { select as d3select } from 'd3';
+import indicateLoading from '../../util/indicateLoading';
 
 export function update(codebook) {
   const groupControl = codebook.controls.wrap.select('div.group-select'),
@@ -39,21 +40,14 @@ export function update(codebook) {
   );
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
   groupSelect.on('change', function() {
-    //display loading indicator
-    codebook.loadingIndicator.style('display', 'block');
-    //wait by the quarter second until the loading indicator is visible to re-render everything
-    const loading = setInterval(() => {
-      const display = codebook.loadingIndicator.style('display');
-      if (display === 'block') {
-        if (this.value !== 'None') codebook.config.group = this.value;
-        else delete codebook.config.group;
-        codebook.data.makeSummary(codebook);
-        codebook.summaryTable.draw(codebook);
+    indicateLoading(codebook, '#loading-indicator', () => {
+      if (this.value !== 'None') codebook.config.group = this.value;
+      else delete codebook.config.group;
 
-        //loading complete
-        clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
-      }
-    }, 250);
+      codebook.data.highlighted = [];
+      codebook.data.makeSummary(codebook);
+      codebook.summaryTable.draw(codebook);
+      codebook.controls.updateRowCount(codebook);
+    });
   });
 }

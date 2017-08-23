@@ -7,10 +7,18 @@ export function layout(codebook) {
     groupColumns = codebook.config.groups.map(d => d.value_col),
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
-    columnTableColumns = ['Column', 'Group', 'Filter', 'Hidden'],
+    labeledColumns = codebook.config.variableLabels.map(d => d.value_col),
+    columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
+        Label: {
+          type: 'text',
+          label: labeledColumns.indexOf(column) > -1
+            ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
+                .label
+            : ''
+        },
         Group: {
           type: 'checkbox',
           checked: groupColumns.indexOf(column) > -1
@@ -19,7 +27,7 @@ export function layout(codebook) {
           type: 'checkbox',
           checked: filterColumns.indexOf(column) > -1
         },
-        Hidden: {
+        Hide: {
           type: 'checkbox',
           checked: hiddenColumns.indexOf(column) > -1
         }
@@ -46,8 +54,8 @@ export function layout(codebook) {
       .selectAll('tr')
       .data(columnMetadata)
       .enter()
-      .append('tr'),
-    //define table cells
+      .append('tr')
+      .classed('hidden', d => d.Column === 'web-codebook-index'),
     columnTableCells = columnTableRows
       .selectAll('td')
       .data(d =>
@@ -65,6 +73,14 @@ export function layout(codebook) {
           case 'Column':
             cell.text(d.value);
             break;
+          case 'Label':
+            cell.attr('title', 'Define variable label');
+            cell
+              .append('input')
+              .attr('type', d.value.type)
+              .property('value', d.value.label)
+              .on('change', () => updateSettings(codebook, d.key));
+            break;
           default:
             cell.attr(
               'title',
@@ -76,19 +92,8 @@ export function layout(codebook) {
             const checkbox = cell
               .append('input')
               .attr('type', d.value.type)
-              .property('checked', d.value.checked);
-            checkbox.on('change', () => updateSettings(codebook, d.key));
+              .property('checked', d.value.checked)
+              .on('change', () => updateSettings(codebook, d.key));
         }
       });
-
-  //Add descriptive footnote.
-  columnTable
-    .select('tbody')
-    .append('tr')
-    .style('border-bottom', 'none')
-    .append('td')
-    .attr('colspan', columnTableColumns.length)
-    .html(
-      "This interactive table allows users to modify each column's metadata.<br>Updating these settings will reset the codebook and data listing."
-    );
 }
