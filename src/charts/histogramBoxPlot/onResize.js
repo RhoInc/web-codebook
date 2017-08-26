@@ -1,4 +1,5 @@
 import makeTooltip from './makeTooltip';
+import { makeBoxPlotTooltip } from './makeTooltip';
 import moveYaxis from './moveYaxis';
 import moveXaxis from './moveXaxis';
 import highlightData from '../util/highlightData.js';
@@ -24,6 +25,9 @@ export default function onResize() {
     //Create tooltips
     this.svg.selectAll('g.bar-group').each(function(d, i) {
       makeTooltip(d, i, context);
+    });
+    this.svg.selectAll('line.outlier').each(function(d, i) {
+      makeBoxPlotTooltip(d, i, context);
     });
 
     this.svg.select('g.y.axis text.axis-title').remove(); //Remove y-axis label
