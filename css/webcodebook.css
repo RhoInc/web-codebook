@@ -340,7 +340,7 @@ Header - Details layout
   text-align: left;
 }
 
-.web-codebook .summaryTable .variable-row .row-details ul li div.label {
+.web-codebook .summaryTable .variable-row .row-details ul li div.wcb-label {
   display: inline-block;
   padding-right: .2em;
   font-size: 0.8em;

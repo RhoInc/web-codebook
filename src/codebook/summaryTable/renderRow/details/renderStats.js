@@ -20,6 +20,6 @@ export default function renderStats(d, list) {
     .enter()
     .append('li')
     .attr('class', 'stat');
-  stats.append('div').text(d => d.key).attr('class', 'label');
+  stats.append('div').text(d => d.key).attr('class', 'wcb-label');
   stats.append('div').text(d => d.value).attr('class', 'value');
 }

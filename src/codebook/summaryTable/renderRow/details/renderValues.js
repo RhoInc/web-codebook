@@ -20,7 +20,7 @@ export default function renderValues(d, list) {
 
     var valueItems = list.selectAll('li').data(topValues).enter().append('li');
 
-    valueItems.append('div').text(d => d.key).attr('class', 'label');
+    valueItems.append('div').text(d => d.key).attr('class', 'wcb-label');
     valueItems
       .append('div')
       .text(d => d.n + ' (' + d3format('0.1%')(d.prop_n) + ')')
@@ -32,7 +32,7 @@ export default function renderValues(d, list) {
       var extra_span = list
         .append('li')
         .append('div')
-        .attr('class', 'label')
+        .attr('class', 'wcb-label')
         .html('and ' + extraCount + ' more.');
     }
   } else if (d.type == 'continuous') {
@@ -56,7 +56,7 @@ export default function renderValues(d, list) {
     }
     var valueItems = list.selectAll('li').data(valList).enter().append('li');
 
-    valueItems.append('div').attr('class', 'label').text(function(d, i) {
+    valueItems.append('div').attr('class', 'wcb-label').text(function(d, i) {
       return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
     });
     valueItems

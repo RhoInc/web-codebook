@@ -1913,7 +1913,7 @@ function renderValues(d, list) {
 
     valueItems.append('div').text(function (d) {
       return d.key;
-    }).attr('class', 'label');
+    }).attr('class', 'wcb-label');
     valueItems.append('div').text(function (d) {
       return d.n + ' (' + d3.format('0.1%')(d.prop_n) + ')';
     }).attr('class', 'value');
@@ -1921,7 +1921,7 @@ function renderValues(d, list) {
     if (d.statistics.values.length > 5) {
       var totLength = d.statistics.values.length;
       var extraCount = totLength - 5;
-      var extra_span = list.append('li').append('div').attr('class', 'label').html('and ' + extraCount + ' more.');
+      var extra_span = list.append('li').append('div').attr('class', 'wcb-label').html('and ' + extraCount + ' more.');
     }
   } else if (d.type == 'continuous') {
     var sortedValues = d3.set(d.values.map(function (d) {
@@ -1945,7 +1945,7 @@ function renderValues(d, list) {
     }
     var valueItems = list.selectAll('li').data(valList).enter().append('li');
 
-    valueItems.append('div').attr('class', 'label').text(function (d, i) {
+    valueItems.append('div').attr('class', 'wcb-label').text(function (d, i) {
       return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
     });
     valueItems.append('div').attr('class', 'value').text(function (d) {
@@ -1980,7 +1980,7 @@ function renderStats(d, list) {
   var stats = list.selectAll('li.stat').data(statList).enter().append('li').attr('class', 'stat');
   stats.append('div').text(function (d) {
     return d.key;
-  }).attr('class', 'label');
+  }).attr('class', 'wcb-label');
   stats.append('div').text(function (d) {
     return d.value;
   }).attr('class', 'value');
@@ -2006,7 +2006,7 @@ function renderMeta(d, list) {
 
   metaItems.append('div').text(function (d) {
     return d.key;
-  }).attr('class', 'label');
+  }).attr('class', 'wcb-label');
   metaItems.append('div').text(function (d) {
     return d.value;
   }).attr('class', 'value');
