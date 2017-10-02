@@ -156,7 +156,7 @@ function init(data) {
 function layout() {
   this.loadingIndicator = this.wrap.append('div').attr('id', 'loading-indicator').style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
-  this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
+  this.nav.wrap = this.wrap.append('div').attr('class', 'wcb-nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
   this.instructions.wrap = this.wrap.append('div').attr('class', 'instructions section');
   this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
@@ -533,7 +533,7 @@ function init$6(codebook) {
 
   //draw the nav
   if (codebook.nav.tabs.length > 1) {
-    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
+    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'wcb-nav wcb-nav-tabs');
     var navItems = chartNav.selectAll('li').data(codebook.nav.tabs) //make this a setting
     .enter().append('li').attr('class', function (d) {
       return d.key;
@@ -1435,9 +1435,8 @@ var defaultSettings = //Custom settings
   aspect: 12,
   margin: {
     right: 25,
-    left: 100
-  } // space for panel value
-};
+    left: 100 // space for panel value
+  } };
 
 //Replicate settings in multiple places in the settings object.
 function syncSettings(settings) {

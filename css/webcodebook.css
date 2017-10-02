@@ -64,7 +64,7 @@ General
 Instructions and Title layout
 \------------------------------------------------------------------------------------------------*/
 
-.web-codebook .nav{
+.web-codebook .wcb-nav{
   margin-top:0.1em
 }
 
@@ -555,14 +555,14 @@ Chart layout
   Nav
 \--------------------------------------------------------------------------------------***/
 
-    .web-codebook .nav ul.nav-tabs {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs {
         list-style-type: none;
         overflow: hidden;
         background-color: black;
         padding:0;
     }
 
-    .web-codebook .nav   ul.nav-tabs li {
+    .web-codebook .wcb-nav   ul.wcb-nav-tabs li {
         float: left;
         cursor:pointer;
         border:2px solid black;
@@ -572,32 +572,32 @@ Chart layout
         text-align: center;
     }
 
-    .web-codebook .nav ul.nav-tabs li a {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li a {
         display: block;
         text-align: center;
         color:white;
         text-decoration: none;
     }
 
-    .web-codebook .nav ul.nav-tabs li:hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li:hover {
         background-color: #777;
         border:2px solid #777;
     }
 
-    .web-codebook .nav ul.nav-tabs li.settings {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.settings {
         float: right;
     }
 
-    .web-codebook .nav ul.nav-tabs li.settings a {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.settings a {
     }
 
-    .web-codebook .nav ul.nav-tabs li.active, ul.nav-tabs li.active:hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active, ul.wcb-nav-tabs li.active:hover {
         background-color: white;
         border:2px solid black;
 
     }
 
-    .web-codebook .nav ul.nav-tabs li.active a, ul.nav-tabs li.active:hover a{
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active a, ul.wcb-nav-tabs li.active:hover a{
         color:black;
     }
 
