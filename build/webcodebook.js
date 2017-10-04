@@ -3073,7 +3073,8 @@ function createCodebook() {
 }
 
 var defaultSettings$3 = {
-  ignoredColumns: []
+  ignoredColumns: [],
+  meta: []
 };
 
 function setDefaults$1(explorer) {

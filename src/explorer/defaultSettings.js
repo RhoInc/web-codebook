@@ -1,5 +1,6 @@
 const defaultSettings = {
-  ignoredColumns: []
+  ignoredColumns: [],
+  meta: []
 };
 
 export default defaultSettings;
