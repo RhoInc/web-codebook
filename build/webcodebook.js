@@ -493,7 +493,7 @@ var availableTabs = [{
   label: 'Data Listing',
   selector: '.web-codebook .dataListing',
   controls: true,
-  instructions: 'Click any column header to sort that column.'
+  instructions: 'Listing of all selected records.'
 }, {
   key: 'settings',
   label: '&#x2699;',
@@ -2093,158 +2093,6 @@ var summaryTable = {
   renderRow: renderRow
 };
 
-function layout$1(dataListing) {
-  //Add sort container.
-  dataListing.wrap.selectAll('*').remove();
-  var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
-
-  //Add search container.
-  var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
-  searchContainer.append('span').classed('description', true).text('Search:');
-  searchContainer.append('input').attr('class', 'search-box');
-
-  //Add listing container.
-  dataListing.wrap.append('div').classed('listing-container', true);
-
-  //Add pagination container.
-  var paginationContainer = dataListing.wrap.append('div').classed('pagination-container', true);
-  paginationContainer.append('span').classed('description', true).text('Page:');
-}
-
-function updatePagination(dataListing) {
-  //Reset pagination.
-  dataListing.pagination.links.classed('active', false);
-
-  //Set to active the selected page link and unhide associated rows.
-  dataListing.pagination.links.filter(function (link) {
-    return +link.rel === +dataListing.pagination.activeLink;
-  }).classed('active', true);
-  dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
-  dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
-  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-    return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
-  });
-  dataListing.table.draw(sub);
-}
-
-function sort(dataListing) {
-  dataListing.sorted_raw_data = dataListing.sorted_raw_data.sort(function (a, b) {
-    var order = 0;
-
-    dataListing.sort.order.forEach(function (item) {
-      var acell = a[item.variable];
-      var bcell = b[item.variable];
-
-      if (order === 0) {
-        if (item.direction === 'ascending' && acell < bcell || item.direction === 'descending' && acell > bcell) order = -1;else if (item.direction === 'ascending' && acell > bcell || item.direction === 'descending' && acell < bcell) order = 1;
-      }
-    });
-    return order;
-  });
-  updatePagination(dataListing);
-}
-
-function addSort(dataListing) {
-  dataListing.table.wrap.selectAll('.headers th').on('click', function () {
-    var variable = this.textContent;
-    var sortItem = dataListing.sort.order.filter(function (item) {
-      return item.variable === variable;
-    })[0];
-
-    if (!sortItem) {
-      sortItem = {
-        variable: variable,
-        direction: 'ascending',
-        container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort-box', true).text(variable)
-      };
-      sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
-      sortItem.container.append('span').classed('remove-sort', true).html('&#10060;');
-      dataListing.sort.order.push(sortItem);
-    } else {
-      sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
-      sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
-    }
-
-    sort(dataListing);
-    dataListing.sort.wrap.select('.description').classed('hidden', true);
-
-    //Add sort container deletion functionality.
-    dataListing.sort.order.forEach(function (item, i) {
-      item.container.on('click', function (d) {
-        d3.select(this).remove();
-        dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
-          return d.variable;
-        }).indexOf(d.key), 1);
-
-        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('hidden', false);
-      });
-    });
-  });
-}
-
-function addSearch(dataListing) {
-  dataListing.search = {};
-  dataListing.search.wrap = dataListing.wrap.select('.search-container');
-  dataListing.search.wrap.select('.search-box').on('input', function () {
-    var inputText = this.value.toLowerCase();
-    //Determine which rows contain input text.
-    dataListing.sorted_raw_data = dataListing.super_raw_data.filter(function (d) {
-      var match = false;
-      var vars = Object.keys(d);
-      vars.forEach(function (var_name) {
-        if (match === false) {
-          var cellText = '' + d[var_name];
-          match = cellText.toLowerCase().indexOf(inputText) > -1;
-        }
-      });
-      return match;
-    });
-    //render the codebook
-    var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-      return i < 25;
-    });
-    //discard the sort
-    dataListing.sort.order.forEach(function (item) {
-      item.container.remove();
-    });
-    dataListing.sort.order = [];
-    dataListing.sort.wrap.select('.description').classed('hidden', false);
-
-    //reset to first page
-    dataListing.pagination.activeLink = 0;
-    updatePagination(dataListing);
-  });
-}
-
-function addLinks(dataListing) {
-  //Count rows.
-  dataListing.pagination.rowsTotal = dataListing.sorted_raw_data.length;
-
-  //Calculate number of pages needed and create a link for each page.
-  dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
-  dataListing.pagination.wrap.selectAll('a').remove();
-  for (var i = 0; i < dataListing.pagination.numPages; i++) {
-    dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({
-      href: '#',
-      rel: i
-    }).text(i + 1).classed('active', function (d) {
-      return d.rel == dataListing.pagination.activeLink;
-    });
-  }
-  dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
-}
-
-function addPagination(dataListing) {
-  //Render page links.
-  addLinks(dataListing);
-
-  //Render a different page on click.
-  dataListing.pagination.links.on('click', function () {
-    dataListing.pagination.activeLink = d3.select(this).attr('rel');
-    updatePagination(dataListing);
-  });
-}
-
 function onDraw(dataListing) {
   dataListing.table.on('draw', function () {
     //Attach variable name rather than variable label to header to be able to apply settings.hiddenVariables to column headers.
@@ -2255,21 +2103,12 @@ function onDraw(dataListing) {
       return label ? label.label : null;
     });
 
-    //Add header sort functionality.
-    addSort(dataListing);
-
-    //Add text search functionality.
-    addSearch(dataListing);
-
-    //Add pagination functionality.
-    addPagination(dataListing);
-
     //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
     this.table.selectAll('th,td').classed('hidden', function (d) {
       return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
     });
 
-    //highlight columns
+    //highlight rows
     this.table.selectAll('tr').classed('highlight', function (d) {
       return dataListing.codebook.data.highlighted.indexOf(d.raw) > -1;
     });
@@ -2282,19 +2121,10 @@ function init$7(codebook) {
   var dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
   dataListing.config = codebook.config;
-  layout$1(dataListing);
-  //sort config
-  dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
-  dataListing.sort.order = [];
-  //pagination config
-  dataListing.pagination = {};
-  dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
-  dataListing.pagination.rowsShown = 25;
-  dataListing.pagination.activeLink = 0;
+  dataListing.wrap.selectAll('*').remove();
 
   //Define table.
-  dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
+  dataListing.table = webcharts.createTable('.web-codebook .dataListing', {});
 
   //Define callback.
   onDraw(dataListing);
@@ -2312,10 +2142,8 @@ function init$7(codebook) {
       return 1;
     }
   });
-  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-    return i < 25;
-  });
-  dataListing.table.init(sub);
+
+  dataListing.table.init(dataListing.sorted_raw_data);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2831,7 +2659,7 @@ function updateSettings(codebook, column) {
   reset(codebook);
 }
 
-function layout$2(codebook) {
+function layout$1(codebook) {
   //Create list of columns in the data file.
   var columns = codebook.data.summary.map(function (d) {
     return d.value_col;
@@ -2920,7 +2748,7 @@ function layout$2(codebook) {
 
 var settings = {
   init: init$8,
-  layout: layout$2
+  layout: layout$1
 };
 
 function init$9(codebook) {
@@ -3129,7 +2957,7 @@ function init$13() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$3() {
+function layout$2() {
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
@@ -3237,7 +3065,7 @@ function createExplorer() {
     element: element,
     config: config,
     init: init$13,
-    layout: layout$3,
+    layout: layout$2,
     fileListing: fileListing,
     makeCodebook: makeCodebook
   };

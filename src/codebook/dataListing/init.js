@@ -1,4 +1,3 @@
-import layout from './layout';
 import onDraw from './onDraw';
 import { createTable } from 'webcharts';
 import indicateLoading from '../util/indicateLoading';
@@ -12,24 +11,10 @@ export function init(codebook) {
   const dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
   dataListing.config = codebook.config;
-  layout(dataListing);
-  //sort config
-  dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
-  dataListing.sort.order = [];
-  //pagination config
-  dataListing.pagination = {};
-  dataListing.pagination.wrap = dataListing.wrap.select(
-    '.pagination-container'
-  );
-  dataListing.pagination.rowsShown = 25;
-  dataListing.pagination.activeLink = 0;
+  dataListing.wrap.selectAll('*').remove();
 
   //Define table.
-  dataListing.table = createTable(
-    '.web-codebook .dataListing .listing-container',
-    {}
-  );
+  dataListing.table = createTable('.web-codebook .dataListing', {});
 
   //Define callback.
   onDraw(dataListing);
@@ -47,8 +32,6 @@ export function init(codebook) {
       return 1;
     }
   });
-  var sub = dataListing.sorted_raw_data.filter(function(d, i) {
-    return i < 25;
-  });
-  dataListing.table.init(sub);
+
+  dataListing.table.init(dataListing.sorted_raw_data);
 }
