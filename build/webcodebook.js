@@ -3074,7 +3074,13 @@ function createCodebook() {
 
 var defaultSettings$3 = {
   ignoredColumns: [],
-  meta: []
+  meta: [],
+  tableConfig: {
+    sortable: false,
+    searchable: false,
+    pagination: false,
+    exportable: false
+  }
 };
 
 function setDefaults$1(explorer) {
@@ -3087,6 +3093,9 @@ function setDefaults$1(explorer) {
 
   /********************* labelColumn *********************/
   explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
+
+  /********************* tableConfig ***************/
+  explorer.config.tableConfig = explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
   /********************* files[].settings ***************/
   explorer.config.files.forEach(function (f) {
@@ -3153,14 +3162,16 @@ function init$14(explorer) {
   var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
   //drop ignoredColumns and system variables
-  var cols = Object.keys(explorer.config.files[0]).filter(function (f) {
+  console.log(explorer);
+
+  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0]).filter(function (f) {
     return explorer.config.ignoredColumns.indexOf(f) == -1;
   }).filter(function (f) {
     return ['settings', 'selected', 'event'].indexOf(f) == -1;
   }); //drop system variables from table
 
   //Create the table
-  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', { cols: cols });
+  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', explorer.config.tableConfig);
 
   //show the selected file first
   explorer.config.files.forEach(function (d) {

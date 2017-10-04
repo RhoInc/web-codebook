@@ -10,14 +10,16 @@ export function init(explorer) {
     .classed('listing-container', true);
 
   //drop ignoredColumns and system variables
-  var cols = Object.keys(explorer.config.files[0])
+  console.log(explorer);
+
+  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
     .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
     .filter(f => ['settings', 'selected', 'event'].indexOf(f) == -1); //drop system variables from table
 
   //Create the table
   explorer.codebook.fileListing.table = createTable(
     '.web-codebook .fileListing .listing-container',
-    { cols: cols }
+    explorer.config.tableConfig
   );
 
   //show the selected file first

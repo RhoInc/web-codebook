@@ -1,6 +1,12 @@
 const defaultSettings = {
   ignoredColumns: [],
-  meta: []
+  meta: [],
+  tableConfig: {
+    sortable: false,
+    searchable: false,
+    pagination: false,
+    exportable: false
+  }
 };
 
 export default defaultSettings;
