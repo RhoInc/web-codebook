@@ -25,7 +25,6 @@ export function init(codebook) {
   detailSelect.on('change', function() {
     var current = this.value;
     var detailObj = detailList.filter(f => f.key == current)[0];
-    console.log(current);
 
     codebook.wrap.selectAll('.variable-row').each(function(d) {
       //show the requested detail for each row
