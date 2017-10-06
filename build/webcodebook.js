@@ -2487,10 +2487,7 @@ function draw$1(codebook) {
   chartMaker.chart.init(chartMaker.chartData);
 }
 
-/*------------------------------------------------------------------------------------------------\
-  Initialize detail select
-\------------------------------------------------------------------------------------------------*/
-function init$9(codebook) {
+function initAxisSelect(codebook) {
   //X & Y Variables
   var x_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select x');
 
@@ -2502,13 +2499,21 @@ function init$9(codebook) {
   var x_select = x_wrap.append('select');
   var y_select = y_wrap.append('select');
 
-  var x_items = x_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+  var axisOptions = codebook.data.summary.filter(function (f) {
+    return f.type == 'continuous' || codebook.config.groups.map(function (m) {
+      return m.value_col;
+    }).indexOf(f.value_col) >= 0;
+  }).filter(function (f) {
+    return f.label != 'web-codebook-index';
+  });
+
+  var x_items = x_select.selectAll('option').data(axisOptions).enter().append('option').property('selected', function (d, i) {
     return i == 0;
   }).html(function (d) {
     return d.label;
   });
 
-  var y_items = y_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+  var y_items = y_select.selectAll('option').data(axisOptions).enter().append('option').property('selected', function (d, i) {
     return i == 1;
   }).html(function (d) {
     return d.label;
@@ -2522,6 +2527,13 @@ function init$9(codebook) {
   y_select.on('change', function () {
     codebook.chartMaker.draw(codebook);
   });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+function init$9(codebook) {
+  initAxisSelect(codebook);
 }
 
 function init$8(codebook) {
@@ -3029,7 +3041,9 @@ function reset(codebook) {
     codebook.title.updateColumnCount(codebook);
     codebook.summaryTable.draw(codebook);
     codebook.dataListing.init(codebook);
+    codebook.chartMaker.init(codebook);
     codebook.controls.updateRowCount(codebook);
+    console.log(codebook);
   });
 }
 
