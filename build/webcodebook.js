@@ -2116,7 +2116,7 @@ function onDraw(dataListing) {
 }
 
 function init$7(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart');
+  indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
   var dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
@@ -2612,7 +2612,7 @@ function init$8(codebook) {
 }
 
 function reset(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart', function () {
+  indicateLoading(codebook, '.web-codebook .dataListing .wc-chart', function () {
     //remove grouping and select 'None' group option
     delete codebook.config.group;
     codebook.controls.groups.update(codebook);
