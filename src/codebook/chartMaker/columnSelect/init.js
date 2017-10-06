@@ -3,13 +3,13 @@
 \------------------------------------------------------------------------------------------------*/
 import { select as d3select } from 'd3';
 
-//export function init(selector, data, vars, settings) {
 export function init(codebook) {
-  var x_wrap = codebook.instructions.wrap
+  //X & Y Variables
+  var x_wrap = codebook.chartMaker.controlsWrap
     .append('span')
     .attr('class', 'control column-select x');
 
-  var y_wrap = codebook.instructions.wrap
+  var y_wrap = codebook.chartMaker.controlsWrap
     .append('span')
     .attr('class', 'control column-select y');
 

@@ -54,7 +54,7 @@ export function init(data) {
     this.dataListing.init(this);
 
     //initialize the chart maker
-    //this.chartMaker.draw(this);
+    this.chartMaker.init(this);
 
     //initialize the settings
     this.settings.init(this);

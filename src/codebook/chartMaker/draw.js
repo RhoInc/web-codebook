@@ -6,32 +6,29 @@ import makeSettings from './makeSettings.js';
 
 export function draw(codebook) {
   indicateLoading(codebook, '.web-codebook .chartMaker');
-
   const chartMaker = codebook.chartMaker;
-  chartMaker.wrap.selectAll('*').remove();
-  chartMaker.codebook = codebook;
-  chartMaker.config = codebook.config;
+
+  //clear current chart
+  chartMaker.chartWrap.selectAll('*').remove();
 
   //get selected variable objects
-  var x_var = codebook.instructions.wrap
+  var x_var = chartMaker.controlsWrap
     .select('.column-select.x select')
     .property('value');
   var x_obj = codebook.data.summary.filter(f => f.label == x_var)[0];
 
-  var y_var = codebook.instructions.wrap
+  var y_var = chartMaker.controlsWrap
     .select('.column-select.y select')
     .property('value');
   var y_obj = codebook.data.summary.filter(f => f.label == y_var)[0];
 
+  //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone(codebook.data.filtered);
-  chartMaker.chartData.forEach(function(d, i) {
-    d.row_index = i;
-  });
 
   //Define chart.
   chartMaker.chart = createChart(
-    '.web-codebook .chartMaker.section',
+    '.web-codebook .chartMaker.section .cm-chart',
     chartMaker.chartSettings
   );
 

@@ -4,14 +4,18 @@
 
 export default function makeSettings(settings, var1, var2) {
   //set x config
-  settings.x.column = var1.value_col;
-  settings.x.label = var1.label;
-  settings.x.type = var1.type == 'categorical' ? 'ordinal' : 'linear';
+  settings.x = {
+    column: var1.value_col,
+    label: var1.label,
+    type: var1.type == 'categorical' ? 'ordinal' : 'linear'
+  };
 
   //set y config
-  settings.y.column = var2.value_col;
-  settings.y.label = var2.label;
-  settings.y.type = var2.type == 'categorical' ? 'ordinal' : 'linear';
+  settings.y = {
+    column: var2.value_col,
+    label: var2.label,
+    type: var2.type == 'categorical' ? 'ordinal' : 'linear'
+  };
 
   // set mark and color
   if ((settings.x.type == 'linear') & (settings.y.type == 'linear')) {
@@ -19,7 +23,7 @@ export default function makeSettings(settings, var1, var2) {
     settings.marks = [
       {
         type: 'circle',
-        per: ['row_index']
+        per: ['web-codebook-index']
       }
     ];
     settings.color_by = null;
@@ -28,7 +32,7 @@ export default function makeSettings(settings, var1, var2) {
     settings.marks = [
       {
         type: 'circle',
-        per: ['row_index']
+        per: ['web-codebook-index']
       },
       {
         type: 'text',
@@ -43,7 +47,7 @@ export default function makeSettings(settings, var1, var2) {
     settings.marks = [
       {
         type: 'circle',
-        per: ['row_index']
+        per: ['web-codebook-index']
       },
       {
         type: 'text',

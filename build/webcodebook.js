@@ -145,7 +145,7 @@ function init(data) {
     _this.dataListing.init(_this);
 
     //initialize the chart maker
-    //this.chartMaker.draw(this);
+    _this.chartMaker.init(_this);
 
     //initialize the settings
     _this.settings.init(_this);
@@ -2393,28 +2393,32 @@ var chartMakerSettings = {
 
 function makeSettings(settings, var1, var2) {
   //set x config
-  settings.x.column = var1.value_col;
-  settings.x.label = var1.label;
-  settings.x.type = var1.type == 'categorical' ? 'ordinal' : 'linear';
+  settings.x = {
+    column: var1.value_col,
+    label: var1.label,
+    type: var1.type == 'categorical' ? 'ordinal' : 'linear'
+  };
 
   //set y config
-  settings.y.column = var2.value_col;
-  settings.y.label = var2.label;
-  settings.y.type = var2.type == 'categorical' ? 'ordinal' : 'linear';
+  settings.y = {
+    column: var2.value_col,
+    label: var2.label,
+    type: var2.type == 'categorical' ? 'ordinal' : 'linear'
+  };
 
   // set mark and color
   if (settings.x.type == 'linear' & settings.y.type == 'linear') {
     //mark types: x = linear vs. y = linear
     settings.marks = [{
       type: 'circle',
-      per: ['row_index']
+      per: ['web-codebook-index']
     }];
     settings.color_by = null;
   } else if (settings.x.type == 'linear' & settings.y.type == 'ordinal') {
     //mark types: x = linear vs. y = ordinal
     settings.marks = [{
       type: 'circle',
-      per: ['row_index']
+      per: ['web-codebook-index']
     }, {
       type: 'text',
       text: '|',
@@ -2426,7 +2430,7 @@ function makeSettings(settings, var1, var2) {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [{
       type: 'circle',
-      per: ['row_index']
+      per: ['web-codebook-index']
     }, {
       type: 'text',
       text: '-',
@@ -2457,40 +2461,94 @@ function makeSettings(settings, var1, var2) {
 
 function draw$1(codebook) {
   indicateLoading(codebook, '.web-codebook .chartMaker');
-
   var chartMaker = codebook.chartMaker;
-  chartMaker.wrap.selectAll('*').remove();
-  chartMaker.codebook = codebook;
-  chartMaker.config = codebook.config;
+
+  //clear current chart
+  chartMaker.chartWrap.selectAll('*').remove();
 
   //get selected variable objects
-  var x_var = codebook.instructions.wrap.select('.column-select.x select').property('value');
+  var x_var = chartMaker.controlsWrap.select('.column-select.x select').property('value');
   var x_obj = codebook.data.summary.filter(function (f) {
     return f.label == x_var;
   })[0];
 
-  var y_var = codebook.instructions.wrap.select('.column-select.y select').property('value');
+  var y_var = chartMaker.controlsWrap.select('.column-select.y select').property('value');
   var y_obj = codebook.data.summary.filter(function (f) {
     return f.label == y_var;
   })[0];
 
+  //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone$1(codebook.data.filtered);
-  chartMaker.chartData.forEach(function (d, i) {
-    d.row_index = i;
-  });
 
   //Define chart.
-  chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section', chartMaker.chartSettings);
+  chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section .cm-chart', chartMaker.chartSettings);
 
   chartMaker.chart.init(chartMaker.chartData);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+function init$9(codebook) {
+  //X & Y Variables
+  var x_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select x');
+
+  var y_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select y');
+
+  x_wrap.append('small').html('x variable: ');
+  y_wrap.append('small').html('y variable: ');
+
+  var x_select = x_wrap.append('select');
+  var y_select = y_wrap.append('select');
+
+  var x_items = x_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+    return i == 0;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  var y_items = y_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+    return i == 1;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  //Handlers for label events
+  x_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+
+  y_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+}
+
+function init$8(codebook) {
+  var chartMaker = codebook.chartMaker;
+  chartMaker.codebook = codebook;
+  chartMaker.config = codebook.config;
+
+  //layout
+  chartMaker.wrap.selectAll('*').remove();
+  chartMaker.controlsWrap = chartMaker.wrap.append('div').attr('class', 'cm-controls');
+  chartMaker.chartWrap = chartMaker.wrap.append('div').attr('class', 'cm-chart');
+
+  //make controls
+  init$9(codebook);
+
+  //draw the initial codebook
+  chartMaker.draw(codebook);
 }
 
 /*------------------------------------------------------------------------------------------------\
   Define chartmaker object
 \------------------------------------------------------------------------------------------------*/
 
-var chartMaker = { draw: draw$1 };
+var chartMaker = {
+  draw: draw$1,
+  init: init$8
+};
 
 var defaultSettings$1 = {
   filters: [],
@@ -2945,7 +3003,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$8(codebook) {
+function init$10(codebook) {
   indicateLoading(codebook, '.web-codebook .settings .column-table');
 
   codebook.settings.layout(codebook);
@@ -3087,11 +3145,11 @@ function layout$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$8,
+  init: init$10,
   layout: layout$2
 };
 
-function init$9(codebook) {
+function init$11(codebook) {
   codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
 
   codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
@@ -3114,11 +3172,11 @@ function updateColumnCount(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var title = {
-  init: init$9,
+  init: init$11,
   updateColumnCount: updateColumnCount
 };
 
-function init$10(codebook) {
+function init$12(codebook) {
   //no action needed on init, just update to the current text
   codebook.instructions.update(codebook);
 }
@@ -3128,7 +3186,7 @@ function init$10(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$11(codebook) {
+function init$13(codebook) {
   //initialize the wrapper
   var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
@@ -3148,7 +3206,7 @@ function init$11(codebook) {
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 //export function init(selector, data, vars, settings) {
-function init$12(codebook) {
+function init$14(codebook) {
   //initialize the wrapper
   var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
 
@@ -3178,43 +3236,6 @@ function init$12(codebook) {
   });
 }
 
-/*------------------------------------------------------------------------------------------------\
-  Initialize detail select
-\------------------------------------------------------------------------------------------------*/
-//export function init(selector, data, vars, settings) {
-function init$13(codebook) {
-  var x_wrap = codebook.instructions.wrap.append('span').attr('class', 'control column-select x');
-
-  var y_wrap = codebook.instructions.wrap.append('span').attr('class', 'control column-select y');
-
-  x_wrap.append('small').html('x variable: ');
-  y_wrap.append('small').html('y variable: ');
-
-  var x_select = x_wrap.append('select');
-  var y_select = y_wrap.append('select');
-
-  var x_items = x_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
-    return i == 0;
-  }).html(function (d) {
-    return d.label;
-  });
-
-  var y_items = y_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
-    return i == 1;
-  }).html(function (d) {
-    return d.label;
-  });
-
-  //Handlers for label events
-  x_select.on('change', function () {
-    codebook.chartMaker.draw(codebook);
-  });
-
-  y_select.on('change', function () {
-    codebook.chartMaker.draw(codebook);
-  });
-}
-
 function update$2(codebook) {
   var activeTab = codebook.nav.tabs.filter(function (d) {
     return d.active;
@@ -3225,11 +3246,8 @@ function update$2(codebook) {
 
   //add tab-specific controls
   if (activeTab.key == 'codebook') {
-    init$12(codebook);
-    init$11(codebook);
-  } else if (activeTab.key == 'chartMaker') {
+    init$14(codebook);
     init$13(codebook);
-    codebook.chartMaker.draw(codebook);
   }
 }
 
@@ -3238,7 +3256,7 @@ function update$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var instructions = {
-  init: init$10,
+  init: init$12,
   update: update$2
 };
 
@@ -3306,7 +3324,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$14() {
+function init$15() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -3353,7 +3371,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$15(explorer) {
+function init$16(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -3388,7 +3406,7 @@ function init$15(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$15
+  init: init$16
 };
 
 function makeCodebook(explorer) {
@@ -3433,7 +3451,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$14,
+    init: init$15,
     layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook
