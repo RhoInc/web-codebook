@@ -144,7 +144,10 @@ function init(data) {
     //initialize and then draw the data listing
     _this.dataListing.init(_this);
 
-    //initialize and then draw the data listing
+    //initialize the chart maker
+    _this.chartMaker.init(_this);
+
+    //initialize the settings
     _this.settings.init(_this);
   });
 }
@@ -167,6 +170,8 @@ function layout() {
   this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
 
   this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
+
+  this.chartMaker.wrap = this.wrap.append('div').attr('class', 'chartMaker section').classed('hidden', true);
 
   this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
 }
@@ -494,6 +499,12 @@ var availableTabs = [{
   selector: '.web-codebook .dataListing',
   controls: true,
   instructions: 'Click any column header to sort that column.'
+}, {
+  key: 'chartMaker',
+  label: 'Charts',
+  selector: '.web-codebook .chartMaker',
+  controls: false,
+  instructions: 'Pick two variables to compare'
 }, {
   key: 'settings',
   label: '&#x2699;',
@@ -2324,6 +2335,32 @@ function init$7(codebook) {
 
 var dataListing = { init: init$7 };
 
+function init$8(codebook) {
+  indicateLoading(codebook, '.web-codebook .chartMaker');
+
+  console.log(codebook);
+
+  var chartMaker = codebook.chartMaker;
+  chartMaker.codebook = codebook;
+  chartMaker.config = codebook.config;
+  chartMaker.wrap.append('h1').text('this is a chart maker!');
+
+  /*
+  //Define table.
+  chartMaker.chart = createChart(
+    '.web-codebook .chartMaker',
+    chartMakerSettings
+  );
+   dataListing.table.init(codebook.data.filtered);
+  */
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define chartmaker object 
+\------------------------------------------------------------------------------------------------*/
+
+var chartMaker = { init: init$8 };
+
 var defaultSettings$1 = {
   filters: [],
   groups: [],
@@ -2336,7 +2373,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  tabs: ['codebook', 'listing', 'settings'],
+  tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
   dataName: ''
 };
 
@@ -2777,7 +2814,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$8(codebook) {
+function init$9(codebook) {
   indicateLoading(codebook, '.web-codebook .settings .column-table');
 
   codebook.settings.layout(codebook);
@@ -2919,11 +2956,11 @@ function layout$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$8,
+  init: init$9,
   layout: layout$2
 };
 
-function init$9(codebook) {
+function init$10(codebook) {
   codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
 
   codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
@@ -2946,11 +2983,11 @@ function updateColumnCount(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var title = {
-  init: init$9,
+  init: init$10,
   updateColumnCount: updateColumnCount
 };
 
-function init$10(codebook) {
+function init$11(codebook) {
   //no action needed on init, just update to the current text
   codebook.instructions.update(codebook);
 }
@@ -2960,7 +2997,7 @@ function init$10(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$11(codebook) {
+function init$12(codebook) {
   //initialize the wrapper
   var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
@@ -2980,7 +3017,7 @@ function init$11(codebook) {
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 //export function init(selector, data, vars, settings) {
-function init$12(codebook) {
+function init$13(codebook) {
   //initialize the wrapper
   var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
 
@@ -3020,8 +3057,8 @@ function update$2(codebook) {
 
   //add tab-specific controls
   if (activeTab.key == 'codebook') {
+    init$13(codebook);
     init$12(codebook);
-    init$11(codebook);
   }
 }
 
@@ -3030,7 +3067,7 @@ function update$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var instructions = {
-  init: init$10,
+  init: init$11,
   update: update$2
 };
 
@@ -3049,6 +3086,7 @@ function createCodebook() {
     instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
+    chartMaker: chartMaker,
     data: data,
     util: util,
     settings: settings
@@ -3097,7 +3135,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$13() {
+function init$14() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -3144,7 +3182,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$14(explorer) {
+function init$15(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -3179,7 +3217,7 @@ function init$14(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$14
+  init: init$15
 };
 
 function makeCodebook(explorer) {
@@ -3224,7 +3262,7 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$13,
+    init: init$14,
     layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook

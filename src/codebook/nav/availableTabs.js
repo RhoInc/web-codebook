@@ -21,6 +21,13 @@ const availableTabs = [
     instructions: 'Click any column header to sort that column.'
   },
   {
+    key: 'chartMaker',
+    label: 'Charts',
+    selector: '.web-codebook .chartMaker',
+    controls: false,
+    instructions: 'Pick two variables to compare'
+  },
+  {
     key: 'settings',
     label: '&#x2699;',
     selector: '.web-codebook .settings',
