@@ -145,7 +145,7 @@ function init(data) {
     _this.dataListing.init(_this);
 
     //initialize the chart maker
-    _this.chartMaker.init(_this);
+    //this.chartMaker.draw(this);
 
     //initialize the settings
     _this.settings.init(_this);
@@ -2335,31 +2335,162 @@ function init$7(codebook) {
 
 var dataListing = { init: init$7 };
 
-function init$8(codebook) {
+function clone$1(obj) {
+  var copy = void 0;
+
+  //boolean, number, string, null, undefined
+  if ('object' != (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) || null == obj) return obj;
+
+  //date
+  if (obj instanceof Date) {
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
+  }
+
+  //array
+  if (obj instanceof Array) {
+    copy = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      copy[i] = clone$1(obj[i]);
+    }
+    return copy;
+  }
+
+  //object
+  if (obj instanceof Object) {
+    copy = {};
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
+    }
+    return copy;
+  }
+
+  throw new Error('Unable to copy [obj]! Its type is not supported.');
+}
+
+var chartMakerSettings = {
+  max_width: 500,
+  x: {
+    column: null,
+    type: null,
+    label: null
+  },
+  y: {
+    column: null,
+    type: null,
+    label: null
+  },
+  marks: [{
+    type: null,
+    per: ['row_index']
+  }]
+};
+
+// Makes a valid settings object for the current selections.
+// settings is the settings object that needs updated
+// var1 and var2 are data objects created by codebook/data/makeSummary.js
+
+function makeSettings(settings, var1, var2) {
+  //set x config
+  settings.x.column = var1.value_col;
+  settings.x.label = var1.label;
+  settings.x.type = var1.type == 'categorical' ? 'ordinal' : 'linear';
+
+  //set y config
+  settings.y.column = var2.value_col;
+  settings.y.label = var2.label;
+  settings.y.type = var2.type == 'categorical' ? 'ordinal' : 'linear';
+
+  // set mark and color
+  if (settings.x.type == 'linear' & settings.y.type == 'linear') {
+    //mark types: x = linear vs. y = linear
+    settings.marks = [{
+      type: 'circle',
+      per: ['row_index']
+    }];
+    settings.color_by = null;
+  } else if (settings.x.type == 'linear' & settings.y.type == 'ordinal') {
+    //mark types: x = linear vs. y = ordinal
+    settings.marks = [{
+      type: 'circle',
+      per: ['row_index']
+    }, {
+      type: 'text',
+      text: '|',
+      per: [var2.value_col],
+      summarizeX: 'mean'
+    }];
+    settings.color_by = var2.value_col;
+  } else if (settings.x.type == 'ordinal' & settings.y.type == 'linear') {
+    //mark types: x = ordinal vs. y = linear
+    settings.marks = [{
+      type: 'circle',
+      per: ['row_index']
+    }, {
+      type: 'text',
+      text: '-',
+      per: [var1.value_col],
+      summarizeY: 'mean'
+    }];
+    settings.color_by = var1.value_col;
+  } else if (settings.x.type == 'ordinal' & settings.y.type == 'ordinal') {
+    //mark types: x = ordinal vs. y = ordinal
+
+    settings.y = {
+      column: '',
+      type: 'linear',
+      label: 'Number of observations',
+      domain: [0, null]
+    };
+    settings.marks = [{
+      type: 'bar',
+      arrange: 'stacked',
+      split: var2.value_col,
+      per: [var1.value_col],
+      summarizeY: 'count'
+    }];
+    settings.color_by = var2.value_col;
+  }
+  return settings;
+}
+
+function draw$1(codebook) {
   indicateLoading(codebook, '.web-codebook .chartMaker');
 
-  console.log(codebook);
-
   var chartMaker = codebook.chartMaker;
+  chartMaker.wrap.selectAll('*').remove();
   chartMaker.codebook = codebook;
   chartMaker.config = codebook.config;
-  chartMaker.wrap.append('h1').text('this is a chart maker!');
 
-  /*
-  //Define table.
-  chartMaker.chart = createChart(
-    '.web-codebook .chartMaker',
-    chartMakerSettings
-  );
-   dataListing.table.init(codebook.data.filtered);
-  */
+  //get selected variable objects
+  var x_var = codebook.instructions.wrap.select('.column-select.x select').property('value');
+  var x_obj = codebook.data.summary.filter(function (f) {
+    return f.label == x_var;
+  })[0];
+
+  var y_var = codebook.instructions.wrap.select('.column-select.y select').property('value');
+  var y_obj = codebook.data.summary.filter(function (f) {
+    return f.label == y_var;
+  })[0];
+
+  chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+  chartMaker.chartData = clone$1(codebook.data.filtered);
+  chartMaker.chartData.forEach(function (d, i) {
+    d.row_index = i;
+  });
+
+  //Define chart.
+  chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section', chartMaker.chartSettings);
+
+  chartMaker.chart.init(chartMaker.chartData);
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Define chartmaker object 
+  Define chartmaker object
 \------------------------------------------------------------------------------------------------*/
 
-var chartMaker = { init: init$8 };
+var chartMaker = { draw: draw$1 };
 
 var defaultSettings$1 = {
   filters: [],
@@ -2814,7 +2945,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$9(codebook) {
+function init$8(codebook) {
   indicateLoading(codebook, '.web-codebook .settings .column-table');
 
   codebook.settings.layout(codebook);
@@ -2956,11 +3087,11 @@ function layout$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$9,
+  init: init$8,
   layout: layout$2
 };
 
-function init$10(codebook) {
+function init$9(codebook) {
   codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
 
   codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
@@ -2983,11 +3114,11 @@ function updateColumnCount(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var title = {
-  init: init$10,
+  init: init$9,
   updateColumnCount: updateColumnCount
 };
 
-function init$11(codebook) {
+function init$10(codebook) {
   //no action needed on init, just update to the current text
   codebook.instructions.update(codebook);
 }
@@ -2997,7 +3128,7 @@ function init$11(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$12(codebook) {
+function init$11(codebook) {
   //initialize the wrapper
   var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
@@ -3017,7 +3148,7 @@ function init$12(codebook) {
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 //export function init(selector, data, vars, settings) {
-function init$13(codebook) {
+function init$12(codebook) {
   //initialize the wrapper
   var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
 
@@ -3047,6 +3178,43 @@ function init$13(codebook) {
   });
 }
 
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+//export function init(selector, data, vars, settings) {
+function init$13(codebook) {
+  var x_wrap = codebook.instructions.wrap.append('span').attr('class', 'control column-select x');
+
+  var y_wrap = codebook.instructions.wrap.append('span').attr('class', 'control column-select y');
+
+  x_wrap.append('small').html('x variable: ');
+  y_wrap.append('small').html('y variable: ');
+
+  var x_select = x_wrap.append('select');
+  var y_select = y_wrap.append('select');
+
+  var x_items = x_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+    return i == 0;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  var y_items = y_select.selectAll('option').data(codebook.data.summary).enter().append('option').property('selected', function (d, i) {
+    return i == 1;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  //Handlers for label events
+  x_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+
+  y_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+}
+
 function update$2(codebook) {
   var activeTab = codebook.nav.tabs.filter(function (d) {
     return d.active;
@@ -3057,8 +3225,11 @@ function update$2(codebook) {
 
   //add tab-specific controls
   if (activeTab.key == 'codebook') {
-    init$13(codebook);
     init$12(codebook);
+    init$11(codebook);
+  } else if (activeTab.key == 'chartMaker') {
+    init$13(codebook);
+    codebook.chartMaker.draw(codebook);
   }
 }
 
@@ -3067,7 +3238,7 @@ function update$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var instructions = {
-  init: init$11,
+  init: init$10,
   update: update$2
 };
 

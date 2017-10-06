@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------------------------\
-  Define chartmaker object 
+  Define chartmaker object
 \------------------------------------------------------------------------------------------------*/
 
-import { init } from './chartMaker/init';
+import { draw } from './chartMaker/draw';
 
-export const chartMaker = { init: init };
+export const chartMaker = { draw: draw };
