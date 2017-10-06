@@ -505,7 +505,7 @@ var availableTabs = [{
   label: 'Charts',
   selector: '.web-codebook .chartMaker',
   controls: true,
-  instructions: 'Pick two variables to compare'
+  instructions: 'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
 }, {
   key: 'settings',
   label: '&#x2699;',
