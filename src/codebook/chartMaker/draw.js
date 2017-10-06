@@ -1,4 +1,5 @@
 import { createChart } from 'webcharts';
+import { multiply } from 'webcharts';
 import indicateLoading from '../util/indicateLoading';
 import clone from '../util/clone';
 import chartMakerSettings from './chartMakerSettings.js';
@@ -22,6 +23,11 @@ export function draw(codebook) {
     .property('value');
   var y_obj = codebook.data.summary.filter(f => f.label == y_var)[0];
 
+  var panel_var = chartMaker.controlsWrap
+    .select('.column-select.panel select')
+    .property('value');
+  var panel_obj = codebook.data.summary.filter(f => f.label == panel_var)[0];
+
   //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone(codebook.data.filtered);
@@ -32,5 +38,9 @@ export function draw(codebook) {
     chartMaker.chartSettings
   );
 
-  chartMaker.chart.init(chartMaker.chartData);
+  if (panel_var == 'No Panels') {
+    chartMaker.chart.init(chartMaker.chartData);
+  } else {
+    multiply(chartMaker.chart, chartMaker.chartData, panel_obj.value_col);
+  }
 }

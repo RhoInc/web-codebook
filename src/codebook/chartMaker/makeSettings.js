@@ -1,20 +1,20 @@
 // Makes a valid settings object for the current selections.
 // settings is the settings object that needs updated
-// var1 and var2 are data objects created by codebook/data/makeSummary.js
+// xvar and yvar are data objects created by codebook/data/makeSummary.js
 
-export default function makeSettings(settings, var1, var2) {
+export default function makeSettings(settings, xvar, yvar) {
   //set x config
   settings.x = {
-    column: var1.value_col,
-    label: var1.label,
-    type: var1.type == 'categorical' ? 'ordinal' : 'linear'
+    column: xvar.value_col,
+    label: xvar.label,
+    type: xvar.type == 'categorical' ? 'ordinal' : 'linear'
   };
 
   //set y config
   settings.y = {
-    column: var2.value_col,
-    label: var2.label,
-    type: var2.type == 'categorical' ? 'ordinal' : 'linear'
+    column: yvar.value_col,
+    label: yvar.label,
+    type: yvar.type == 'categorical' ? 'ordinal' : 'linear'
   };
 
   // set mark and color
@@ -37,11 +37,11 @@ export default function makeSettings(settings, var1, var2) {
       {
         type: 'text',
         text: '|',
-        per: [var2.value_col],
+        per: [yvar.value_col],
         summarizeX: 'mean'
       }
     ];
-    settings.color_by = var2.value_col;
+    settings.color_by = yvar.value_col;
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'linear')) {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [
@@ -52,11 +52,11 @@ export default function makeSettings(settings, var1, var2) {
       {
         type: 'text',
         text: '-',
-        per: [var1.value_col],
+        per: [xvar.value_col],
         summarizeY: 'mean'
       }
     ];
-    settings.color_by = var1.value_col;
+    settings.color_by = xvar.value_col;
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'ordinal')) {
     //mark types: x = ordinal vs. y = ordinal
 
@@ -70,12 +70,12 @@ export default function makeSettings(settings, var1, var2) {
       {
         type: 'bar',
         arrange: 'stacked',
-        split: var2.value_col,
-        per: [var1.value_col],
+        split: yvar.value_col,
+        per: [xvar.value_col],
         summarizeY: 'count'
       }
     ];
-    settings.color_by = var2.value_col;
+    settings.color_by = yvar.value_col;
   }
   return settings;
 }

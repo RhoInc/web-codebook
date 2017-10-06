@@ -2389,21 +2389,21 @@ var chartMakerSettings = {
 
 // Makes a valid settings object for the current selections.
 // settings is the settings object that needs updated
-// var1 and var2 are data objects created by codebook/data/makeSummary.js
+// xvar and yvar are data objects created by codebook/data/makeSummary.js
 
-function makeSettings(settings, var1, var2) {
+function makeSettings(settings, xvar, yvar) {
   //set x config
   settings.x = {
-    column: var1.value_col,
-    label: var1.label,
-    type: var1.type == 'categorical' ? 'ordinal' : 'linear'
+    column: xvar.value_col,
+    label: xvar.label,
+    type: xvar.type == 'categorical' ? 'ordinal' : 'linear'
   };
 
   //set y config
   settings.y = {
-    column: var2.value_col,
-    label: var2.label,
-    type: var2.type == 'categorical' ? 'ordinal' : 'linear'
+    column: yvar.value_col,
+    label: yvar.label,
+    type: yvar.type == 'categorical' ? 'ordinal' : 'linear'
   };
 
   // set mark and color
@@ -2422,10 +2422,10 @@ function makeSettings(settings, var1, var2) {
     }, {
       type: 'text',
       text: '|',
-      per: [var2.value_col],
+      per: [yvar.value_col],
       summarizeX: 'mean'
     }];
-    settings.color_by = var2.value_col;
+    settings.color_by = yvar.value_col;
   } else if (settings.x.type == 'ordinal' & settings.y.type == 'linear') {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [{
@@ -2434,10 +2434,10 @@ function makeSettings(settings, var1, var2) {
     }, {
       type: 'text',
       text: '-',
-      per: [var1.value_col],
+      per: [xvar.value_col],
       summarizeY: 'mean'
     }];
-    settings.color_by = var1.value_col;
+    settings.color_by = xvar.value_col;
   } else if (settings.x.type == 'ordinal' & settings.y.type == 'ordinal') {
     //mark types: x = ordinal vs. y = ordinal
 
@@ -2450,11 +2450,11 @@ function makeSettings(settings, var1, var2) {
     settings.marks = [{
       type: 'bar',
       arrange: 'stacked',
-      split: var2.value_col,
-      per: [var1.value_col],
+      split: yvar.value_col,
+      per: [xvar.value_col],
       summarizeY: 'count'
     }];
-    settings.color_by = var2.value_col;
+    settings.color_by = yvar.value_col;
   }
   return settings;
 }
@@ -2477,6 +2477,11 @@ function draw$1(codebook) {
     return f.label == y_var;
   })[0];
 
+  var panel_var = chartMaker.controlsWrap.select('.column-select.panel select').property('value');
+  var panel_obj = codebook.data.summary.filter(function (f) {
+    return f.label == panel_var;
+  })[0];
+
   //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone$1(codebook.data.filtered);
@@ -2484,7 +2489,11 @@ function draw$1(codebook) {
   //Define chart.
   chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section .cm-chart', chartMaker.chartSettings);
 
-  chartMaker.chart.init(chartMaker.chartData);
+  if (panel_var == 'No Panels') {
+    chartMaker.chart.init(chartMaker.chartData);
+  } else {
+    webcharts.multiply(chartMaker.chart, chartMaker.chartData, panel_obj.value_col);
+  }
 }
 
 function initAxisSelect(codebook) {
@@ -2529,11 +2538,39 @@ function initAxisSelect(codebook) {
   });
 }
 
+function initPanelSelect(codebook) {
+  //X & Y Variables
+  var panel_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select panel');
+
+  panel_wrap.append('small').html('panel variable: ');
+  var panel_select = panel_wrap.append('select');
+
+  var panelOptions = codebook.data.summary.filter(function (f) {
+    return codebook.config.groups.map(function (m) {
+      return m.value_col;
+    }).indexOf(f.value_col) >= 0;
+  }).filter(function (f) {
+    return f.label != 'web-codebook-index';
+  });
+
+  panelOptions.unshift({ label: 'No Panels' });
+
+  var panel_items = panel_select.selectAll('option').data(panelOptions).enter().append('option').html(function (d) {
+    return d.label;
+  });
+
+  //Handlers for label events
+  panel_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+}
+
 /*------------------------------------------------------------------------------------------------\
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 function init$9(codebook) {
   initAxisSelect(codebook);
+  initPanelSelect(codebook);
 }
 
 function init$8(codebook) {
