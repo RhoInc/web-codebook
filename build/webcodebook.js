@@ -285,10 +285,10 @@ function update(codebook) {
 
       //clear highlights
       codebook.data.highlighted = [];
-
       codebook.data.makeSummary(codebook);
       codebook.controls.updateRowCount(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.dataListing.init(codebook);
     });
   });
@@ -356,6 +356,7 @@ function update$1(codebook) {
       codebook.data.highlighted = [];
       codebook.data.makeSummary(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.controls.updateRowCount(codebook);
     });
   });
@@ -503,7 +504,7 @@ var availableTabs = [{
   key: 'chartMaker',
   label: 'Charts',
   selector: '.web-codebook .chartMaker',
-  controls: false,
+  controls: true,
   instructions: 'Pick two variables to compare'
 }, {
   key: 'settings',
@@ -2413,6 +2414,7 @@ function makeSettings(settings, xvar, yvar) {
       type: 'circle',
       per: ['web-codebook-index']
     }];
+    settings.legend = null;
     settings.color_by = null;
   } else if (settings.x.type == 'linear' & settings.y.type == 'ordinal') {
     //mark types: x = linear vs. y = ordinal
@@ -2423,9 +2425,11 @@ function makeSettings(settings, xvar, yvar) {
       type: 'text',
       text: '|',
       per: [yvar.value_col],
-      summarizeX: 'mean'
+      summarizeX: 'mean',
+      attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
     }];
-    settings.color_by = yvar.value_col;
+    settings.legend = null;
+    settings.color_by = null;
   } else if (settings.x.type == 'ordinal' & settings.y.type == 'linear') {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [{
@@ -2433,11 +2437,13 @@ function makeSettings(settings, xvar, yvar) {
       per: ['web-codebook-index']
     }, {
       type: 'text',
-      text: '-',
+      text: '---',
       per: [xvar.value_col],
-      summarizeY: 'mean'
+      summarizeY: 'mean',
+      attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
     }];
-    settings.color_by = xvar.value_col;
+    settings.legend = null;
+    settings.color_by = null;
   } else if (settings.x.type == 'ordinal' & settings.y.type == 'ordinal') {
     //mark types: x = ordinal vs. y = ordinal
 
@@ -2454,6 +2460,7 @@ function makeSettings(settings, xvar, yvar) {
       per: [xvar.value_col],
       summarizeY: 'count'
     }];
+    settings.legend = { label: yvar.label };
     settings.color_by = yvar.value_col;
   }
   return settings;
@@ -2477,11 +2484,6 @@ function draw$1(codebook) {
     return f.label == y_var;
   })[0];
 
-  var panel_var = chartMaker.controlsWrap.select('.column-select.panel select').property('value');
-  var panel_obj = codebook.data.summary.filter(function (f) {
-    return f.label == panel_var;
-  })[0];
-
   //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone$1(codebook.data.filtered);
@@ -2489,10 +2491,15 @@ function draw$1(codebook) {
   //Define chart.
   chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section .cm-chart', chartMaker.chartSettings);
 
-  if (panel_var == 'No Panels') {
-    chartMaker.chart.init(chartMaker.chartData);
+  if (codebook.config.group) {
+    chartMaker.chart.on('draw', function () {
+      console.log(this);
+      var level = this.wrap.select('.wc-chart-title').text();
+      this.wrap.select('.wc-chart-title').text(codebook.config.group + ': ' + level);
+    });
+    webcharts.multiply(chartMaker.chart, chartMaker.chartData, codebook.config.group);
   } else {
-    webcharts.multiply(chartMaker.chart, chartMaker.chartData, panel_obj.value_col);
+    chartMaker.chart.init(chartMaker.chartData);
   }
 }
 
@@ -2538,39 +2545,11 @@ function initAxisSelect(codebook) {
   });
 }
 
-function initPanelSelect(codebook) {
-  //X & Y Variables
-  var panel_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select panel');
-
-  panel_wrap.append('small').html('panel variable: ');
-  var panel_select = panel_wrap.append('select');
-
-  var panelOptions = codebook.data.summary.filter(function (f) {
-    return codebook.config.groups.map(function (m) {
-      return m.value_col;
-    }).indexOf(f.value_col) >= 0;
-  }).filter(function (f) {
-    return f.label != 'web-codebook-index';
-  });
-
-  panelOptions.unshift({ label: 'No Panels' });
-
-  var panel_items = panel_select.selectAll('option').data(panelOptions).enter().append('option').html(function (d) {
-    return d.label;
-  });
-
-  //Handlers for label events
-  panel_select.on('change', function () {
-    codebook.chartMaker.draw(codebook);
-  });
-}
-
 /*------------------------------------------------------------------------------------------------\
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 function init$9(codebook) {
   initAxisSelect(codebook);
-  initPanelSelect(codebook);
 }
 
 function init$8(codebook) {

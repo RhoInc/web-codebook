@@ -23,11 +23,6 @@ export function draw(codebook) {
     .property('value');
   var y_obj = codebook.data.summary.filter(f => f.label == y_var)[0];
 
-  var panel_var = chartMaker.controlsWrap
-    .select('.column-select.panel select')
-    .property('value');
-  var panel_obj = codebook.data.summary.filter(f => f.label == panel_var)[0];
-
   //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone(codebook.data.filtered);
@@ -38,9 +33,16 @@ export function draw(codebook) {
     chartMaker.chartSettings
   );
 
-  if (panel_var == 'No Panels') {
-    chartMaker.chart.init(chartMaker.chartData);
+  if (codebook.config.group) {
+    chartMaker.chart.on('draw', function() {
+      console.log(this);
+      var level = this.wrap.select('.wc-chart-title').text();
+      this.wrap
+        .select('.wc-chart-title')
+        .text(codebook.config.group + ': ' + level);
+    });
+    multiply(chartMaker.chart, chartMaker.chartData, codebook.config.group);
   } else {
-    multiply(chartMaker.chart, chartMaker.chartData, panel_obj.value_col);
+    chartMaker.chart.init(chartMaker.chartData);
   }
 }

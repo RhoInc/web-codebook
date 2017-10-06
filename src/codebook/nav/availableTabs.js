@@ -24,7 +24,7 @@ const availableTabs = [
     key: 'chartMaker',
     label: 'Charts',
     selector: '.web-codebook .chartMaker',
-    controls: false,
+    controls: true,
     instructions: 'Pick two variables to compare'
   },
   {

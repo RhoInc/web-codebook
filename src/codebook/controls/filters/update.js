@@ -98,10 +98,10 @@ export function update(codebook) {
 
         //clear highlights
         codebook.data.highlighted = [];
-
         codebook.data.makeSummary(codebook);
         codebook.controls.updateRowCount(codebook);
         codebook.summaryTable.draw(codebook);
+        codebook.chartMaker.draw(codebook);
         codebook.dataListing.init(codebook);
       });
     });

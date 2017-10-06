@@ -26,6 +26,7 @@ export default function makeSettings(settings, xvar, yvar) {
         per: ['web-codebook-index']
       }
     ];
+    settings.legend = null;
     settings.color_by = null;
   } else if ((settings.x.type == 'linear') & (settings.y.type == 'ordinal')) {
     //mark types: x = linear vs. y = ordinal
@@ -38,10 +39,12 @@ export default function makeSettings(settings, xvar, yvar) {
         type: 'text',
         text: '|',
         per: [yvar.value_col],
-        summarizeX: 'mean'
+        summarizeX: 'mean',
+        attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
       }
     ];
-    settings.color_by = yvar.value_col;
+    settings.legend = null;
+    settings.color_by = null;
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'linear')) {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [
@@ -51,12 +54,14 @@ export default function makeSettings(settings, xvar, yvar) {
       },
       {
         type: 'text',
-        text: '-',
+        text: '---',
         per: [xvar.value_col],
-        summarizeY: 'mean'
+        summarizeY: 'mean',
+        attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
       }
     ];
-    settings.color_by = xvar.value_col;
+    settings.legend = null;
+    settings.color_by = null;
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'ordinal')) {
     //mark types: x = ordinal vs. y = ordinal
 
@@ -75,6 +80,7 @@ export default function makeSettings(settings, xvar, yvar) {
         summarizeY: 'count'
       }
     ];
+    settings.legend = { label: yvar.label };
     settings.color_by = yvar.value_col;
   }
   return settings;
