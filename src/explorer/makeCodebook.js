@@ -7,7 +7,7 @@ export function makeCodebook(explorer) {
   //add the Files section to the nav for each config
   this.current.settings.tabs = this.current.settings.tabs
     ? d3merge([['files'], this.current.settings.tabs])
-    : ['files', 'codebook', 'listing', 'charts', 'settings'];
+    : ['files', 'codebook', 'listing', 'chartMaker', 'settings'];
 
   //set the default tab to the codebook or listing view assuming they are visible
   if (this.current.event == 'click') {
