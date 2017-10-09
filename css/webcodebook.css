@@ -538,3 +538,7 @@ Chart layout
     text-decoration:underline;
     cursor:pointer;
   }
+
+  .web-codebook  .listing-container tbody tr.highlight {
+    background:orange;
+  }
