@@ -12,7 +12,7 @@ export function init(explorer) {
   //drop ignoredColumns and system variables
   var cols = Object.keys(explorer.config.files[0])
     .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
-    .filter(f => ['settings', 'selected', 'event'].indexOf(f) == -1); //drop system variables from table
+    .filter(f => ['settings', 'selected', 'event', 'json'].indexOf(f) == -1); //drop system variables from table
 
   //Create the table
   explorer.codebook.fileListing.table = createTable(
