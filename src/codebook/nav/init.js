@@ -32,7 +32,9 @@ export function init(codebook) {
 
   //draw the nav
   if (codebook.nav.tabs.length > 1) {
-    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
+    var chartNav = codebook.nav.wrap
+      .append('ul')
+      .attr('class', 'wcb-nav wcb-nav-tabs');
     var navItems = chartNav
       .selectAll('li')
       .data(codebook.nav.tabs) //make this a setting

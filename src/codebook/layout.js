@@ -8,7 +8,7 @@ export function layout() {
     .attr('id', 'loading-indicator')
     .style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
-  this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
+  this.nav.wrap = this.wrap.append('div').attr('class', 'wcb-nav section');
   this.controls.wrap = this.wrap
     .append('div')
     .attr('class', 'controls section');
