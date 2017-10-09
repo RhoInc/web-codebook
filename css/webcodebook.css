@@ -438,6 +438,9 @@ Chart layout
         padding: 0 5px 0 5px;
     }
 
+    .web-codebook  .dataListing tbody tr.highlight {
+      background:orange !important; 
+    }
 
 
 /***--------------------------------------------------------------------------------------\
@@ -537,8 +540,4 @@ Chart layout
     color:blue;
     text-decoration:underline;
     cursor:pointer;
-  }
-
-  .web-codebook  .listing-container tbody tr.highlight {
-    background:orange;
   }

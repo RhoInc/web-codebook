@@ -20,7 +20,10 @@ export default function onDraw(dataListing) {
 
     //highlight rows
     this.table.selectAll('tr').classed('highlight', function(d) {
-      return dataListing.codebook.data.highlighted.indexOf(d.raw) > -1;
+      var highlightedIds = dataListing.codebook.data.highlighted.map(
+        m => m['web-codebook-index']
+      );
+      return highlightedIds.indexOf(d['web-codebook-index']) > -1;
     });
   });
 }
