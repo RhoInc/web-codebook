@@ -4,6 +4,7 @@
 
 import { select as d3select } from 'd3';
 import clone from '../util/clone';
+import indicateLoading from './util/indicateLoading';
 
 export function init(data) {
   var settings = this.config;
@@ -29,38 +30,30 @@ export function init(data) {
   this.util.setDefaults(this);
   this.layout();
 
-  //prepare the data summaries
-  this.data.makeSummary(this);
+  indicateLoading(this, '.web-codebook .settings', () => {
+    //prepare the data summaries
+    this.data.makeSummary(this);
 
-  //draw controls
-  this.util.makeAutomaticFilters(this);
-  this.util.makeAutomaticGroups(this);
-  this.controls.init(this);
+    //draw controls
+    this.util.makeAutomaticFilters(this);
+    this.util.makeAutomaticGroups(this);
+    this.controls.init(this);
 
-  //initialize nav, title and instructions
-  this.title.init(this);
-  this.nav.init(this);
-  this.instructions.init(this);
+    //initialize nav, title and instructions
+    this.title.init(this);
+    this.nav.init(this);
+    this.instructions.init(this);
 
-  //call after event (if any)
-  this.events.complete.call(this);
+    //call after event (if any)
+    this.events.complete.call(this);
 
-  //wait by the quarter second until the loading indicator is visible
-  const loading = setInterval(() => {
-    const laidOut = this.controls.wrap.property('offsetwidth') > 0;
-    if (!laidOut) {
-      //initialize and then draw the codebook
-      this.summaryTable.draw(this);
+    //initialize and then draw the codebook
+    this.summaryTable.draw(this);
 
-      //initialize and then draw the data listing
-      this.dataListing.init(this);
+    //initialize and then draw the data listing
+    this.dataListing.init(this);
 
-      //initialize and then draw the data listing
-      this.settings.init(this);
-
-      //loading is complete
-      clearInterval(loading);
-      this.loadingIndicator.style('display', 'none');
-    }
-  }, 250);
+    //initialize and then draw the data listing
+    this.settings.init(this);
+  });
 }

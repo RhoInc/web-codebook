@@ -1,4 +1,5 @@
 import { sum as d3sum, select as d3select } from 'd3';
+
 export default function addHighlightMarks(chart) {
   //add highlights for each bar (if any exist)
   var bars = chart.svg.selectAll('g.bar-group').each(function(d) {
