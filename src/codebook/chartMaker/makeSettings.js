@@ -27,7 +27,8 @@ export default function makeSettings(settings, xvar, yvar) {
       }
     ];
     settings.legend = null;
-    settings.color_by = null;
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
   } else if ((settings.x.type == 'linear') & (settings.y.type == 'ordinal')) {
     //mark types: x = linear vs. y = ordinal
     settings.marks = [
@@ -44,7 +45,8 @@ export default function makeSettings(settings, xvar, yvar) {
       }
     ];
     settings.legend = null;
-    settings.color_by = null;
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'linear')) {
     //mark types: x = ordinal vs. y = linear
     settings.marks = [
@@ -60,8 +62,9 @@ export default function makeSettings(settings, xvar, yvar) {
         attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
       }
     ];
-    settings.legend = null;
-    settings.color_by = null;
+    settings.legend = { display: none };
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
   } else if ((settings.x.type == 'ordinal') & (settings.y.type == 'ordinal')) {
     //mark types: x = ordinal vs. y = ordinal
 
@@ -82,6 +85,17 @@ export default function makeSettings(settings, xvar, yvar) {
     ];
     settings.legend = { label: yvar.label };
     settings.color_by = yvar.value_col;
+    settings.colors = [
+      '#e41a1c',
+      '#377eb8',
+      '#4daf4a',
+      '#984ea3',
+      '#ff7f00',
+      '#ffff33',
+      '#a65628',
+      '#f781bf',
+      '#999999'
+    ];
   }
   return settings;
 }

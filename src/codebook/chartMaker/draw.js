@@ -27,15 +27,21 @@ export function draw(codebook) {
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
   chartMaker.chartData = clone(codebook.data.filtered);
 
+  //flag highlighted rows
+  var highlightedRows = codebook.data.highlighted.map(
+    m => m['web-codebook-index']
+  );
+  chartMaker.chartData.forEach(function(d) {
+    d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
+  });
+
   //Define chart.
   chartMaker.chart = createChart(
     '.web-codebook .chartMaker.section .cm-chart',
     chartMaker.chartSettings
   );
-
   if (codebook.config.group) {
     chartMaker.chart.on('draw', function() {
-      console.log(this);
       var level = this.wrap.select('.wc-chart-title').text();
       this.wrap
         .select('.wc-chart-title')
@@ -45,4 +51,5 @@ export function draw(codebook) {
   } else {
     chartMaker.chart.init(chartMaker.chartData);
   }
+  console.log(chartMaker);
 }
