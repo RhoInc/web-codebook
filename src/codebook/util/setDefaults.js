@@ -117,6 +117,10 @@ export function setDefaults(codebook) {
   codebook.config.controlVisibility =
     codebook.config.controlVisibility || defaultSettings.controlVisibility;
 
+  /********************* Chart Visibility Settings *********************/
+    codebook.config.chartVisibility =
+      codebook.config.chartVisibility || defaultSettings.controlVisibility;
+
   //hide the controls appropriately according to the start tab
   if (codebook.config.controlVisibility != 'disabled') {
     var startTab = availableTabs.filter(

@@ -600,6 +600,13 @@ function draw(codebook) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 
+  //Set chart visibility (on initial load only - then keep user settings)
+  if (codebook.config.chartVisibility != 'user-defined') {
+    varRows.classed('hiddenChart', codebook.config.chartVisibility != 'visible');
+  }
+
+  codebook.config.chartVisibility = codebook.config.chartVisibility == 'hidden' ? 'hidden' : 'user-defined';
+
   //ENTER + Update
   varRows.each(codebook.summaryTable.renderRow);
 
@@ -2048,7 +2055,12 @@ function makeDetails(d) {
 }
 
 function makeTitle(d) {
-  d3$1.select(this).append('div').attr('class', 'row-toggle').html('&#9660;').on('click', function () {
+  var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
+  var chartDiv = rowDiv.select('.row-chart');
+  var hiddenFlag = rowDiv.classed('hiddenChart');
+  d3$1.select(this).append('div').attr('class', 'row-toggle').html(hiddenFlag ? '&#9660;' : '&#9658;').classed('hidden', function (d) {
+    return d.chartVisibility == 'hidden';
+  }).on('click', function () {
     var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
     var chartDiv = rowDiv.select('.row-chart');
     var hiddenFlag = rowDiv.classed('hiddenChart');
@@ -2336,6 +2348,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
+  chartVisibility: 'visible',
   tabs: ['codebook', 'listing', 'settings'],
   dataName: ''
 };
@@ -2694,6 +2707,7 @@ function makeSummary(codebook) {
 
       //get hidden status
       variables[i].hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
+      variables[i].chartVisibility = codebook.config.chartVisibility;
 
       //get variable label
       variables[i].label = codebook.config.variableLabels.map(function (variableLabel) {
@@ -2761,6 +2775,7 @@ function makeSummary(codebook) {
     });
 
     codebook.data.summary = variables;
+
     //get bin counts
     codebook.util.getBinCounts(codebook);
   } else {
@@ -2962,7 +2977,7 @@ function init$10(codebook) {
 //export function init(selector, data, vars, settings) {
 function init$11(codebook) {
   //initialize the wrapper
-  var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
+  var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle').classed('hidden', codebook.config.chartVisibility == 'hidden');
 
   selector.append('small').text('Toggle Charts: ');
   var showAllButton = selector.append('button').text('Show All Charts').on('click', function () {
