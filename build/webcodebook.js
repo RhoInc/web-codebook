@@ -2448,7 +2448,7 @@ function makeSettings(settings, xvar, yvar) {
       summarizeY: 'mean',
       attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
     }];
-    settings.legend = { display: none };
+    settings.legend = null;
     settings.color_by = 'highlight';
     settings.colors = ['#999', 'orange'];
   } else if (settings.x.type == 'ordinal' & settings.y.type == 'ordinal') {
