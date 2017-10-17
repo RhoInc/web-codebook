@@ -52,8 +52,8 @@ General
 }
 
 
-.web-codebook .hidden {
-  display: none !important; /* all .hidden elements should be hidden/display:none */
+.web-codebook .wc-hidden {
+  display: none !important; /* all .wc-hidden elements should be hidden/display:none */
 }
 
 .web-codebook .clear-highlight {
@@ -175,7 +175,7 @@ Controls layout
   margin: 0 3px 5px 0;
 }
 
-.web-codebook .controls .custom-filters ul li.active > a > label,
+.web-codebook .controls .custom-filters ul li.wc-active > a > label,
 .web-codebook .controls .custom-filters ul li: hover > a > label {
   color: white;
 }
@@ -423,7 +423,7 @@ Chart layout
     display: none;
 }
 
-.web-codebook .summaryTable .variable-row .row-chart .svg-tooltip.active {
+.web-codebook .summaryTable .variable-row .row-chart .svg-tooltip.wc-active {
     display: block;
 }
 
@@ -546,7 +546,7 @@ Chart layout
             margin-left: 5px;
         }
 
-        .web-codebook .dataListing .pagination-container a.active {
+        .web-codebook .dataListing .pagination-container a.wc-active {
             border: 2px solid gray;
             border-radius: 4px;
         }
@@ -591,13 +591,13 @@ Chart layout
     .web-codebook .nav ul.nav-tabs li.settings a {
     }
 
-    .web-codebook .nav ul.nav-tabs li.active, ul.nav-tabs li.active:hover {
+    .web-codebook .nav ul.nav-tabs li.wc-active, ul.nav-tabs li.wc-active:hover {
         background-color: white;
         border:2px solid black;
 
     }
 
-    .web-codebook .nav ul.nav-tabs li.active a, ul.nav-tabs li.active:hover a{
+    .web-codebook .nav ul.nav-tabs li.wc-active a, ul.nav-tabs li.wc-active:hover a{
         color:black;
     }
 
