@@ -1405,7 +1405,7 @@ var defaultSettings = //Custom settings
   mean: true,
   overall: false,
   boxPlotHeight: 20,
-
+  commonScale: false,
   //Webcharts settings
   x: {
     column: null, // set in syncSettings()
@@ -1741,7 +1741,6 @@ function onInit$2() {
   //Define x-axis domain as the range of the measure, regardless of subgrouping.
   if (!this.initialSettings.xDomain) {
     this.initialSettings.xDomain = d3$1.extent(this.values);
-    config.xDomain = this.initialSettings.xDomain;
   }
   this.config.x.domain = this.initialSettings.xDomain;
 
@@ -1784,6 +1783,7 @@ function onInit$2() {
     }).sort(function (a, b) {
       return a.group < b.group ? -1 : 1;
     });
+
     groups.forEach(function (group, i) {
       group.settings = clone(config);
       group.settings.y.label = group.group;
@@ -1791,6 +1791,10 @@ function onInit$2() {
       group.data = context.raw_data.filter(function (d) {
         return d[panel] === group.group;
       });
+      group.settings.xDomain = config.commonScale ? config.xDomain : d3$1.extent(group.data, function (d) {
+        return +d[measure];
+      });
+      group.settings.x.domain = group.settings.xDomain;
       group.webChart = new webcharts.createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
@@ -2092,158 +2096,6 @@ var summaryTable = {
   draw: draw,
   renderRow: renderRow
 };
-
-function layout$1(dataListing) {
-  //Add sort container.
-  dataListing.wrap.selectAll('*').remove();
-  var sortContainer = dataListing.wrap.append('div').classed('sort-container', true);
-
-  //Add search container.
-  var searchContainer = dataListing.wrap.append('div').classed('search-container', true);
-  searchContainer.append('span').classed('description', true).text('Search:');
-  searchContainer.append('input').attr('class', 'search-box');
-
-  //Add listing container.
-  dataListing.wrap.append('div').classed('listing-container', true);
-
-  //Add pagination container.
-  var paginationContainer = dataListing.wrap.append('div').classed('pagination-container', true);
-  paginationContainer.append('span').classed('description', true).text('Page:');
-}
-
-function updatePagination(dataListing) {
-  //Reset pagination.
-  dataListing.pagination.links.classed('active', false);
-
-  //Set to active the selected page link and unhide associated rows.
-  dataListing.pagination.links.filter(function (link) {
-    return +link.rel === +dataListing.pagination.activeLink;
-  }).classed('active', true);
-  dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
-  dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
-  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-    return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
-  });
-  dataListing.table.draw(sub);
-}
-
-function sort(dataListing) {
-  dataListing.sorted_raw_data = dataListing.sorted_raw_data.sort(function (a, b) {
-    var order = 0;
-
-    dataListing.sort.order.forEach(function (item) {
-      var acell = a[item.variable];
-      var bcell = b[item.variable];
-
-      if (order === 0) {
-        if (item.direction === 'ascending' && acell < bcell || item.direction === 'descending' && acell > bcell) order = -1;else if (item.direction === 'ascending' && acell > bcell || item.direction === 'descending' && acell < bcell) order = 1;
-      }
-    });
-    return order;
-  });
-  updatePagination(dataListing);
-}
-
-function addSort(dataListing) {
-  dataListing.table.wrap.selectAll('.headers th').on('click', function () {
-    var variable = this.textContent;
-    var sortItem = dataListing.sort.order.filter(function (item) {
-      return item.variable === variable;
-    })[0];
-
-    if (!sortItem) {
-      sortItem = {
-        variable: variable,
-        direction: 'ascending',
-        container: dataListing.sort.wrap.append('div').datum({ key: variable }).classed('sort-box', true).text(variable)
-      };
-      sortItem.container.append('span').classed('sort-direction', true).html('&darr;');
-      sortItem.container.append('span').classed('remove-sort', true).html('&#10060;');
-      dataListing.sort.order.push(sortItem);
-    } else {
-      sortItem.direction = sortItem.direction === 'ascending' ? 'descending' : 'ascending';
-      sortItem.container.select('span.sort-direction').html(sortItem.direction === 'ascending' ? '&darr;' : '&uarr;');
-    }
-
-    sort(dataListing);
-    dataListing.sort.wrap.select('.description').classed('hidden', true);
-
-    //Add sort container deletion functionality.
-    dataListing.sort.order.forEach(function (item, i) {
-      item.container.on('click', function (d) {
-        d3$1.select(this).remove();
-        dataListing.sort.order.splice(dataListing.sort.order.map(function (d) {
-          return d.variable;
-        }).indexOf(d.key), 1);
-
-        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('hidden', false);
-      });
-    });
-  });
-}
-
-function addSearch(dataListing) {
-  dataListing.search = {};
-  dataListing.search.wrap = dataListing.wrap.select('.search-container');
-  dataListing.search.wrap.select('.search-box').on('input', function () {
-    var inputText = this.value.toLowerCase();
-    //Determine which rows contain input text.
-    dataListing.sorted_raw_data = dataListing.super_raw_data.filter(function (d) {
-      var match = false;
-      var vars = Object.keys(d);
-      vars.forEach(function (var_name) {
-        if (match === false) {
-          var cellText = '' + d[var_name];
-          match = cellText.toLowerCase().indexOf(inputText) > -1;
-        }
-      });
-      return match;
-    });
-    //render the codebook
-    var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-      return i < 25;
-    });
-    //discard the sort
-    dataListing.sort.order.forEach(function (item) {
-      item.container.remove();
-    });
-    dataListing.sort.order = [];
-    dataListing.sort.wrap.select('.description').classed('hidden', false);
-
-    //reset to first page
-    dataListing.pagination.activeLink = 0;
-    updatePagination(dataListing);
-  });
-}
-
-function addLinks(dataListing) {
-  //Count rows.
-  dataListing.pagination.rowsTotal = dataListing.sorted_raw_data.length;
-
-  //Calculate number of pages needed and create a link for each page.
-  dataListing.pagination.numPages = Math.ceil(dataListing.pagination.rowsTotal / dataListing.pagination.rowsShown);
-  dataListing.pagination.wrap.selectAll('a').remove();
-  for (var i = 0; i < dataListing.pagination.numPages; i++) {
-    dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({
-      href: '#',
-      rel: i
-    }).text(i + 1).classed('active', function (d) {
-      return d.rel == dataListing.pagination.activeLink;
-    });
-  }
-  dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
-}
-
-function addPagination(dataListing) {
-  //Render page links.
-  addLinks(dataListing);
-
-  //Render a different page on click.
-  dataListing.pagination.links.on('click', function () {
-    dataListing.pagination.activeLink = d3$1.select(this).attr('rel');
-    updatePagination(dataListing);
-  });
-}
 
 function onDraw(dataListing) {
   dataListing.table.on('draw', function () {

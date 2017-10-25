@@ -43,7 +43,6 @@ export default function onInit() {
   //Define x-axis domain as the range of the measure, regardless of subgrouping.
   if (!this.initialSettings.xDomain) {
     this.initialSettings.xDomain = d3extent(this.values);
-    config.xDomain = this.initialSettings.xDomain;
   }
   this.config.x.domain = this.initialSettings.xDomain;
 
@@ -80,11 +79,16 @@ export default function onInit() {
         return { group: d };
       })
       .sort((a, b) => (a.group < b.group ? -1 : 1));
+
     groups.forEach((group, i) => {
       group.settings = clone(config);
       group.settings.y.label = group.group;
       group.settings.y.domain = [0, max];
       group.data = context.raw_data.filter(d => d[panel] === group.group);
+      group.settings.xDomain = config.commonScale
+        ? config.xDomain
+        : d3extent(group.data, d => +d[measure]);
+      group.settings.x.domain = group.settings.xDomain;
       group.webChart = new createChart(config.container, group.settings);
       group.webChart.initialSettings = group.settings;
       group.webChart.group = group.group;
