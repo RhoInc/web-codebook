@@ -18,7 +18,7 @@ const availableTabs = [
     label: 'Data Listing',
     selector: '.web-codebook .dataListing',
     controls: true,
-    instructions: 'Click any column header to sort that column.'
+    instructions: 'Listing of all selected records.'
   },
   {
     key: 'settings',
