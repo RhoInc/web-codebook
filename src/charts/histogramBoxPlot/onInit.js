@@ -83,7 +83,7 @@ export default function onInit() {
     groups.forEach((group, i) => {
       group.settings = clone(config);
       group.settings.y.label = group.group;
-      group.settings.y.domain = [0, max];
+      group.settings.y.domain = config.commonScale ? [0, max] : [0, null];
       group.data = context.raw_data.filter(d => d[panel] === group.group);
       group.settings.xDomain = config.commonScale
         ? config.xDomain

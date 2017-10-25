@@ -1787,7 +1787,7 @@ function onInit$2() {
     groups.forEach(function (group, i) {
       group.settings = clone(config);
       group.settings.y.label = group.group;
-      group.settings.y.domain = [0, max$$1];
+      group.settings.y.domain = config.commonScale ? [0, max$$1] : [0, null];
       group.data = context.raw_data.filter(function (d) {
         return d[panel] === group.group;
       });
@@ -1828,7 +1828,6 @@ function defineHistogram(element, settings) {
 
 function createHistogramBoxPlot(this_, d) {
   var chartContainer = d3$1.select(this_).node();
-  console.log(d);
   var chartSettings = {
     measure: ' ',
     resizable: false,
@@ -1869,13 +1868,12 @@ function createHistogramBoxPlot(this_, d) {
 }
 
 function createHistogramBoxPlotControls(this_, d) {
-  console.log(d);
   var controlsContainer = d3$1.select(this_).append('div').classed('row-controls', true);
 
   //add control for commonScale control (only if data is grouped)
   if (d.group) {
     var commonScaleWrap = controlsContainer.append('div').classed('common-scale-control', true);
-    commonScaleWrap.append('small').text('Standardize x-axis? ');
+    commonScaleWrap.append('small').text('Standardize axes across panels? ');
     var commonScaleCheckbox = commonScaleWrap.append('input').attr('type', 'checkbox').attr('checked', true);
 
     commonScaleCheckbox.on('change', function () {
