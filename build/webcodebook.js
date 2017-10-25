@@ -2348,7 +2348,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  chartVisibility: 'visible',
+  chartVisibility: 'minimized',
   tabs: ['codebook', 'listing', 'settings'],
   dataName: ''
 };
@@ -2436,6 +2436,9 @@ function setDefaults(codebook) {
 
   /********************* Control Visibility Settings *********************/
   codebook.config.controlVisibility = codebook.config.controlVisibility || defaultSettings$1.controlVisibility;
+
+  /********************* Chart Visibility Settings *********************/
+  codebook.config.chartVisibility = codebook.config.chartVisibility || defaultSettings$1.chartVisibility;
 
   //hide the controls appropriately according to the start tab
   if (codebook.config.controlVisibility != 'disabled') {
