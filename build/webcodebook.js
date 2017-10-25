@@ -1405,7 +1405,7 @@ var defaultSettings = //Custom settings
   mean: true,
   overall: false,
   boxPlotHeight: 20,
-  commonScale: false,
+  commonScale: true,
   //Webcharts settings
   x: {
     column: null, // set in syncSettings()
@@ -1828,13 +1828,15 @@ function defineHistogram(element, settings) {
 
 function createHistogramBoxPlot(this_, d) {
   var chartContainer = d3$1.select(this_).node();
+  console.log(d);
   var chartSettings = {
     measure: ' ',
     resizable: false,
     height: 100,
     margin: this_.margin,
     nBins: d.bins,
-    chartType: d.chartType
+    chartType: d.chartType,
+    commonScale: d.commonScale == undefined ? true : d.commonScale
   };
   var chartData = [];
 
@@ -1866,6 +1868,25 @@ function createHistogramBoxPlot(this_, d) {
   chart.init(chartData);
 }
 
+function createHistogramBoxPlotControls(this_, d) {
+  console.log(d);
+  var controlsContainer = d3$1.select(this_).append('div').classed('row-controls', true);
+
+  //add control for commonScale control (only if data is grouped)
+  if (d.group) {
+    var commonScaleWrap = controlsContainer.append('div').classed('common-scale-control', true);
+    commonScaleWrap.append('small').text('Standardize x-axis? ');
+    var commonScaleCheckbox = commonScaleWrap.append('input').attr('type', 'checkbox').attr('checked', true);
+
+    commonScaleCheckbox.on('change', function () {
+      d3$1.select(this_).selectAll('.wc-chart').remove();
+      d3$1.select(this_).selectAll('.panel-label').remove();
+      d.commonScale = this.checked;
+      createHistogramBoxPlot(this_, d);
+    });
+  }
+}
+
 /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
@@ -1876,6 +1897,7 @@ var charts = {
   createHorizontalBars: createHorizontalBars,
   createHorizontalBarsControls: createHorizontalBarsControls,
   createHistogramBoxPlot: createHistogramBoxPlot,
+  createHistogramBoxPlotControls: createHistogramBoxPlotControls,
   createDotPlot: createDotPlot
 };
 
@@ -1891,8 +1913,7 @@ function makeChart(d) {
       charts.createVerticalBarsControls(this, d);
       charts.createVerticalBars(this, d);
     } else if (d.chartType === 'histogramBoxPlot') {
-      // continuous outcomes
-      d3$1.select(this).append('div').classed('row-controls', true);
+      charts.createHistogramBoxPlotControls(this, d);
       charts.createHistogramBoxPlot(this, d);
     } else {
       console.warn('Invalid chart type for ' + d.key);
