@@ -500,7 +500,7 @@ var availableTabs = [{
   label: 'Data Listing',
   selector: '.web-codebook .dataListing',
   controls: true,
-  instructions: 'Click any column header to sort that column.'
+  instructions: 'Listing of all selected records.'
 }, {
   key: 'chartMaker',
   label: 'Charts',
@@ -2269,46 +2269,31 @@ function onDraw(dataListing) {
       return label ? label.label : null;
     });
 
-    //Add header sort functionality.
-    addSort(dataListing);
-
-    //Add text search functionality.
-    addSearch(dataListing);
-
-    //Add pagination functionality.
-    addPagination(dataListing);
-
     //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
     this.table.selectAll('th,td').classed('hidden', function (d) {
       return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
     });
 
-    //highlight columns
+    //highlight rows
     this.table.selectAll('tr').classed('highlight', function (d) {
-      return dataListing.codebook.data.highlighted.indexOf(d.raw) > -1;
+      var highlightedIds = dataListing.codebook.data.highlighted.map(function (m) {
+        return m['web-codebook-index'];
+      });
+      return highlightedIds.indexOf(d['web-codebook-index']) > -1;
     });
   });
 }
 
 function init$7(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart');
+  indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
   var dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
   dataListing.config = codebook.config;
-  layout$1(dataListing);
-  //sort config
-  dataListing.sort = {};
-  dataListing.sort.wrap = dataListing.wrap.select('.sort-container');
-  dataListing.sort.order = [];
-  //pagination config
-  dataListing.pagination = {};
-  dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
-  dataListing.pagination.rowsShown = 25;
-  dataListing.pagination.activeLink = 0;
+  dataListing.wrap.selectAll('*').remove();
 
   //Define table.
-  dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
+  dataListing.table = webcharts.createTable('.web-codebook .dataListing', {});
 
   //Define callback.
   onDraw(dataListing);
@@ -2326,10 +2311,8 @@ function init$7(codebook) {
       return 1;
     }
   });
-  var sub = dataListing.sorted_raw_data.filter(function (d, i) {
-    return i < 25;
-  });
-  dataListing.table.init(sub);
+
+  dataListing.table.init(dataListing.sorted_raw_data);
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -2515,7 +2498,6 @@ function draw$1(codebook) {
   } else {
     chartMaker.chart.init(chartMaker.chartData);
   }
-  console.log(chartMaker);
 }
 
 function initAxisSelect(codebook) {
@@ -3053,7 +3035,7 @@ function init$10(codebook) {
 }
 
 function reset(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .listing-container .wc-chart', function () {
+  indicateLoading(codebook, '.web-codebook .dataListing .wc-chart', function () {
     //remove grouping and select 'None' group option
     delete codebook.config.group;
     codebook.controls.groups.update(codebook);
@@ -3074,7 +3056,6 @@ function reset(codebook) {
     codebook.dataListing.init(codebook);
     codebook.chartMaker.init(codebook);
     codebook.controls.updateRowCount(codebook);
-    console.log(codebook);
   });
 }
 
@@ -3102,7 +3083,7 @@ function updateSettings(codebook, column) {
   reset(codebook);
 }
 
-function layout$2(codebook) {
+function layout$1(codebook) {
   //Create list of columns in the data file.
   var columns = codebook.data.summary.map(function (d) {
     return d.value_col;
@@ -3344,7 +3325,14 @@ function createCodebook() {
 }
 
 var defaultSettings$3 = {
-  ignoredColumns: []
+  ignoredColumns: [],
+  meta: [],
+  tableConfig: {
+    sortable: false,
+    searchable: false,
+    pagination: false,
+    exportable: false
+  }
 };
 
 function setDefaults$1(explorer) {
@@ -3357,6 +3345,9 @@ function setDefaults$1(explorer) {
   /********************* labelColumn *********************/
   var firstKey = Object.keys(explorer.config.files[0])[0];
   explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
+
+  /********************* tableConfig ***************/
+  explorer.config.tableConfig = explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
   /********************* files[].settings ***************/
   explorer.config.files.forEach(function (f) {
@@ -3390,7 +3381,7 @@ function init$15() {
   Generate HTML containers.
 \------------------------------------------------------------------------------------------------*/
 
-function layout$3() {
+function layout$2() {
   this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }
 
@@ -3423,14 +3414,14 @@ function init$16(explorer) {
   var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
   //drop ignoredColumns and system variables
-  var cols = Object.keys(explorer.config.files[0]).filter(function (f) {
+  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0]).filter(function (f) {
     return explorer.config.ignoredColumns.indexOf(f) == -1;
   }).filter(function (f) {
     return ['settings', 'selected', 'event', 'json'].indexOf(f) == -1;
   }); //drop system variables from table
 
   //Create the table
-  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', { cols: cols });
+  explorer.codebook.fileListing.table = webcharts.createTable('.web-codebook .fileListing .listing-container', explorer.config.tableConfig);
 
   //show the selected file first
   explorer.config.files.forEach(function (d) {

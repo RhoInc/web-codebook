@@ -12,6 +12,10 @@ export function setDefaults(explorer) {
   var firstKey = Object.keys(explorer.config.files[0])[0];
   explorer.config.labelColumn = explorer.config.labelColumn || firstKey;
 
+  /********************* tableConfig ***************/
+  explorer.config.tableConfig =
+    explorer.config.tableConfig || defaultSettings.tableConfig;
+
   /********************* files[].settings ***************/
   explorer.config.files.forEach(function(f) {
     f.settings = f.settings || {};
