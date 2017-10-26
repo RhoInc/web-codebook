@@ -144,7 +144,10 @@ function init(data) {
     //initialize and then draw the data listing
     _this.dataListing.init(_this);
 
-    //initialize and then draw the data listing
+    //initialize the chart maker
+    _this.chartMaker.init(_this);
+
+    //initialize the settings
     _this.settings.init(_this);
   });
 }
@@ -167,6 +170,8 @@ function layout() {
   this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
 
   this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
+
+  this.chartMaker.wrap = this.wrap.append('div').attr('class', 'chartMaker section').classed('hidden', true);
 
   this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
 }
@@ -280,10 +285,10 @@ function update(codebook) {
 
       //clear highlights
       codebook.data.highlighted = [];
-
       codebook.data.makeSummary(codebook);
       codebook.controls.updateRowCount(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.dataListing.init(codebook);
     });
   });
@@ -351,6 +356,7 @@ function update$1(codebook) {
       codebook.data.highlighted = [];
       codebook.data.makeSummary(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.controls.updateRowCount(codebook);
     });
   });
@@ -432,6 +438,7 @@ function init$5(codebook) {
     codebook.data.makeSummary(codebook);
     codebook.dataListing.init(codebook);
     codebook.summaryTable.draw(codebook);
+    codebook.chartMaker.draw(codebook);
     codebook.controls.updateRowCount(codebook);
   });
 }
@@ -494,6 +501,12 @@ var availableTabs = [{
   selector: '.web-codebook .dataListing',
   controls: true,
   instructions: 'Listing of all selected records.'
+}, {
+  key: 'chartMaker',
+  label: 'Charts',
+  selector: '.web-codebook .chartMaker',
+  controls: true,
+  instructions: 'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
 }, {
   key: 'settings',
   label: '&#x2699;',
@@ -689,6 +702,7 @@ function highlightData(chart) {
       codebook.data.makeSummary(codebook);
       codebook.dataListing.init(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.controls.updateRowCount(codebook);
     });
   });
@@ -2307,6 +2321,260 @@ function init$7(codebook) {
 
 var dataListing = { init: init$7 };
 
+function clone$1(obj) {
+  var copy = void 0;
+
+  //boolean, number, string, null, undefined
+  if ('object' != (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) || null == obj) return obj;
+
+  //date
+  if (obj instanceof Date) {
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
+  }
+
+  //array
+  if (obj instanceof Array) {
+    copy = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      copy[i] = clone$1(obj[i]);
+    }
+    return copy;
+  }
+
+  //object
+  if (obj instanceof Object) {
+    copy = {};
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
+    }
+    return copy;
+  }
+
+  throw new Error('Unable to copy [obj]! Its type is not supported.');
+}
+
+var chartMakerSettings = {
+  max_width: 500,
+  x: {
+    column: null,
+    type: null,
+    label: null
+  },
+  y: {
+    column: null,
+    type: null,
+    label: null
+  },
+  marks: [{
+    type: null,
+    per: ['row_index']
+  }],
+  colors: ['#999', 'orange'],
+  color_by: 'highlight'
+};
+
+// Makes a valid settings object for the current selections.
+// settings is the settings object that needs updated
+// xvar and yvar are data objects created by codebook/data/makeSummary.js
+
+function makeSettings(settings, xvar, yvar) {
+  //set x config
+  settings.x = {
+    column: xvar.value_col,
+    label: xvar.label,
+    type: xvar.type == 'categorical' ? 'ordinal' : 'linear'
+  };
+
+  //set y config
+  settings.y = {
+    column: yvar.value_col,
+    label: yvar.label,
+    type: yvar.type == 'categorical' ? 'ordinal' : 'linear'
+  };
+
+  // set mark and color
+  if (settings.x.type == 'linear' & settings.y.type == 'linear') {
+    //mark types: x = linear vs. y = linear
+    settings.marks = [{
+      type: 'circle',
+      per: ['web-codebook-index']
+    }];
+    settings.legend = null;
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
+  } else if (settings.x.type == 'linear' & settings.y.type == 'ordinal') {
+    //mark types: x = linear vs. y = ordinal
+    settings.marks = [{
+      type: 'circle',
+      per: ['web-codebook-index']
+    }, {
+      type: 'text',
+      text: '|',
+      per: [yvar.value_col],
+      summarizeX: 'mean',
+      attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
+    }];
+    settings.legend = null;
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
+  } else if (settings.x.type == 'ordinal' & settings.y.type == 'linear') {
+    //mark types: x = ordinal vs. y = linear
+    settings.marks = [{
+      type: 'circle',
+      per: ['web-codebook-index']
+    }, {
+      type: 'text',
+      text: '---',
+      per: [xvar.value_col],
+      summarizeY: 'mean',
+      attributes: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' }
+    }];
+    settings.legend = null;
+    settings.color_by = 'highlight';
+    settings.colors = ['#999', 'orange'];
+  } else if (settings.x.type == 'ordinal' & settings.y.type == 'ordinal') {
+    //mark types: x = ordinal vs. y = ordinal
+
+    settings.y = {
+      column: '',
+      type: 'linear',
+      label: 'Number of observations',
+      domain: [0, null]
+    };
+    settings.marks = [{
+      type: 'bar',
+      arrange: 'stacked',
+      split: yvar.value_col,
+      per: [xvar.value_col],
+      summarizeY: 'count'
+    }];
+    settings.legend = { label: yvar.label };
+    settings.color_by = yvar.value_col;
+    settings.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'];
+  }
+  return settings;
+}
+
+function draw$1(codebook) {
+  indicateLoading(codebook, '.web-codebook .chartMaker');
+  var chartMaker = codebook.chartMaker;
+
+  //clear current chart
+  chartMaker.chartWrap.selectAll('*').remove();
+
+  //get selected variable objects
+  var x_var = chartMaker.controlsWrap.select('.column-select.x select').property('value');
+  var x_obj = codebook.data.summary.filter(function (f) {
+    return f.label == x_var;
+  })[0];
+
+  var y_var = chartMaker.controlsWrap.select('.column-select.y select').property('value');
+  var y_obj = codebook.data.summary.filter(function (f) {
+    return f.label == y_var;
+  })[0];
+
+  //get settings and data for the chart
+  chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+  chartMaker.chartData = clone$1(codebook.data.filtered);
+
+  //flag highlighted rows
+  var highlightedRows = codebook.data.highlighted.map(function (m) {
+    return m['web-codebook-index'];
+  });
+  chartMaker.chartData.forEach(function (d) {
+    d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
+  });
+
+  //Define chart.
+  chartMaker.chart = webcharts.createChart('.web-codebook .chartMaker.section .cm-chart', chartMaker.chartSettings);
+  if (codebook.config.group) {
+    chartMaker.chart.on('draw', function () {
+      var level = this.wrap.select('.wc-chart-title').text();
+      this.wrap.select('.wc-chart-title').text(codebook.config.group + ': ' + level);
+    });
+    webcharts.multiply(chartMaker.chart, chartMaker.chartData, codebook.config.group);
+  } else {
+    chartMaker.chart.init(chartMaker.chartData);
+  }
+}
+
+function initAxisSelect(codebook) {
+  //X & Y Variables
+  var x_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select x');
+
+  var y_wrap = codebook.chartMaker.controlsWrap.append('span').attr('class', 'control column-select y');
+
+  x_wrap.append('small').html('x variable: ');
+  y_wrap.append('small').html('y variable: ');
+
+  var x_select = x_wrap.append('select');
+  var y_select = y_wrap.append('select');
+
+  var axisOptions = codebook.data.summary.filter(function (f) {
+    return f.type == 'continuous' || codebook.config.groups.map(function (m) {
+      return m.value_col;
+    }).indexOf(f.value_col) >= 0;
+  }).filter(function (f) {
+    return f.label != 'web-codebook-index';
+  });
+
+  var x_items = x_select.selectAll('option').data(axisOptions).enter().append('option').property('selected', function (d, i) {
+    return i == 0;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  var y_items = y_select.selectAll('option').data(axisOptions).enter().append('option').property('selected', function (d, i) {
+    return i == 1;
+  }).html(function (d) {
+    return d.label;
+  });
+
+  //Handlers for label events
+  x_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+
+  y_select.on('change', function () {
+    codebook.chartMaker.draw(codebook);
+  });
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Initialize detail select
+\------------------------------------------------------------------------------------------------*/
+function init$9(codebook) {
+  initAxisSelect(codebook);
+}
+
+function init$8(codebook) {
+  var chartMaker = codebook.chartMaker;
+  chartMaker.codebook = codebook;
+  chartMaker.config = codebook.config;
+
+  //layout
+  chartMaker.wrap.selectAll('*').remove();
+  chartMaker.controlsWrap = chartMaker.wrap.append('div').attr('class', 'cm-controls');
+  chartMaker.chartWrap = chartMaker.wrap.append('div').attr('class', 'cm-chart');
+
+  //make controls
+  init$9(codebook);
+
+  //draw the initial codebook
+  chartMaker.draw(codebook);
+}
+
+/*------------------------------------------------------------------------------------------------\
+  Define chartmaker object
+\------------------------------------------------------------------------------------------------*/
+
+var chartMaker = {
+  draw: draw$1,
+  init: init$8
+};
+
 var defaultSettings$1 = {
   filters: [],
   groups: [],
@@ -2319,7 +2587,7 @@ var defaultSettings$1 = {
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
-  tabs: ['codebook', 'listing', 'settings'],
+  tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
   dataName: ''
 };
 
@@ -2760,7 +3028,7 @@ var data = {
   makeSummary: makeSummary
 };
 
-function init$8(codebook) {
+function init$10(codebook) {
   indicateLoading(codebook, '.web-codebook .settings .column-table');
 
   codebook.settings.layout(codebook);
@@ -2786,6 +3054,7 @@ function reset(codebook) {
     codebook.title.updateColumnCount(codebook);
     codebook.summaryTable.draw(codebook);
     codebook.dataListing.init(codebook);
+    codebook.chartMaker.init(codebook);
     codebook.controls.updateRowCount(codebook);
   });
 }
@@ -2902,11 +3171,11 @@ function layout$1(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var settings = {
-  init: init$8,
-  layout: layout$1
+  init: init$10,
+  layout: layout$2
 };
 
-function init$9(codebook) {
+function init$11(codebook) {
   codebook.title.fileWrap = codebook.title.wrap.append('span').attr('class', 'file').text(codebook.config.dataName ? codebook.config.dataName + ' Codebook' : 'Codebook');
 
   codebook.title.countSpan = codebook.title.wrap.append('span').attr('class', 'columnCount');
@@ -2929,11 +3198,11 @@ function updateColumnCount(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var title = {
-  init: init$9,
+  init: init$11,
   updateColumnCount: updateColumnCount
 };
 
-function init$10(codebook) {
+function init$12(codebook) {
   //no action needed on init, just update to the current text
   codebook.instructions.update(codebook);
 }
@@ -2943,7 +3212,7 @@ function init$10(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 //export function init(selector, data, vars, settings) {
-function init$11(codebook) {
+function init$13(codebook) {
   //initialize the wrapper
   var selector = codebook.instructions.wrap.append('span').attr('class', 'control chart-toggle');
 
@@ -2963,7 +3232,7 @@ function init$11(codebook) {
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
 //export function init(selector, data, vars, settings) {
-function init$12(codebook) {
+function init$14(codebook) {
   //initialize the wrapper
   var control = codebook.instructions.wrap.append('span').attr('class', 'control detail-select');
 
@@ -3002,8 +3271,8 @@ function update$2(codebook) {
 
   //add tab-specific controls
   if (activeTab.key == 'codebook') {
-    init$12(codebook);
-    init$11(codebook);
+    init$14(codebook);
+    init$13(codebook);
   }
 }
 
@@ -3012,7 +3281,7 @@ function update$2(codebook) {
 \------------------------------------------------------------------------------------------------*/
 
 var instructions = {
-  init: init$10,
+  init: init$12,
   update: update$2
 };
 
@@ -3031,6 +3300,7 @@ function createCodebook() {
     instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
+    chartMaker: chartMaker,
     data: data,
     util: util,
     settings: settings
@@ -3089,7 +3359,7 @@ function setDefaults$1(explorer) {
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-function init$13() {
+function init$15() {
   var settings = this.config;
   setDefaults$1(this);
 
@@ -3136,7 +3406,7 @@ function onDraw$1(explorer) {
   });
 }
 
-function init$14(explorer) {
+function init$16(explorer) {
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -3144,8 +3414,6 @@ function init$14(explorer) {
   var file_select_wrap = fileWrap.append('div').classed('listing-container', true);
 
   //drop ignoredColumns and system variables
-  console.log(explorer);
-
   explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0]).filter(function (f) {
     return explorer.config.ignoredColumns.indexOf(f) == -1;
   }).filter(function (f) {
@@ -3173,7 +3441,7 @@ function init$14(explorer) {
 \------------------------------------------------------------------------------------------------*/
 
 var fileListing = {
-  init: init$14
+  init: init$16
 };
 
 function makeCodebook(explorer) {
@@ -3182,7 +3450,7 @@ function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
-  this.current.settings.tabs = this.current.settings.tabs ? d3$1.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'settings'];
+  this.current.settings.tabs = this.current.settings.tabs ? d3$1.merge([['files'], this.current.settings.tabs]) : ['files', 'codebook', 'listing', 'chartMaker', 'settings'];
 
   //set the default tab to the codebook or listing view assuming they are visible
   if (this.current.event == 'click') {
@@ -3238,8 +3506,8 @@ function createExplorer() {
   var explorer = {
     element: element,
     config: config,
-    init: init$13,
-    layout: layout$2,
+    init: init$15,
+    layout: layout$3,
     fileListing: fileListing,
     makeCodebook: makeCodebook,
     addFiles: addFiles

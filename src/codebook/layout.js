@@ -35,6 +35,11 @@ export function layout() {
     .attr('class', 'dataListing section')
     .classed('hidden', true);
 
+  this.chartMaker.wrap = this.wrap
+    .append('div')
+    .attr('class', 'chartMaker section')
+    .classed('hidden', true);
+
   this.settings.wrap = this.wrap
     .append('div')
     .attr('class', 'settings section')
