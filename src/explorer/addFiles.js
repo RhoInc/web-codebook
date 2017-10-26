@@ -1,3 +1,5 @@
+import { merge } from 'd3';
+
 export function addFiles(files) {
   var explorer = this;
   //remove duplicates
@@ -6,7 +8,7 @@ export function addFiles(files) {
   });
 
   //add new files to file list
-  this.config.files = d3.merge([this.config.files, newFiles]);
+  this.config.files = merge([this.config.files, newFiles]);
 
   //re-draw the file listing
   explorer.codebook.fileListing.table.draw(this.config.files);

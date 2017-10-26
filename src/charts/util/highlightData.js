@@ -33,6 +33,7 @@ export default function highlightData(chart) {
       codebook.data.makeSummary(codebook);
       codebook.dataListing.init(codebook);
       codebook.summaryTable.draw(codebook);
+      codebook.chartMaker.draw(codebook);
       codebook.controls.updateRowCount(codebook);
     });
   });

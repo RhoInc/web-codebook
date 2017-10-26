@@ -11,7 +11,7 @@ const defaultSettings = {
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
   controlVisibility: 'visible',
   chartVisibility: 'minimized',
-  tabs: ['codebook', 'listing', 'settings'],
+  tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
   dataName: ''
 };
 

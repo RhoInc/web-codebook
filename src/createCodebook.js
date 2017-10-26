@@ -4,6 +4,7 @@ import { controls } from './codebook/controls';
 import { nav } from './codebook/nav';
 import { summaryTable } from './codebook/summaryTable';
 import { dataListing } from './codebook/dataListing';
+import { chartMaker } from './codebook/chartMaker';
 import { util } from './codebook/util';
 import { data } from './codebook/data';
 import { settings } from './codebook/settings';
@@ -22,6 +23,7 @@ export function createCodebook(element = 'body', config) {
     instructions: instructions,
     summaryTable: summaryTable,
     dataListing: dataListing,
+    chartMaker: chartMaker,
     data: data,
     util: util,
     settings: settings
