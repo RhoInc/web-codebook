@@ -51,5 +51,4 @@ export function draw(codebook) {
   } else {
     chartMaker.chart.init(chartMaker.chartData);
   }
-  console.log(chartMaker);
 }

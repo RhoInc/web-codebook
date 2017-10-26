@@ -18,13 +18,12 @@ export default function reset(codebook) {
       .selectAll('.filterCustom option')
       .property('selected', true);
 
-      //redraw data summary, codebook, and listing.
-      codebook.data.makeSummary(codebook);
-      codebook.title.updateColumnCount(codebook);
-      codebook.summaryTable.draw(codebook);
-      codebook.dataListing.init(codebook);
-      codebook.chartMaker.init(codebook);
-      codebook.controls.updateRowCount(codebook);
-    }
-  );
+    //redraw data summary, codebook, and listing.
+    codebook.data.makeSummary(codebook);
+    codebook.title.updateColumnCount(codebook);
+    codebook.summaryTable.draw(codebook);
+    codebook.dataListing.init(codebook);
+    codebook.chartMaker.init(codebook);
+    codebook.controls.updateRowCount(codebook);
+  });
 }
