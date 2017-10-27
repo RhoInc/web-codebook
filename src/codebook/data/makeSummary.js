@@ -29,6 +29,7 @@ export function makeSummary(codebook) {
       //get hidden status
       variables[i].hidden =
         codebook.config.hiddenVariables.indexOf(variable) > -1;
+      variables[i].chartVisibility = codebook.config.chartVisibility;
 
       //get variable label
       variables[i].label = codebook.config.variableLabels
@@ -109,6 +110,7 @@ export function makeSummary(codebook) {
     });
 
     codebook.data.summary = variables;
+
     //get bin counts
     codebook.util.getBinCounts(codebook);
   } else {

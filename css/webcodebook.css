@@ -541,3 +541,23 @@ Chart layout
     text-decoration:underline;
     cursor:pointer;
   }
+
+  /*------------------------------------------------------------------------------------------------\
+    Chart Maker
+  \------------------------------------------------------------------------------------------------*/
+
+.web-codebook .chartMaker.section .cm-controls .control{
+  padding-right:.5em;
+}
+
+.web-codebook .chartMaker.section .cm-chart .wc-small-multiples .wc-chart {
+  border:1px solid #999;
+  padding:0.2em;
+  margin:0.2em;
+}
+
+.web-codebook .chartMaker.section .cm-chart .wc-small-multiples .wc-chart .wc-chart-title{
+  background:#eee;
+  padding:0.1em;
+  font-size:1.2em;
+}

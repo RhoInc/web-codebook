@@ -23,6 +23,7 @@ export default function reset(codebook) {
     codebook.title.updateColumnCount(codebook);
     codebook.summaryTable.draw(codebook);
     codebook.dataListing.init(codebook);
+    codebook.chartMaker.init(codebook);
     codebook.controls.updateRowCount(codebook);
   });
 }
