@@ -9,7 +9,8 @@ export function createHistogramBoxPlot(this_, d) {
     height: 100,
     margin: this_.margin,
     nBins: d.bins,
-    chartType: d.chartType
+    chartType: d.chartType,
+    commonScale: d.commonScale == undefined ? true : d.commonScale
   };
   let chartData = [];
 
