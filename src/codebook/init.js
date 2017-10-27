@@ -53,7 +53,10 @@ export function init(data) {
     //initialize and then draw the data listing
     this.dataListing.init(this);
 
-    //initialize and then draw the data listing
+    //initialize the chart maker
+    this.chartMaker.init(this);
+
+    //initialize the settings
     this.settings.init(this);
   });
 }

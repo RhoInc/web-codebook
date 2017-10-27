@@ -26,6 +26,18 @@ export function draw(codebook) {
     d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
   );
 
+  //Set chart visibility (on initial load only - then keep user settings)
+  if (codebook.config.chartVisibility != 'user-defined') {
+    varRows.classed(
+      'hiddenChart',
+      codebook.config.chartVisibility != 'visible'
+    );
+  }
+
+  codebook.config.chartVisibility = codebook.config.chartVisibility == 'hidden'
+    ? 'hidden'
+    : 'user-defined';
+
   //ENTER + Update
   varRows.each(codebook.summaryTable.renderRow);
 

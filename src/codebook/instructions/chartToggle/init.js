@@ -7,7 +7,8 @@ export function init(codebook) {
   //initialize the wrapper
   var selector = codebook.instructions.wrap
     .append('span')
-    .attr('class', 'control chart-toggle');
+    .attr('class', 'control chart-toggle')
+    .classed('hidden', codebook.config.chartVisibility == 'hidden');
 
   selector.append('small').text('Toggle Charts: ');
   var showAllButton = selector

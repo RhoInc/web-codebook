@@ -100,9 +100,17 @@ export function setDefaults(codebook) {
 
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
+  codebook.config.tabs = codebook.config.tabs.map(function(d) {
+    if (typeof d == 'string') return { key: d };
+    else return d;
+  });
+
   codebook.config.defaultTab =
-    codebook.config.defaultTab || codebook.config.tabs[0];
-  if (codebook.config.tabs.indexOf(codebook.config.defaultTab) == -1) {
+    codebook.config.defaultTab || codebook.config.tabs[0].key;
+  if (
+    codebook.config.tabs.map(m => m.key).indexOf(codebook.config.defaultTab) ==
+    -1
+  ) {
     console.warn(
       "Invalid starting tab of '" +
         codebook.config.defaultTab +
@@ -110,12 +118,16 @@ export function setDefaults(codebook) {
         codebook.config.tabs[0] +
         "' instead."
     );
-    codebook.config.defaultTab = codebook.config.tabs[0];
+    codebook.config.defaultTab = codebook.config.tabs[0].key;
   }
 
   /********************* Control Visibility Settings *********************/
   codebook.config.controlVisibility =
     codebook.config.controlVisibility || defaultSettings.controlVisibility;
+
+  /********************* Chart Visibility Settings *********************/
+  codebook.config.chartVisibility =
+    codebook.config.chartVisibility || defaultSettings.chartVisibility;
 
   //hide the controls appropriately according to the start tab
   if (codebook.config.controlVisibility != 'disabled') {
