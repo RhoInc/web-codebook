@@ -662,7 +662,8 @@
         return f.key == tab.key;
       })[0];
       tab.label = settingsMatch.label || tab.label;
-      tab.instructions = settingsMatch.label || tab.label;
+      tab.controls = settingsMatch.controls || tab.controls;
+      tab.instructions = settingsMatch.instructions || tab.instructions;
     });
 
     //set the active tabs
