@@ -10,8 +10,6 @@ export function init(explorer) {
     .classed('listing-container', true);
 
   //drop ignoredColumns and system variables
-  console.log(explorer);
-
   explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
     .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
     .filter(f => ['settings', 'selected', 'event', 'json'].indexOf(f) == -1); //drop system variables from table
