@@ -41,6 +41,15 @@ export function draw(codebook) {
     '.web-codebook .chartMaker.section .cm-chart',
     chartMaker.chartSettings
   );
+
+  //remove legend unless it's a bar chart
+  chartMaker.chart.on('resize', function() {
+    console.log(this);
+    if (this.config.legend.label == 'highlight') {
+      this.legend.remove();
+    }
+  });
+
   if (codebook.config.group) {
     chartMaker.chart.on('draw', function() {
       var level = this.wrap.select('.wc-chart-title').text();

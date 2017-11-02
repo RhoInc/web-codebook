@@ -3039,6 +3039,15 @@
       '.web-codebook .chartMaker.section .cm-chart',
       chartMaker.chartSettings
     );
+
+    //remove legend unless it's a bar chart
+    chartMaker.chart.on('resize', function() {
+      console.log(this);
+      if (this.config.legend.label == 'highlight') {
+        this.legend.remove();
+      }
+    });
+
     if (codebook.config.group) {
       chartMaker.chart.on('draw', function() {
         var level = this.wrap.select('.wc-chart-title').text();
@@ -4257,8 +4266,6 @@
       .classed('listing-container', true);
 
     //drop ignoredColumns and system variables
-    console.log(explorer);
-
     explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
       .filter(function(f) {
         return explorer.config.ignoredColumns.indexOf(f) == -1;
