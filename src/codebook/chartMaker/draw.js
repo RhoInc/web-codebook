@@ -25,6 +25,7 @@ export function draw(codebook) {
 
   //get settings and data for the chart
   chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+  chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
   chartMaker.chartData = clone(codebook.data.filtered);
 
   //flag highlighted rows

@@ -1,5 +1,7 @@
 const chartMakerSettings = {
-  max_width: 500,
+  width: 800, //changed to 300 for paneled charts
+  aspect: 1.5,
+  resizable: false,
   x: {
     column: null,
     type: null,

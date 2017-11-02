@@ -1835,8 +1835,8 @@
       aspect: 12,
       margin: {
         right: 25,
-        left: 100
-      } // space for panel value
+        left: 100 // space for panel value
+      }
     };
 
   //Replicate settings in multiple places in the settings object.
@@ -2865,7 +2865,9 @@
   }
 
   var chartMakerSettings = {
-    max_width: 500,
+    width: 800, //changed to 300 for paneled charts
+    aspect: 1.5,
+    resizable: false,
     x: {
       column: null,
       type: null,
@@ -3021,6 +3023,7 @@
 
     //get settings and data for the chart
     chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+    chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
     chartMaker.chartData = clone$1(codebook.data.filtered);
 
     //flag highlighted rows
