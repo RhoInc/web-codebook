@@ -159,16 +159,16 @@ function layout() {
   this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
   this.controls.wrap = this.wrap.append('div').attr('class', 'controls section');
   this.instructions.wrap = this.wrap.append('div').attr('class', 'instructions section');
-  this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('hidden', false);
+  this.summaryTable.wrap = this.wrap.append('div').attr('class', 'summaryTable section').classed('wc-hidden', false);
 
   this.summaryTable.summaryText = this.summaryTable.wrap.append('strong').attr('class', 'summaryText section');
 
   this.fileListing = {};
-  this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('hidden', true);
+  this.fileListing.wrap = this.wrap.append('div').attr('class', 'fileListing section').classed('wc-hidden', true);
 
-  this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('hidden', true);
+  this.dataListing.wrap = this.wrap.append('div').attr('class', 'dataListing section').classed('wc-hidden', true);
 
-  this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('hidden', true);
+  this.settings.wrap = this.wrap.append('div').attr('class', 'settings section').classed('wc-hidden', true);
 }
 
 function init$1(codebook) {
@@ -191,12 +191,12 @@ function init$1(codebook) {
   codebook.controls.updateRowCount(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.group-select option').classed('hidden', function (d) {
+  codebook.controls.wrap.selectAll('.group-select option').classed('wc-hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d) > -1;
   });
 
   //Hide filters corresponding to variables specified in settings.hiddenVariables.
-  codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('hidden', function (d) {
+  codebook.controls.wrap.selectAll('.filter-list li.filterCustom').classed('wc-hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 }
@@ -230,7 +230,7 @@ function update(codebook) {
   var filterItem = allFilterItem.enter().append('li').attr('class', function (d) {
     return 'custom-' + d.value_col + ' filterCustom';
   });
-  allFilterItem.classed('hidden', function (d) {
+  allFilterItem.classed('wc-hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
   allFilterItem.sort(function (a, b) {
@@ -336,7 +336,7 @@ function update$1(codebook) {
     return d.value_col;
   });
   groupOptions.exit().remove();
-  groupOptions.classed('hidden', function (d) {
+  groupOptions.classed('wc-hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
   groupOptions.sort(function (a, b) {
@@ -401,14 +401,14 @@ function set$2(codebook) {
   codebook.controls.wrap.attr('class', 'controls section ' + codebook.config.controlVisibility);
 
   //hide the controls if controlVisibility isn't "visible" ...
-  codebook.controls.wrap.selectAll('div').classed('hidden', !(codebook.config.controlVisibility == 'visible'));
+  codebook.controls.wrap.selectAll('div').classed('wc-hidden', !(codebook.config.controlVisibility == 'visible'));
 
   // but show the title and the toggle ...
-  codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
-  codebook.controls.wrap.select('button.control-toggle').classed('hidden', false);
+  codebook.controls.wrap.select('div.controls-title').classed('wc-hidden', false);
+  codebook.controls.wrap.select('button.control-toggle').classed('wc-hidden', false);
 
-  // unless control visibility is hidden, in which case just hide it all
-  codebook.controls.wrap.classed('hidden', codebook.config.controlVisibility == 'hidden' || codebook.config.controlVisibility == 'disabled');
+  // unless control visibility is wc-hidden, in which case just hide it all
+  codebook.controls.wrap.classed('wc-hidden', codebook.config.controlVisibility == 'wc-hidden' || codebook.config.controlVisibility == 'disabled');
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -426,7 +426,7 @@ var controlToggle = {
 
 function init$5(codebook) {
   //initialize the wrapper
-  codebook.controls.highlight.clearButton = codebook.controls.summaryWrap.append('button').classed('clear-highlight', true).classed('hidden', codebook.data.highlighted.length == 0).text('Clear Highlighting').on('click', function () {
+  codebook.controls.highlight.clearButton = codebook.controls.summaryWrap.append('button').classed('clear-highlight', true).classed('wc-hidden', codebook.data.highlighted.length == 0).text('Clear Highlighting').on('click', function () {
     codebook.data.highlighted = [];
 
     codebook.data.makeSummary(codebook);
@@ -456,10 +456,10 @@ function updateRowCount(codebook) {
   //Add note regarding highlighted cells and show/hide the clear highlight button
   if (codebook.data.highlighted.length > 0) {
     codebook.controls.highlightCount.html(' and ' + codebook.data.highlighted.length + ' <span class="highlightLegend">highlighted</span>. ');
-    codebook.controls.highlight.clearButton.classed('hidden', false);
+    codebook.controls.highlight.clearButton.classed('wc-hidden', false);
   } else {
     codebook.controls.highlightCount.text('');
-    codebook.controls.highlight.clearButton.classed('hidden', true);
+    codebook.controls.highlight.clearButton.classed('wc-hidden', true);
   }
 }
 
@@ -508,7 +508,7 @@ function init$6(codebook) {
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function (tab) {
     tab.wrap = d3.select(tab.selector);
-    tab.wrap.classed('hidden', codebook.config.tabs.indexOf(tab.key) == -1);
+    tab.wrap.classed('wc-hidden', codebook.config.tabs.indexOf(tab.key) == -1);
   });
 
   //get the tabs for the current codebook
@@ -519,7 +519,7 @@ function init$6(codebook) {
   //set the wc-active tabs
   codebook.nav.tabs.forEach(function (t) {
     t.wc-active = t.key == codebook.config.defaultTab;
-    t.wrap.classed('hidden', !t.wc-active);
+    t.wrap.classed('wc-hidden', !t.wc-active);
   });
 
   //set control visibility
@@ -527,7 +527,7 @@ function init$6(codebook) {
     return f.wc-active;
   })[0];
   if (codebook.config.controlVisibility != 'disabled') {
-    codebook.config.controlVisibility = wc-activeTab.controls ? 'visible' : 'hidden';
+    codebook.config.controlVisibility = wc-activeTab.controls ? 'visible' : 'wc-hidden';
     codebook.controls.controlToggle.set(codebook);
   }
 
@@ -555,14 +555,14 @@ function init$6(codebook) {
           navItems.filter(function (f) {
             return f == t;
           }).classed('wc-active', t.wc-active); //style the wc-active nav element
-          t.wrap.classed('hidden', !t.wc-active); //hide all of the wraps (except for the wc-active one)
+          t.wrap.classed('wc-hidden', !t.wc-active); //hide all of the wraps (except for the wc-active one)
         });
 
         codebook.instructions.update(codebook);
 
         //show/hide the controls (unless they are disabled)
         if (codebook.config.controlVisibility != 'disabled') {
-          codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+          codebook.config.controlVisibility = d.controls ? 'visible' : 'wc-hidden';
           codebook.controls.controlToggle.set(codebook);
         }
       }
@@ -596,7 +596,7 @@ function draw(codebook) {
   });
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
-  varRows.classed('hidden', function (d) {
+  varRows.classed('wc-hidden', function (d) {
     return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
   });
 
@@ -1353,7 +1353,7 @@ function createHorizontalBarsControls(this_, d) {
 
   //add control that change chart type
   var chart_type_values = ['Paneled (Bar Charts)', 'Grouped (Dot Plot)'];
-  var chartTypeWrap = controlsContainer.append('div').classed('chart-type', true).classed('hidden', !d.groups); // hide the controls if the chart isn't Grouped
+  var chartTypeWrap = controlsContainer.append('div').classed('chart-type', true).classed('wc-hidden', !d.groups); // hide the controls if the chart isn't Grouped
   chartTypeWrap.append('small').text('Display Type: ');
   var type_control = chartTypeWrap.append('select');
   type_control.selectAll('option').data(chart_type_values).enter().append('option').text(function (d) {
@@ -1995,14 +1995,14 @@ function renderMeta(d, list) {
   var dropped = [];
   d.meta.forEach(function (d) {
     if (!d.value) {
-      d.hidden = true;
+      d.wc-hidden = true;
       dropped.push(' "' + d.key + '"');
     }
   });
 
   //render the items
-  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('hidden', function (d) {
-    return d.hidden;
+  var metaItems = list.selectAll('li.meta').data(d.meta).enter().append('li').classed('meta', true).classed('wc-hidden', function (d) {
+    return d.wc-hidden;
   });
 
   metaItems.append('div').text(function (d) {
@@ -2013,7 +2013,7 @@ function renderMeta(d, list) {
   }).attr('class', 'value');
 
   if (dropped.length) {
-    list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are hidden.');
+    list.append('li').append('div').attr('class', 'details').html('&#9432;').property('title', 'Meta data for ' + dropped.length + ' item(s) (' + dropped.toString() + ') were empty and are wc-hidden.');
   }
 }
 
@@ -2167,7 +2167,7 @@ function addSort(dataListing) {
     }
 
     sort(dataListing);
-    dataListing.sort.wrap.select('.description').classed('hidden', true);
+    dataListing.sort.wrap.select('.description').classed('wc-hidden', true);
 
     //Add sort container deletion functionality.
     dataListing.sort.order.forEach(function (item, i) {
@@ -2177,7 +2177,7 @@ function addSort(dataListing) {
           return d.variable;
         }).indexOf(d.key), 1);
 
-        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('hidden', false);
+        if (dataListing.sort.order.length) sort(dataListing);else dataListing.sort.wrap.select('.description').classed('wc-hidden', false);
       });
     });
   });
@@ -2209,7 +2209,7 @@ function addSearch(dataListing) {
       item.container.remove();
     });
     dataListing.sort.order = [];
-    dataListing.sort.wrap.select('.description').classed('hidden', false);
+    dataListing.sort.wrap.select('.description').classed('wc-hidden', false);
 
     //reset to first page
     dataListing.pagination.wc-activeLink = 0;
@@ -2266,7 +2266,7 @@ function onDraw(dataListing) {
     addPagination(dataListing);
 
     //Hide data listing columns corresponding to variables specified in settings.hiddenVariables.
-    this.table.selectAll('th,td').classed('hidden', function (d) {
+    this.table.selectAll('th,td').classed('wc-hidden', function (d) {
       return dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1;
     });
 
@@ -2406,7 +2406,7 @@ function setDefaults(codebook) {
 
   /********************* Hidden Variable Settings ***************/
   codebook.config.hiddenVariables = codebook.config.hiddenVariables || defaultSettings$1.hiddenVariables;
-  codebook.config.hiddenVariables.push('web-codebook-index'); // internal variables should always be hidden
+  codebook.config.hiddenVariables.push('web-codebook-index'); // internal variables should always be wc-hidden
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
@@ -2430,7 +2430,7 @@ function setDefaults(codebook) {
     var startTab = availableTabs.filter(function (f) {
       return f.key == codebook.config.defaultTab;
     });
-    codebook.config.controlVisibility = startTab.controls ? codebook.config.controlVisibility : 'hidden';
+    codebook.config.controlVisibility = startTab.controls ? codebook.config.controlVisibility : 'wc-hidden';
   }
 }
 
@@ -2693,8 +2693,8 @@ function makeSummary(codebook) {
       //get variable type
       variables[i].type = summarize.determineType(variables[i].values, codebook.config.levelSplit);
 
-      //get hidden status
-      variables[i].hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
+      //get wc-hidden status
+      variables[i].wc-hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
 
       //get variable label
       variables[i].label = codebook.config.variableLabels.map(function (variableLabel) {
@@ -2884,7 +2884,7 @@ function layout$2(codebook) {
   }),
 
   //define table rows
-  columnTableRows = columnTable.append('tbody').selectAll('tr').data(columnMetadata).enter().append('tr').classed('hidden', function (d) {
+  columnTableRows = columnTable.append('tbody').selectAll('tr').data(columnMetadata).enter().append('tr').classed('wc-hidden', function (d) {
     return d.Column === 'web-codebook-index';
   }),
       columnTableCells = columnTableRows.selectAll('td').data(function (d) {
@@ -2934,7 +2934,7 @@ function init$9(codebook) {
 
 function updateColumnCount(codebook) {
   var nCols_sub = codebook.data.summary.filter(function (d) {
-    return !d.hidden;
+    return !d.wc-hidden;
   }).length;
   var nCols_all = codebook.data.summary.length - 1; //-1 is for the index var
   var percent = d3.format('0.1%')(nCols_sub / nCols_all);
