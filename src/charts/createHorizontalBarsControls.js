@@ -36,7 +36,7 @@ export function createHorizontalBarsControls(this_, d) {
   var chartTypeWrap = controlsContainer
     .append('div')
     .classed('chart-type', true)
-    .classed('hidden', !d.groups); // hide the controls if the chart isn't Grouped
+    .classed('wc-hidden', !d.groups); // hide the controls if the chart isn't Grouped
   chartTypeWrap.append('small').text('Display Type: ');
   var type_control = chartTypeWrap.append('select');
   type_control

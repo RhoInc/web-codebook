@@ -22,7 +22,7 @@ export function draw(codebook) {
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
   varRows.classed(
-    'hidden',
+    'wc-hidden',
     d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
   );
 

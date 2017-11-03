@@ -18,7 +18,7 @@ export default function renderMeta(d, list) {
     .enter()
     .append('li')
     .classed('meta', true)
-    .classed('hidden', d => d.hidden);
+    .classed(wc-hidden', d => d.wc-hidden);
 
   metaItems.append('div').text(d => d.key).attr('class', 'label');
   metaItems.append('div').text(d => d.value).attr('class', 'value');

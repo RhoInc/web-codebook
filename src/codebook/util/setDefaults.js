@@ -124,6 +124,6 @@ export function setDefaults(codebook) {
     );
     codebook.config.controlVisibility = startTab.controls
       ? codebook.config.controlVisibility
-      : 'hidden';
+      : 'wc-hidden';
   }
 }

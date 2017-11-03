@@ -37,7 +37,7 @@ export default function addSort(dataListing) {
     }
 
     sort(dataListing);
-    dataListing.sort.wrap.select('.description').classed('hidden', true);
+    dataListing.sort.wrap.select('.description').classed('wc-hidden', true);
 
     //Add sort container deletion functionality.
     dataListing.sort.order.forEach((item, i) => {
@@ -50,7 +50,7 @@ export default function addSort(dataListing) {
 
         if (dataListing.sort.order.length) sort(dataListing);
         else
-          dataListing.sort.wrap.select('.description').classed('hidden', false);
+          dataListing.sort.wrap.select('.description').classed('wc-hidden', false);
       });
     });
   });

@@ -38,7 +38,7 @@ export function update(codebook) {
       return 'custom-' + d.value_col + ' filterCustom';
     });
   allFilterItem.classed(
-    'hidden',
+    'wc-hidden',
     d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
   );
   allFilterItem.sort((a, b) => {

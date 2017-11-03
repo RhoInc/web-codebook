@@ -19,9 +19,9 @@ export function updateRowCount(codebook) {
         codebook.data.highlighted.length +
         ' <span class="highlightLegend">highlighted</span>. '
     );
-    codebook.controls.highlight.clearButton.classed('hidden', false);
+    codebook.controls.highlight.clearButton.classed('wc-hidden', false);
   } else {
     codebook.controls.highlightCount.text('');
-    codebook.controls.highlight.clearButton.classed('hidden', true);
+    codebook.controls.highlight.clearButton.classed('wc-hidden', true);
   }
 }

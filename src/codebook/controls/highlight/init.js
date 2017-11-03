@@ -7,7 +7,7 @@ export function init(codebook) {
   codebook.controls.highlight.clearButton = codebook.controls.summaryWrap
     .append('button')
     .classed('clear-highlight', true)
-    .classed('hidden', codebook.data.highlighted.length == 0)
+    .classed('wc-hidden', codebook.data.highlighted.length == 0)
     .text('Clear Highlighting')
     .on('click', function() {
       codebook.data.highlighted = [];

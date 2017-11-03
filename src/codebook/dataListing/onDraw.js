@@ -26,7 +26,7 @@ export default function onDraw(dataListing) {
     this.table
       .selectAll('th,td')
       .classed(
-        'hidden',
+        'wc-hidden',
         d => dataListing.config.hiddenVariables.indexOf(d.col ? d.col : d) > -1
       );
 

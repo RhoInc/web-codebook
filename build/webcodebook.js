@@ -114,7 +114,7 @@ function init(data) {
   this.data.raw.forEach(function (d, i) {
     d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
   });
-  this.data.filtered = this.data.raw; //assume no filters active on init :/
+  this.data.filtered = this.data.raw; //assume no filters wc-active on init :/
   this.data.highlighted = [];
 
   //settings and defaults
@@ -499,7 +499,7 @@ var availableTabs = [{
   label: '&#x2699;',
   selector: '.web-codebook .settings',
   controls: false,
-  instructions: "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
+  instructions: "This interwc-active table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
 }];
 
 function init$6(codebook) {
@@ -516,18 +516,18 @@ function init$6(codebook) {
     return codebook.config.tabs.indexOf(tab.key) > -1;
   });
 
-  //set the active tabs
+  //set the wc-active tabs
   codebook.nav.tabs.forEach(function (t) {
-    t.active = t.key == codebook.config.defaultTab;
-    t.wrap.classed('hidden', !t.active);
+    t.wc-active = t.key == codebook.config.defaultTab;
+    t.wrap.classed('hidden', !t.wc-active);
   });
 
   //set control visibility
-  var activeTab = codebook.nav.tabs.filter(function (f) {
-    return f.active;
+  var wc-activeTab = codebook.nav.tabs.filter(function (f) {
+    return f.wc-active;
   })[0];
   if (codebook.config.controlVisibility != 'disabled') {
-    codebook.config.controlVisibility = activeTab.controls ? 'visible' : 'hidden';
+    codebook.config.controlVisibility = wc-activeTab.controls ? 'visible' : 'hidden';
     codebook.controls.controlToggle.set(codebook);
   }
 
@@ -537,8 +537,8 @@ function init$6(codebook) {
     var navItems = chartNav.selectAll('li').data(codebook.nav.tabs) //make this a setting
     .enter().append('li').attr('class', function (d) {
       return d.key;
-    }).classed('active', function (d, i) {
-      return d.active; //make this a setting
+    }).classed('wc-active', function (d, i) {
+      return d.wc-active; //make this a setting
     }).attr('title', function (d) {
       return 'View ' + d.key;
     });
@@ -549,13 +549,13 @@ function init$6(codebook) {
 
     //event listener for nav clicks
     navItems.on('click', function (d) {
-      if (!d.active) {
+      if (!d.wc-active) {
         codebook.nav.tabs.forEach(function (t) {
-          t.active = d.label == t.label; //set the clicked tab to active
+          t.wc-active = d.label == t.label; //set the clicked tab to wc-active
           navItems.filter(function (f) {
             return f == t;
-          }).classed('active', t.active); //style the active nav element
-          t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
+          }).classed('wc-active', t.wc-active); //style the wc-active nav element
+          t.wrap.classed('hidden', !t.wc-active); //hide all of the wraps (except for the wc-active one)
         });
 
         codebook.instructions.update(codebook);
@@ -741,12 +741,12 @@ function onResize() {
 
     //Activate tooltip.
     var d = closest.datum();
-    tooltips.classed('active', false);
-    context.svg.select('#' + d.selector).classed('active', true);
+    tooltips.classed('wc-active', false);
+    context.svg.select('#' + d.selector).classed('wc-active', true);
 
     closest.style('stroke-width', '3px').style('stroke', 'black');
   }).on('mouseout', function () {
-    context.svg.selectAll('g.svg-tooltip').classed('active', false);
+    context.svg.selectAll('g.svg-tooltip').classed('wc-active', false);
     bars.select('rect').style('stroke-width', null).style('stroke', null);
   });
 
@@ -1673,11 +1673,11 @@ function addModals(chart) {
 
     //Activate tooltip.
     var d = closest.datum();
-    tooltips.classed('active', false);
-    chart.svg.select('#' + d.selector).classed('active', true);
+    tooltips.classed('wc-active', false);
+    chart.svg.select('#' + d.selector).classed('wc-active', true);
   }).on('mouseout', function () {
     bars.select('rect').style('stroke-width', '1px');
-    chart.svg.selectAll('g.svg-tooltip').classed('active', false);
+    chart.svg.selectAll('g.svg-tooltip').classed('wc-active', false);
   });
 }
 
@@ -2114,13 +2114,13 @@ function layout$1(dataListing) {
 
 function updatePagination(dataListing) {
   //Reset pagination.
-  dataListing.pagination.links.classed('active', false);
+  dataListing.pagination.links.classed('wc-active', false);
 
-  //Set to active the selected page link and unhide associated rows.
+  //Set to wc-active the selected page link and unhide associated rows.
   dataListing.pagination.links.filter(function (link) {
-    return +link.rel === +dataListing.pagination.activeLink;
-  }).classed('active', true);
-  dataListing.pagination.startItem = dataListing.pagination.activeLink * dataListing.pagination.rowsShown;
+    return +link.rel === +dataListing.pagination.wc-activeLink;
+  }).classed('wc-active', true);
+  dataListing.pagination.startItem = dataListing.pagination.wc-activeLink * dataListing.pagination.rowsShown;
   dataListing.pagination.endItem = dataListing.pagination.startItem + dataListing.pagination.rowsShown;
   var sub = dataListing.sorted_raw_data.filter(function (d, i) {
     return i >= dataListing.pagination.startItem & i < dataListing.pagination.endItem;
@@ -2212,7 +2212,7 @@ function addSearch(dataListing) {
     dataListing.sort.wrap.select('.description').classed('hidden', false);
 
     //reset to first page
-    dataListing.pagination.activeLink = 0;
+    dataListing.pagination.wc-activeLink = 0;
     updatePagination(dataListing);
   });
 }
@@ -2228,8 +2228,8 @@ function addLinks(dataListing) {
     dataListing.pagination.wrap.append('a').datum({ rel: i }).attr({
       href: '#',
       rel: i
-    }).text(i + 1).classed('active', function (d) {
-      return d.rel == dataListing.pagination.activeLink;
+    }).text(i + 1).classed('wc-active', function (d) {
+      return d.rel == dataListing.pagination.wc-activeLink;
     });
   }
   dataListing.pagination.links = dataListing.pagination.wrap.selectAll('a');
@@ -2241,7 +2241,7 @@ function addPagination(dataListing) {
 
   //Render a different page on click.
   dataListing.pagination.links.on('click', function () {
-    dataListing.pagination.activeLink = d3.select(this).attr('rel');
+    dataListing.pagination.wc-activeLink = d3.select(this).attr('rel');
     updatePagination(dataListing);
   });
 }
@@ -2292,7 +2292,7 @@ function init$7(codebook) {
   dataListing.pagination = {};
   dataListing.pagination.wrap = dataListing.wrap.select('.pagination-container');
   dataListing.pagination.rowsShown = 25;
-  dataListing.pagination.activeLink = 0;
+  dataListing.pagination.wc-activeLink = 0;
 
   //Define table.
   dataListing.table = webcharts.createTable('.web-codebook .dataListing .listing-container', {});
@@ -3012,15 +3012,15 @@ function init$12(codebook) {
 }
 
 function update$2(codebook) {
-  var activeTab = codebook.nav.tabs.filter(function (d) {
-    return d.active;
+  var wc-activeTab = codebook.nav.tabs.filter(function (d) {
+    return d.wc-active;
   })[0];
 
   //add instructions text
-  codebook.instructions.wrap.text(activeTab.instructions);
+  codebook.instructions.wrap.text(wc-activeTab.instructions);
 
   //add tab-specific controls
-  if (activeTab.key == 'codebook') {
+  if (wc-activeTab.key == 'codebook') {
     init$12(codebook);
     init$11(codebook);
   }

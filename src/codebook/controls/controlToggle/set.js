@@ -11,18 +11,18 @@ export function set(codebook) {
   //hide the controls if controlVisibility isn't "visible" ...
   codebook.controls.wrap
     .selectAll('div')
-    .classed('hidden', !(codebook.config.controlVisibility == 'visible'));
+    .classed('wc-hidden', !(codebook.config.controlVisibility == 'visible'));
 
   // but show the title and the toggle ...
-  codebook.controls.wrap.select('div.controls-title').classed('hidden', false);
+  codebook.controls.wrap.select('div.controls-title').classed('wc-hidden', false);
   codebook.controls.wrap
     .select('button.control-toggle')
-    .classed('hidden', false);
+    .classed('wc-hidden', false);
 
   // unless control visibility is hidden, in which case just hide it all
   codebook.controls.wrap.classed(
-    'hidden',
-    codebook.config.controlVisibility == 'hidden' ||
+    'wc-hidden',
+    codebook.config.controlVisibility == 'wc-hidden' ||
       codebook.config.controlVisibility == 'disabled'
   );
 }

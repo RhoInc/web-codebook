@@ -28,7 +28,7 @@ export default function addSearch(dataListing) {
       item.container.remove();
     });
     dataListing.sort.order = [];
-    dataListing.sort.wrap.select('.description').classed('hidden', false);
+    dataListing.sort.wrap.select('.description').classed('wc-hidden', false);
 
     //reset to first page
     dataListing.pagination.activeLink = 0;

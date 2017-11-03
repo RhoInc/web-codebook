@@ -55,7 +55,7 @@ export function layout(codebook) {
       .data(columnMetadata)
       .enter()
       .append('tr')
-      .classed('hidden', d => d.Column === 'web-codebook-index'),
+      .classed('wc-hidden', d => d.Column === 'web-codebook-index'),
     columnTableCells = columnTableRows
       .selectAll('td')
       .data(d =>

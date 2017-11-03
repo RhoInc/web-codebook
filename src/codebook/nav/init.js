@@ -7,7 +7,7 @@ export function init(codebook) {
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function(tab) {
     tab.wrap = d3select(tab.selector);
-    tab.wrap.classed('hidden', codebook.config.tabs.indexOf(tab.key) == -1);
+    tab.wrap.classed('wc-hidden', codebook.config.tabs.indexOf(tab.key) == -1);
   });
 
   //get the tabs for the current codebook
@@ -18,7 +18,7 @@ export function init(codebook) {
   //set the active tabs
   codebook.nav.tabs.forEach(function(t) {
     t.active = t.key == codebook.config.defaultTab;
-    t.wrap.classed('hidden', !t.active);
+    t.wrap.classed('wc-hidden', !t.active);
   });
 
   //set control visibility
@@ -26,7 +26,7 @@ export function init(codebook) {
   if (codebook.config.controlVisibility != 'disabled') {
     codebook.config.controlVisibility = activeTab.controls
       ? 'visible'
-      : 'hidden';
+      : 'wc-hidden';
     codebook.controls.controlToggle.set(codebook);
   }
 
@@ -54,14 +54,14 @@ export function init(codebook) {
         codebook.nav.tabs.forEach(function(t) {
           t.active = d.label == t.label; //set the clicked tab to active
           navItems.filter(f => f == t).classed('active', t.active); //style the active nav element
-          t.wrap.classed('hidden', !t.active); //hide all of the wraps (except for the active one)
+          t.wrap.classed('wc-hidden', !t.active); //hide all of the wraps (except for the active one)
         });
 
         codebook.instructions.update(codebook);
 
         //show/hide the controls (unless they are disabled)
         if (codebook.config.controlVisibility != 'disabled') {
-          codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+          codebook.config.controlVisibility = d.controls ? 'visible' : 'wc-hidden';
           codebook.controls.controlToggle.set(codebook);
         }
       }

@@ -18,7 +18,7 @@ export function layout() {
   this.summaryTable.wrap = this.wrap
     .append('div')
     .attr('class', 'summaryTable section')
-    .classed('hidden', false);
+    .classed('wc-hidden', false);
 
   this.summaryTable.summaryText = this.summaryTable.wrap
     .append('strong')
@@ -28,15 +28,15 @@ export function layout() {
   this.fileListing.wrap = this.wrap
     .append('div')
     .attr('class', 'fileListing section')
-    .classed('hidden', true);
+    .classed('wc-hidden', true);
 
   this.dataListing.wrap = this.wrap
     .append('div')
     .attr('class', 'dataListing section')
-    .classed('hidden', true);
+    .classed('wc-hidden', true);
 
   this.settings.wrap = this.wrap
     .append('div')
     .attr('class', 'settings section')
-    .classed('hidden', true);
+    .classed('wc-hidden', true);
 }

@@ -35,7 +35,7 @@ export function update(codebook) {
     .text(d => d.value_col);
   groupOptions.exit().remove();
   groupOptions.classed(
-    'hidden',
+    'wc-hidden',
     d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
   );
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
