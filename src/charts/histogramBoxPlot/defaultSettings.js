@@ -10,7 +10,7 @@ export default //Custom settings
   mean: true,
   overall: false,
   boxPlotHeight: 20,
-
+  commonScale: true,
   //Webcharts settings
   x: {
     column: null, // set in syncSettings()

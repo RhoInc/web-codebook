@@ -7,7 +7,7 @@ export function makeCodebook(explorer) {
   //add the Files section to the nav for each config
   this.current.settings.tabs = this.current.settings.tabs
     ? d3merge([['files'], this.current.settings.tabs])
-    : ['files', 'codebook', 'listing', 'settings'];
+    : ['files', 'codebook', 'listing', 'chartMaker', 'settings'];
 
   //set the default tab to the codebook or listing view assuming they are visible
   if (this.current.event == 'click') {
@@ -41,7 +41,13 @@ export function makeCodebook(explorer) {
     explorer.fileListing.init(explorer);
   });
 
-  d3csv(this.current.path, function(error, data) {
-    explorer.codebook.init(data);
-  });
+  if (this.current.json) {
+    explorer.codebook.init(this.current.json);
+  } else if (this.current.path) {
+    d3csv(this.current.path, function(error, data) {
+      explorer.codebook.init(data);
+    });
+  } else {
+    alert('No data provided for the selected file.');
+  }
 }

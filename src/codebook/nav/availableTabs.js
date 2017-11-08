@@ -18,7 +18,15 @@ const availableTabs = [
     label: 'Data Listing',
     selector: '.web-codebook .dataListing',
     controls: true,
-    instructions: 'Click any column header to sort that column.'
+    instructions: 'Listing of all selected records.'
+  },
+  {
+    key: 'chartMaker',
+    label: 'Charts',
+    selector: '.web-codebook .chartMaker',
+    controls: true,
+    instructions:
+      'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
   },
   {
     key: 'settings',

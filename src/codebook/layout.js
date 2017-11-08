@@ -8,7 +8,7 @@ export function layout() {
     .attr('id', 'loading-indicator')
     .style('display', 'none');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
-  this.nav.wrap = this.wrap.append('div').attr('class', 'nav section');
+  this.nav.wrap = this.wrap.append('div').attr('class', 'wcb-nav section');
   this.controls.wrap = this.wrap
     .append('div')
     .attr('class', 'controls section');
@@ -33,6 +33,11 @@ export function layout() {
   this.dataListing.wrap = this.wrap
     .append('div')
     .attr('class', 'dataListing section')
+    .classed('hidden', true);
+
+  this.chartMaker.wrap = this.wrap
+    .append('div')
+    .attr('class', 'chartMaker section')
     .classed('hidden', true);
 
   this.settings.wrap = this.wrap

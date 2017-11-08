@@ -7,13 +7,24 @@ export function init(codebook) {
   //permanently hide the codebook sections that aren't included
   availableTabs.forEach(function(tab) {
     tab.wrap = d3select(tab.selector);
-    tab.wrap.classed('hidden', codebook.config.tabs.indexOf(tab.key) == -1);
+    tab.wrap.classed(
+      'hidden',
+      codebook.config.tabs.map(m => m.key).indexOf(tab.key) == -1
+    );
   });
 
   //get the tabs for the current codebook
   codebook.nav.tabs = availableTabs.filter(
-    tab => codebook.config.tabs.indexOf(tab.key) > -1
+    tab => codebook.config.tabs.map(m => m.key).indexOf(tab.key) > -1
   );
+
+  //overwrite labels/instruction if specified by user
+  codebook.nav.tabs.forEach(function(tab) {
+    var settingsMatch = codebook.config.tabs.filter(f => f.key == tab.key)[0];
+    tab.label = settingsMatch.label || tab.label;
+    tab.controls = settingsMatch.controls || tab.controls;
+    tab.instructions = settingsMatch.instructions || tab.instructions;
+  });
 
   //set the active tabs
   codebook.nav.tabs.forEach(function(t) {
@@ -32,7 +43,9 @@ export function init(codebook) {
 
   //draw the nav
   if (codebook.nav.tabs.length > 1) {
-    var chartNav = codebook.nav.wrap.append('ul').attr('class', 'nav nav-tabs');
+    var chartNav = codebook.nav.wrap
+      .append('ul')
+      .attr('class', 'wcb-nav wcb-nav-tabs');
     var navItems = chartNav
       .selectAll('li')
       .data(codebook.nav.tabs) //make this a setting
