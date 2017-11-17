@@ -15,16 +15,24 @@ General
     width: 100%;
 
 }
+.web-codebook #loading-indicator{
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:9999;
+  background-color:rgba(255, 255, 255, 0.9);
+}
 
-.web-codebook #loading-indicator {
+.web-codebook #loading-indicator .spinner {
   border: 12.5px solid #008CBA;
   border-radius: 50%;
-  border-top: 12.5px solid black;
-  background: rgba(255, 255, 255, .75);
-  width: 25px;
-  height: 25px;
-  top: 50%;
-  left: 499.5px;
+  border-top: 12.5px solid #999;
+  width: 75px;
+  height: 75px;
+  top: 10px;
+  left: 10px;
   position: fixed;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
@@ -59,6 +67,25 @@ General
   margin-right:1em
 }
 
+/*------------------------------------------------------------------------------------------------\
+Status section
+\------------------------------------------------------------------------------------------------*/
+.web-codebook .status{
+  padding: .1em;
+  margin: .5em 0 .5em 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  border-bottom:1px dotted #999;
+}
+
+.web-codebook .status.error{
+  color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
 /*------------------------------------------------------------------------------------------------\
 Instructions and Title layout
 \------------------------------------------------------------------------------------------------*/
@@ -439,7 +466,7 @@ Chart layout
     }
 
     .web-codebook  .dataListing tbody tr.highlight {
-      background:orange !important; 
+      background:orange !important;
     }
 
 
