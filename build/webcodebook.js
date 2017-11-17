@@ -77,15 +77,20 @@
     codebook.loadingIndicator.style('display', 'block');
     //wait until the loading indicator is visible
     var loading = setInterval(function() {
-      var laidOut = d3.select(element).property('offsetwidth') > 0,
-        displayNone = d3.select(element).style('display') === 'none';
+      try {
+        var laidOut = d3.select(element).property('offsetwidth') > 0,
+          displayNone = d3.select(element).style('display') === 'none';
 
-      //loading is complete
-      if (!(laidOut && displayNone)) {
-        if (callback) callback();
+        //loading is complete
+        if (!(laidOut && displayNone)) {
+          if (callback) callback();
+          clearInterval(loading);
+          codebook.loadingIndicator.style('display', 'none');
+          d3.select('#loading-text').remove();
+        }
+      } catch (err) {
         clearInterval(loading);
-        codebook.loadingIndicator.style('display', 'none');
-        d3.select('#loading-text').remove();
+        console.log('There was a problem updating the chart');
       }
     }, 25);
   }
