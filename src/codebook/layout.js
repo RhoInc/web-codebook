@@ -7,6 +7,10 @@ export function layout() {
     .append('div')
     .attr('id', 'loading-indicator')
     .style('display', 'none');
+
+  this.loadingIndicator.append('div').attr('class', 'spinner');
+
+  this.statusWrap = this.wrap.append('div').attr('class', 'statusWrap section');
   this.title.wrap = this.wrap.append('div').attr('class', 'title section');
   this.nav.wrap = this.wrap.append('div').attr('class', 'wcb-nav section');
   this.controls.wrap = this.wrap

@@ -14,9 +14,13 @@ export function init(codebook) {
     .append('div')
     .attr('class', 'cm-chart');
 
-  //make controls
-  initControls(codebook);
-
-  //draw the initial codebook
-  chartMaker.draw(codebook);
+  if (codebook.data.summary.length > 2) {
+    initControls(codebook); //make controls
+    chartMaker.draw(codebook); //draw the initial codebook
+  } else {
+    chartMaker.wrap
+      .append('div')
+      .attr('class', 'status')
+      .text('Two or more variables required to use Charts module.');
+  }
 }

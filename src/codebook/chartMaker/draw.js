@@ -11,6 +11,7 @@ export function draw(codebook) {
 
   //clear current chart
   chartMaker.chartWrap.selectAll('*').remove();
+  chartMaker.wrap.selectAll('.status.error').remove();
 
   //get selected variable objects
   var x_var = chartMaker.controlsWrap
@@ -24,41 +25,47 @@ export function draw(codebook) {
   var y_obj = codebook.data.summary.filter(f => f.label == y_var)[0];
 
   //get settings and data for the chart
-  chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
-  chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-  chartMaker.chartData = clone(codebook.data.filtered);
-
-  //flag highlighted rows
-  var highlightedRows = codebook.data.highlighted.map(
-    m => m['web-codebook-index']
-  );
-  chartMaker.chartData.forEach(function(d) {
-    d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
-  });
-
-  //Define chart.
-  chartMaker.chart = createChart(
-    '.web-codebook .chartMaker.section .cm-chart',
-    chartMaker.chartSettings
-  );
-
-  //remove legend unless it's a bar chart
-  chartMaker.chart.on('resize', function() {
-    console.log(this);
-    if (this.config.legend.label == 'highlight') {
-      this.legend.remove();
-    }
-  });
-
-  if (codebook.config.group) {
-    chartMaker.chart.on('draw', function() {
-      var level = this.wrap.select('.wc-chart-title').text();
-      this.wrap
-        .select('.wc-chart-title')
-        .text(codebook.config.group + ': ' + level);
-    });
-    multiply(chartMaker.chart, chartMaker.chartData, codebook.config.group);
+  if (x_obj == undefined || y_obj == undefined) {
+    chartMaker.wrap
+      .append('div')
+      .attr('class', 'status error')
+      .text('Data not found. Update filters to try again.');
   } else {
-    chartMaker.chart.init(chartMaker.chartData);
+    chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+    chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
+    chartMaker.chartData = clone(codebook.data.filtered);
+
+    //flag highlighted rows
+    var highlightedRows = codebook.data.highlighted.map(
+      m => m['web-codebook-index']
+    );
+    chartMaker.chartData.forEach(function(d) {
+      d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
+    });
+
+    //Define chart.
+    chartMaker.chart = createChart(
+      '.web-codebook .chartMaker.section .cm-chart',
+      chartMaker.chartSettings
+    );
+
+    //remove legend unless it's a bar chart
+    chartMaker.chart.on('resize', function() {
+      if (this.config.legend.label == 'highlight') {
+        this.legend.remove();
+      }
+    });
+
+    if (codebook.config.group) {
+      chartMaker.chart.on('draw', function() {
+        var level = this.wrap.select('.wc-chart-title').text();
+        this.wrap
+          .select('.wc-chart-title')
+          .text(codebook.config.group + ': ' + level);
+      });
+      multiply(chartMaker.chart, chartMaker.chartData, codebook.config.group);
+    } else {
+      chartMaker.chart.init(chartMaker.chartData);
+    }
   }
 }

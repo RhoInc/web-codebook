@@ -74,18 +74,32 @@
   }
 
   function indicateLoading(codebook, element, callback) {
+    codebook.statusWrap.selectAll('*').remove();
     codebook.loadingIndicator.style('display', 'block');
     //wait until the loading indicator is visible
     var loading = setInterval(function() {
-      var laidOut = d3.select(element).property('offsetwidth') > 0,
-        displayNone = d3.select(element).style('display') === 'none';
+      try {
+        var laidOut = d3.select(element).property('offsetwidth') > 0,
+          displayNone = d3.select(element).style('display') === 'none';
 
-      //loading is complete
-      if (!(laidOut && displayNone)) {
-        if (callback) callback();
+        //loading is complete
+        if (!(laidOut && displayNone)) {
+          if (callback) callback();
+          clearInterval(loading);
+          codebook.loadingIndicator.style('display', 'none');
+          d3.select('#loading-text').remove();
+        }
+      } catch (err) {
         clearInterval(loading);
         codebook.loadingIndicator.style('display', 'none');
         d3.select('#loading-text').remove();
+
+        codebook.statusWrap
+          .append('div')
+          .attr('class', 'status error')
+          .html('There was a problem updating the chart:<br>' + err);
+
+        console.warn(err);
       }
     }, 25);
   }
@@ -161,6 +175,12 @@
       .append('div')
       .attr('id', 'loading-indicator')
       .style('display', 'none');
+
+    this.loadingIndicator.append('div').attr('class', 'spinner');
+
+    this.statusWrap = this.wrap
+      .append('div')
+      .attr('class', 'statusWrap section');
     this.title.wrap = this.wrap.append('div').attr('class', 'title section');
     this.nav.wrap = this.wrap.append('div').attr('class', 'wcb-nav section');
     this.controls.wrap = this.wrap
@@ -746,10 +766,12 @@
   draw/update the summaryTable
 \------------------------------------------------------------------------------------------------*/
   function draw(codebook) {
-    indicateLoading(
-      codebook,
-      '.web-codebook .summaryTable .variable-row .row-title'
-    );
+    /*
+  indicateLoading(
+    codebook,
+    '.web-codebook .summaryTable .variable-row .row-title'
+  );
+  */
 
     //enter/update/exit for variableDivs
     //BIND the newest data
@@ -1835,8 +1857,8 @@
       aspect: 12,
       margin: {
         right: 25,
-        left: 100 // space for panel value
-      }
+        left: 100
+      } // space for panel value
     };
 
   //Replicate settings in multiple places in the settings object.
@@ -2790,7 +2812,7 @@
   }
 
   function init$7(codebook) {
-    indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
+    //indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
     var dataListing = codebook.dataListing;
     dataListing.codebook = codebook;
@@ -3005,6 +3027,7 @@
 
     //clear current chart
     chartMaker.chartWrap.selectAll('*').remove();
+    chartMaker.wrap.selectAll('.status.error').remove();
 
     //get selected variable objects
     var x_var = chartMaker.controlsWrap
@@ -3022,46 +3045,52 @@
     })[0];
 
     //get settings and data for the chart
-    chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
-    chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-    chartMaker.chartData = clone$1(codebook.data.filtered);
-
-    //flag highlighted rows
-    var highlightedRows = codebook.data.highlighted.map(function(m) {
-      return m['web-codebook-index'];
-    });
-    chartMaker.chartData.forEach(function(d) {
-      d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
-    });
-
-    //Define chart.
-    chartMaker.chart = webcharts.createChart(
-      '.web-codebook .chartMaker.section .cm-chart',
-      chartMaker.chartSettings
-    );
-
-    //remove legend unless it's a bar chart
-    chartMaker.chart.on('resize', function() {
-      console.log(this);
-      if (this.config.legend.label == 'highlight') {
-        this.legend.remove();
-      }
-    });
-
-    if (codebook.config.group) {
-      chartMaker.chart.on('draw', function() {
-        var level = this.wrap.select('.wc-chart-title').text();
-        this.wrap
-          .select('.wc-chart-title')
-          .text(codebook.config.group + ': ' + level);
-      });
-      webcharts.multiply(
-        chartMaker.chart,
-        chartMaker.chartData,
-        codebook.config.group
-      );
+    if (x_obj == undefined || y_obj == undefined) {
+      chartMaker.wrap
+        .append('div')
+        .attr('class', 'status error')
+        .text('Data not found. Update filters to try again.');
     } else {
-      chartMaker.chart.init(chartMaker.chartData);
+      chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
+      chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
+      chartMaker.chartData = clone$1(codebook.data.filtered);
+
+      //flag highlighted rows
+      var highlightedRows = codebook.data.highlighted.map(function(m) {
+        return m['web-codebook-index'];
+      });
+      chartMaker.chartData.forEach(function(d) {
+        d.highlight = highlightedRows.indexOf(d['web-codebook-index']) > -1;
+      });
+
+      //Define chart.
+      chartMaker.chart = webcharts.createChart(
+        '.web-codebook .chartMaker.section .cm-chart',
+        chartMaker.chartSettings
+      );
+
+      //remove legend unless it's a bar chart
+      chartMaker.chart.on('resize', function() {
+        if (this.config.legend.label == 'highlight') {
+          this.legend.remove();
+        }
+      });
+
+      if (codebook.config.group) {
+        chartMaker.chart.on('draw', function() {
+          var level = this.wrap.select('.wc-chart-title').text();
+          this.wrap
+            .select('.wc-chart-title')
+            .text(codebook.config.group + ': ' + level);
+        });
+        webcharts.multiply(
+          chartMaker.chart,
+          chartMaker.chartData,
+          codebook.config.group
+        );
+      } else {
+        chartMaker.chart.init(chartMaker.chartData);
+      }
     }
   }
 
@@ -3151,11 +3180,15 @@
       .append('div')
       .attr('class', 'cm-chart');
 
-    //make controls
-    init$9(codebook);
-
-    //draw the initial codebook
-    chartMaker.draw(codebook);
+    if (codebook.data.summary.length > 2) {
+      init$9(codebook); //make controls
+      chartMaker.draw(codebook); //draw the initial codebook
+    } else {
+      chartMaker.wrap
+        .append('div')
+        .attr('class', 'status')
+        .text('Two or more variables required to use Charts module.');
+    }
   }
 
   /*------------------------------------------------------------------------------------------------\

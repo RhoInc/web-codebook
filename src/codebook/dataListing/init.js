@@ -3,7 +3,7 @@ import { createTable } from 'webcharts';
 import indicateLoading from '../util/indicateLoading';
 
 export function init(codebook) {
-  indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
+  //indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
   const dataListing = codebook.dataListing;
   dataListing.codebook = codebook;
