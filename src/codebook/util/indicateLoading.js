@@ -1,7 +1,6 @@
 import { select as d3select } from 'd3';
 
 export default function indicateLoading(codebook, element, callback) {
-  console.log('loading: ' + element);
   codebook.statusWrap.selectAll('*').remove();
   codebook.loadingIndicator.style('display', 'block');
   //wait until the loading indicator is visible

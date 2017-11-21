@@ -26,7 +26,6 @@ export function draw(codebook) {
 
   //get settings and data for the chart
   if (x_obj == undefined || y_obj == undefined) {
-    console.log('No Data :(');
     chartMaker.wrap
       .append('div')
       .attr('class', 'status error')
@@ -52,7 +51,6 @@ export function draw(codebook) {
 
     //remove legend unless it's a bar chart
     chartMaker.chart.on('resize', function() {
-      console.log(this);
       if (this.config.legend.label == 'highlight') {
         this.legend.remove();
       }

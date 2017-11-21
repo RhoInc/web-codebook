@@ -74,7 +74,6 @@
   }
 
   function indicateLoading(codebook, element, callback) {
-    console.log('loading: ' + element);
     codebook.statusWrap.selectAll('*').remove();
     codebook.loadingIndicator.style('display', 'block');
     //wait until the loading indicator is visible
@@ -768,10 +767,10 @@
 \------------------------------------------------------------------------------------------------*/
   function draw(codebook) {
     /*
-    indicateLoading(
-      codebook,
-      '.web-codebook .summaryTable .variable-row .row-title'
-    );
+  indicateLoading(
+    codebook,
+    '.web-codebook .summaryTable .variable-row .row-title'
+  );
   */
 
     //enter/update/exit for variableDivs
@@ -1858,8 +1857,8 @@
       aspect: 12,
       margin: {
         right: 25,
-        left: 100 // space for panel value
-      }
+        left: 100
+      } // space for panel value
     };
 
   //Replicate settings in multiple places in the settings object.
@@ -3047,7 +3046,6 @@
 
     //get settings and data for the chart
     if (x_obj == undefined || y_obj == undefined) {
-      console.log('No Data :(');
       chartMaker.wrap
         .append('div')
         .attr('class', 'status error')
@@ -3073,7 +3071,6 @@
 
       //remove legend unless it's a bar chart
       chartMaker.chart.on('resize', function() {
-        console.log(this);
         if (this.config.legend.label == 'highlight') {
           this.legend.remove();
         }
