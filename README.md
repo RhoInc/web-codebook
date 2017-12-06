@@ -1,4 +1,4 @@
-# Codebook
+# Web Codebook
 
 ![alt tag](https://user-images.githubusercontent.com/31038805/33682586-fb48c2cc-da95-11e7-87d9-79982b1aa8ed.gif)
 
