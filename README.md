@@ -24,7 +24,11 @@ webcodebook.createChart('#chartLocation', {}).init(data);
 
 See the [API](https://github.com/RhoInc/web-codebook/wiki/API) and [configuration](https://github.com/RhoInc/web-codebook/wiki/Codebook-Configuration) pages for more details about custom configurations. 
 
-## Example
-- [Default Codebook](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html)
-- [Customized Codebook]() _coming soon_
-- [Multi-file Explorer]() _coming soon_
+## Links 
+
+- [Interactive Example](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html)
+- [Configuration](https://github.com/RhoInc/web-codebook/wiki/Codebook-Configuration) 
+- [API](https://github.com/RhoInc/web-codebook/wiki/API)
+- [Technical Documentation](https://github.com/RhoInc/web-codebook/wiki/Technical-Documentation) 
+- [Data Guidelines](https://github.com/RhoInc/web-codebook/wiki/Data-Guidelines)
+
