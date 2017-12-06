@@ -9,3 +9,22 @@ The web codebook is a javascript library that provides a concise summary of ever
  
  
 ![alt tag](https://user-images.githubusercontent.com/31038805/33683185-0f6d9c44-da98-11e7-829d-24f41e77ffc2.gif)
+
+
+## Background
+
+The web-codebook is inspired Frank Harrell's excellent `summarize` method from the [hmisc R package](https://cran.r-project.org/web/packages/Hmisc/Hmisc.pdf). `summarize` creates concise data summaries with minimal user configuration. Further, Agustin Calatroni ([link](http://graphics.rhoworld.com/pubs/SCT2007_Calatroni.pdf)) and Shane Rosanbalm ([link](https://github.com/RhoInc/sas-codebook)) have created SAS data summary methods at Rho in recent years.  Our goal here is to create a web-based data summary that uses the same general principles (concise data display, minimal configuration), but with added interactivity (filters, paneled displays, data listings) that is not possible in the static displays created by hmisc or in SAS. 
+
+## Typical Usage
+Generally speaking, no configuration is needed to create a web-codebook. Just [load a json data set](https://github.com/RhoInc/web-codebook/wiki/Data-Guidelines) and the tool will automatically create a user interface (filters, etc.) based on the data set loaded. Initialize the chart like so: 
+
+```javascript
+webcodebook.createChart('#chartLocation', {}).init(data);
+```
+
+See the [API](https://github.com/RhoInc/web-codebook/wiki/API) and [configuration](https://github.com/RhoInc/web-codebook/wiki/Codebook-Configuration) pages for more details about custom configurations. 
+
+## Example
+- [Default Codebook](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html)
+- [Customized Codebook]() _coming soon_
+- [Multi-file Explorer]() _coming soon_
