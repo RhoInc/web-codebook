@@ -8,4 +8,4 @@ The web codebook is a javascript library that provides a concise summary of ever
  [Click here for a live demo](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html). When the page loads, the user sees a "codebook" providing a graphical data summary for each data column.
  
  
-
+![alt tag](https://user-images.githubusercontent.com/31038805/33683185-0f6d9c44-da98-11e7-829d-24f41e77ffc2.gif)
