@@ -18,8 +18,12 @@ export function createHistogramBoxPlotControls(this_, d) {
       .attr('checked', true);
 
     commonScaleCheckbox.on('change', function() {
-      d3select(this_).selectAll('.wc-chart').remove();
-      d3select(this_).selectAll('.panel-label').remove();
+      d3select(this_)
+        .selectAll('.wc-chart')
+        .remove();
+      d3select(this_)
+        .selectAll('.panel-label')
+        .remove();
       d.commonScale = this.checked;
       createHistogramBoxPlot(this_, d);
     });

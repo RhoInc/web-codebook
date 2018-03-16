@@ -21,8 +21,9 @@ export default function onInit() {
       .attr('class', 'panel-label')
       .style('margin-left', context.config.margin.left + 'px')
       .html(
-        `${this.config.group_col}: <strong>${this.group}</strong> (n=${this
-          .raw_data.length})`
+        `${this.config.group_col}: <strong>${this.group}</strong> (n=${
+          this.raw_data.length
+        })`
       );
     this.wrap
       .node()
@@ -55,7 +56,9 @@ export default function onInit() {
     //in a single bin within a subgrouping.
     let max = 0;
     if (!config.y.domain[1]) {
-      const nestedData = d3nest().key(d => d[panel]).entries(context.raw_data);
+      const nestedData = d3nest()
+        .key(d => d[panel])
+        .entries(context.raw_data);
       nestedData.forEach(group => {
         const domain = d3extent(group.values, d => +d[measure]);
         const binWidth = (domain[1] - domain[0]) / config.nBins;

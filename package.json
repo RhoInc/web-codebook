@@ -11,7 +11,8 @@
   "homepage": "https://github.com/rhoinc/web-codebook",
   "license": "MIT",
   "author": "Rho, Inc.",
-  "main": "build/webcodebook.js",
+  "main": "./build/webcodebook.js",
+  "module": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/rhoinc/web-codebook.git"
@@ -24,17 +25,18 @@
     "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
     "watch": "rollup -c -w"
   },
-  "devDependencies": {
-    "babel-cli": "^6.0.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-babel": "^2.4.0",
-    "rollup-watch": "~3.2.2",
-    "prettier":"1.4.4"
-  },
   "dependencies": {
     "d3": "~3",
     "webcharts": "~1.7"
+  },
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "prettier": "^1.7.4",
+    "rollup": "^0.50.1",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-watch": "^4.3.1"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"

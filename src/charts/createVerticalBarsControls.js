@@ -21,8 +21,12 @@ export function createVerticalBarsControls(this_, d) {
     .text(d => d);
 
   outcomeSelect.on('change', function() {
-    d3select(this_).selectAll('.wc-chart').remove();
-    d3select(this_).selectAll('.panel-label').remove();
+    d3select(this_)
+      .selectAll('.wc-chart')
+      .remove();
+    d3select(this_)
+      .selectAll('.panel-label')
+      .remove();
     createVerticalBars(this_, d);
   });
 
@@ -39,8 +43,12 @@ export function createVerticalBarsControls(this_, d) {
     .text(d => d);
 
   x_sort.on('change', function() {
-    d3select(this_).selectAll('.wc-chart').remove();
-    d3select(this_).selectAll('.panel-label').remove();
+    d3select(this_)
+      .selectAll('.wc-chart')
+      .remove();
+    d3select(this_)
+      .selectAll('.panel-label')
+      .remove();
     createVerticalBars(this_, d);
   });
 }

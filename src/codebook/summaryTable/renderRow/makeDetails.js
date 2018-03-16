@@ -3,7 +3,9 @@ import detailList from './details/detailList';
 import renderStats from './details/renderStats';
 
 export default function makeDetails(d) {
-  var list = d3select(this).append('div').append('ul');
+  var list = d3select(this)
+    .append('div')
+    .append('ul');
   var parent = d3select(this.parentNode.parentNode);
   var controls = parent
     .select('.row-chart')

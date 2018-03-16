@@ -6,34 +6,258 @@
       : (global.webcodebook = factory(global.d3, global.webCharts));
 })(this, function(d3, webcharts) {
   'use strict';
-  var _typeof = typeof Symbol === 'function' &&
-    typeof Symbol.iterator === 'symbol'
-    ? function(obj) {
-        return typeof obj;
-      }
-    : function(obj) {
-        return obj &&
-          typeof Symbol === 'function' &&
-          obj.constructor === Symbol &&
-          obj !== Symbol.prototype
-          ? 'symbol'
-          : typeof obj;
-      };
 
-  var defineProperty = function(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
+  if (typeof Object.assign != 'function') {
+    Object.defineProperty(Object, 'assign', {
+      value: function assign(target, varArgs) {
+        // .length of function is 2
+        'use strict';
+
+        if (target == null) {
+          // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) {
+            // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+
+        return to;
+      },
+      writable: true,
+      configurable: true
+    });
+  }
+
+  if (!Array.prototype.find) {
+    Object.defineProperty(Array.prototype, 'find', {
+      value: function value(predicate) {
+        // 1. Let O be ? ToObject(this value).
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, 'length')).
+        var len = o.length >>> 0;
+
+        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+
+        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        var thisArg = arguments[1];
+
+        // 5. Let k be 0.
+        var k = 0;
+
+        // 6. Repeat, while k < len
+        while (k < len) {
+          // a. Let Pk be ! ToString(k).
+          // b. Let kValue be ? Get(O, Pk).
+          // c. Let testResult be ToBoolean(? Call(predicate, T, � kValue, k, O �)).
+          // d. If testResult is true, return kValue.
+          var kValue = o[k];
+          if (predicate.call(thisArg, kValue, k, o)) {
+            return kValue;
+          }
+          // e. Increase k by 1.
+          k++;
+        }
+
+        // 7. Return undefined.
+        return undefined;
+      }
+    });
+  }
+
+  if (!Array.prototype.findIndex) {
+    Object.defineProperty(Array.prototype, 'findIndex', {
+      value: function value(predicate) {
+        // 1. Let O be ? ToObject(this value).
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, "length")).
+        var len = o.length >>> 0;
+
+        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+
+        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        var thisArg = arguments[1];
+
+        // 5. Let k be 0.
+        var k = 0;
+
+        // 6. Repeat, while k < len
+        while (k < len) {
+          // a. Let Pk be ! ToString(k).
+          // b. Let kValue be ? Get(O, Pk).
+          // c. Let testResult be ToBoolean(? Call(predicate, T, � kValue, k, O �)).
+          // d. If testResult is true, return k.
+          var kValue = o[k];
+          if (predicate.call(thisArg, kValue, k, o)) {
+            return k;
+          }
+          // e. Increase k by 1.
+          k++;
+        }
+
+        // 7. Return -1.
+        return -1;
+      }
+    });
+  }
+
+  var _typeof =
+    typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol'
+      ? function(obj) {
+          return typeof obj;
+        }
+      : function(obj) {
+          return obj &&
+            typeof Symbol === 'function' &&
+            obj.constructor === Symbol &&
+            obj !== Symbol.prototype
+            ? 'symbol'
+            : typeof obj;
+        };
+
+  var asyncGenerator = (function() {
+    function AwaitValue(value) {
+      this.value = value;
     }
 
-    return obj;
-  };
+    function AsyncGenerator(gen) {
+      var front, back;
+
+      function send(key, arg) {
+        return new Promise(function(resolve, reject) {
+          var request = {
+            key: key,
+            arg: arg,
+            resolve: resolve,
+            reject: reject,
+            next: null
+          };
+
+          if (back) {
+            back = back.next = request;
+          } else {
+            front = back = request;
+            resume(key, arg);
+          }
+        });
+      }
+
+      function resume(key, arg) {
+        try {
+          var result = gen[key](arg);
+          var value = result.value;
+
+          if (value instanceof AwaitValue) {
+            Promise.resolve(value.value).then(
+              function(arg) {
+                resume('next', arg);
+              },
+              function(arg) {
+                resume('throw', arg);
+              }
+            );
+          } else {
+            settle(result.done ? 'return' : 'normal', result.value);
+          }
+        } catch (err) {
+          settle('throw', err);
+        }
+      }
+
+      function settle(type, value) {
+        switch (type) {
+          case 'return':
+            front.resolve({
+              value: value,
+              done: true
+            });
+            break;
+
+          case 'throw':
+            front.reject(value);
+            break;
+
+          default:
+            front.resolve({
+              value: value,
+              done: false
+            });
+            break;
+        }
+
+        front = front.next;
+
+        if (front) {
+          resume(front.key, front.arg);
+        } else {
+          back = null;
+        }
+      }
+
+      this._invoke = send;
+
+      if (typeof gen.return !== 'function') {
+        this.return = undefined;
+      }
+    }
+
+    if (typeof Symbol === 'function' && Symbol.asyncIterator) {
+      AsyncGenerator.prototype[Symbol.asyncIterator] = function() {
+        return this;
+      };
+    }
+
+    AsyncGenerator.prototype.next = function(arg) {
+      return this._invoke('next', arg);
+    };
+
+    AsyncGenerator.prototype.throw = function(arg) {
+      return this._invoke('throw', arg);
+    };
+
+    AsyncGenerator.prototype.return = function(arg) {
+      return this._invoke('return', arg);
+    };
+
+    return {
+      wrap: function(fn) {
+        return function() {
+          return new AsyncGenerator(fn.apply(this, arguments));
+        };
+      },
+      await: function(value) {
+        return new AwaitValue(value);
+      }
+    };
+  })();
 
   function clone(obj) {
     var copy = void 0;
@@ -111,9 +335,6 @@
   function init(data) {
     var _this = this;
 
-    var settings = this.config;
-
-    //create chart wrapper in specified div
     this.wrap = d3
       .select(this.element)
       .append('div')
@@ -317,9 +538,12 @@
       .html(function(d) {
         return d.value_col;
       });
-    filterLabel.append('span').classed('filter-label', true).html(function(d) {
-      return d.value_col !== d.label ? d.label : '';
-    });
+    filterLabel
+      .append('span')
+      .classed('filter-label', true)
+      .html(function(d) {
+        return d.value_col !== d.label ? d.label : '';
+      });
 
     var filterCustom = filterItem.append('select').attr('multiple', true);
 
@@ -382,8 +606,8 @@
   function init$2(codebook) {
     //initialize the wrapper
     var selector = codebook.controls.wrap
-      .append('div')
-      .attr('class', 'custom-filters'),
+        .append('div')
+        .attr('class', 'custom-filters'),
       filterList = selector.append('ul').attr('class', 'filter-list');
 
     update(codebook);
@@ -492,9 +716,10 @@
     codebook.controls.controlToggle.set(codebook);
 
     controlToggle.on('click', function() {
-      codebook.config.controlVisibility = d3.select(this).text() == 'Hide'
-        ? 'minimized' //click "-" to minimize controls
-        : 'visible'; // click "+" to show controls
+      codebook.config.controlVisibility =
+        d3.select(this).text() == 'Hide'
+          ? 'minimized' //click "-" to minimize controls
+          : 'visible'; // click "+" to show controls
 
       codebook.controls.controlToggle.set(codebook);
     });
@@ -692,17 +917,6 @@
       t.wrap.classed('hidden', !t.active);
     });
 
-    //set control visibility
-    var activeTab = codebook.nav.tabs.filter(function(f) {
-      return f.active;
-    })[0];
-    if (codebook.config.controlVisibility != 'disabled') {
-      codebook.config.controlVisibility = activeTab.controls
-        ? 'visible'
-        : 'hidden';
-      codebook.controls.controlToggle.set(codebook);
-    }
-
     //draw the nav
     if (codebook.nav.tabs.length > 1) {
       var chartNav = codebook.nav.wrap
@@ -743,9 +957,12 @@
           codebook.instructions.update(codebook);
 
           //show/hide the controls (unless they are disabled)
+          if (codebook.config.controlVisibility !== 'hidden')
+            codebook.config.previousControlVisibility =
+              codebook.config.controlVisibility;
           if (codebook.config.controlVisibility != 'disabled') {
             codebook.config.controlVisibility = d.controls
-              ? 'visible'
+              ? codebook.config.previousControlVisibility
               : 'hidden';
             codebook.controls.controlToggle.set(codebook);
           }
@@ -782,9 +999,12 @@
       });
 
     //ENTER
-    varRows.enter().append('div').attr('class', function(d) {
-      return 'variable-row ' + d.type;
-    });
+    varRows
+      .enter()
+      .append('div')
+      .attr('class', function(d) {
+        return 'variable-row ' + d.type;
+      });
 
     //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
     varRows.classed('hidden', function(d) {
@@ -799,10 +1019,8 @@
       );
     }
 
-    codebook.config.chartVisibility = codebook.config.chartVisibility ==
-      'hidden'
-      ? 'hidden'
-      : 'user-defined';
+    codebook.config.chartVisibility =
+      codebook.config.chartVisibility == 'hidden' ? 'hidden' : 'user-defined';
 
     //ENTER + Update
     varRows.each(codebook.summaryTable.renderRow);
@@ -849,9 +1067,8 @@
       .attr({
         x: context.x(d.values.x),
         dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
-        'text-anchor': context.x(d.values.x) < context.plot_width / 2
-          ? 'start'
-          : 'end'
+        'text-anchor':
+          context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
       })
       .text('' + d.values.x);
     text
@@ -860,9 +1077,8 @@
         x: context.x(d.values.x),
         dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
         dy: '-1.5em',
-        'text-anchor': context.x(d.values.x) < context.plot_width / 2
-          ? 'start'
-          : 'end'
+        'text-anchor':
+          context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
       })
       .text('n=' + d.values.raw[0].n + ' (' + d3.format('0.1%')(d.total) + ')');
     var dimensions = text[0][0].getBBox();
@@ -886,20 +1102,21 @@
 
   function highlightData(chart) {
     var codebook = d3
-      .select(chart.wrap.node().parentNode.parentNode.parentNode)
-      .datum(),
+        .select(chart.wrap.node().parentNode.parentNode.parentNode)
+        .datum(),
       // codebook object is attached to .summaryTable element
       bars = chart.svg.selectAll('.bar-group');
 
     bars.on('click', function(d) {
       indicateLoading(codebook, '.highlightCount', function() {
-        var newIndexes = chart.config.chartType.indexOf('Bars') > -1
-          ? d.values.raw[0].indexes
-          : chart.config.chartType === 'histogramBoxPlot'
-            ? d.values.raw.map(function(di) {
-                return di.index;
-              })
-            : [];
+        var newIndexes =
+          chart.config.chartType.indexOf('Bars') > -1
+            ? d.values.raw[0].indexes
+            : chart.config.chartType === 'histogramBoxPlot'
+              ? d.values.raw.map(function(di) {
+                  return di.index;
+                })
+              : [];
         var currentIndexes = codebook.data.highlighted.map(function(di) {
           return di['web-codebook-index'];
         });
@@ -946,14 +1163,11 @@
         //Highlight closest bar.
         var mouse$$1 = d3.mouse(this);
         var x = mouse$$1[0];
-        var y = mouse$$1[1];
         var minimum = void 0;
-        var bar = {};
         bars.each(function(d, i) {
           d.distance = Math.abs(context.x(d.values.x) - x);
           if (i === 0 || d.distance < minimum) {
             minimum = d.distance;
-            bar = d;
           }
         });
 
@@ -968,7 +1182,10 @@
             return i === arbitrary;
           });
         }
-        bars.select('rect').style('stroke-width', null).style('stroke', null);
+        bars
+          .select('rect')
+          .style('stroke-width', null)
+          .style('stroke', null);
         closest = closest.select('rect');
 
         //Activate tooltip.
@@ -980,7 +1197,10 @@
       })
       .on('mouseout', function() {
         context.svg.selectAll('g.svg-tooltip').classed('active', false);
-        bars.select('rect').style('stroke-width', null).style('stroke', null);
+        bars
+          .select('rect')
+          .style('stroke-width', null)
+          .style('stroke', null);
       });
 
     //Add event listener to marks to highlight data.
@@ -1024,8 +1244,6 @@
   }
 
   function createVerticalBars(this_, d) {
-    var _chartSettings;
-
     var chartContainer = d3.select(this_).node();
     var rowSelector = d3.select(this_).node().parentNode;
     var sortType = d3
@@ -1036,44 +1254,40 @@
       .select(rowSelector)
       .select('.row-controls .y-axis-outcome select')
       .property('value');
-    var chartSettings = (
-      (_chartSettings = {
-        y: {
-          column: outcome === 'rate' ? 'prop_n' : 'n',
-          type: 'linear',
-          label: '',
-          format: outcome === 'rate' ? '0.1%' : 'd',
-          domain: [0, null]
-        },
-        x: {
-          column: 'key',
-          type: 'ordinal',
-          label: ''
-        },
-        marks: [
-          {
-            type: 'bar',
-            per: ['key'],
-            attributes: {
-              stroke: null
-            }
+    var chartSettings = {
+      y: {
+        column: outcome === 'rate' ? 'prop_n' : 'n',
+        type: 'linear',
+        label: '',
+        format: outcome === 'rate' ? '0.1%' : 'd',
+        domain: [0, null]
+      },
+      x: {
+        column: 'key',
+        type: 'ordinal',
+        label: ''
+      },
+      marks: [
+        {
+          type: 'bar',
+          per: ['key'],
+          attributes: {
+            stroke: null
           }
-        ],
-        colors: ['#999'],
-        gridlines: '',
-        resizable: false,
-        height: this_.height,
-        margin: this_.margin,
-        value_col: d.value_col,
-        group_col: d.group || null,
-        group_label: d.groupLabel || null,
-        overall: d.statistics.values
-      }),
-      defineProperty(_chartSettings, 'gridlines', 'y'),
-      defineProperty(_chartSettings, 'sort', sortType),
-      defineProperty(_chartSettings, 'chartType', d.chartType),
-      _chartSettings
-    );
+        }
+      ],
+      colors: ['#999'],
+      resizable: false,
+      height: this_.height,
+      margin: this_.margin,
+      value_col: d.value_col,
+      group_col: d.group || null,
+      group_label: d.groupLabel || null,
+      overall: d.statistics.values,
+      gridlines: 'y',
+      sort: sortType, //Alphabetical, Ascending, Descending
+      chartType: d.chartType
+    };
 
     chartSettings.margin.bottom = 10;
 
@@ -1194,8 +1408,14 @@
       });
 
     outcomeSelect.on('change', function() {
-      d3.select(this_).selectAll('.wc-chart').remove();
-      d3.select(this_).selectAll('.panel-label').remove();
+      d3
+        .select(this_)
+        .selectAll('.wc-chart')
+        .remove();
+      d3
+        .select(this_)
+        .selectAll('.panel-label')
+        .remove();
       createVerticalBars(this_, d);
     });
 
@@ -1214,8 +1434,14 @@
       });
 
     x_sort.on('change', function() {
-      d3.select(this_).selectAll('.wc-chart').remove();
-      d3.select(this_).selectAll('.panel-label').remove();
+      d3
+        .select(this_)
+        .selectAll('.wc-chart')
+        .remove();
+      d3
+        .select(this_)
+        .selectAll('.panel-label')
+        .remove();
       createVerticalBars(this_, d);
     });
   }
@@ -1306,8 +1532,8 @@
       })
       .forEach(function(d) {
         var overall = chart.config.overall.filter(function(di) {
-          return di.key === d.values.raw[0].key;
-        })[0],
+            return di.key === d.values.raw[0].key;
+          })[0],
           g = chart.svg
             .append('g')
             .classed('difference-from-total', true)
@@ -1367,8 +1593,6 @@
   }
 
   function onResize$1() {
-    var context = this;
-
     moveYaxis$1(this);
     if (this.config.x.column === 'prop_n') {
       drawOverallMark(this);
@@ -1752,8 +1976,14 @@
       });
 
     outcomeSelect.on('change', function() {
-      d3.select(this_).selectAll('.wc-chart').remove();
-      d3.select(this_).selectAll('.panel-label').remove();
+      d3
+        .select(this_)
+        .selectAll('.wc-chart')
+        .remove();
+      d3
+        .select(this_)
+        .selectAll('.panel-label')
+        .remove();
       if (type_control.property('value') === 'Paneled (Bar Charts)') {
         createHorizontalBars(this_, d);
       } else {
@@ -1779,39 +2009,20 @@
       });
 
     type_control.on('change', function() {
-      d3.select(this_).selectAll('.wc-chart').remove();
-      d3.select(this_).selectAll('.panel-label').remove();
+      d3
+        .select(this_)
+        .selectAll('.wc-chart')
+        .remove();
+      d3
+        .select(this_)
+        .selectAll('.panel-label')
+        .remove();
       if (this.value == 'Paneled (Bar Charts)') {
         createHorizontalBars(this_, d);
       } else {
         createDotPlot(this_, d);
       }
     });
-  }
-
-  if (typeof Object.assign != 'function') {
-    (function() {
-      Object.assign = function(target) {
-        'use strict';
-        if (target === undefined || target === null)
-          throw new TypeError('Cannot convert undefined or null to object');
-
-        var output = Object(target);
-
-        for (var index = 1; index < arguments.length; index++) {
-          var source = arguments[index];
-
-          if (source !== undefined && source !== null) {
-            for (var nextKey in source) {
-              if (source.hasOwnProperty(nextKey))
-                output[nextKey] = source[nextKey];
-            }
-          }
-        }
-
-        return output;
-      };
-    })();
   }
 
   var defaultSettings =
@@ -1857,8 +2068,8 @@
       aspect: 12,
       margin: {
         right: 25,
-        left: 100
-      } // space for panel value
+        left: 100 // space for panel value
+      }
     };
 
   //Replicate settings in multiple places in the settings object.
@@ -1882,9 +2093,10 @@
     d.range = format$$1(d.rangeLow) + '-' + format$$1(d.rangeHigh);
     d.selector = 'bar' + i;
     d.side = context.x(d.midpoint) < context.plot_width / 2 ? 'left' : 'right';
-    d.xPosition = d.side === 'left'
-      ? context.x(d.midpoint) + offset
-      : context.x(d.midpoint) - offset;
+    d.xPosition =
+      d.side === 'left'
+        ? context.x(d.midpoint) + offset
+        : context.x(d.midpoint) - offset;
 
     //Define tooltips.
     var tooltip = context.svg.append('g').attr('id', d.selector),
@@ -2076,11 +2288,12 @@
             y2: chart.plot_height + chart.config.boxPlotHeight
           })
           .style({
-            stroke: [0.05, 0.95].indexOf(quantile$$1.probability) > -1
-              ? 'black'
-              : [0.25, 0.75].indexOf(quantile$$1.probability) > -1
+            stroke:
+              [0.05, 0.95].indexOf(quantile$$1.probability) > -1
                 ? 'black'
-                : 'black',
+                : [0.25, 0.75].indexOf(quantile$$1.probability) > -1
+                  ? 'black'
+                  : 'black',
             'stroke-width': '3px'
           });
         quantile$$1.mark
@@ -2172,12 +2385,10 @@
         var x = chart.x.invert(mouse$$1[0]);
         var y = chart.y.invert(mouse$$1[1]);
         var minimum = void 0;
-        var bar = {};
         bars.each(function(d, i) {
           d.distance = Math.abs(d.midpoint - x);
           if (i === 0 || d.distance < minimum) {
             minimum = d.distance;
-            bar = d;
           }
         });
         var closest = bars
@@ -2445,8 +2656,14 @@
         .attr('checked', true);
 
       commonScaleCheckbox.on('change', function() {
-        d3.select(this_).selectAll('.wc-chart').remove();
-        d3.select(this_).selectAll('.panel-label').remove();
+        d3
+          .select(this_)
+          .selectAll('.wc-chart')
+          .remove();
+        d3
+          .select(this_)
+          .selectAll('.panel-label')
+          .remove();
         d.commonScale = this.checked;
         createHistogramBoxPlot(this_, d);
       });
@@ -2558,11 +2775,18 @@
       } else {
         var valList = sortedValues;
       }
-      var valueItems = list.selectAll('li').data(valList).enter().append('li');
+      var valueItems = list
+        .selectAll('li')
+        .data(valList)
+        .enter()
+        .append('li');
 
-      valueItems.append('div').attr('class', 'wcb-label').text(function(d, i) {
-        return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
-      });
+      valueItems
+        .append('div')
+        .attr('class', 'wcb-label')
+        .text(function(d, i) {
+          return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
+        });
       valueItems
         .append('div')
         .attr('class', 'value')
@@ -2684,7 +2908,10 @@
   ];
 
   function makeDetails(d) {
-    var list = d3.select(this).append('div').append('ul');
+    var list = d3
+      .select(this)
+      .append('div')
+      .append('ul');
     var parent = d3.select(this.parentNode.parentNode);
     var controls = parent
       .select('.row-chart')
@@ -2766,12 +2993,21 @@
 
     var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
-    rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+    rowHead
+      .append('div')
+      .attr('class', 'row-title')
+      .each(makeTitle);
     //rowHead.append('div').attr('class', 'row-values').each(makeValues);
 
-    rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+    rowWrap
+      .append('div')
+      .attr('class', 'row-chart section')
+      .each(makeChart);
 
-    rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+    rowHead
+      .append('div')
+      .attr('class', 'row-details')
+      .each(makeDetails);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -2847,44 +3083,6 @@
 \------------------------------------------------------------------------------------------------*/
 
   var dataListing = { init: init$7 };
-
-  function clone$1(obj) {
-    var copy = void 0;
-
-    //boolean, number, string, null, undefined
-    if (
-      'object' != (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) ||
-      null == obj
-    )
-      return obj;
-
-    //date
-    if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
-    }
-
-    //array
-    if (obj instanceof Array) {
-      copy = [];
-      for (var i = 0, len = obj.length; i < len; i++) {
-        copy[i] = clone$1(obj[i]);
-      }
-      return copy;
-    }
-
-    //object
-    if (obj instanceof Object) {
-      copy = {};
-      for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
-      }
-      return copy;
-    }
-
-    throw new Error('Unable to copy [obj]! Its type is not supported.');
-  }
 
   var chartMakerSettings = {
     width: 800, //changed to 300 for paneled charts
@@ -3053,7 +3251,7 @@
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-      chartMaker.chartData = clone$1(codebook.data.filtered);
+      chartMaker.chartData = clone(codebook.data.filtered);
 
       //flag highlighted rows
       var highlightedRows = codebook.data.highlighted.map(function(m) {
@@ -3242,11 +3440,12 @@
     });
 
     //autofilter - don't use automatic filter if user specifies filters object
-    codebook.config.autofilter = codebook.config.filters.length > 0
-      ? false
-      : codebook.config.autofilter == null
-        ? defaultSettings$1.autofilter
-        : codebook.config.autofilter;
+    codebook.config.autofilter =
+      codebook.config.filters.length > 0
+        ? false
+        : codebook.config.autofilter == null
+          ? defaultSettings$1.autofilter
+          : codebook.config.autofilter;
 
     /********************* Group Settings *********************/
     codebook.config.groups = codebook.config.groups || defaultSettings$1.groups;
@@ -3262,8 +3461,8 @@
     codebook.config.variableLabels = codebook.config.variableLabels.filter(
       function(label, i) {
         var is_object =
-          (typeof label === 'undefined' ? 'undefined' : _typeof(label)) ===
-          'object',
+            (typeof label === 'undefined' ? 'undefined' : _typeof(label)) ===
+            'object',
           has_value_col = label.hasOwnProperty('value_col'),
           has_label = label.hasOwnProperty('label'),
           legit = is_object && has_value_col && has_label;
@@ -3301,11 +3500,12 @@
         : defaultSettings$1.variableLabels;
     }
     //autogroups - don't use automatic groups if user specifies groups object
-    codebook.config.autogroups = codebook.config.groups.length > 0
-      ? false
-      : codebook.config.autogroups == null
-        ? defaultSettings$1.autogroups
-        : codebook.config.autogroups;
+    codebook.config.autogroups =
+      codebook.config.groups.length > 0
+        ? false
+        : codebook.config.autogroups == null
+          ? defaultSettings$1.autogroups
+          : codebook.config.autogroups;
 
     /********************* Hidden Variable Settings ***************/
     codebook.config.hiddenVariables =
@@ -3314,9 +3514,10 @@
 
     /********************* Histogram Settings *********************/
     codebook.config.nBins = codebook.config.nBins || defaultSettings$1.nBins;
-    codebook.config.autobins = codebook.config.autobins == null
-      ? defaultSettings$1.autobins
-      : codebook.config.autobins;
+    codebook.config.autobins =
+      codebook.config.autobins == null
+        ? defaultSettings$1.autobins
+        : codebook.config.autobins;
 
     codebook.config.levelSplit =
       codebook.config.levelSplit || defaultSettings$1.levelSplit;
@@ -3356,8 +3557,8 @@
       codebook.config.chartVisibility || defaultSettings$1.chartVisibility;
 
     //hide the controls appropriately according to the start tab
-    if (codebook.config.controlVisibility != 'disabled') {
-      var startTab = availableTabs.filter(function(f) {
+    if (codebook.config.controlVisibility !== 'disabled') {
+      var startTab = availableTabs.find(function(f) {
         return f.key == codebook.config.defaultTab;
       });
       codebook.config.controlVisibility = startTab.controls
@@ -3447,11 +3648,12 @@
       var range =
         +summaryData.statistics['max'] - +summaryData.statistics['min'];
       var binSize = FreedmanDiaconis(IQR, n);
-      var bins = binSize > 0
-        ? Math.ceil(range / binSize)
-        : codebook.config.nBins > 0
-          ? codebook.config.nBins
-          : defaultSettings$1.nBins;
+      var bins =
+        binSize > 0
+          ? Math.ceil(range / binSize)
+          : codebook.config.nBins > 0
+            ? codebook.config.nBins
+            : defaultSettings$1.nBins;
 
       return bins;
     }
@@ -3693,15 +3895,16 @@
         variables[i].chartVisibility = codebook.config.chartVisibility;
 
         //get variable label
-        variables[i].label = codebook.config.variableLabels
-          .map(function(variableLabel) {
-            return variableLabel.value_col;
-          })
-          .indexOf(variable) > -1
-          ? codebook.config.variableLabels.filter(function(variableLabel) {
-              return variableLabel.value_col === variable;
-            })[0].label
-          : variable;
+        variables[i].label =
+          codebook.config.variableLabels
+            .map(function(variableLabel) {
+              return variableLabel.value_col;
+            })
+            .indexOf(variable) > -1
+            ? codebook.config.variableLabels.filter(function(variableLabel) {
+                return variableLabel.value_col === variable;
+              })[0].label
+            : variable;
 
         // Add metadata Object
         variables[i].meta = [{ key: 'Type', value: variables[i].type }];
@@ -3719,40 +3922,44 @@
         }
 
         //calculate variable statistics (including for highlights - if any)
-        var sub = codebook.data.highlighted.length > 0
-          ? function(d) {
-              return d.highlighted;
-            }
-          : null;
-        variables[i].statistics = variables[i].type === 'continuous'
-          ? summarize.continuous(variables[i].values, sub)
-          : summarize.categorical(variables[i].values, sub);
+        var sub =
+          codebook.data.highlighted.length > 0
+            ? function(d) {
+                return d.highlighted;
+              }
+            : null;
+        variables[i].statistics =
+          variables[i].type === 'continuous'
+            ? summarize.continuous(variables[i].values, sub)
+            : summarize.categorical(variables[i].values, sub);
 
         //get chart type
-        variables[i].chartType = variables[i].type == 'continuous'
-          ? 'histogramBoxPlot'
-          : (variables[i].type == 'categorical') &
+        variables[i].chartType =
+          variables[i].type == 'continuous'
+            ? 'histogramBoxPlot'
+            : (variables[i].type == 'categorical') &
               (variables[i].statistics.values.length >
                 codebook.config.levelSplit)
-            ? 'verticalBars'
-            : (variables[i].type == 'categorical') &
+              ? 'verticalBars'
+              : (variables[i].type == 'categorical') &
                 (variables[i].statistics.values.length <=
                   codebook.config.levelSplit)
-              ? 'horizontalBars'
-              : 'error';
+                ? 'horizontalBars'
+                : 'error';
 
         //Handle groups.
         if (group) {
           variables[i].group = group;
-          variables[i].groupLabel = codebook.config.variableLabels
-            .map(function(variableLabel) {
-              return variableLabel.value_col;
-            })
-            .indexOf(group) > -1
-            ? codebook.config.variableLabels.filter(function(variableLabel) {
-                return variableLabel.value_col === group;
-              })[0].label
-            : group;
+          variables[i].groupLabel =
+            codebook.config.variableLabels
+              .map(function(variableLabel) {
+                return variableLabel.value_col;
+              })
+              .indexOf(group) > -1
+              ? codebook.config.variableLabels.filter(function(variableLabel) {
+                  return variableLabel.value_col === group;
+                })[0].label
+              : group;
           variables[i].groups = d3
             .set(
               data.map(function(d) {
@@ -3847,21 +4054,25 @@
   }
 
   function updateSettings(codebook, column) {
-    var setting = column === 'Label'
-      ? 'variableLabels'
-      : column === 'Group'
-        ? 'groups'
-        : column === 'Filter'
-          ? 'filters'
-          : column === 'Hide'
-            ? 'hiddenVariables'
-            : console.warn('Something unsetting has occurred...');
+    var setting =
+      column === 'Label'
+        ? 'variableLabels'
+        : column === 'Group'
+          ? 'groups'
+          : column === 'Filter'
+            ? 'filters'
+            : column === 'Hide'
+              ? 'hiddenVariables'
+              : console.warn('Something unsetting has occurred...');
     var inputs = codebook.settings.wrap.selectAll('.column-table td.' + column);
     if (['Group', 'Filter', 'Hide'].indexOf(column) > -1) {
       //redefine settings array
       codebook.config[setting] = inputs
         .filter(function() {
-          return d3.select(this).select('input').property('checked');
+          return d3
+            .select(this)
+            .select('input')
+            .property('checked');
         })
         .data()
         .map(function(d) {
@@ -3871,7 +4082,10 @@
       //redefine settings array
       codebook.config[setting] = inputs
         .filter(function(d) {
-          d.value.label = d3.select(this).select('input').property('value');
+          d.value.label = d3
+            .select(this)
+            .select('input')
+            .property('value');
           return d.value.label !== '';
         })
         .data()
@@ -3887,8 +4101,8 @@
   function layout$1(codebook) {
     //Create list of columns in the data file.
     var columns = codebook.data.summary.map(function(d) {
-      return d.value_col;
-    }),
+        return d.value_col;
+      }),
       groupColumns = codebook.config.groups.map(function(d) {
         return d.value_col;
       }),
@@ -3905,10 +4119,11 @@
           Column: column,
           Label: {
             type: 'text',
-            label: labeledColumns.indexOf(column) > -1
-              ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
-                  .label
-              : ''
+            label:
+              labeledColumns.indexOf(column) > -1
+                ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
+                    .label
+                : ''
           },
           Group: {
             type: 'checkbox',
@@ -4154,9 +4369,10 @@
   };
 
   function createCodebook() {
-    var element = arguments.length > 0 && arguments[0] !== undefined
-      ? arguments[0]
-      : 'body';
+    var element =
+      arguments.length > 0 && arguments[0] !== undefined
+        ? arguments[0]
+        : 'body';
     var config = arguments[1];
 
     var codebook = {
@@ -4232,7 +4448,6 @@
 \------------------------------------------------------------------------------------------------*/
 
   function init$15() {
-    var settings = this.config;
     setDefaults$1(this);
 
     //prepare to draw the codebook for the first file
@@ -4346,13 +4561,12 @@
 
     //set the default tab to the codebook or listing view assuming they are visible
     if (this.current.event == 'click') {
-      this.current.settings.defaultTab = this.current.settings.tabs.indexOf(
-        'codebook'
-      ) > -1
-        ? 'codebook'
-        : this.current.settings.tabs.indexOf('listing') > -1
-          ? 'listing'
-          : 'files';
+      this.current.settings.defaultTab =
+        this.current.settings.tabs.indexOf('codebook') > -1
+          ? 'codebook'
+          : this.current.settings.tabs.indexOf('listing') > -1
+            ? 'listing'
+            : 'files';
     }
 
     this.current.settings.dataName =
@@ -4402,9 +4616,10 @@
   }
 
   function createExplorer() {
-    var element = arguments.length > 0 && arguments[0] !== undefined
-      ? arguments[0]
-      : 'body';
+    var element =
+      arguments.length > 0 && arguments[0] !== undefined
+        ? arguments[0]
+        : 'body';
     var config = arguments[1];
 
     var explorer = {

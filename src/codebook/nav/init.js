@@ -32,15 +32,6 @@ export function init(codebook) {
     t.wrap.classed('hidden', !t.active);
   });
 
-  //set control visibility
-  var activeTab = codebook.nav.tabs.filter(f => f.active)[0];
-  if (codebook.config.controlVisibility != 'disabled') {
-    codebook.config.controlVisibility = activeTab.controls
-      ? 'visible'
-      : 'hidden';
-    codebook.controls.controlToggle.set(codebook);
-  }
-
   //draw the nav
   if (codebook.nav.tabs.length > 1) {
     var chartNav = codebook.nav.wrap
@@ -73,8 +64,13 @@ export function init(codebook) {
         codebook.instructions.update(codebook);
 
         //show/hide the controls (unless they are disabled)
+        if (codebook.config.controlVisibility !== 'hidden')
+          codebook.config.previousControlVisibility =
+            codebook.config.controlVisibility;
         if (codebook.config.controlVisibility != 'disabled') {
-          codebook.config.controlVisibility = d.controls ? 'visible' : 'hidden';
+          codebook.config.controlVisibility = d.controls
+            ? codebook.config.previousControlVisibility
+            : 'hidden';
           codebook.controls.controlToggle.set(codebook);
         }
       }

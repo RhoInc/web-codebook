@@ -1,7 +1,7 @@
 import { createChart } from 'webcharts';
 import { multiply } from 'webcharts';
 import indicateLoading from '../util/indicateLoading';
-import clone from '../util/clone';
+import clone from '../../util/clone';
 import chartMakerSettings from './chartMakerSettings.js';
 import makeSettings from './makeSettings.js';
 

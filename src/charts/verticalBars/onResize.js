@@ -44,7 +44,10 @@ export default function onResize() {
           return i === arbitrary;
         });
       }
-      bars.select('rect').style('stroke-width', null).style('stroke', null);
+      bars
+        .select('rect')
+        .style('stroke-width', null)
+        .style('stroke', null);
       closest = closest.select('rect');
 
       //Activate tooltip.
@@ -56,7 +59,10 @@ export default function onResize() {
     })
     .on('mouseout', function() {
       context.svg.selectAll('g.svg-tooltip').classed('active', false);
-      bars.select('rect').style('stroke-width', null).style('stroke', null);
+      bars
+        .select('rect')
+        .style('stroke-width', null)
+        .style('stroke', null);
     });
 
   //Add event listener to marks to highlight data.
