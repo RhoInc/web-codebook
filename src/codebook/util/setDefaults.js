@@ -25,11 +25,12 @@ export function setDefaults(codebook) {
   });
 
   //autofilter - don't use automatic filter if user specifies filters object
-  codebook.config.autofilter = codebook.config.filters.length > 0
-    ? false
-    : codebook.config.autofilter == null
-      ? defaultSettings.autofilter
-      : codebook.config.autofilter;
+  codebook.config.autofilter =
+    codebook.config.filters.length > 0
+      ? false
+      : codebook.config.autofilter == null
+        ? defaultSettings.autofilter
+        : codebook.config.autofilter;
 
   /********************* Group Settings *********************/
   codebook.config.groups = codebook.config.groups || defaultSettings.groups;
@@ -78,11 +79,12 @@ export function setDefaults(codebook) {
       : defaultSettings.variableLabels;
   }
   //autogroups - don't use automatic groups if user specifies groups object
-  codebook.config.autogroups = codebook.config.groups.length > 0
-    ? false
-    : codebook.config.autogroups == null
-      ? defaultSettings.autogroups
-      : codebook.config.autogroups;
+  codebook.config.autogroups =
+    codebook.config.groups.length > 0
+      ? false
+      : codebook.config.autogroups == null
+        ? defaultSettings.autogroups
+        : codebook.config.autogroups;
 
   /********************* Hidden Variable Settings ***************/
   codebook.config.hiddenVariables =
@@ -91,9 +93,10 @@ export function setDefaults(codebook) {
 
   /********************* Histogram Settings *********************/
   codebook.config.nBins = codebook.config.nBins || defaultSettings.nBins;
-  codebook.config.autobins = codebook.config.autobins == null
-    ? defaultSettings.autobins
-    : codebook.config.autobins;
+  codebook.config.autobins =
+    codebook.config.autobins == null
+      ? defaultSettings.autobins
+      : codebook.config.autobins;
 
   codebook.config.levelSplit =
     codebook.config.levelSplit || defaultSettings.levelSplit;

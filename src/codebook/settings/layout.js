@@ -14,10 +14,11 @@ export function layout(codebook) {
         Column: column,
         Label: {
           type: 'text',
-          label: labeledColumns.indexOf(column) > -1
-            ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
-                .label
-            : ''
+          label:
+            labeledColumns.indexOf(column) > -1
+              ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
+                  .label
+              : ''
         },
         Group: {
           type: 'checkbox',
@@ -84,10 +85,9 @@ export function layout(codebook) {
           default:
             cell.attr(
               'title',
-              `${d.value.checked ? 'Remove' : 'Add'} ${d.column} ${d.value
-                .checked
-                ? 'from'
-                : 'to'} ${d.key.toLowerCase()} list`
+              `${d.value.checked ? 'Remove' : 'Add'} ${d.column} ${
+                d.value.checked ? 'from' : 'to'
+              } ${d.key.toLowerCase()} list`
             );
             const checkbox = cell
               .append('input')

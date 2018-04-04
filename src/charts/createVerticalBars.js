@@ -37,7 +37,7 @@ export function createVerticalBars(this_, d) {
       }
     ],
     colors: ['#999'],
-    gridlines: '',
+    gridlines: 'y',
     resizable: false,
     height: this_.height,
     margin: this_.margin,
@@ -45,7 +45,6 @@ export function createVerticalBars(this_, d) {
     group_col: d.group || null,
     group_label: d.groupLabel || null,
     overall: d.statistics.values,
-    gridlines: 'y',
     sort: sortType, //Alphabetical, Ascending, Descending
     chartType: d.chartType
   };
@@ -113,8 +112,9 @@ export function createVerticalBars(this_, d) {
         d3select(chartContainer)
           .append('p')
           .text(
-            `${chartSettings.group_col}: ${group.chartSettings
-              .group_val} (n=${group.chartSettings.n})`
+            `${chartSettings.group_col}: ${group.chartSettings.group_val} (n=${
+              group.chartSettings.n
+            })`
           );
 
         d3select(chartContainer)

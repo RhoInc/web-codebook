@@ -11,8 +11,8 @@ export default function drawDifferences(chart) {
     })
     .forEach(d => {
       const overall = chart.config.overall.filter(function(di) {
-        return di.key === d.values.raw[0].key;
-      })[0],
+          return di.key === d.values.raw[0].key;
+        })[0],
         g = chart.svg
           .append('g')
           .classed('difference-from-total', true)

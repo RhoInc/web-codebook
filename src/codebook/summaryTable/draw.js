@@ -18,9 +18,12 @@ export function draw(codebook) {
     .data(codebook.data.summary, d => d.value_col);
 
   //ENTER
-  varRows.enter().append('div').attr('class', function(d) {
-    return 'variable-row ' + d.type;
-  });
+  varRows
+    .enter()
+    .append('div')
+    .attr('class', function(d) {
+      return 'variable-row ' + d.type;
+    });
 
   //Hide variable rows corresponding to variables specified in settings.hiddenVariables.
   varRows.classed(
@@ -36,9 +39,8 @@ export function draw(codebook) {
     );
   }
 
-  codebook.config.chartVisibility = codebook.config.chartVisibility == 'hidden'
-    ? 'hidden'
-    : 'user-defined';
+  codebook.config.chartVisibility =
+    codebook.config.chartVisibility == 'hidden' ? 'hidden' : 'user-defined';
 
   //ENTER + Update
   varRows.each(codebook.summaryTable.renderRow);

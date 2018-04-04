@@ -7,9 +7,10 @@ export default function makeTooltip(d, i, context) {
   d.range = `${format(d.rangeLow)}-${format(d.rangeHigh)}`;
   d.selector = `bar` + i;
   d.side = context.x(d.midpoint) < context.plot_width / 2 ? 'left' : 'right';
-  d.xPosition = d.side === 'left'
-    ? context.x(d.midpoint) + offset
-    : context.x(d.midpoint) - offset;
+  d.xPosition =
+    d.side === 'left'
+      ? context.x(d.midpoint) + offset
+      : context.x(d.midpoint) - offset;
 
   //Define tooltips.
   const tooltip = context.svg.append('g').attr('id', d.selector),
