@@ -45,7 +45,7 @@ export function draw(codebook) {
 
     //Define chart.
     chartMaker.chart = createChart(
-      '.web-codebook .chartMaker.section .cm-chart',
+      codebook.wrap.select('.chartMaker.section .cm-chart').node(),
       chartMaker.chartSettings
     );
 

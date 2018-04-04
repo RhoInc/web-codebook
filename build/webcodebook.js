@@ -259,7 +259,7 @@
     };
   })();
 
-  function clone(obj) {
+  function clone$1(obj) {
     var copy = void 0;
 
     //boolean, number, string, null, undefined
@@ -280,7 +280,7 @@
     if (obj instanceof Array) {
       copy = [];
       for (var i = 0, len = obj.length; i < len; i++) {
-        copy[i] = clone(obj[i]);
+        copy[i] = clone$1(obj[i]);
       }
       return copy;
     }
@@ -289,7 +289,7 @@
     if (obj instanceof Object) {
       copy = {};
       for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
       }
       return copy;
     }
@@ -345,7 +345,7 @@
     this.events.init.call(this);
 
     //save raw data
-    this.data.raw = clone(data);
+    this.data.raw = clone$1(data);
     this.data.raw.forEach(function(d, i) {
       d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
     });
@@ -838,28 +838,28 @@
     {
       key: 'files',
       label: 'Files',
-      selector: '.web-codebook .fileListing',
+      selector: '.fileListing',
       controls: false,
       instructions: 'Click a row to see the codebook for the file.'
     },
     {
       key: 'codebook',
       label: 'Codebook',
-      selector: '.web-codebook .summaryTable',
+      selector: '.summaryTable',
       controls: true,
       instructions: 'Automatically generated data summaries for each column.'
     },
     {
       key: 'listing',
       label: 'Data Listing',
-      selector: '.web-codebook .dataListing',
+      selector: '.dataListing',
       controls: true,
       instructions: 'Listing of all selected records.'
     },
     {
       key: 'chartMaker',
       label: 'Charts',
-      selector: '.web-codebook .chartMaker',
+      selector: '.chartMaker',
       controls: true,
       instructions:
         'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
@@ -867,7 +867,7 @@
     {
       key: 'settings',
       label: '&#x2699;',
-      selector: '.web-codebook .settings',
+      selector: '.settings',
       controls: false,
       instructions:
         "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
@@ -875,11 +875,12 @@
   ];
 
   function init$6(codebook) {
+    var defaultTabs = clone(availableTabs);
     codebook.nav.wrap.selectAll('*').remove();
 
     //permanently hide the codebook sections that aren't included
-    availableTabs.forEach(function(tab) {
-      tab.wrap = d3.select(tab.selector);
+    defaultTabs.forEach(function(tab) {
+      tab.wrap = codebook.wrap.select(tab.selector);
       tab.wrap.classed(
         'hidden',
         codebook.config.tabs
@@ -891,7 +892,7 @@
     });
 
     //get the tabs for the current codebook
-    codebook.nav.tabs = availableTabs.filter(function(tab) {
+    codebook.nav.tabs = defaultTabs.filter(function(tab) {
       return (
         codebook.config.tabs
           .map(function(m) {
@@ -1329,7 +1330,7 @@
       chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone(chartSettings);
+        group.chartSettings = clone$1(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
         group.data = group.statistics.values;
@@ -1689,7 +1690,7 @@
 
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone(chartSettings);
+        group.chartSettings = clone$1(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
 
@@ -1926,7 +1927,7 @@
         chartSettings.marks[0].values = { group: ['Overall'] };
 
         //Group marks
-        chartSettings.marks[1] = clone(chartSettings.marks[0]);
+        chartSettings.marks[1] = clone$1(chartSettings.marks[0]);
         chartSettings.marks[1].values = {
           group: d.groups.map(function(d) {
             return d.group;
@@ -2074,7 +2075,7 @@
 
   //Replicate settings in multiple places in the settings object.
   function syncSettings(settings) {
-    var syncedSettings = clone(settings);
+    var syncedSettings = clone$1(settings);
 
     if (syncedSettings.panel === null) syncedSettings.overall = true;
     syncedSettings.x.column = settings.measure;
@@ -2551,7 +2552,7 @@
         });
 
       groups.forEach(function(group, i) {
-        group.settings = clone(config);
+        group.settings = clone$1(config);
         group.settings.y.label = group.group;
         group.settings.y.domain = config.commonScale ? [0, max$$1] : [0, null];
         group.data = context.raw_data.filter(function(d) {
@@ -2589,7 +2590,7 @@
 
     //Define chart.
     var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-    chart.initialSettings = clone(syncedSettings);
+    chart.initialSettings = clone$1(syncedSettings);
     chart.initialSettings.container = element;
     chart.on('init', onInit$2);
     chart.on('resize', onResize$3);
@@ -3056,7 +3057,10 @@
     dataListing.wrap.selectAll('*').remove();
 
     //Define table.
-    dataListing.table = webcharts.createTable('.web-codebook .dataListing', {});
+    dataListing.table = webcharts.createTable(
+      codebook.wrap.select('.dataListing').node(),
+      {}
+    );
 
     //Define callback.
     onDraw(dataListing);
@@ -3251,7 +3255,7 @@
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-      chartMaker.chartData = clone(codebook.data.filtered);
+      chartMaker.chartData = clone$1(codebook.data.filtered);
 
       //flag highlighted rows
       var highlightedRows = codebook.data.highlighted.map(function(m) {
@@ -3263,7 +3267,7 @@
 
       //Define chart.
       chartMaker.chart = webcharts.createChart(
-        '.web-codebook .chartMaker.section .cm-chart',
+        codebook.wrap.select('.chartMaker.section .cm-chart').node(),
         chartMaker.chartSettings
       );
 
@@ -4407,7 +4411,7 @@
       }
     };
 
-    return codebook;
+    return clone$1(codebook);
   }
 
   var defaultSettings$3 = {
