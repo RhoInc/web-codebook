@@ -1,5 +1,6 @@
 import availableTabs from './availableTabs';
 import { select as d3select } from 'd3';
+import clone from '../../util/clone';
 
 export function init(codebook) {
   const defaultTabs = clone(availableTabs);
