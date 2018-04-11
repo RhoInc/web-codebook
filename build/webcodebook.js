@@ -2857,6 +2857,62 @@
   }
 
   //Render metadata
+  function renderMeta(d, list) {
+    list.selectAll('*').remove();
+
+    // don't renderer items with no
+    var dropped = [];
+    d.meta.forEach(function(d) {
+      if (!d.value) {
+        d.hidden = true;
+        dropped.push(' "' + d.key + '"');
+      }
+    });
+
+    //render the items
+    var metaItems = list
+      .selectAll('li.meta')
+      .data(
+        d.meta.filter(function(f) {
+          return f.key != 'Type';
+        })
+      )
+      .enter()
+      .append('li')
+      .classed('meta', true)
+      .classed('hidden', function(d) {
+        return d.hidden;
+      });
+
+    metaItems
+      .append('div')
+      .text(function(d) {
+        return d.key;
+      })
+      .attr('class', 'wcb-label');
+    metaItems
+      .append('div')
+      .text(function(d) {
+        return d.value;
+      })
+      .attr('class', 'value');
+
+    if (dropped.length) {
+      list
+        .append('li')
+        .append('div')
+        .attr('class', 'details')
+        .html('&#9432;')
+        .property(
+          'title',
+          'Meta data for ' +
+            dropped.length +
+            ' item(s) (' +
+            dropped.toString() +
+            ') were empty and are hidden.'
+        );
+    }
+  }
 
   function makeDetails(d) {
     var stat_list = d3
@@ -2873,6 +2929,28 @@
     //render stats & values on initial load
     renderStats(d, stat_list);
     renderValues(d, val_list);
+  }
+
+  function makeMeta(d) {
+    var hasMeta =
+      d.meta
+        .filter(function(f) {
+          return !f.hidden;
+        })
+        .filter(function(f) {
+          return f.key != 'Type';
+        }).lenght > 0;
+    if (hasMeta) {
+      var meta_list = d3
+        .select(this)
+        .append('ul')
+        .attr('class', 'meta');
+
+      var parent = d3.select(this.parentNode.parentNode);
+      renderMeta(d, meta_list);
+    } else {
+      d3.select(this).style('display', 'none');
+    }
   }
 
   function makeTitle(d) {
@@ -2948,21 +3026,27 @@
     var rowWrap = d3.select(this);
     rowWrap.selectAll('*').remove();
 
-    var rowHead = rowWrap.append('div').attr('class', 'row-head section');
-    var rowDetails = rowWrap.append('div').attr('class', 'row-details section');
-
-    rowHead
+    rowWrap
+      .append('div')
+      .attr('class', 'row-head section')
       .append('div')
       .attr('class', 'row-title')
       .each(makeTitle);
-    //rowHead.append('div').attr('class', 'row-values').each(makeValues);
+
+    rowWrap
+      .append('div')
+      .attr('class', 'row-details section')
+      .each(makeDetails);
 
     rowWrap
       .append('div')
       .attr('class', 'row-chart section')
       .each(makeChart);
 
-    rowDetails.each(makeDetails);
+    rowWrap
+      .append('div')
+      .attr('class', 'row-meta section')
+      .each(makeMeta);
   }
 
   /*------------------------------------------------------------------------------------------------\

@@ -340,6 +340,7 @@
 .web-codebook .summaryTable .variable-row .row-details ul {
   display:inline-block;
 }
+
 .web-codebook .summaryTable .variable-row .row-details ul.values {
   float:right;
 }
@@ -421,6 +422,55 @@
 
 .web-codebook .summaryTable .variable-row .row-chart .svg-tooltip.active {
     display: block;
+}
+
+/**-------------------------------------------------------------------------------------------\
+    Metadata - layout
+\-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row .row-meta{
+  border-top:1px solid #ccc;
+  padding-bottom:0.2em;
+}
+.web-codebook .summaryTable .variable-row .row-meta ul {
+  display:inline-block;
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li {
+    display: inline-block;
+    background-color:white;
+    border:1px solid black;
+    border-radius:2px;
+    padding: 2px 4px 2px 4px;
+    margin-left: 0.4em;
+    font-size: 0.6em;
+
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div {
+  display: inline-block;
+    text-align: left;
+    margin: .1em;
+    vertical-align: middle;
+
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div.wcb-label {
+    display: inline-block;
+    font-size: 0.65em;
+    color: #999;
+    min-width: 1em;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div.value {
+    display: inline-block;
+    font-size: 0.85em;
+    color: #333;
 }
 
 /*------------------------------------------------------------------------------------------------\
