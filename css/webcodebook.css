@@ -247,7 +247,8 @@
     padding-left:0.2em;
 }
 
-.web-codebook .summaryTable .variable-row.hiddenChart .row-chart {
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-chart,
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-details {
     display: none;
 }
 

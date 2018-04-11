@@ -1015,7 +1015,7 @@
     //Set chart visibility (on initial load only - then keep user settings)
     if (codebook.config.chartVisibility != 'user-defined') {
       varRows.classed(
-        'hiddenChart',
+        'hiddenDetails',
         codebook.config.chartVisibility != 'visible'
       );
     }
@@ -2857,69 +2857,6 @@
   }
 
   //Render metadata
-  function renderMeta(d, list) {
-    list.selectAll('*').remove();
-
-    // don't renderer items with no
-    var dropped = [];
-    d.meta.forEach(function(d) {
-      if (!d.value) {
-        d.hidden = true;
-        dropped.push(' "' + d.key + '"');
-      }
-    });
-
-    //render the items
-    var metaItems = list
-      .selectAll('li.meta')
-      .data(d.meta)
-      .enter()
-      .append('li')
-      .classed('meta', true)
-      .classed('hidden', function(d) {
-        return d.hidden;
-      });
-
-    metaItems
-      .append('div')
-      .text(function(d) {
-        return d.key;
-      })
-      .attr('class', 'wcb-label');
-    metaItems
-      .append('div')
-      .text(function(d) {
-        return d.value;
-      })
-      .attr('class', 'value');
-
-    if (dropped.length) {
-      list
-        .append('li')
-        .append('div')
-        .attr('class', 'details')
-        .html('&#9432;')
-        .property(
-          'title',
-          'Meta data for ' +
-            dropped.length +
-            ' item(s) (' +
-            dropped.toString() +
-            ') were empty and are hidden.'
-        );
-    }
-  }
-
-  function clearDetails(d, list) {
-    list.selectAll('*').remove();
-  }
-
-  var detailList = [
-    { key: 'Stats', action: renderStats },
-    { key: 'Meta', action: renderMeta },
-    { key: 'Values', action: renderValues },
-    { key: 'None', action: clearDetails }
-  ];
 
   function makeDetails(d) {
     var stat_list = d3
@@ -2933,22 +2870,6 @@
 
     var parent = d3.select(this.parentNode.parentNode);
 
-    /*
-  controls.append('small').html('Header Details: ');
-  var detailSelect = controls.append('select');
-   var detailItems = detailSelect
-    .selectAll('option')
-    .data(detailList)
-    .enter()
-    .append('option')
-    .html(d => d.key);
-   //Handlers for label events
-  detailSelect.on('change', function() {
-    var current = this.value;
-    var detailObj = detailList.filter(f => f.key == current)[0];
-    detailObj.action(d, list);
-  });
-  */
     //render stats & values on initial load
     renderStats(d, stat_list);
     renderValues(d, val_list);
@@ -2957,7 +2878,7 @@
   function makeTitle(d) {
     var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
     var chartDiv = rowDiv.select('.row-chart');
-    var hiddenFlag = rowDiv.classed('hiddenChart');
+    var hiddenFlag = rowDiv.classed('hiddenDetails');
     d3
       .select(this)
       .append('div')
@@ -2969,8 +2890,8 @@
       .on('click', function() {
         var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
         var chartDiv = rowDiv.select('.row-chart');
-        var hiddenFlag = rowDiv.classed('hiddenChart');
-        rowDiv.classed('hiddenChart', !hiddenFlag);
+        var hiddenFlag = rowDiv.classed('hiddenDetails');
+        rowDiv.classed('hiddenDetails', !hiddenFlag);
         d3.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
       });
 
@@ -4336,65 +4257,24 @@
       .attr('class', 'control chart-toggle')
       .classed('hidden', codebook.config.chartVisibility == 'hidden');
 
-    selector.append('small').text('Toggle Charts: ');
+    selector.append('small').text('Toggle Details: ');
     var showAllButton = selector
       .append('button')
-      .text('Show All Charts')
+      .text('Show All Details')
       .on('click', function() {
-        codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+        codebook.wrap
+          .selectAll('.variable-row')
+          .classed('hiddenDetails', false);
         codebook.wrap.selectAll('.row-toggle').html('&#9660;');
       });
 
     var hideAllButton = selector
       .append('button')
-      .text('Hide All Charts')
+      .text('Hide All Details')
       .on('click', function() {
-        codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+        codebook.wrap.selectAll('.variable-row').classed('hiddenDetails', true);
         codebook.wrap.selectAll('.row-toggle').html('&#9658;');
       });
-  }
-
-  /*------------------------------------------------------------------------------------------------\
-  Initialize detail select
-\------------------------------------------------------------------------------------------------*/
-  //export function init(selector, data, vars, settings) {
-  function init$14(codebook) {
-    //initialize the wrapper
-    var control = codebook.instructions.wrap
-      .append('span')
-      .attr('class', 'control detail-select');
-
-    control.append('small').html('Header Details: ');
-    var detailSelect = control.append('select');
-
-    var detailItems = detailSelect
-      .selectAll('option')
-      .data(detailList)
-      .enter()
-      .append('option')
-      .html(function(d) {
-        return d.key;
-      });
-
-    //Handlers for label events
-    detailSelect.on('change', function() {
-      var current = this.value;
-      var detailObj = detailList.filter(function(f) {
-        return f.key == current;
-      })[0];
-
-      codebook.wrap.selectAll('.variable-row').each(function(d) {
-        //show the requested detail for each row
-        var list = d3.select(this).select('.row-head .row-details ul');
-        detailObj.action(d, list);
-
-        //update the select on each row
-        d3
-          .select(this)
-          .select('.row-chart .row-controls .detail-controls select')
-          .property('value', current);
-      });
-    });
   }
 
   function update$2(codebook) {
@@ -4407,7 +4287,6 @@
 
     //add tab-specific controls
     if (activeTab.key == 'codebook') {
-      init$14(codebook);
       init$13(codebook);
     }
   }
@@ -4500,7 +4379,7 @@
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-  function init$15() {
+  function init$14() {
     setDefaults$1(this);
 
     //prepare to draw the codebook for the first file
@@ -4557,7 +4436,7 @@
     });
   }
 
-  function init$16(explorer) {
+  function init$15(explorer) {
     var fileWrap = explorer.codebook.fileListing.wrap;
     fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -4599,7 +4478,7 @@
 \------------------------------------------------------------------------------------------------*/
 
   var fileListing = {
-    init: init$16
+    init: init$15
   };
 
   function makeCodebook(explorer) {
@@ -4678,7 +4557,7 @@
     var explorer = {
       element: element,
       config: config,
-      init: init$15,
+      init: init$14,
       layout: layout$2,
       fileListing: fileListing,
       makeCodebook: makeCodebook,

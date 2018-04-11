@@ -4,7 +4,7 @@ import { format as d3format } from 'd3';
 export default function makeTitle(d) {
   var rowDiv = d3select(this.parentNode.parentNode.parentNode);
   var chartDiv = rowDiv.select('.row-chart');
-  var hiddenFlag = rowDiv.classed('hiddenChart');
+  var hiddenFlag = rowDiv.classed('hiddenDetails');
   d3select(this)
     .append('div')
     .attr('class', 'row-toggle')
@@ -15,8 +15,8 @@ export default function makeTitle(d) {
     .on('click', function() {
       var rowDiv = d3select(this.parentNode.parentNode.parentNode);
       var chartDiv = rowDiv.select('.row-chart');
-      var hiddenFlag = rowDiv.classed('hiddenChart');
-      rowDiv.classed('hiddenChart', !hiddenFlag);
+      var hiddenFlag = rowDiv.classed('hiddenDetails');
+      rowDiv.classed('hiddenDetails', !hiddenFlag);
       d3select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
     });
 

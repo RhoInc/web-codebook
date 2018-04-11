@@ -1,5 +1,4 @@
 import { init as initToggle } from './chartToggle/init';
-import { init as initDetailSelect } from './detailSelect/init';
 
 export function update(codebook) {
   var activeTab = codebook.nav.tabs.filter(d => d.active)[0];
@@ -9,7 +8,6 @@ export function update(codebook) {
 
   //add tab-specific controls
   if (activeTab.key == 'codebook') {
-    initDetailSelect(codebook);
     initToggle(codebook);
   }
 }
