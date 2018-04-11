@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -19,20 +19,16 @@
   },
   "dependencies": {
     "d3": "~3",
-    "webcharts": "~1"
+    "webcharts": "~1.7"
   },
   "scripts": {
-    "build": "npm run bundle && npm run format && npm run test-page",
+    "build": "npm run bundle && npm run format",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
     "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
     "test-page": "start chrome ./build/test-page/index.html && start firefox ./build/test-page/index.html && start iexplore file://%CD%/build/test-page/index.html",
     "watch": "rollup -c -w"
-  },
-  "dependencies": {
-    "d3": "~3",
-    "webcharts": "~1.7"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
