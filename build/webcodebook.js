@@ -7,6 +7,7 @@
 })(this, function(d3, webcharts) {
   'use strict';
 
+<<<<<<< HEAD
   if (typeof Object.assign != 'function') {
     Object.defineProperty(Object, 'assign', {
       value: function assign(target, varArgs) {
@@ -229,6 +230,108 @@
       }
     }
 
+=======
+  var _typeof =
+    typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol'
+      ? function(obj) {
+          return typeof obj;
+        }
+      : function(obj) {
+          return obj &&
+            typeof Symbol === 'function' &&
+            obj.constructor === Symbol &&
+            obj !== Symbol.prototype
+            ? 'symbol'
+            : typeof obj;
+        };
+
+  var asyncGenerator = (function() {
+    function AwaitValue(value) {
+      this.value = value;
+    }
+
+    function AsyncGenerator(gen) {
+      var front, back;
+
+      function send(key, arg) {
+        return new Promise(function(resolve, reject) {
+          var request = {
+            key: key,
+            arg: arg,
+            resolve: resolve,
+            reject: reject,
+            next: null
+          };
+
+          if (back) {
+            back = back.next = request;
+          } else {
+            front = back = request;
+            resume(key, arg);
+          }
+        });
+      }
+
+      function resume(key, arg) {
+        try {
+          var result = gen[key](arg);
+          var value = result.value;
+
+          if (value instanceof AwaitValue) {
+            Promise.resolve(value.value).then(
+              function(arg) {
+                resume('next', arg);
+              },
+              function(arg) {
+                resume('throw', arg);
+              }
+            );
+          } else {
+            settle(result.done ? 'return' : 'normal', result.value);
+          }
+        } catch (err) {
+          settle('throw', err);
+        }
+      }
+
+      function settle(type, value) {
+        switch (type) {
+          case 'return':
+            front.resolve({
+              value: value,
+              done: true
+            });
+            break;
+
+          case 'throw':
+            front.reject(value);
+            break;
+
+          default:
+            front.resolve({
+              value: value,
+              done: false
+            });
+            break;
+        }
+
+        front = front.next;
+
+        if (front) {
+          resume(front.key, front.arg);
+        } else {
+          back = null;
+        }
+      }
+
+      this._invoke = send;
+
+      if (typeof gen.return !== 'function') {
+        this.return = undefined;
+      }
+    }
+
+>>>>>>> test-page
     if (typeof Symbol === 'function' && Symbol.asyncIterator) {
       AsyncGenerator.prototype[Symbol.asyncIterator] = function() {
         return this;
@@ -242,6 +345,25 @@
     AsyncGenerator.prototype.throw = function(arg) {
       return this._invoke('throw', arg);
     };
+<<<<<<< HEAD
+=======
+
+    AsyncGenerator.prototype.return = function(arg) {
+      return this._invoke('return', arg);
+    };
+
+    return {
+      wrap: function(fn) {
+        return function() {
+          return new AsyncGenerator(fn.apply(this, arguments));
+        };
+      },
+      await: function(value) {
+        return new AwaitValue(value);
+      }
+    };
+  })();
+>>>>>>> test-page
 
     AsyncGenerator.prototype.return = function(arg) {
       return this._invoke('return', arg);
@@ -1278,6 +1400,10 @@
         }
       ],
       colors: ['#999'],
+<<<<<<< HEAD
+=======
+      gridlines: 'y',
+>>>>>>> test-page
       resizable: false,
       height: this_.height,
       margin: this_.margin,
@@ -1285,7 +1411,10 @@
       group_col: d.group || null,
       group_label: d.groupLabel || null,
       overall: d.statistics.values,
+<<<<<<< HEAD
       gridlines: 'y',
+=======
+>>>>>>> test-page
       sort: sortType, //Alphabetical, Ascending, Descending
       chartType: d.chartType
     };
@@ -2026,6 +2155,35 @@
     });
   }
 
+<<<<<<< HEAD
+=======
+  if (typeof Object.assign != 'function') {
+    (function() {
+      Object.assign = function(target) {
+        'use strict';
+
+        if (target === undefined || target === null)
+          throw new TypeError('Cannot convert undefined or null to object');
+
+        var output = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var source = arguments[index];
+
+          if (source !== undefined && source !== null) {
+            for (var nextKey in source) {
+              if (source.hasOwnProperty(nextKey))
+                output[nextKey] = source[nextKey];
+            }
+          }
+        }
+
+        return output;
+      };
+    })();
+  }
+
+>>>>>>> test-page
   var defaultSettings =
     //Custom settings
     {

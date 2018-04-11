@@ -17,12 +17,17 @@
     "type": "git",
     "url": "https://github.com/rhoinc/web-codebook.git"
   },
+  "dependencies": {
+    "d3": "~3",
+    "webcharts": "~1"
+  },
   "scripts": {
-    "build": "npm run bundle && npm run format",
+    "build": "npm run bundle && npm run format && npm run test-page",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
     "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
+    "test-page": "start chrome ./build/test-page/index.html && start firefox ./build/test-page/index.html && start iexplore file://%CD%/build/test-page/index.html",
     "watch": "rollup -c -w"
   },
   "dependencies": {
