@@ -19,9 +19,8 @@ export default function makeTooltip(d, i, context) {
     .attr({
       x: context.x(d.values.x),
       dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
-      'text-anchor': context.x(d.values.x) < context.plot_width / 2
-        ? 'start'
-        : 'end'
+      'text-anchor':
+        context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
     })
     .text(`${d.values.x}`);
   text
@@ -30,9 +29,8 @@ export default function makeTooltip(d, i, context) {
       x: context.x(d.values.x),
       dx: context.x(d.values.x) < context.plot_width / 2 ? '1em' : '-1em',
       dy: '-1.5em',
-      'text-anchor': context.x(d.values.x) < context.plot_width / 2
-        ? 'start'
-        : 'end'
+      'text-anchor':
+        context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
     })
     .text('n=' + d.values.raw[0].n + ' (' + d3format('0.1%')(d.total) + ')');
   const dimensions = text[0][0].getBBox();
