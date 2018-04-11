@@ -8,6 +8,14 @@ export default function categorical(vector, sub) {
   );
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;
+  statistics.percentMissing = statistics.nMissing / statistics.N;
+  statistics.missingSummary =
+    statistics.nMissing +
+    '/' +
+    statistics.N +
+    ' (' +
+    d3format('0.1%')(statistics.percentMissing) +
+    ')';
   statistics.values = d3nest()
     .key(d => d.value)
     .rollup(function(d) {

@@ -1,7 +1,7 @@
 import { select as d3select } from 'd3';
+import { format as d3format } from 'd3';
 
 export default function makeTitle(d) {
-  console.log('making a title');
   var rowDiv = d3select(this.parentNode.parentNode.parentNode);
   var chartDiv = rowDiv.select('.row-chart');
   var hiddenFlag = rowDiv.classed('hiddenChart');
@@ -36,4 +36,16 @@ export default function makeTitle(d) {
     .append('span')
     .attr('class', 'type')
     .text(d => d.type);
+
+  d3select(this)
+    .append('span')
+    .attr('class', 'percent-missing')
+    .text(d => d3format('0.1%')(d.statistics.percentMissing) + ' missing')
+    .style('display', d => (d.statistics.percentMissing == 0 ? 'none' : null))
+    .style('cursor', 'pointer')
+    .style('color', d => (d.statistics.percentMissing >= 0.1 ? 'red' : '#999'))
+    .attr(
+      'title',
+      d => d.statistics.nMissing + ' of ' + d.statistics.N + ' missing'
+    );
 }

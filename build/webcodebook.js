@@ -259,7 +259,7 @@
     };
   })();
 
-  function clone$1(obj) {
+  function clone(obj) {
     var copy = void 0;
 
     //boolean, number, string, null, undefined
@@ -280,7 +280,7 @@
     if (obj instanceof Array) {
       copy = [];
       for (var i = 0, len = obj.length; i < len; i++) {
-        copy[i] = clone$1(obj[i]);
+        copy[i] = clone(obj[i]);
       }
       return copy;
     }
@@ -289,7 +289,7 @@
     if (obj instanceof Object) {
       copy = {};
       for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
+        if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
       }
       return copy;
     }
@@ -345,7 +345,7 @@
     this.events.init.call(this);
 
     //save raw data
-    this.data.raw = clone$1(data);
+    this.data.raw = clone(data);
     this.data.raw.forEach(function(d, i) {
       d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
     });
@@ -1330,7 +1330,7 @@
       chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone$1(chartSettings);
+        group.chartSettings = clone(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
         group.data = group.statistics.values;
@@ -1690,7 +1690,7 @@
 
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone$1(chartSettings);
+        group.chartSettings = clone(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
 
@@ -1927,7 +1927,7 @@
         chartSettings.marks[0].values = { group: ['Overall'] };
 
         //Group marks
-        chartSettings.marks[1] = clone$1(chartSettings.marks[0]);
+        chartSettings.marks[1] = clone(chartSettings.marks[0]);
         chartSettings.marks[1].values = {
           group: d.groups.map(function(d) {
             return d.group;
@@ -2075,7 +2075,7 @@
 
   //Replicate settings in multiple places in the settings object.
   function syncSettings(settings) {
-    var syncedSettings = clone$1(settings);
+    var syncedSettings = clone(settings);
 
     if (syncedSettings.panel === null) syncedSettings.overall = true;
     syncedSettings.x.column = settings.measure;
@@ -2552,7 +2552,7 @@
         });
 
       groups.forEach(function(group, i) {
-        group.settings = clone$1(config);
+        group.settings = clone(config);
         group.settings.y.label = group.group;
         group.settings.y.domain = config.commonScale ? [0, max$$1] : [0, null];
         group.data = context.raw_data.filter(function(d) {
@@ -2590,7 +2590,7 @@
 
     //Define chart.
     var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-    chart.initialSettings = clone$1(syncedSettings);
+    chart.initialSettings = clone(syncedSettings);
     chart.initialSettings.container = element;
     chart.on('init', onInit$2);
     chart.on('resize', onResize$3);
@@ -2712,8 +2712,6 @@
   }
 
   function renderValues(d, list) {
-    list.selectAll('*').remove();
-
     //make a list of values
     if (d.type == 'categorical') {
       var topValues = d.statistics.values
@@ -2725,17 +2723,22 @@
         });
 
       var valueItems = list
-        .selectAll('li')
+        .selectAll('li.value')
         .data(topValues)
         .enter()
-        .append('li');
+        .append('li')
+        .attr('class', 'value');
 
       valueItems
         .append('div')
         .text(function(d) {
           return d.key;
         })
-        .attr('class', 'wcb-label');
+        .attr('class', 'wcb-label')
+        .attr('title', function(d) {
+          return d.key;
+        });
+
       valueItems
         .append('div')
         .text(function(d) {
@@ -2748,6 +2751,7 @@
         var extraCount = totLength - 5;
         var extra_span = list
           .append('li')
+          .attr('class', 'value')
           .append('div')
           .attr('class', 'wcb-label')
           .html('and ' + extraCount + ' more.');
@@ -2777,10 +2781,11 @@
         var valList = sortedValues;
       }
       var valueItems = list
-        .selectAll('li')
+        .selectAll('li.value')
         .data(valList)
         .enter()
-        .append('li');
+        .append('li')
+        .attr('class', 'value');
 
       valueItems
         .append('div')
@@ -2805,9 +2810,17 @@
 
   //Render Summary Stats
   function renderStats(d, list) {
-    list.selectAll('*').remove();
+    var ignoreStats = [
+      'values',
+      'highlightValues',
+      'min',
+      'max',
+      'n',
+      'N',
+      'nMissing',
+      'percentMissing'
+    ];
 
-    var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
     var statNames = Object.keys(d.statistics)
       .filter(function(f) {
         return ignoreStats.indexOf(f) === -1;
@@ -2818,7 +2831,7 @@
 
     var statList = statNames.map(function(stat) {
       return {
-        key: stat !== 'nMissing' ? stat : 'Missing',
+        key: stat !== 'missingSummary' ? stat : 'Missing',
         value: d.statistics[stat]
       };
     });
@@ -2909,40 +2922,36 @@
   ];
 
   function makeDetails(d) {
-    var list = d3
+    var stat_list = d3
       .select(this)
-      .append('div')
-      .append('ul');
+      .append('ul')
+      .attr('class', 'stats');
+    var val_list = d3
+      .select(this)
+      .append('ul')
+      .attr('class', 'values');
+
     var parent = d3.select(this.parentNode.parentNode);
-    var controls = parent
-      .select('.row-chart')
-      .select('.row-controls')
-      .append('div')
-      .attr('class', 'detail-controls');
 
-    controls.append('small').html('Header Details: ');
-    var detailSelect = controls.append('select');
-
-    var detailItems = detailSelect
-      .selectAll('option')
-      .data(detailList)
-      .enter()
-      .append('option')
-      .html(function(d) {
-        return d.key;
-      });
-
-    //Handlers for label events
-    detailSelect.on('change', function() {
-      var current = this.value;
-      var detailObj = detailList.filter(function(f) {
-        return f.key == current;
-      })[0];
-      detailObj.action(d, list);
-    });
-
-    //render stats on initial load
-    renderStats(d, list);
+    /*
+  controls.append('small').html('Header Details: ');
+  var detailSelect = controls.append('select');
+   var detailItems = detailSelect
+    .selectAll('option')
+    .data(detailList)
+    .enter()
+    .append('option')
+    .html(d => d.key);
+   //Handlers for label events
+  detailSelect.on('change', function() {
+    var current = this.value;
+    var detailObj = detailList.filter(f => f.key == current)[0];
+    detailObj.action(d, list);
+  });
+  */
+    //render stats & values on initial load
+    renderStats(d, stat_list);
+    renderValues(d, val_list);
   }
 
   function makeTitle(d) {
@@ -2982,6 +2991,32 @@
           return d.label;
         });
     }
+
+    d3
+      .select(this)
+      .append('span')
+      .attr('class', 'type')
+      .text(function(d) {
+        return d.type;
+      });
+
+    d3
+      .select(this)
+      .append('span')
+      .attr('class', 'percent-missing')
+      .text(function(d) {
+        return d3.format('0.1%')(d.statistics.percentMissing) + ' missing';
+      })
+      .style('display', function(d) {
+        return d.statistics.percentMissing == 0 ? 'none' : null;
+      })
+      .style('cursor', 'pointer')
+      .style('color', function(d) {
+        return d.statistics.percentMissing >= 0.1 ? 'red' : '#999';
+      })
+      .attr('title', function(d) {
+        return d.statistics.nMissing + ' of ' + d.statistics.N + ' missing';
+      });
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -2993,6 +3028,7 @@
     rowWrap.selectAll('*').remove();
 
     var rowHead = rowWrap.append('div').attr('class', 'row-head section');
+    var rowDetails = rowWrap.append('div').attr('class', 'row-details section');
 
     rowHead
       .append('div')
@@ -3005,10 +3041,7 @@
       .attr('class', 'row-chart section')
       .each(makeChart);
 
-    rowHead
-      .append('div')
-      .attr('class', 'row-details')
-      .each(makeDetails);
+    rowDetails.each(makeDetails);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -3255,7 +3288,7 @@
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-      chartMaker.chartData = clone$1(codebook.data.filtered);
+      chartMaker.chartData = clone(codebook.data.filtered);
 
       //flag highlighted rows
       var highlightedRows = codebook.data.highlighted.map(function(m) {
@@ -3737,6 +3770,14 @@
     });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
+    statistics.percentMissing = statistics.nMissing / statistics.N;
+    statistics.missingSummary =
+      statistics.nMissing +
+      '/' +
+      statistics.N +
+      ' (' +
+      d3.format('0.1%')(statistics.percentMissing) +
+      ')';
     statistics.values = d3
       .nest()
       .key(function(d) {
@@ -3819,6 +3860,14 @@
       });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
+    statistics.percentMissing = statistics.nMissing / statistics.N;
+    statistics.missingSummary =
+      statistics.nMissing +
+      '/' +
+      statistics.N +
+      ' (' +
+      d3.format('0.1%')(statistics.percentMissing) +
+      ')';
     statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
     statistics.SD = d3.format('0.2f')(d3.deviation(nonMissing));
     var quantiles = [
@@ -4411,7 +4460,7 @@
       }
     };
 
-    return clone$1(codebook);
+    return clone(codebook);
   }
 
   var defaultSettings$3 = {

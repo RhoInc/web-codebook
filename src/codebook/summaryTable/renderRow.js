@@ -13,6 +13,7 @@ export function renderRow(d) {
   rowWrap.selectAll('*').remove();
 
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
+  var rowDetails = rowWrap.append('div').attr('class', 'row-details section');
 
   rowHead
     .append('div')
@@ -25,8 +26,5 @@ export function renderRow(d) {
     .attr('class', 'row-chart section')
     .each(makeChart);
 
-  rowHead
-    .append('div')
-    .attr('class', 'row-details')
-    .each(makeDetails);
+  rowDetails.each(makeDetails);
 }
