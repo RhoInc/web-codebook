@@ -1,6 +1,7 @@
 import { select as d3select } from 'd3';
 
 export default function makeTitle(d) {
+  console.log('making a title');
   var rowDiv = d3select(this.parentNode.parentNode.parentNode);
   var chartDiv = rowDiv.select('.row-chart');
   var hiddenFlag = rowDiv.classed('hiddenChart');
@@ -30,4 +31,9 @@ export default function makeTitle(d) {
       .attr('class', 'label-span')
       .text(d => d.label);
   }
+
+  d3select(this)
+    .append('span')
+    .attr('class', 'type')
+    .text(d => d.type);
 }
