@@ -1,10 +1,14 @@
 import { select as d3select } from 'd3';
 import { format as d3format } from 'd3';
+import createSparkline from '../../../charts/createSparkline';
+import createSparkhist from '../../../charts/createSparkhist';
 
 export default function makeTitle(d) {
   var rowDiv = d3select(this.parentNode.parentNode.parentNode);
   var chartDiv = rowDiv.select('.row-chart');
   var hiddenFlag = rowDiv.classed('hiddenDetails');
+
+  //Add row toggle
   d3select(this)
     .append('div')
     .attr('class', 'row-toggle')
@@ -20,11 +24,13 @@ export default function makeTitle(d) {
       d3select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
     });
 
+  //add variable name in quotes
   d3select(this)
     .append('span')
     .attr('class', 'title-span')
     .text(d => "'" + d.value_col + "'");
 
+  //add variable label (if any)
   if (d.value_col != d.label) {
     d3select(this)
       .append('span')
@@ -32,11 +38,19 @@ export default function makeTitle(d) {
       .text(d => d.label);
   }
 
+  //add variable type
   d3select(this)
     .append('span')
     .attr('class', 'type')
     .text(d => d.type);
 
+  //add sparklines
+  d3select(this)
+    .append('div')
+    .attr('class', 'spark')
+    .call(d.type == 'categorical' ? createSparkhist : createSparkline);
+
+  //add percent missing (if > 0%)
   d3select(this)
     .append('span')
     .attr('class', 'percent-missing')

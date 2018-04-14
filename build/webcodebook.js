@@ -2955,10 +2955,20 @@
     }
   }
 
+  function createSparkline() {
+    console.log('Hist-o-gram!');
+  }
+
+  function createSparkhist() {
+    console.log('spark it!');
+  }
+
   function makeTitle(d) {
     var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
     var chartDiv = rowDiv.select('.row-chart');
     var hiddenFlag = rowDiv.classed('hiddenDetails');
+
+    //Add row toggle
     d3
       .select(this)
       .append('div')
@@ -2975,6 +2985,7 @@
         d3.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
       });
 
+    //add variable name in quotes
     d3
       .select(this)
       .append('span')
@@ -2983,6 +2994,7 @@
         return "'" + d.value_col + "'";
       });
 
+    //add variable label (if any)
     if (d.value_col != d.label) {
       d3
         .select(this)
@@ -2993,6 +3005,7 @@
         });
     }
 
+    //add variable type
     d3
       .select(this)
       .append('span')
@@ -3001,6 +3014,14 @@
         return d.type;
       });
 
+    //add sparklines
+    d3
+      .select(this)
+      .append('div')
+      .attr('class', 'spark')
+      .call(d.type == 'categorical' ? createSparkhist : createSparkline);
+
+    //add percent missing (if > 0%)
     d3
       .select(this)
       .append('span')
