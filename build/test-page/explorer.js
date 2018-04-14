@@ -23,15 +23,36 @@ if (window.origin !== 'https://rhoinc.github.io') {
 
 function initExplorer(fileList){
   console.log(fileList)
-	var fileList = fileList.map(function(m){
-		m.path = "https://rawgit.com/RhoInc/viz-library/master"+m.rel_path.slice(1);
-		return m;
-	})
-	var settings = {
-		labelColumn:"filename",
-		ignoredColumns: ["local_path","rel_path","path"],
-		files:fileList
-	};
-	var explorer = webcodebook.createExplorer("#container", settings).init();
+  var metaFiles = ["AE","DM","LB"] //list of files to add meta data
+  d3.csv("https://rawgit.com/RhoInc/viz-library/master/data/safetyData/variableMetaData.csv",function(error,meta){
+    meta.forEach(function(f){
+      f.file = f.Form+".csv"
+    })
+    var fileList_clean = fileList.map(function(f){
+  		f.path = "https://rawgit.com/RhoInc/viz-library/master"+f.rel_path.slice(1);
+      f.shortname = f.filename.replace(/\.[^/.]+$/, "")
+      if(metaFiles.indexOf(f.shortname)>-1){
+        f.meta = meta.filter(m=>m.Form == f.shortname)
+        .map(function(m){
+          m.value_col = m.Variable;
+          return m;
+        })
+        f["Metadata included?"] = "Yes"
+      }else{
+        f["Metadata included?"] = "No"
+      }
+  		return f;
+  	})
+    
+  	var settings = {
+  		labelColumn:"filename",
+  		ignoredColumns: ["local_path","rel_path","path"],
+  		files:fileList_clean,
+      meta:meta
+  	};
+  	var explorer = webcodebook.createExplorer("#container", settings).init();
+  })
+
 }
+
 initExplorer(dataFiles)

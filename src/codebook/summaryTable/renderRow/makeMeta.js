@@ -2,8 +2,9 @@ import { select as d3select } from 'd3';
 import renderMeta from './details/renderMeta';
 
 export default function makeMeta(d) {
+  console.log(d.meta)
   var hasMeta =
-    d.meta.filter(f => !f.hidden).filter(f => f.key != 'Type').lenght > 0;
+    d.meta.filter(f => !f.hidden).filter(f => f.key != 'Type').length > 0;
   if (hasMeta) {
     var meta_list = d3select(this)
       .append('ul')

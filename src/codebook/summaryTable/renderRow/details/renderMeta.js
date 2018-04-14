@@ -1,5 +1,6 @@
 //Render metadata
 export default function renderMeta(d, list) {
+  console.log(list);
   list.selectAll('*').remove();
 
   // don't renderer items with no
@@ -14,7 +15,7 @@ export default function renderMeta(d, list) {
   //render the items
   var metaItems = list
     .selectAll('li.meta')
-    .data(d.meta.filter(f => f.key != 'Type'))
+    .data(d.meta /*.filter(f => f.key != 'Type')*/)
     .enter()
     .append('li')
     .classed('meta', true)

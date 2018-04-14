@@ -28,7 +28,14 @@ d3.csv(
             console.log(error);
 
         var settings = {
-            chartVisibility: 'visible'
+            chartVisibility: 'visible',
+            meta:[
+              {
+                value_col:"USUBJID",
+                label:"Subject ID",
+                description: "Unique Identifier"
+              }
+            ]
         };
         var instance = webcodebook.createCodebook(
             '#container',

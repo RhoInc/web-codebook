@@ -2858,6 +2858,7 @@
 
   //Render metadata
   function renderMeta(d, list) {
+    console.log(list);
     list.selectAll('*').remove();
 
     // don't renderer items with no
@@ -2872,11 +2873,7 @@
     //render the items
     var metaItems = list
       .selectAll('li.meta')
-      .data(
-        d.meta.filter(function(f) {
-          return f.key != 'Type';
-        })
-      )
+      .data(d.meta /*.filter(f => f.key != 'Type')*/)
       .enter()
       .append('li')
       .classed('meta', true)
@@ -2939,7 +2936,7 @@
         })
         .filter(function(f) {
           return f.key != 'Type';
-        }).lenght > 0;
+        }).length > 0;
     if (hasMeta) {
       var meta_list = d3
         .select(this)
