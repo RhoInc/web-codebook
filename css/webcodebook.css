@@ -248,7 +248,8 @@
 }
 
 .web-codebook .summaryTable .variable-row.hiddenDetails .row-chart,
-.web-codebook .summaryTable .variable-row.hiddenDetails .row-details {
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-details,
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-meta {
     display: none;
 }
 
@@ -444,6 +445,9 @@
     margin-left: 0.4em;
     font-size: 0.6em;
 
+}
+.web-codebook .summaryTable .variable-row .row-meta ul li.details {
+    border:none;
 }
 
 .web-codebook .summaryTable .variable-row .row-meta ul li div {
