@@ -27,6 +27,8 @@ function initExplorer(fileList){
   d3.csv("https://rawgit.com/RhoInc/viz-library/master/data/safetyData/variableMetaData.csv",function(error,meta){
     meta.forEach(function(f){
       f.file = f.Form+".csv"
+      f.label = f.Label
+      console.log(f)
     })
     var fileList_clean = fileList.map(function(f){
   		f.path = "https://rawgit.com/RhoInc/viz-library/master"+f.rel_path.slice(1);
@@ -43,7 +45,7 @@ function initExplorer(fileList){
       }
   		return f;
   	})
-    
+
   	var settings = {
   		labelColumn:"filename",
   		ignoredColumns: ["local_path","rel_path","path"],
