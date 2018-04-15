@@ -1,7 +1,6 @@
 import { select as d3select } from 'd3';
 import { format as d3format } from 'd3';
-import createSparkline from '../../../charts/createSparkline';
-import createSparkhist from '../../../charts/createSparkhist';
+import createSpark from '../../../charts/createSpark';
 
 export default function makeTitle(d) {
   var rowDiv = d3select(this.parentNode.parentNode.parentNode);
@@ -39,16 +38,19 @@ export default function makeTitle(d) {
   }
 
   //add variable type
+  /*
   d3select(this)
     .append('span')
     .attr('class', 'type')
     .text(d => d.type);
+  */
 
   //add sparklines
   d3select(this)
     .append('div')
     .attr('class', 'spark')
-    .call(d.type == 'categorical' ? createSparkhist : createSparkline);
+    .datum(d)
+    .each(createSpark);
 
   //add percent missing (if > 0%)
   d3select(this)
