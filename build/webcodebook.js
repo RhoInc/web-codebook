@@ -2964,98 +2964,6 @@
     }
   }
 
-  function makeLine(this_, d) {
-    var height = 15,
-      width = 100;
-
-    var svg = d3
-      .select(this_)
-      .append('svg')
-      .attr('height', height)
-      .attr('width', width);
-
-    //get values
-    var values = d.values.map(function(m) {
-      return +m.value;
-    });
-    var max$$1 = d3.max(values);
-    var min = d3.min(values);
-
-    // scales
-    var x_all = d3.scale
-      .linear()
-      .domain([min, max$$1])
-      .range([0, width]);
-
-    // Generate a histogram using  uniformly-spaced bins.
-    console.log(d);
-    var data = d3.layout.histogram().bins(x_all.ticks(d.bins))(values);
-
-    //calculate 2nd x scale so that distribution covers the whole svg
-    var x = d3.scale
-      .linear()
-      .domain(
-        d3.extent(data, function(d) {
-          return d.x;
-        })
-      )
-      .range([0, width]);
-
-    var yMax = d3.max(data, function(d) {
-      return d.length;
-    });
-
-    var yMin = d3.min(data, function(d) {
-      return d.length;
-    });
-    var y = d3.scale
-      .linear()
-      .domain([0, yMax])
-      .range([height - 1, 1]);
-    var title = svg
-      .append('title')
-      .text(
-        'Mean (SD): ' +
-          d.statistics.mean +
-          ' (' +
-          d.statistics.SD +
-          ')' +
-          '\nRange: ' +
-          d.statistics.min +
-          '-' +
-          d.statistics.max
-      );
-    var dist = svg
-      .selectAll('.dist')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'dist')
-      .attr('transform', function(d) {
-        return 'translate(' + x(d.x) + ',' + y(d.y) + ')';
-      });
-
-    var draw_sparkline = d3.svg
-      .line()
-      .interpolate('cardinal')
-      .x(function(d) {
-        return x(d.x);
-      })
-      .y(function(d) {
-        return y(d.y);
-      });
-
-    var sparkline = svg
-      .append('path')
-      .datum(data)
-      .attr({
-        class: 'sparkLine',
-        d: draw_sparkline,
-        fill: 'none',
-        stroke: '#999'
-      });
-  }
-
   function makeHist(this_, d) {
     var height = 15,
       width = 100;
@@ -3064,10 +2972,36 @@
       .select(this_)
       .append('svg')
       .attr('height', height)
-      .attr('width', width);
+      .attr('width', width)
+      .style('margin-right', '0.1em');
+
+    if (d.type == 'categorical') {
+      var bins = d.statistics.values;
+      bins.forEach(function(d) {
+        d.title = d.key + ' - ' + d.n + ' (' + d.prop_n_text + ')';
+        d.color = '#999';
+      });
+    } else if (d.type == 'continuous') {
+      var values = d.values.map(function(m) {
+        return +m.value;
+      });
+      var x_linear = d3.scale
+        .linear()
+        .domain(d3.extent(values))
+        .range([0, width]);
+      var bins = d3.layout
+        .histogram()
+        .bins(x_linear.ticks(50))(values)
+        .map(function(m, i) {
+          m.key = '[' + m.x + '-' + (m.x + m.dx) + ')';
+          m.n = m.length;
+          m.title = m.key + ' - ' + m.n;
+          m.color = 'black';
+          return m;
+        });
+    }
 
     // scales
-    var bins = d.statistics.values;
     var x = d3.scale
       .ordinal()
       .domain(
@@ -3075,7 +3009,8 @@
           return d.key;
         })
       )
-      .rangeBands([0, width], 0.1);
+      .rangeBands([0, width], 0.1, 0);
+
     var width = x.rangeBand();
 
     var y = d3.scale
@@ -3105,10 +3040,10 @@
       .attr('height', function(d) {
         return height - y(d.n);
       })
-      .attr('fill', '#999')
+      .attr('fill', d.type == 'categorical' ? '#999' : 'black')
       .append('title')
       .text(function(d) {
-        return d.key + ' - ' + d.n + ' (' + d.prop_n_text + ')';
+        return d.title;
       });
   }
 
@@ -3118,7 +3053,7 @@
       if (d.type === 'categorical') {
         makeHist(this, d);
       } else if (d.type === 'continuous') {
-        makeLine(this, d);
+        makeHist(this, d);
       } else {
         console.warn('Invalid chart type for ' + d.key);
       }
