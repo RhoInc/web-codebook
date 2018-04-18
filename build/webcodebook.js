@@ -259,7 +259,7 @@
     };
   })();
 
-  function clone$1(obj) {
+  function clone(obj) {
     var copy = void 0;
 
     //boolean, number, string, null, undefined
@@ -280,7 +280,7 @@
     if (obj instanceof Array) {
       copy = [];
       for (var i = 0, len = obj.length; i < len; i++) {
-        copy[i] = clone$1(obj[i]);
+        copy[i] = clone(obj[i]);
       }
       return copy;
     }
@@ -289,7 +289,7 @@
     if (obj instanceof Object) {
       copy = {};
       for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
+        if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
       }
       return copy;
     }
@@ -345,7 +345,7 @@
     this.events.init.call(this);
 
     //save raw data
-    this.data.raw = clone$1(data);
+    this.data.raw = clone(data);
     this.data.raw.forEach(function(d, i) {
       d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
     });
@@ -1330,7 +1330,7 @@
       chartSettings.x.domain = x_dom; //use the overall x domain in paneled charts
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone$1(chartSettings);
+        group.chartSettings = clone(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
         group.data = group.statistics.values;
@@ -1654,7 +1654,11 @@
     var chartData = d.statistics.values.sort(function(a, b) {
       return a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+        : a.prop_n < b.prop_n
+          ? 2
+          : a.key < b.key
+            ? -1
+            : 1;
     }); // sort data by descending rate and keep only the first five categories.
 
     chartSettings.y.order = chartData
@@ -1690,7 +1694,7 @@
 
       d.groups.forEach(function(group) {
         //Define group-level settings.
-        group.chartSettings = clone$1(chartSettings);
+        group.chartSettings = clone(chartSettings);
         group.chartSettings.group_val = group.group;
         group.chartSettings.n = group.values.length;
 
@@ -1702,7 +1706,11 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+              : a.prop_n < b.prop_n
+                ? 2
+                : a.key < b.key
+                  ? -1
+                  : 1;
           });
 
         group.data.forEach(function(d) {
@@ -1887,7 +1895,11 @@
         .sort(function(a, b) {
           return a.prop_n > b.prop_n
             ? -2
-            : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            : a.prop_n < b.prop_n
+              ? 2
+              : a.key < b.key
+                ? -1
+                : 1;
         })
         .slice(0, 5); // sort data by descending rate and keep only the first five categories.
 
@@ -1912,7 +1924,11 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+              : a.prop_n < b.prop_n
+                ? 2
+                : a.key < b.key
+                  ? -1
+                  : 1;
           })
           .forEach(function(value) {
             value.group = group.group;
@@ -1927,7 +1943,7 @@
         chartSettings.marks[0].values = { group: ['Overall'] };
 
         //Group marks
-        chartSettings.marks[1] = clone$1(chartSettings.marks[0]);
+        chartSettings.marks[1] = clone(chartSettings.marks[0]);
         chartSettings.marks[1].values = {
           group: d.groups.map(function(d) {
             return d.group;
@@ -2075,7 +2091,7 @@
 
   //Replicate settings in multiple places in the settings object.
   function syncSettings(settings) {
-    var syncedSettings = clone$1(settings);
+    var syncedSettings = clone(settings);
 
     if (syncedSettings.panel === null) syncedSettings.overall = true;
     syncedSettings.x.column = settings.measure;
@@ -2552,7 +2568,7 @@
         });
 
       groups.forEach(function(group, i) {
-        group.settings = clone$1(config);
+        group.settings = clone(config);
         group.settings.y.label = group.group;
         group.settings.y.domain = config.commonScale ? [0, max$$1] : [0, null];
         group.data = context.raw_data.filter(function(d) {
@@ -2590,7 +2606,7 @@
 
     //Define chart.
     var chart = webcharts.createChart(element, syncedSettings); // Add third argument to define controls as needed.
-    chart.initialSettings = clone$1(syncedSettings);
+    chart.initialSettings = clone(syncedSettings);
     chart.initialSettings.container = element;
     chart.on('init', onInit$2);
     chart.on('resize', onResize$3);
@@ -3255,7 +3271,7 @@
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-      chartMaker.chartData = clone$1(codebook.data.filtered);
+      chartMaker.chartData = clone(codebook.data.filtered);
 
       //flag highlighted rows
       var highlightedRows = codebook.data.highlighted.map(function(m) {
@@ -4411,7 +4427,7 @@
       }
     };
 
-    return clone$1(codebook);
+    return clone(codebook);
   }
 
   var defaultSettings$3 = {
