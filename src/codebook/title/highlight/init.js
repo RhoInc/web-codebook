@@ -4,7 +4,6 @@
 
 export function init(codebook) {
   //initialize the wrapper
-  console.log('make hl button');
   codebook.title.highlight.clearButton = codebook.title.wrap
     .append('button')
     .classed('clear-highlight', true)

@@ -1,6 +1,5 @@
 //Render metadata
 export default function renderMeta(d, list) {
-  console.log(list);
   list.selectAll('*').remove();
 
   // don't renderer items with no

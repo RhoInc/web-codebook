@@ -2811,7 +2811,6 @@
 
   //Render metadata
   function renderMeta(d, list) {
-    console.log(list);
     list.selectAll('*').remove();
 
     // don't renderer items with no
@@ -4368,7 +4367,6 @@
 
   function init$11(codebook) {
     //initialize the wrapper
-    console.log('make hl button');
     codebook.title.highlight.clearButton = codebook.title.wrap
       .append('button')
       .classed('clear-highlight', true)
