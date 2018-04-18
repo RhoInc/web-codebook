@@ -4,7 +4,8 @@
 
 export function init(codebook) {
   //initialize the wrapper
-  codebook.controls.highlight.clearButton = codebook.controls.summaryWrap
+  console.log('make hl button');
+  codebook.title.highlight.clearButton = codebook.title.wrap
     .append('button')
     .classed('clear-highlight', true)
     .classed('hidden', codebook.data.highlighted.length == 0)
@@ -16,6 +17,6 @@ export function init(codebook) {
       codebook.dataListing.init(codebook);
       codebook.summaryTable.draw(codebook);
       codebook.chartMaker.draw(codebook);
-      codebook.controls.updateRowCount(codebook);
+      codebook.title.updateCountSummary(codebook);
     });
 }

@@ -8,9 +8,11 @@ export function init(codebook) {
         : 'Codebook'
     );
 
-  codebook.title.countSpan = codebook.title.wrap
+  codebook.title.countSummary = codebook.title.wrap
     .append('span')
-    .attr('class', 'columnCount');
+    .attr('class', 'countSummary');
 
-  codebook.title.updateColumnCount(codebook);
+  codebook.title.highlight.init(codebook);
+
+  codebook.title.updateCountSummary(codebook);
 }

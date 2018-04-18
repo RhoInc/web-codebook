@@ -89,13 +89,13 @@
     font-size: 1.4em;
 }
 
-.web-codebook .rowCount, .web-codebook .columnCount    {
+.web-codebook .title .countSummary    {
     padding-left: 1em;
     font-size: 0.8em;
     color: #666;
 }
 
-.web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
+.web-codebook .title .countSummary.warn{
     color: red;
 }
 
@@ -148,7 +148,7 @@
     padding-right: 1em;
 }
 
-.web-codebook .controls button, .web-codebook .instructions button
+.web-codebook .controls button, .web-codebook .instructions button, .web-codebook .title button
 {
     margin-right: 0.5em;
     background-color: white;
@@ -157,7 +157,9 @@
     padding: .2em .4em;
 }
 
-.web-codebook .controls button: hover, .web-codebook .instructions button: hover{
+.web-codebook .controls button: hover,
+.web-codebook .instructions button: hover,
+.web-codebook .title button: hover{
     cursor: pointer;
     background-color: #008CBA;
     color: white;

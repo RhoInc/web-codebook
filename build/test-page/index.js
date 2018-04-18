@@ -28,7 +28,7 @@ d3.csv(
             console.log(error);
 
         var settings = {
-            chartVisibility: 'hidden',
+        //    chartVisibility: 'hidden',
             meta:[
               {
                 value_col:"USUBJID",

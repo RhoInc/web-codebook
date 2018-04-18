@@ -360,13 +360,15 @@
       //prepare the data summaries
       _this.data.makeSummary(_this);
 
+      //make the title
+      _this.title.init(_this);
+
       //draw controls
       _this.util.makeAutomaticFilters(_this);
       _this.util.makeAutomaticGroups(_this);
       _this.controls.init(_this);
 
       //initialize nav, title and instructions
-      _this.title.init(_this);
       _this.nav.init(_this);
       _this.instructions.init(_this);
 
@@ -464,8 +466,7 @@
     codebook.controls.groups.init(codebook);
     codebook.controls.filters.init(codebook);
     codebook.controls.controlToggle.init(codebook);
-    codebook.controls.highlight.init(codebook);
-    codebook.controls.updateRowCount(codebook);
+    codebook.title.updateCountSummary(codebook);
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
@@ -590,7 +591,7 @@
           //clear highlights
           codebook.data.highlighted = [];
           codebook.data.makeSummary(codebook);
-          codebook.controls.updateRowCount(codebook);
+          codebook.title.updateCountSummary(codebook);
           codebook.summaryTable.draw(codebook);
           codebook.chartMaker.draw(codebook);
           codebook.dataListing.init(codebook);
@@ -675,7 +676,7 @@
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
+        codebook.title.updateCountSummary(codebook);
       });
     });
   }
@@ -766,62 +767,6 @@
   };
 
   /*------------------------------------------------------------------------------------------------\
-  Initialize clear highlighting button.
-\------------------------------------------------------------------------------------------------*/
-
-  function init$5(codebook) {
-    //initialize the wrapper
-    codebook.controls.highlight.clearButton = codebook.controls.summaryWrap
-      .append('button')
-      .classed('clear-highlight', true)
-      .classed('hidden', codebook.data.highlighted.length == 0)
-      .text('Clear Highlighting')
-      .on('click', function() {
-        codebook.data.highlighted = [];
-
-        codebook.data.makeSummary(codebook);
-        codebook.dataListing.init(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
-      });
-  }
-
-  /*------------------------------------------------------------------------------------------------\
-  Define clear highlighting button object.
-\------------------------------------------------------------------------------------------------*/
-
-  var highlight = { init: init$5 };
-
-  function updateRowCount(codebook) {
-    if (codebook.data.summary.length > 0) {
-      var nShown = codebook.data.summary[0].statistics.N;
-      var nTot = codebook.data.raw.length;
-      var percent = d3$1.format('0.1%')(nShown / nTot);
-      var tableSummary =
-        nShown + ' of ' + nTot + ' (' + percent + ') rows selected';
-      codebook.controls.rowCount.text(tableSummary).classed('warn', false);
-    } else {
-      codebook.controls.rowCount
-        .text('No rows selected.')
-        .classed('warn', true);
-    }
-
-    //Add note regarding highlighted cells and show/hide the clear highlight button
-    if (codebook.data.highlighted.length > 0) {
-      codebook.controls.highlightCount.html(
-        ' and ' +
-          codebook.data.highlighted.length +
-          ' <span class="highlightLegend">highlighted</span>. '
-      );
-      codebook.controls.highlight.clearButton.classed('hidden', false);
-    } else {
-      codebook.controls.highlightCount.text('');
-      codebook.controls.highlight.clearButton.classed('hidden', true);
-    }
-  }
-
-  /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
@@ -829,9 +774,7 @@
     init: init$1,
     filters: filters,
     groups: groups,
-    controlToggle: controlToggle,
-    highlight: highlight,
-    updateRowCount: updateRowCount
+    controlToggle: controlToggle
   };
 
   var availableTabs = [
@@ -874,7 +817,7 @@
     }
   ];
 
-  function init$6(codebook) {
+  function init$5(codebook) {
     var defaultTabs = clone(availableTabs);
     codebook.nav.wrap.selectAll('*').remove();
 
@@ -977,7 +920,7 @@
 \------------------------------------------------------------------------------------------------*/
 
   var nav = {
-    init: init$6
+    init: init$5
   };
 
   /*------------------------------------------------------------------------------------------------\
@@ -1140,7 +1083,7 @@
         codebook.dataListing.init(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
+        codebook.title.updateCountSummary(codebook);
       });
     });
   }
@@ -3050,13 +2993,7 @@
   function createSpark() {
     var d = d3.select(this).datum();
     if (d.statistics.n > 0) {
-      if (d.type === 'categorical') {
-        makeHist(this, d);
-      } else if (d.type === 'continuous') {
-        makeHist(this, d);
-      } else {
-        console.warn('Invalid chart type for ' + d.key);
-      }
+      makeHist(this, d);
     }
   }
 
@@ -3206,7 +3143,7 @@
     });
   }
 
-  function init$7(codebook) {
+  function init$6(codebook) {
     //indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
     var dataListing = codebook.dataListing;
@@ -3244,7 +3181,7 @@
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-  var dataListing = { init: init$7 };
+  var dataListing = { init: init$6 };
 
   var chartMakerSettings = {
     width: 800, //changed to 300 for paneled charts
@@ -3522,11 +3459,11 @@
   /*------------------------------------------------------------------------------------------------\
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
-  function init$9(codebook) {
+  function init$8(codebook) {
     initAxisSelect(codebook);
   }
 
-  function init$8(codebook) {
+  function init$7(codebook) {
     var chartMaker = codebook.chartMaker;
     chartMaker.codebook = codebook;
     chartMaker.config = codebook.config;
@@ -3541,7 +3478,7 @@
       .attr('class', 'cm-chart');
 
     if (codebook.data.summary.length > 2) {
-      init$9(codebook); //make controls
+      init$8(codebook); //make controls
       chartMaker.draw(codebook); //draw the initial codebook
     } else {
       chartMaker.wrap
@@ -3557,7 +3494,7 @@
 
   var chartMaker = {
     draw: draw$1,
-    init: init$8
+    init: init$7
   };
 
   var defaultSettings$1 = {
@@ -4191,7 +4128,7 @@
     makeSummary: makeSummary
   };
 
-  function init$10(codebook) {
+  function init$9(codebook) {
     indicateLoading(codebook, '.web-codebook .settings .column-table');
 
     codebook.settings.layout(codebook);
@@ -4222,11 +4159,10 @@
 
         //redraw data summary, codebook, and listing.
         codebook.data.makeSummary(codebook);
-        codebook.title.updateColumnCount(codebook);
+        codebook.title.updateCountSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
         codebook.chartMaker.init(codebook);
-        codebook.controls.updateRowCount(codebook);
       }
     );
   }
@@ -4403,11 +4339,11 @@
 \------------------------------------------------------------------------------------------------*/
 
   var settings = {
-    init: init$10,
+    init: init$9,
     layout: layout$1
   };
 
-  function init$11(codebook) {
+  function init$10(codebook) {
     codebook.title.fileWrap = codebook.title.wrap
       .append('span')
       .attr('class', 'file')
@@ -4417,22 +4353,80 @@
           : 'Codebook'
       );
 
-    codebook.title.countSpan = codebook.title.wrap
+    codebook.title.countSummary = codebook.title.wrap
       .append('span')
-      .attr('class', 'columnCount');
+      .attr('class', 'countSummary');
 
-    codebook.title.updateColumnCount(codebook);
+    codebook.title.highlight.init(codebook);
+
+    codebook.title.updateCountSummary(codebook);
   }
 
-  function updateColumnCount(codebook) {
+  /*------------------------------------------------------------------------------------------------\
+  Initialize clear highlighting button.
+\------------------------------------------------------------------------------------------------*/
+
+  function init$11(codebook) {
+    //initialize the wrapper
+    console.log('make hl button');
+    codebook.title.highlight.clearButton = codebook.title.wrap
+      .append('button')
+      .classed('clear-highlight', true)
+      .classed('hidden', codebook.data.highlighted.length == 0)
+      .text('Clear Highlighting')
+      .on('click', function() {
+        codebook.data.highlighted = [];
+
+        codebook.data.makeSummary(codebook);
+        codebook.dataListing.init(codebook);
+        codebook.summaryTable.draw(codebook);
+        codebook.chartMaker.draw(codebook);
+        codebook.title.updateCountSummary(codebook);
+      });
+  }
+
+  /*------------------------------------------------------------------------------------------------\
+  Define clear highlighting button object.
+\------------------------------------------------------------------------------------------------*/
+
+  var highlight = { init: init$11 };
+
+  function updateCountSummary(codebook) {
+    if (codebook.data.summary.length > 0) {
+      var nShown = codebook.data.summary[0].statistics.N;
+      var nTot = codebook.data.raw.length;
+      var percent = d3$1.format('0.1%')(nShown / nTot);
+      var rowSummary =
+        nShown + ' of ' + nTot + ' (' + percent + ') rows selected';
+    } else {
+      var rowSummary = 'No rows selected.';
+    }
+
+    //Add note regarding highlighted cells and show/hide the clear highlight button
+    var highlightSummary =
+      codebook.data.highlighted.length > 0
+        ? ' and ' +
+          codebook.data.highlighted.length +
+          ' <span class="highlightLegend">highlighted</span>. '
+        : '.';
+
+    codebook.title.highlight.clearButton.classed(
+      'hidden',
+      codebook.data.highlighted.length == 0
+    );
+
+    //get number of columns hidden
     var nCols_sub = codebook.data.summary.filter(function(d) {
       return !d.hidden;
     }).length;
     var nCols_all = codebook.data.summary.length - 1; //-1 is for the index var
-    var percent = d3$1.format('0.1%')(nCols_sub / nCols_all);
-    var tableSummary =
-      nCols_sub + ' of ' + nCols_all + ' (' + percent + ') columns selected.';
-    codebook.title.countSpan.text(tableSummary);
+    var nCols_diff = nCols_all - nCols_sub;
+    //var percent = d3format('0.1%')(nCols_sub / nCols_all);
+    var colSummary = nCols_diff > 0 ? nCols_diff + ' rows columns hidden' : '';
+
+    var tableSummary = rowSummary + highlightSummary + ' ' + colSummary;
+
+    codebook.title.countSummary.html(tableSummary);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -4440,8 +4434,9 @@
 \------------------------------------------------------------------------------------------------*/
 
   var title = {
-    init: init$11,
-    updateColumnCount: updateColumnCount
+    init: init$10,
+    highlight: highlight,
+    updateCountSummary: updateCountSummary
   };
 
   function init$12(codebook) {

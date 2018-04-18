@@ -1,4 +1,3 @@
-import makeLine from './spark/makeLine';
 import makeHist from './spark/makeHist';
 
 export default function createSpark() {
