@@ -4521,22 +4521,23 @@
       settings: settings
     };
 
-    codebook.events = {
+    var cbClone = clone(codebook);
+    cbClone.events = {
       init: function init$$1() {},
       complete: function complete() {}
     };
 
-    codebook.on = function(event, callback) {
+    cbClone.on = function(event, callback) {
       var possible_events = ['init', 'complete'];
       if (possible_events.indexOf(event) < 0) {
         return;
       }
       if (callback) {
-        codebook.events[event] = callback;
+        cbClone.events[event] = callback;
       }
     };
 
-    return clone(codebook);
+    return cbClone;
   }
 
   var defaultSettings$3 = {

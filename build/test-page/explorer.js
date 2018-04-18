@@ -52,6 +52,7 @@ function initExplorer(fileList){
   		files:fileList_clean,
       meta:meta
   	};
+    console.log(settings)
   	var explorer = webcodebook.createExplorer("#container", settings).init();
   })
 
