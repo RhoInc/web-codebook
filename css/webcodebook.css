@@ -157,9 +157,9 @@
     padding: .2em .4em;
 }
 
-.web-codebook .controls button: hover,
-.web-codebook .instructions button: hover,
-.web-codebook .title button: hover{
+.web-codebook .controls button:hover,
+.web-codebook .instructions button:hover,
+.web-codebook .title button:hover{
     cursor: pointer;
     background-color: #008CBA;
     color: white;
@@ -184,7 +184,7 @@
     cursor: pointer;
 }
 
-.web-codebook .controls span.update-controls: hover
+.web-codebook .controls span.update-controls:hover
 {
     font-weight: bold;
 }
@@ -194,7 +194,7 @@
 }
 
 .web-codebook .controls .custom-filters ul li.active > a > label,
-.web-codebook .controls .custom-filters ul li: hover > a > label {
+.web-codebook .controls .custom-filters ul li:hover > a > label {
     color: white;
 }
 
@@ -289,7 +289,7 @@
     padding-right: 0.5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-title .row-toggle: hover{
+.web-codebook .summaryTable .variable-row .row-title .row-toggle:hover{
     background: #eee;
 }
 
@@ -412,7 +412,7 @@
     fill: orange;
 }
 
-.web-codebook .summaryTable g.bar-group rect: hover {
+.web-codebook .summaryTable g.bar-group rect:hover {
     cursor: pointer;
     stroke-width: 3px;
     stroke: black;
@@ -511,7 +511,7 @@
         padding: 0;
     }
 
-    .web-codebook .wcb-nav     ul.wcb-nav-tabs li {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li {
         float: left;
         cursor: pointer;
         border: 2px solid black;
@@ -528,7 +528,7 @@
         text-decoration: none;
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li: hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li:hover {
         background-color: #777;
         border: 2px solid #777;
     }
@@ -537,16 +537,13 @@
         float: right;
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.settings a {
-    }
-
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active, ul.wcb-nav-tabs li.active: hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active, ul.wcb-nav-tabs li.active:hover {
         background-color: white;
         border: 2px solid black;
 
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active a, ul.wcb-nav-tabs li.active: hover a{
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active a, ul.wcb-nav-tabs li.active:hover a{
         color: black;
     }
 
