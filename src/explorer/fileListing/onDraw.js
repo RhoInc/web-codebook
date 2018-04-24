@@ -13,7 +13,6 @@ export function onDraw(explorer) {
     var labelCells = this.table
       .selectAll('tbody tr')
       .on('click', function(d) {
-        console.log(d);
         explorer.current = d;
         explorer.current.event = 'click';
         explorer.makeCodebook(explorer);

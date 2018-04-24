@@ -11,7 +11,6 @@ export function makeCodebook(explorer) {
 
   //set the default tab to the codebook or listing view assuming they are visible
   if (this.current.event == 'click') {
-    console.log(this.current.settings.tabs);
     this.current.settings.defaultTab =
       this.current.settings.tabs
         .map(tab => (tab.key ? tab.key : tab))

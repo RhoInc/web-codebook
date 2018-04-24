@@ -4456,7 +4456,6 @@
       var labelCells = this.table
         .selectAll('tbody tr')
         .on('click', function(d) {
-          console.log(d);
           explorer.current = d;
           explorer.current.event = 'click';
           explorer.makeCodebook(explorer);
@@ -4526,7 +4525,6 @@
 
     //set the default tab to the codebook or listing view assuming they are visible
     if (this.current.event == 'click') {
-      console.log(this.current.settings.tabs);
       this.current.settings.defaultTab =
         this.current.settings.tabs
           .map(function(tab) {
