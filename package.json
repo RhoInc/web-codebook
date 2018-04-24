@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -12,6 +12,7 @@
   "license": "MIT",
   "author": "Rho, Inc.",
   "main": "build/webcodebook.js",
+  "module": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/rhoinc/web-codebook.git"
@@ -34,7 +35,7 @@
   },
   "dependencies": {
     "d3": "~3",
-    "webcharts": "~1.7"
+    "webcharts": "~1"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"

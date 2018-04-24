@@ -14,9 +14,10 @@ export function init(codebook) {
   codebook.controls.controlToggle.set(codebook);
 
   controlToggle.on('click', function() {
-    codebook.config.controlVisibility = d3select(this).text() == 'Hide'
-      ? 'minimized' //click "-" to minimize controls
-      : 'visible'; // click "+" to show controls
+    codebook.config.controlVisibility =
+      d3select(this).text() == 'Hide'
+        ? 'minimized' //click "-" to minimize controls
+        : 'visible'; // click "+" to show controls
 
     codebook.controls.controlToggle.set(codebook);
   });

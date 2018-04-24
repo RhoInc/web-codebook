@@ -20,8 +20,14 @@ export default function renderMeta(d, list) {
     .classed('meta', true)
     .classed('hidden', d => d.hidden);
 
-  metaItems.append('div').text(d => d.key).attr('class', 'wcb-label');
-  metaItems.append('div').text(d => d.value).attr('class', 'value');
+  metaItems
+    .append('div')
+    .text(d => d.key)
+    .attr('class', 'wcb-label');
+  metaItems
+    .append('div')
+    .text(d => d.value)
+    .attr('class', 'value');
 
   if (dropped.length) {
     list
