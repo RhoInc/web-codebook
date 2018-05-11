@@ -114,7 +114,7 @@
             "default": 5
         },
         "autofilter": {
-            "type": "Number",
+            "type": "number",
             "title": "Level Cutoff to Choose Filter Variables",
             "description": "the number of levels in a variable over which the variable will not be added as a filter",
             "default": 10
