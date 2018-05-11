@@ -32,7 +32,7 @@ export function updateCountSummary(codebook) {
   var nCols_all = codebook.data.summary.length - 1; //-1 is for the index var
   var nCols_diff = nCols_all - nCols_sub;
   //var percent = d3format('0.1%')(nCols_sub / nCols_all);
-  var colSummary = nCols_diff > 0 ? nCols_diff + ' rows columns hidden' : '';
+  var colSummary = nCols_diff > 0 ? nCols_diff + ' columns hidden' : '';
 
   var tableSummary = rowSummary + highlightSummary + ' ' + colSummary;
 
