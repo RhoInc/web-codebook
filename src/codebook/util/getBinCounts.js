@@ -20,11 +20,12 @@ export function getBinCounts(codebook) {
     var n = summaryData.statistics['n'];
     var range = +summaryData.statistics['max'] - +summaryData.statistics['min'];
     var binSize = FreedmanDiaconis(IQR, n);
-    var bins = binSize > 0
-      ? Math.ceil(range / binSize)
-      : codebook.config.nBins > 0
-        ? codebook.config.nBins
-        : defaultSettings.nBins;
+    var bins =
+      binSize > 0
+        ? Math.ceil(range / binSize)
+        : codebook.config.nBins > 0
+          ? codebook.config.nBins
+          : defaultSettings.nBins;
 
     return bins;
   }
