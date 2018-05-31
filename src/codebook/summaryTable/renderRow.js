@@ -14,10 +14,19 @@ export function renderRow(d) {
 
   var rowHead = rowWrap.append('div').attr('class', 'row-head section');
 
-  rowHead.append('div').attr('class', 'row-title').each(makeTitle);
+  rowHead
+    .append('div')
+    .attr('class', 'row-title')
+    .each(makeTitle);
   //rowHead.append('div').attr('class', 'row-values').each(makeValues);
 
-  rowWrap.append('div').attr('class', 'row-chart section').each(makeChart);
+  rowWrap
+    .append('div')
+    .attr('class', 'row-chart section')
+    .each(makeChart);
 
-  rowHead.append('div').attr('class', 'row-details').each(makeDetails);
+  rowHead
+    .append('div')
+    .attr('class', 'row-details')
+    .each(makeDetails);
 }

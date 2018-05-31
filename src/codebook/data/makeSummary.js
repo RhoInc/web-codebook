@@ -32,13 +32,14 @@ export function makeSummary(codebook) {
       variables[i].chartVisibility = codebook.config.chartVisibility;
 
       //get variable label
-      variables[i].label = codebook.config.variableLabels
-        .map(variableLabel => variableLabel.value_col)
-        .indexOf(variable) > -1
-        ? codebook.config.variableLabels.filter(
-            variableLabel => variableLabel.value_col === variable
-          )[0].label
-        : variable;
+      variables[i].label =
+        codebook.config.variableLabels
+          .map(variableLabel => variableLabel.value_col)
+          .indexOf(variable) > -1
+          ? codebook.config.variableLabels.filter(
+              variableLabel => variableLabel.value_col === variable
+            )[0].label
+          : variable;
 
       // Add metadata Object
       variables[i].meta = [{ key: 'Type', value: variables[i].type }];
@@ -54,40 +55,46 @@ export function makeSummary(codebook) {
       }
 
       //calculate variable statistics (including for highlights - if any)
-      var sub = codebook.data.highlighted.length > 0
-        ? function(d) {
-            return d.highlighted;
-          }
-        : null;
-      variables[i].statistics = variables[i].type === 'continuous'
-        ? summarize.continuous(variables[i].values, sub)
-        : summarize.categorical(variables[i].values, sub);
+      var sub =
+        codebook.data.highlighted.length > 0
+          ? function(d) {
+              return d.highlighted;
+            }
+          : null;
+      variables[i].statistics =
+        variables[i].type === 'continuous'
+          ? summarize.continuous(variables[i].values, sub)
+          : summarize.categorical(variables[i].values, sub);
 
       //get chart type
-      variables[i].chartType = variables[i].type == 'continuous'
-        ? 'histogramBoxPlot'
-        : (variables[i].type == 'categorical') &
-            (variables[i].statistics.values.length > codebook.config.levelSplit)
-          ? 'verticalBars'
+      variables[i].chartType =
+        variables[i].type == 'continuous'
+          ? 'histogramBoxPlot'
           : (variables[i].type == 'categorical') &
+            (variables[i].statistics.values.length > codebook.config.levelSplit)
+            ? 'verticalBars'
+            : (variables[i].type == 'categorical') &
               (variables[i].statistics.values.length <=
                 codebook.config.levelSplit)
-            ? 'horizontalBars'
-            : 'error';
+              ? 'horizontalBars'
+              : 'error';
 
       //Handle groups.
       if (group) {
         variables[i].group = group;
-        variables[i].groupLabel = codebook.config.variableLabels
-          .map(variableLabel => variableLabel.value_col)
-          .indexOf(group) > -1
-          ? codebook.config.variableLabels.filter(
-              variableLabel => variableLabel.value_col === group
-            )[0].label
-          : group;
-        variables[i].groups = d3set(data.map(d => d[group])).values().map(g => {
-          return { group: g };
-        });
+        variables[i].groupLabel =
+          codebook.config.variableLabels
+            .map(variableLabel => variableLabel.value_col)
+            .indexOf(group) > -1
+            ? codebook.config.variableLabels.filter(
+                variableLabel => variableLabel.value_col === group
+              )[0].label
+            : group;
+        variables[i].groups = d3set(data.map(d => d[group]))
+          .values()
+          .map(g => {
+            return { group: g };
+          });
 
         variables[i].groups.forEach(g => {
           //Define variable metadata and generate data array.

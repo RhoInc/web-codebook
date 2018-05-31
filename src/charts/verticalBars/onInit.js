@@ -7,8 +7,9 @@ export default function onInit() {
       .attr('class', 'panel-label')
       .style('margin-left', chart.config.margin.left + 'px')
       .html(
-        `${this.config.group_col}: <strong>${this.config
-          .group_val}</strong> (n=${this.config.n})`
+        `${this.config.group_col}: <strong>${
+          this.config.group_val
+        }</strong> (n=${this.config.n})`
       );
     this.wrap
       .node()
