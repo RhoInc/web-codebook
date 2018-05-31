@@ -162,7 +162,17 @@
         "tabs": {
             "type": "array",
             "title": "Codebook Tabs",
-            "description": "an array of the tabs displayed in the codebook"
+            "description": "an array of the tabs displayed in the codebook",
+             "items": {
+                "type": "string",
+                 "enum": [
+                     "codebook",
+                     "listing",
+                     "chartMaker",
+                     "settings",
+                     "files"
+                 ]
+            }
         },
         "dataName": {
             "type": "string",
