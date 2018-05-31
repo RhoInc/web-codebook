@@ -1,4 +1,3 @@
-import '../../util/object-assign';
 import clone from '../../util/clone';
 import defaultSettings, { syncSettings } from './defaultSettings';
 

@@ -30,12 +30,16 @@
     "test-page": "start chrome ./build/test-page/index.html && start firefox ./build/test-page/index.html && start iexplore file://%CD%/build/test-page/index.html",
     "watch": "rollup -c -w"
   },
+  "dependencies": {
+    "d3": "~3",
+    "webcharts": "~1.7"
+  },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.26.0",
     "prettier": "^1.7.4",
-    "rollup": "^0.50.0",
+    "rollup": "^0.50.1",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-watch": "^4.3.1"
   },

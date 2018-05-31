@@ -1,3 +1,4 @@
+import './polyfills/index';
 import { createCodebook } from './createCodebook';
 import { createExplorer } from './createExplorer';
 import { charts } from './charts';
