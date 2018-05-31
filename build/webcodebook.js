@@ -4612,25 +4612,23 @@
         .select('tbody')
         .selectAll('tr')
         .filter(function(f) {
-          return f.raw == explorer.current;
+          return f.path === explorer.current.path;
         })
         .classed('selected', true);
 
       //Linkify the labelColumn
       var labelCells = this.table
+        .selectAll('tbody tr')
+        .on('click', function(d) {
+          explorer.current = d;
+          explorer.current.event = 'click';
+          explorer.makeCodebook(explorer);
+        })
         .selectAll('td')
         .filter(function(f) {
           return f.col == explorer.config.labelColumn;
         })
-        .classed('link', true)
-        .on('click', function() {
-          var current_text = d3$1.select(this).text();
-          explorer.current = explorer.config.files.filter(function(f) {
-            return f[explorer.config.labelColumn] == current_text;
-          })[0];
-          explorer.current.event = 'click';
-          explorer.makeCodebook(explorer);
-        });
+        .classed('link', true);
     });
   }
 
@@ -4692,7 +4690,11 @@
     //set the default tab to the codebook or listing view assuming they are visible
     if (this.current.event == 'click') {
       this.current.settings.defaultTab =
-        this.current.settings.tabs.indexOf('codebook') > -1
+        this.current.settings.tabs
+          .map(function(tab) {
+            return tab.key ? tab.key : tab;
+          })
+          .indexOf('codebook') > -1
           ? 'codebook'
           : this.current.settings.tabs.indexOf('listing') > -1
             ? 'listing'
