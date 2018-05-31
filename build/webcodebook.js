@@ -1278,6 +1278,7 @@
         }
       ],
       colors: ['#999'],
+      gridlines: 'y',
       resizable: false,
       height: this_.height,
       margin: this_.margin,
@@ -1285,7 +1286,6 @@
       group_col: d.group || null,
       group_label: d.groupLabel || null,
       overall: d.statistics.values,
-      gridlines: 'y',
       sort: sortType, //Alphabetical, Ascending, Descending
       chartType: d.chartType
     };
