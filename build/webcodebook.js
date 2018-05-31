@@ -838,28 +838,28 @@
     {
       key: 'files',
       label: 'Files',
-      selector: '.web-codebook .fileListing',
+      selector: '.fileListing',
       controls: false,
       instructions: 'Click a row to see the codebook for the file.'
     },
     {
       key: 'codebook',
       label: 'Codebook',
-      selector: '.web-codebook .summaryTable',
+      selector: '.summaryTable',
       controls: true,
       instructions: 'Automatically generated data summaries for each column.'
     },
     {
       key: 'listing',
       label: 'Data Listing',
-      selector: '.web-codebook .dataListing',
+      selector: '.dataListing',
       controls: true,
       instructions: 'Listing of all selected records.'
     },
     {
       key: 'chartMaker',
       label: 'Charts',
-      selector: '.web-codebook .chartMaker',
+      selector: '.chartMaker',
       controls: true,
       instructions:
         'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
@@ -867,7 +867,7 @@
     {
       key: 'settings',
       label: '&#x2699;',
-      selector: '.web-codebook .settings',
+      selector: '.settings',
       controls: false,
       instructions:
         "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
@@ -875,11 +875,12 @@
   ];
 
   function init$6(codebook) {
+    var defaultTabs = clone(availableTabs);
     codebook.nav.wrap.selectAll('*').remove();
 
     //permanently hide the codebook sections that aren't included
-    availableTabs.forEach(function(tab) {
-      tab.wrap = d3.select(tab.selector);
+    defaultTabs.forEach(function(tab) {
+      tab.wrap = codebook.wrap.select(tab.selector);
       tab.wrap.classed(
         'hidden',
         codebook.config.tabs
@@ -891,7 +892,7 @@
     });
 
     //get the tabs for the current codebook
-    codebook.nav.tabs = availableTabs.filter(function(tab) {
+    codebook.nav.tabs = defaultTabs.filter(function(tab) {
       return (
         codebook.config.tabs
           .map(function(m) {
@@ -1653,7 +1654,11 @@
     var chartData = d.statistics.values.sort(function(a, b) {
       return a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+        : a.prop_n < b.prop_n
+          ? 2
+          : a.key < b.key
+            ? -1
+            : 1;
     }); // sort data by descending rate and keep only the first five categories.
 
     chartSettings.y.order = chartData
@@ -1701,7 +1706,11 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+              : a.prop_n < b.prop_n
+                ? 2
+                : a.key < b.key
+                  ? -1
+                  : 1;
           });
 
         group.data.forEach(function(d) {
@@ -1886,7 +1895,11 @@
         .sort(function(a, b) {
           return a.prop_n > b.prop_n
             ? -2
-            : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+            : a.prop_n < b.prop_n
+              ? 2
+              : a.key < b.key
+                ? -1
+                : 1;
         })
         .slice(0, 5); // sort data by descending rate and keep only the first five categories.
 
@@ -1911,7 +1924,11 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
+              : a.prop_n < b.prop_n
+                ? 2
+                : a.key < b.key
+                  ? -1
+                  : 1;
           })
           .forEach(function(value) {
             value.group = group.group;
@@ -3056,7 +3073,10 @@
     dataListing.wrap.selectAll('*').remove();
 
     //Define table.
-    dataListing.table = webcharts.createTable('.web-codebook .dataListing', {});
+    dataListing.table = webcharts.createTable(
+      codebook.wrap.select('.dataListing').node(),
+      {}
+    );
 
     //Define callback.
     onDraw(dataListing);
@@ -3263,7 +3283,7 @@
 
       //Define chart.
       chartMaker.chart = webcharts.createChart(
-        '.web-codebook .chartMaker.section .cm-chart',
+        codebook.wrap.select('.chartMaker.section .cm-chart').node(),
         chartMaker.chartSettings
       );
 
@@ -4407,7 +4427,7 @@
       }
     };
 
-    return codebook;
+    return clone(codebook);
   }
 
   var defaultSettings$3 = {

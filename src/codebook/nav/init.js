@@ -1,12 +1,14 @@
 import availableTabs from './availableTabs';
 import { select as d3select } from 'd3';
+import clone from '../../util/clone';
 
 export function init(codebook) {
+  const defaultTabs = clone(availableTabs);
   codebook.nav.wrap.selectAll('*').remove();
 
   //permanently hide the codebook sections that aren't included
-  availableTabs.forEach(function(tab) {
-    tab.wrap = d3select(tab.selector);
+  defaultTabs.forEach(function(tab) {
+    tab.wrap = codebook.wrap.select(tab.selector);
     tab.wrap.classed(
       'hidden',
       codebook.config.tabs.map(m => m.key).indexOf(tab.key) == -1
@@ -14,7 +16,7 @@ export function init(codebook) {
   });
 
   //get the tabs for the current codebook
-  codebook.nav.tabs = availableTabs.filter(
+  codebook.nav.tabs = defaultTabs.filter(
     tab => codebook.config.tabs.map(m => m.key).indexOf(tab.key) > -1
   );
 
