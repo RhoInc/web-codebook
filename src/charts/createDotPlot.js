@@ -45,11 +45,7 @@ export function createDotPlot(this_, d) {
         (a, b) =>
           a.prop_n > b.prop_n
             ? -2
-            : a.prop_n < b.prop_n
-              ? 2
-              : a.key < b.key
-                ? -1
-                : 1
+            : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
       )
       .slice(0, 5); // sort data by descending rate and keep only the first five categories.
 
@@ -67,11 +63,7 @@ export function createDotPlot(this_, d) {
           (a, b) =>
             a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         )
         .forEach(value => {
           value.group = group.group;

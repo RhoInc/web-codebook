@@ -11,7 +11,10 @@ export function init(codebook) {
   dataListing.wrap.selectAll('*').remove();
 
   //Define table.
-  dataListing.table = createTable('.web-codebook .dataListing', {});
+  dataListing.table = createTable(
+    codebook.wrap.select('.dataListing').node(),
+    {}
+  );
 
   //Define callback.
   onDraw(dataListing);

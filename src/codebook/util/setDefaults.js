@@ -133,10 +133,8 @@ export function setDefaults(codebook) {
     codebook.config.chartVisibility || defaultSettings.chartVisibility;
 
   //hide the controls appropriately according to the start tab
-  if (codebook.config.controlVisibility != 'disabled') {
-    var startTab = availableTabs.filter(
-      f => f.key == codebook.config.defaultTab
-    );
+  if (codebook.config.controlVisibility !== 'disabled') {
+    var startTab = availableTabs.find(f => f.key == codebook.config.defaultTab);
     codebook.config.controlVisibility = startTab.controls
       ? codebook.config.controlVisibility
       : 'hidden';

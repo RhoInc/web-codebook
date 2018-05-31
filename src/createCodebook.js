@@ -10,6 +10,7 @@ import { data } from './codebook/data';
 import { settings } from './codebook/settings';
 import { title } from './codebook/title';
 import { instructions } from './codebook/instructions';
+import clone from './util/clone';
 
 export function createCodebook(element = 'body', config) {
   let codebook = {
@@ -44,5 +45,5 @@ export function createCodebook(element = 'body', config) {
     }
   };
 
-  return codebook;
+  return clone(codebook);
 }

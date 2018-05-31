@@ -2,28 +2,28 @@ const availableTabs = [
   {
     key: 'files',
     label: 'Files',
-    selector: '.web-codebook .fileListing',
+    selector: '.fileListing',
     controls: false,
     instructions: 'Click a row to see the codebook for the file.'
   },
   {
     key: 'codebook',
     label: 'Codebook',
-    selector: '.web-codebook .summaryTable',
+    selector: '.summaryTable',
     controls: true,
     instructions: 'Automatically generated data summaries for each column.'
   },
   {
     key: 'listing',
     label: 'Data Listing',
-    selector: '.web-codebook .dataListing',
+    selector: '.dataListing',
     controls: true,
     instructions: 'Listing of all selected records.'
   },
   {
     key: 'chartMaker',
     label: 'Charts',
-    selector: '.web-codebook .chartMaker',
+    selector: '.chartMaker',
     controls: true,
     instructions:
       'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
@@ -31,7 +31,7 @@ const availableTabs = [
   {
     key: 'settings',
     label: '&#x2699;',
-    selector: '.web-codebook .settings',
+    selector: '.settings',
     controls: false,
     instructions:
       "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."

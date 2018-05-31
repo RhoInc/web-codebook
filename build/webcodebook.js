@@ -7,6 +7,128 @@
 })(this, function(d3, webcharts) {
   'use strict';
 
+  if (typeof Object.assign != 'function') {
+    Object.defineProperty(Object, 'assign', {
+      value: function assign(target, varArgs) {
+        // .length of function is 2
+        'use strict';
+
+        if (target == null) {
+          // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) {
+            // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+
+        return to;
+      },
+      writable: true,
+      configurable: true
+    });
+  }
+
+  if (!Array.prototype.find) {
+    Object.defineProperty(Array.prototype, 'find', {
+      value: function value(predicate) {
+        // 1. Let O be ? ToObject(this value).
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, 'length')).
+        var len = o.length >>> 0;
+
+        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+
+        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        var thisArg = arguments[1];
+
+        // 5. Let k be 0.
+        var k = 0;
+
+        // 6. Repeat, while k < len
+        while (k < len) {
+          // a. Let Pk be ! ToString(k).
+          // b. Let kValue be ? Get(O, Pk).
+          // c. Let testResult be ToBoolean(? Call(predicate, T, � kValue, k, O �)).
+          // d. If testResult is true, return kValue.
+          var kValue = o[k];
+          if (predicate.call(thisArg, kValue, k, o)) {
+            return kValue;
+          }
+          // e. Increase k by 1.
+          k++;
+        }
+
+        // 7. Return undefined.
+        return undefined;
+      }
+    });
+  }
+
+  if (!Array.prototype.findIndex) {
+    Object.defineProperty(Array.prototype, 'findIndex', {
+      value: function value(predicate) {
+        // 1. Let O be ? ToObject(this value).
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, "length")).
+        var len = o.length >>> 0;
+
+        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+
+        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        var thisArg = arguments[1];
+
+        // 5. Let k be 0.
+        var k = 0;
+
+        // 6. Repeat, while k < len
+        while (k < len) {
+          // a. Let Pk be ! ToString(k).
+          // b. Let kValue be ? Get(O, Pk).
+          // c. Let testResult be ToBoolean(? Call(predicate, T, � kValue, k, O �)).
+          // d. If testResult is true, return k.
+          var kValue = o[k];
+          if (predicate.call(thisArg, kValue, k, o)) {
+            return k;
+          }
+          // e. Increase k by 1.
+          k++;
+        }
+
+        // 7. Return -1.
+        return -1;
+      }
+    });
+  }
+
   var _typeof =
     typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol'
       ? function(obj) {
@@ -716,28 +838,28 @@
     {
       key: 'files',
       label: 'Files',
-      selector: '.web-codebook .fileListing',
+      selector: '.fileListing',
       controls: false,
       instructions: 'Click a row to see the codebook for the file.'
     },
     {
       key: 'codebook',
       label: 'Codebook',
-      selector: '.web-codebook .summaryTable',
+      selector: '.summaryTable',
       controls: true,
       instructions: 'Automatically generated data summaries for each column.'
     },
     {
       key: 'listing',
       label: 'Data Listing',
-      selector: '.web-codebook .dataListing',
+      selector: '.dataListing',
       controls: true,
       instructions: 'Listing of all selected records.'
     },
     {
       key: 'chartMaker',
       label: 'Charts',
-      selector: '.web-codebook .chartMaker',
+      selector: '.chartMaker',
       controls: true,
       instructions:
         'Pick two variables to compare. Filter and group (panel) the chart using the controls above.'
@@ -745,7 +867,7 @@
     {
       key: 'settings',
       label: '&#x2699;',
-      selector: '.web-codebook .settings',
+      selector: '.settings',
       controls: false,
       instructions:
         "This interactive table allows users to modify each column's metadata. Updating these settings will reset the codebook and data listing."
@@ -753,11 +875,12 @@
   ];
 
   function init$6(codebook) {
+    var defaultTabs = clone(availableTabs);
     codebook.nav.wrap.selectAll('*').remove();
 
     //permanently hide the codebook sections that aren't included
-    availableTabs.forEach(function(tab) {
-      tab.wrap = d3.select(tab.selector);
+    defaultTabs.forEach(function(tab) {
+      tab.wrap = codebook.wrap.select(tab.selector);
       tab.wrap.classed(
         'hidden',
         codebook.config.tabs
@@ -769,7 +892,7 @@
     });
 
     //get the tabs for the current codebook
-    codebook.nav.tabs = availableTabs.filter(function(tab) {
+    codebook.nav.tabs = defaultTabs.filter(function(tab) {
       return (
         codebook.config.tabs
           .map(function(m) {
@@ -794,17 +917,6 @@
       t.active = t.key == codebook.config.defaultTab;
       t.wrap.classed('hidden', !t.active);
     });
-
-    //set control visibility
-    var activeTab = codebook.nav.tabs.filter(function(f) {
-      return f.active;
-    })[0];
-    if (codebook.config.controlVisibility != 'disabled') {
-      codebook.config.controlVisibility = activeTab.controls
-        ? 'visible'
-        : 'hidden';
-      codebook.controls.controlToggle.set(codebook);
-    }
 
     //draw the nav
     if (codebook.nav.tabs.length > 1) {
@@ -846,9 +958,12 @@
           codebook.instructions.update(codebook);
 
           //show/hide the controls (unless they are disabled)
+          if (codebook.config.controlVisibility !== 'hidden')
+            codebook.config.previousControlVisibility =
+              codebook.config.controlVisibility;
           if (codebook.config.controlVisibility != 'disabled') {
             codebook.config.controlVisibility = d.controls
-              ? 'visible'
+              ? codebook.config.previousControlVisibility
               : 'hidden';
             codebook.controls.controlToggle.set(codebook);
           }
@@ -1163,6 +1278,7 @@
         }
       ],
       colors: ['#999'],
+      gridlines: 'y',
       resizable: false,
       height: this_.height,
       margin: this_.margin,
@@ -1170,7 +1286,6 @@
       group_col: d.group || null,
       group_label: d.groupLabel || null,
       overall: d.statistics.values,
-      gridlines: 'y',
       sort: sortType, //Alphabetical, Ascending, Descending
       chartType: d.chartType
     };
@@ -1539,11 +1654,7 @@
     var chartData = d.statistics.values.sort(function(a, b) {
       return a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n
-          ? 2
-          : a.key < b.key
-            ? -1
-            : 1;
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
     }); // sort data by descending rate and keep only the first five categories.
 
     chartSettings.y.order = chartData
@@ -1591,11 +1702,7 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1;
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
           });
 
         group.data.forEach(function(d) {
@@ -1780,11 +1887,7 @@
         .sort(function(a, b) {
           return a.prop_n > b.prop_n
             ? -2
-            : a.prop_n < b.prop_n
-              ? 2
-              : a.key < b.key
-                ? -1
-                : 1;
+            : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
         })
         .slice(0, 5); // sort data by descending rate and keep only the first five categories.
 
@@ -1809,11 +1912,7 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1;
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
           })
           .forEach(function(value) {
             value.group = group.group;
@@ -1925,32 +2024,6 @@
         createDotPlot(this_, d);
       }
     });
-  }
-
-  if (typeof Object.assign != 'function') {
-    (function() {
-      Object.assign = function(target) {
-        'use strict';
-
-        if (target === undefined || target === null)
-          throw new TypeError('Cannot convert undefined or null to object');
-
-        var output = Object(target);
-
-        for (var index = 1; index < arguments.length; index++) {
-          var source = arguments[index];
-
-          if (source !== undefined && source !== null) {
-            for (var nextKey in source) {
-              if (source.hasOwnProperty(nextKey))
-                output[nextKey] = source[nextKey];
-            }
-          }
-        }
-
-        return output;
-      };
-    })();
   }
 
   var defaultSettings =
@@ -2984,7 +3057,10 @@
     dataListing.wrap.selectAll('*').remove();
 
     //Define table.
-    dataListing.table = webcharts.createTable('.web-codebook .dataListing', {});
+    dataListing.table = webcharts.createTable(
+      codebook.wrap.select('.dataListing').node(),
+      {}
+    );
 
     //Define callback.
     onDraw(dataListing);
@@ -3011,44 +3087,6 @@
 \------------------------------------------------------------------------------------------------*/
 
   var dataListing = { init: init$7 };
-
-  function clone$1(obj) {
-    var copy = void 0;
-
-    //boolean, number, string, null, undefined
-    if (
-      'object' != (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) ||
-      null == obj
-    )
-      return obj;
-
-    //date
-    if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
-    }
-
-    //array
-    if (obj instanceof Array) {
-      copy = [];
-      for (var i = 0, len = obj.length; i < len; i++) {
-        copy[i] = clone$1(obj[i]);
-      }
-      return copy;
-    }
-
-    //object
-    if (obj instanceof Object) {
-      copy = {};
-      for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = clone$1(obj[attr]);
-      }
-      return copy;
-    }
-
-    throw new Error('Unable to copy [obj]! Its type is not supported.');
-  }
 
   var chartMakerSettings = {
     width: 800, //changed to 300 for paneled charts
@@ -3217,7 +3255,7 @@
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
-      chartMaker.chartData = clone$1(codebook.data.filtered);
+      chartMaker.chartData = clone(codebook.data.filtered);
 
       //flag highlighted rows
       var highlightedRows = codebook.data.highlighted.map(function(m) {
@@ -3229,7 +3267,7 @@
 
       //Define chart.
       chartMaker.chart = webcharts.createChart(
-        '.web-codebook .chartMaker.section .cm-chart',
+        codebook.wrap.select('.chartMaker.section .cm-chart').node(),
         chartMaker.chartSettings
       );
 
@@ -3523,8 +3561,8 @@
       codebook.config.chartVisibility || defaultSettings$1.chartVisibility;
 
     //hide the controls appropriately according to the start tab
-    if (codebook.config.controlVisibility != 'disabled') {
-      var startTab = availableTabs.filter(function(f) {
+    if (codebook.config.controlVisibility !== 'disabled') {
+      var startTab = availableTabs.find(function(f) {
         return f.key == codebook.config.defaultTab;
       });
       codebook.config.controlVisibility = startTab.controls
@@ -4373,7 +4411,7 @@
       }
     };
 
-    return codebook;
+    return clone(codebook);
   }
 
   var defaultSettings$3 = {
