@@ -14,6 +14,14 @@ export default function continuous(vector, sub) {
     .sort((a, b) => a - b);
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;
+  statistics.percentMissing = statistics.nMissing / statistics.N;
+  statistics.missingSummary =
+    statistics.nMissing +
+    '/' +
+    statistics.N +
+    ' (' +
+    d3format('0.1%')(statistics.percentMissing) +
+    ')';
   statistics.mean = d3format('0.2f')(d3mean(nonMissing));
   statistics.SD = d3format('0.2f')(d3deviation(nonMissing));
   const quantiles = [

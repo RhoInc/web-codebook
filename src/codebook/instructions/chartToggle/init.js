@@ -10,20 +10,20 @@ export function init(codebook) {
     .attr('class', 'control chart-toggle')
     .classed('hidden', codebook.config.chartVisibility == 'hidden');
 
-  selector.append('small').text('Toggle Charts: ');
+  selector.append('small').text('Toggle Details: ');
   var showAllButton = selector
     .append('button')
-    .text('Show All Charts')
+    .text('Show All Details')
     .on('click', function() {
-      codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+      codebook.wrap.selectAll('.variable-row').classed('hiddenDetails', false);
       codebook.wrap.selectAll('.row-toggle').html('&#9660;');
     });
 
   var hideAllButton = selector
     .append('button')
-    .text('Hide All Charts')
+    .text('Hide All Details')
     .on('click', function() {
-      codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+      codebook.wrap.selectAll('.variable-row').classed('hiddenDetails', true);
       codebook.wrap.selectAll('.row-toggle').html('&#9658;');
     });
 }

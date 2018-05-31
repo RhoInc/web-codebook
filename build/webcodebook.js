@@ -4,7 +4,7 @@
     : typeof define === 'function' && define.amd
       ? define(['d3', 'webcharts'], factory)
       : (global.webcodebook = factory(global.d3, global.webCharts));
-})(this, function(d3, webcharts) {
+})(this, function(d3$1, webcharts) {
   'use strict';
 
   if (typeof Object.assign != 'function') {
@@ -303,20 +303,20 @@
     //wait until the loading indicator is visible
     var loading = setInterval(function() {
       try {
-        var laidOut = d3.select(element).property('offsetwidth') > 0,
-          displayNone = d3.select(element).style('display') === 'none';
+        var laidOut = d3$1.select(element).property('offsetwidth') > 0,
+          displayNone = d3$1.select(element).style('display') === 'none';
 
         //loading is complete
         if (!(laidOut && displayNone)) {
           if (callback) callback();
           clearInterval(loading);
           codebook.loadingIndicator.style('display', 'none');
-          d3.select('#loading-text').remove();
+          d3$1.select('#loading-text').remove();
         }
       } catch (err) {
         clearInterval(loading);
         codebook.loadingIndicator.style('display', 'none');
-        d3.select('#loading-text').remove();
+        d3$1.select('#loading-text').remove();
 
         codebook.statusWrap
           .append('div')
@@ -335,7 +335,7 @@
   function init(data) {
     var _this = this;
 
-    this.wrap = d3
+    this.wrap = d3$1
       .select(this.element)
       .append('div')
       .attr('class', 'web-codebook')
@@ -360,13 +360,15 @@
       //prepare the data summaries
       _this.data.makeSummary(_this);
 
+      //make the title
+      _this.title.init(_this);
+
       //draw controls
       _this.util.makeAutomaticFilters(_this);
       _this.util.makeAutomaticGroups(_this);
       _this.controls.init(_this);
 
       //initialize nav, title and instructions
-      _this.title.init(_this);
       _this.nav.init(_this);
       _this.instructions.init(_this);
 
@@ -464,8 +466,7 @@
     codebook.controls.groups.init(codebook);
     codebook.controls.filters.init(codebook);
     codebook.controls.controlToggle.init(codebook);
-    codebook.controls.highlight.init(codebook);
-    codebook.controls.updateRowCount(codebook);
+    codebook.title.updateCountSummary(codebook);
 
     //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
     codebook.controls.wrap
@@ -493,7 +494,7 @@
     //add a list of values to each filter object
     codebook.config.filters.forEach(function(e) {
       if (!e.hasOwnProperty('values'))
-        e.values = d3
+        e.values = d3$1
           .nest()
           .key(function(d) {
             return d[e.value_col];
@@ -573,9 +574,9 @@
 
         indicateLoading(codebook, '#loading-indicator', function() {
           // flag the selected options in the config
-          var options = d3.select(_this).selectAll('option');
+          var options = d3$1.select(_this).selectAll('option');
           options.each(function(option_d) {
-            option_d.selected = d3.select(this).property('selected');
+            option_d.selected = d3$1.select(this).property('selected');
           });
           codebook.config.filters.filter(function(filter) {
             return filter.value_col === d.value_col;
@@ -590,7 +591,7 @@
           //clear highlights
           codebook.data.highlighted = [];
           codebook.data.makeSummary(codebook);
-          codebook.controls.updateRowCount(codebook);
+          codebook.title.updateCountSummary(codebook);
           codebook.summaryTable.draw(codebook);
           codebook.chartMaker.draw(codebook);
           codebook.dataListing.init(codebook);
@@ -630,7 +631,7 @@
     var groupControl = codebook.controls.wrap.select('div.group-select'),
       groupSelect = groupControl.select('select'),
       columns = Object.keys(codebook.data.raw[0]),
-      groupLevels = d3.merge([
+      groupLevels = d3$1.merge([
         [{ value_col: 'None', label: 'None' }],
         codebook.config.groups.map(function(m) {
           return {
@@ -675,7 +676,7 @@
         codebook.data.makeSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
+        codebook.title.updateCountSummary(codebook);
       });
     });
   }
@@ -717,7 +718,7 @@
 
     controlToggle.on('click', function() {
       codebook.config.controlVisibility =
-        d3.select(this).text() == 'Hide'
+        d3$1.select(this).text() == 'Hide'
           ? 'minimized' //click "-" to minimize controls
           : 'visible'; // click "+" to show controls
 
@@ -766,62 +767,6 @@
   };
 
   /*------------------------------------------------------------------------------------------------\
-  Initialize clear highlighting button.
-\------------------------------------------------------------------------------------------------*/
-
-  function init$5(codebook) {
-    //initialize the wrapper
-    codebook.controls.highlight.clearButton = codebook.controls.summaryWrap
-      .append('button')
-      .classed('clear-highlight', true)
-      .classed('hidden', codebook.data.highlighted.length == 0)
-      .text('Clear Highlighting')
-      .on('click', function() {
-        codebook.data.highlighted = [];
-
-        codebook.data.makeSummary(codebook);
-        codebook.dataListing.init(codebook);
-        codebook.summaryTable.draw(codebook);
-        codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
-      });
-  }
-
-  /*------------------------------------------------------------------------------------------------\
-  Define clear highlighting button object.
-\------------------------------------------------------------------------------------------------*/
-
-  var highlight = { init: init$5 };
-
-  function updateRowCount(codebook) {
-    if (codebook.data.summary.length > 0) {
-      var nShown = codebook.data.summary[0].statistics.N;
-      var nTot = codebook.data.raw.length;
-      var percent = d3.format('0.1%')(nShown / nTot);
-      var tableSummary =
-        nShown + ' of ' + nTot + ' (' + percent + ') rows selected';
-      codebook.controls.rowCount.text(tableSummary).classed('warn', false);
-    } else {
-      codebook.controls.rowCount
-        .text('No rows selected.')
-        .classed('warn', true);
-    }
-
-    //Add note regarding highlighted cells and show/hide the clear highlight button
-    if (codebook.data.highlighted.length > 0) {
-      codebook.controls.highlightCount.html(
-        ' and ' +
-          codebook.data.highlighted.length +
-          ' <span class="highlightLegend">highlighted</span>. '
-      );
-      codebook.controls.highlight.clearButton.classed('hidden', false);
-    } else {
-      codebook.controls.highlightCount.text('');
-      codebook.controls.highlight.clearButton.classed('hidden', true);
-    }
-  }
-
-  /*------------------------------------------------------------------------------------------------\
   Define controls object.
 \------------------------------------------------------------------------------------------------*/
 
@@ -829,9 +774,7 @@
     init: init$1,
     filters: filters,
     groups: groups,
-    controlToggle: controlToggle,
-    highlight: highlight,
-    updateRowCount: updateRowCount
+    controlToggle: controlToggle
   };
 
   var availableTabs = [
@@ -874,7 +817,7 @@
     }
   ];
 
-  function init$6(codebook) {
+  function init$5(codebook) {
     var defaultTabs = clone(availableTabs);
     codebook.nav.wrap.selectAll('*').remove();
 
@@ -977,7 +920,7 @@
 \------------------------------------------------------------------------------------------------*/
 
   var nav = {
-    init: init$6
+    init: init$5
   };
 
   /*------------------------------------------------------------------------------------------------\
@@ -1015,7 +958,7 @@
     //Set chart visibility (on initial load only - then keep user settings)
     if (codebook.config.chartVisibility != 'user-defined') {
       varRows.classed(
-        'hiddenChart',
+        'hiddenDetails',
         codebook.config.chartVisibility != 'visible'
       );
     }
@@ -1045,12 +988,12 @@
         x: chart.plot_width
       })
       .text(function(d) {
-        return d3.format(chart.config.y.format)(d);
+        return d3$1.format(chart.config.y.format)(d);
       });
   }
 
   function makeTooltip(d, i, context) {
-    var format$$1 = d3.format(context.config.measureFormat);
+    var format$$1 = d3$1.format(context.config.measureFormat);
     d.selector = 'bar' + i;
     //Define tooltips.
     var tooltip = context.svg.append('g').attr('id', d.selector);
@@ -1081,7 +1024,9 @@
         'text-anchor':
           context.x(d.values.x) < context.plot_width / 2 ? 'start' : 'end'
       })
-      .text('n=' + d.values.raw[0].n + ' (' + d3.format('0.1%')(d.total) + ')');
+      .text(
+        'n=' + d.values.raw[0].n + ' (' + d3$1.format('0.1%')(d.total) + ')'
+      );
     var dimensions = text[0][0].getBBox();
     tooltip.classed('svg-tooltip', true); //have to run after .getBBox() in FF/EI since this sets display:none
 
@@ -1102,7 +1047,7 @@
   }
 
   function highlightData(chart) {
-    var codebook = d3
+    var codebook = d3$1
         .select(chart.wrap.node().parentNode.parentNode.parentNode)
         .datum(),
       // codebook object is attached to .summaryTable element
@@ -1138,7 +1083,7 @@
         codebook.dataListing.init(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.chartMaker.draw(codebook);
-        codebook.controls.updateRowCount(codebook);
+        codebook.title.updateCountSummary(codebook);
       });
     });
   }
@@ -1162,7 +1107,7 @@
     this.svg
       .on('mousemove', function() {
         //Highlight closest bar.
-        var mouse$$1 = d3.mouse(this);
+        var mouse$$1 = d3$1.mouse(this);
         var x = mouse$$1[0];
         var minimum = void 0;
         bars.each(function(d, i) {
@@ -1245,13 +1190,13 @@
   }
 
   function createVerticalBars(this_, d) {
-    var chartContainer = d3.select(this_).node();
-    var rowSelector = d3.select(this_).node().parentNode;
-    var sortType = d3
+    var chartContainer = d3$1.select(this_).node();
+    var rowSelector = d3$1.select(this_).node().parentNode;
+    var sortType = d3$1
       .select(rowSelector)
       .select('.row-controls .x-axis-sort select')
       .property('value');
-    var outcome = d3
+    var outcome = d3$1
       .select(rowSelector)
       .select('.row-controls .y-axis-outcome select')
       .property('value');
@@ -1311,7 +1256,7 @@
       d.statistics.highlightValues.forEach(function(d) {
         d.type = 'sub';
       });
-      chartData = d3.merge([chartData, d.statistics.highlightValues]);
+      chartData = d3$1.merge([chartData, d.statistics.highlightValues]);
 
       chartSettings.marks[0].per = ['key', 'type'];
       chartSettings.marks[0].arrange = 'nested';
@@ -1321,8 +1266,8 @@
 
     if (d.groups) {
       //Set upper limit of y-axis domain to the maximum group rate.
-      chartSettings.y.domain[1] = d3.max(d.groups, function(di) {
-        return d3.max(di.statistics.values, function(dii) {
+      chartSettings.y.domain[1] = d3$1.max(d.groups, function(di) {
+        return d3$1.max(di.statistics.values, function(dii) {
           return dii[chartSettings.y.column];
         });
       });
@@ -1341,7 +1286,10 @@
           group.statistics.highlightValues.forEach(function(d) {
             d.type = 'sub';
           });
-          group.data = d3.merge([group.data, group.statistics.highlightValues]);
+          group.data = d3$1.merge([
+            group.data,
+            group.statistics.highlightValues
+          ]);
 
           group.chartSettings.marks[0].per = ['key', 'type'];
           group.chartSettings.marks[0].arrange = 'nested';
@@ -1359,7 +1307,7 @@
 
         if (group.data.length) group.chart.init(group.data);
         else {
-          d3
+          d3$1
             .select(chartContainer)
             .append('p')
             .text(
@@ -1371,7 +1319,7 @@
                 ')'
             );
 
-          d3
+          d3$1
             .select(chartContainer)
             .append('div')
             .html('<em>No data available for this level.</em>.<br><br>');
@@ -1387,7 +1335,7 @@
   }
 
   function createVerticalBarsControls(this_, d) {
-    var controlsContainer = d3
+    var controlsContainer = d3$1
       .select(this_)
       .append('div')
       .classed('row-controls', true);
@@ -1409,11 +1357,11 @@
       });
 
     outcomeSelect.on('change', function() {
-      d3
+      d3$1
         .select(this_)
         .selectAll('.wc-chart')
         .remove();
-      d3
+      d3$1
         .select(this_)
         .selectAll('.panel-label')
         .remove();
@@ -1435,11 +1383,11 @@
       });
 
     x_sort.on('change', function() {
-      d3
+      d3$1
         .select(this_)
         .selectAll('.wc-chart')
         .remove();
-      d3
+      d3$1
         .select(this_)
         .selectAll('.panel-label')
         .remove();
@@ -1516,7 +1464,7 @@
             });
           rateLine
             .append('title')
-            .text('Overall rate: ' + d3.format(chart.config.x.format)(x));
+            .text('Overall rate: ' + d3$1.format(chart.config.x.format)(x));
         }
       }
     });
@@ -1560,7 +1508,7 @@
           .append('title')
           .text(
             'Difference from overall rate: ' +
-              d3.format('.1f')((d.total - x) * 100)
+              d3$1.format('.1f')((d.total - x) * 100)
           );
         var diffText = g
           .append('text')
@@ -1574,7 +1522,7 @@
           .text(
             '' +
               (x < d.total ? '+' : x > d.total ? '-' : '') +
-              d3.format('.1f')(Math.abs(d.total - x) * 100)
+              d3$1.format('.1f')(Math.abs(d.total - x) * 100)
           );
       });
 
@@ -1583,7 +1531,7 @@
       .on('mouseover', function() {
         chart.svg.selectAll('.difference-from-total').style('display', 'block');
         chart.svg.selectAll('.difference-from-total text').each(function() {
-          d3.select(this).attr('dy', this.getBBox().height / 4);
+          d3$1.select(this).attr('dy', this.getBBox().height / 4);
         });
       })
       .on('mouseout', function() {
@@ -1609,14 +1557,14 @@
   }
 
   function createHorizontalBars(this_, d) {
-    var rowSelector = d3.select(this_).node().parentNode,
-      outcome = d3
+    var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1
         .select(rowSelector)
         .select('.row-controls .x-axis-outcome select')
         .property('value'),
       custom_height = d.statistics.values.length * 20 + 35,
       // let height vary based on the number of levels; 35 ~= top and bottom margin
-      chartContainer = d3.select(this_).node(),
+      chartContainer = d3$1.select(this_).node(),
       chartSettings = {
         x: {
           column: outcome === 'rate' ? 'prop_n' : 'n',
@@ -1672,7 +1620,7 @@
       d.statistics.highlightValues.forEach(function(d) {
         d.type = 'sub';
       });
-      chartData = d3.merge([chartData, d.statistics.highlightValues]);
+      chartData = d3$1.merge([chartData, d.statistics.highlightValues]);
 
       chartSettings.marks[0].per = ['key', 'type'];
       chartSettings.marks[0].arrange = 'nested';
@@ -1682,8 +1630,8 @@
 
     if (d.groups) {
       //Set upper limit of x-axis domain to the maximum group rate.
-      chartSettings.x.domain[1] = d3.max(d.groups, function(di) {
-        return d3.max(di.statistics.values, function(dii) {
+      chartSettings.x.domain[1] = d3$1.max(d.groups, function(di) {
+        return d3$1.max(di.statistics.values, function(dii) {
           return dii[chartSettings.x.column];
         });
       });
@@ -1712,7 +1660,10 @@
           group.statistics.highlightValues.forEach(function(d) {
             d.type = 'sub';
           });
-          group.data = d3.merge([group.data, group.statistics.highlightValues]);
+          group.data = d3$1.merge([
+            group.data,
+            group.statistics.highlightValues
+          ]);
 
           group.chartSettings.marks[0].per = ['key', 'type'];
           group.chartSettings.marks[0].arrange = 'nested';
@@ -1730,7 +1681,7 @@
 
         if (group.data.length) group.chart.init(group.data);
         else {
-          d3
+          d3$1
             .select(chartContainer)
             .append('p')
             .text(
@@ -1741,7 +1692,7 @@
                 group.chartSettings.n +
                 ')'
             );
-          d3
+          d3$1
             .select(chartContainer)
             .append('div')
             .html('<em>All values missing in this group.</em>.<br><br>');
@@ -1801,7 +1752,9 @@
               'stroke-width': '2px',
               'stroke-opacity': '1'
             });
-          rateLine.append('title').text('Overall rate: ' + d3.format('.1%')(x));
+          rateLine
+            .append('title')
+            .text('Overall rate: ' + d3$1.format('.1%')(x));
         }
       }
     });
@@ -1846,12 +1799,12 @@
   }
 
   function createDotPlot(this_, d) {
-    var rowSelector = d3.select(this_).node().parentNode,
-      outcome = d3
+    var rowSelector = d3$1.select(this_).node().parentNode,
+      outcome = d3$1
         .select(rowSelector)
         .select('.row-controls .x-axis-outcome select')
         .property('value'),
-      chartContainer = d3.select(this_).node(),
+      chartContainer = d3$1.select(this_).node(),
       chartSettings = {
         x: {
           column: outcome === 'rate' ? 'prop_n' : 'n',
@@ -1955,7 +1908,7 @@
   }
 
   function createHorizontalBarsControls(this_, d) {
-    var controlsContainer = d3
+    var controlsContainer = d3$1
       .select(this_)
       .append('div')
       .classed('row-controls', true);
@@ -1977,11 +1930,11 @@
       });
 
     outcomeSelect.on('change', function() {
-      d3
+      d3$1
         .select(this_)
         .selectAll('.wc-chart')
         .remove();
-      d3
+      d3$1
         .select(this_)
         .selectAll('.panel-label')
         .remove();
@@ -2010,11 +1963,11 @@
       });
 
     type_control.on('change', function() {
-      d3
+      d3$1
         .select(this_)
         .selectAll('.wc-chart')
         .remove();
-      d3
+      d3$1
         .select(this_)
         .selectAll('.panel-label')
         .remove();
@@ -2088,7 +2041,7 @@
   }
 
   function makeTooltip$1(d, i, context) {
-    var format$$1 = d3.format(context.config.measureFormat),
+    var format$$1 = d3$1.format(context.config.measureFormat),
       offset = context.plot_width / context.config.x.bin / 2 + 8;
     d.midpoint = (d.rangeHigh + d.rangeLow) / 2;
     d.range = format$$1(d.rangeLow) + '-' + format$$1(d.rangeHigh);
@@ -2181,14 +2134,14 @@
   function addHighlightMarks(chart) {
     //add highlights for each bar (if any exist)
     var bars = chart.svg.selectAll('g.bar-group').each(function(d) {
-      var highlightCount = d3.sum(d.values.raw, function(d) {
+      var highlightCount = d3$1.sum(d.values.raw, function(d) {
         return d.highlighted ? 1 : 0;
       });
       //Clone the rect (if there are highlights)
       if (highlightCount > 0) {
-        var rect = d3.select(this).select('rect');
+        var rect = d3$1.select(this).select('rect');
         var rectNode = rect.node();
-        var highlightRect = d3.select(this).append('rect');
+        var highlightRect = d3$1.select(this).append('rect');
 
         highlightRect
           .attr('x', chart.x(d.rangeLow) + 1)
@@ -2201,7 +2154,7 @@
   }
 
   function addBoxPlot(chart) {
-    var format$$1 = d3.format(chart.config.measureFormat);
+    var format$$1 = d3$1.format(chart.config.measureFormat);
 
     //Annotate quantiles
     if (chart.config.boxPlot) {
@@ -2215,7 +2168,7 @@
 
       for (var item in quantiles) {
         var quantile$$1 = quantiles[item];
-        quantile$$1.quantile = d3.quantile(
+        quantile$$1.quantile = d3$1.quantile(
           chart.values,
           quantile$$1.probability
         );
@@ -2223,7 +2176,7 @@
         //Horizontal lines
         if ([0.05, 0.75].indexOf(quantile$$1.probability) > -1) {
           var rProbability = quantiles[+item + 1].probability;
-          var rQuantile = d3.quantile(chart.values, rProbability);
+          var rQuantile = d3$1.quantile(chart.values, rProbability);
           var whisker = chart.svg
             .append('line')
             .attr({
@@ -2254,7 +2207,7 @@
 
         //Box
         if (quantile$$1.probability === 0.25) {
-          var q3 = d3.quantile(chart.values, 0.75);
+          var q3 = d3$1.quantile(chart.values, 0.75);
           var interQ = chart.svg
             .append('rect')
             .attr({
@@ -2347,8 +2300,8 @@
 
     //Annotate mean.
     if (chart.config.mean) {
-      var mean$$1 = d3.mean(chart.values);
-      var sd = d3.deviation(chart.values);
+      var mean$$1 = d3$1.mean(chart.values);
+      var sd = d3$1.deviation(chart.values);
       var meanMark = chart.svg
         .append('circle')
         .attr({
@@ -2382,7 +2335,7 @@
     chart.svg
       .on('mousemove', function() {
         //Highlight closest bar.
-        var mouse$$1 = d3.mouse(this);
+        var mouse$$1 = d3$1.mouse(this);
         var x = chart.x.invert(mouse$$1[0]);
         var y = chart.y.invert(mouse$$1[1]);
         var minimum = void 0;
@@ -2489,7 +2442,7 @@
 
     //Define x-axis domain as the range of the measure, regardless of subgrouping.
     if (!this.initialSettings.xDomain) {
-      this.initialSettings.xDomain = d3.extent(this.values);
+      this.initialSettings.xDomain = d3$1.extent(this.values);
     }
     this.config.x.domain = this.initialSettings.xDomain;
 
@@ -2502,14 +2455,14 @@
       //in a single bin within a subgrouping.
       var max$$1 = 0;
       if (!config.y.domain[1]) {
-        var nestedData = d3
+        var nestedData = d3$1
           .nest()
           .key(function(d) {
             return d[panel];
           })
           .entries(context.raw_data);
         nestedData.forEach(function(group) {
-          var domain = d3.extent(group.values, function(d) {
+          var domain = d3$1.extent(group.values, function(d) {
             return +d[measure];
           });
           var binWidth = (domain[1] - domain[0]) / config.nBins;
@@ -2518,7 +2471,7 @@
               Math.floor((+d[measure] - domain[0]) / binWidth) -
               (+d[measure] === domain[1]) * 1;
           });
-          var bins = d3
+          var bins = d3$1
             .nest()
             .key(function(d) {
               return d.bin;
@@ -2529,7 +2482,7 @@
             .entries(group.values);
           max$$1 = Math.max(
             max$$1,
-            d3.max(bins, function(d) {
+            d3$1.max(bins, function(d) {
               return d.values;
             })
           );
@@ -2537,7 +2490,7 @@
       }
 
       //Plot the chart for each group.
-      var groups = d3
+      var groups = d3$1
         .set(
           context.raw_data.map(function(d) {
             return d[panel];
@@ -2560,7 +2513,7 @@
         });
         group.settings.xDomain = config.commonScale
           ? config.xDomain
-          : d3.extent(group.data, function(d) {
+          : d3$1.extent(group.data, function(d) {
               return +d[measure];
             });
         group.settings.x.domain = group.settings.xDomain;
@@ -2599,7 +2552,7 @@
   }
 
   function createHistogramBoxPlot(this_, d) {
-    var chartContainer = d3.select(this_).node();
+    var chartContainer = d3$1.select(this_).node();
     var chartSettings = {
       measure: ' ',
       resizable: false,
@@ -2640,7 +2593,7 @@
   }
 
   function createHistogramBoxPlotControls(this_, d) {
-    var controlsContainer = d3
+    var controlsContainer = d3$1
       .select(this_)
       .append('div')
       .classed('row-controls', true);
@@ -2657,11 +2610,11 @@
         .attr('checked', true);
 
       commonScaleCheckbox.on('change', function() {
-        d3
+        d3$1
           .select(this_)
           .selectAll('.wc-chart')
           .remove();
-        d3
+        d3$1
           .select(this_)
           .selectAll('.panel-label')
           .remove();
@@ -2703,7 +2656,7 @@
         console.warn('Invalid chart type for ' + d.key);
       }
     } else {
-      d3
+      d3$1
         .select(this)
         .append('div')
         .attr('class', 'missingText')
@@ -2712,8 +2665,6 @@
   }
 
   function renderValues(d, list) {
-    list.selectAll('*').remove();
-
     //make a list of values
     if (d.type == 'categorical') {
       var topValues = d.statistics.values
@@ -2725,21 +2676,26 @@
         });
 
       var valueItems = list
-        .selectAll('li')
+        .selectAll('li.value')
         .data(topValues)
         .enter()
-        .append('li');
+        .append('li')
+        .attr('class', 'value');
 
       valueItems
         .append('div')
         .text(function(d) {
           return d.key;
         })
-        .attr('class', 'wcb-label');
+        .attr('class', 'wcb-label')
+        .attr('title', function(d) {
+          return d.key;
+        });
+
       valueItems
         .append('div')
         .text(function(d) {
-          return d.n + ' (' + d3.format('0.1%')(d.prop_n) + ')';
+          return d.n + ' (' + d3$1.format('0.1%')(d.prop_n) + ')';
         })
         .attr('class', 'value');
 
@@ -2748,12 +2704,13 @@
         var extraCount = totLength - 5;
         var extra_span = list
           .append('li')
+          .attr('class', 'value')
           .append('div')
           .attr('class', 'wcb-label')
           .html('and ' + extraCount + ' more.');
       }
     } else if (d.type == 'continuous') {
-      var sortedValues = d3
+      var sortedValues = d3$1
         .set(
           d.values.map(function(d) {
             return +d.value;
@@ -2772,15 +2729,16 @@
         var maxValues = sortedValues.filter(function(d, i) {
           return i >= nValues - 3;
         });
-        var valList = d3.merge([minValues, ['...'], maxValues]);
+        var valList = d3$1.merge([minValues, ['...'], maxValues]);
       } else {
         var valList = sortedValues;
       }
       var valueItems = list
-        .selectAll('li')
+        .selectAll('li.value')
         .data(valList)
         .enter()
-        .append('li');
+        .append('li')
+        .attr('class', 'value');
 
       valueItems
         .append('div')
@@ -2805,9 +2763,17 @@
 
   //Render Summary Stats
   function renderStats(d, list) {
-    list.selectAll('*').remove();
+    var ignoreStats = [
+      'values',
+      'highlightValues',
+      'min',
+      'max',
+      'n',
+      'N',
+      'nMissing',
+      'percentMissing'
+    ];
 
-    var ignoreStats = ['values', 'highlightValues', 'min', 'max'];
     var statNames = Object.keys(d.statistics)
       .filter(function(f) {
         return ignoreStats.indexOf(f) === -1;
@@ -2818,7 +2784,7 @@
 
     var statList = statNames.map(function(stat) {
       return {
-        key: stat !== 'nMissing' ? stat : 'Missing',
+        key: stat !== 'missingSummary' ? stat : 'Missing',
         value: d.statistics[stat]
       };
     });
@@ -2859,7 +2825,11 @@
     //render the items
     var metaItems = list
       .selectAll('li.meta')
-      .data(d.meta)
+      .data(
+        d.meta.filter(function(f) {
+          return f.key != 'Type';
+        })
+      )
       .enter()
       .append('li')
       .classed('meta', true)
@@ -2883,8 +2853,8 @@
     if (dropped.length) {
       list
         .append('li')
-        .append('div')
         .attr('class', 'details')
+        .append('div')
         .html('&#9432;')
         .property(
           'title',
@@ -2897,59 +2867,142 @@
     }
   }
 
-  function clearDetails(d, list) {
-    list.selectAll('*').remove();
+  function makeDetails(d) {
+    var stat_list = d3$1
+      .select(this)
+      .append('ul')
+      .attr('class', 'stats');
+    var val_list = d3$1
+      .select(this)
+      .append('ul')
+      .attr('class', 'values');
+
+    var parent = d3$1.select(this.parentNode.parentNode);
+
+    //render stats & values on initial load
+    renderStats(d, stat_list);
+    renderValues(d, val_list);
   }
 
-  var detailList = [
-    { key: 'Stats', action: renderStats },
-    { key: 'Meta', action: renderMeta },
-    { key: 'Values', action: renderValues },
-    { key: 'None', action: clearDetails }
-  ];
+  function makeMeta(d) {
+    var hasMeta =
+      d.meta
+        .filter(function(f) {
+          return !f.hidden;
+        })
+        .filter(function(f) {
+          return f.key != 'Type';
+        }).length > 0;
+    if (hasMeta) {
+      var meta_list = d3$1
+        .select(this)
+        .append('ul')
+        .attr('class', 'meta');
 
-  function makeDetails(d) {
-    var list = d3
-      .select(this)
-      .append('div')
-      .append('ul');
-    var parent = d3.select(this.parentNode.parentNode);
-    var controls = parent
-      .select('.row-chart')
-      .select('.row-controls')
-      .append('div')
-      .attr('class', 'detail-controls');
+      var parent = d3$1.select(this.parentNode.parentNode);
+      renderMeta(d, meta_list);
+    } else {
+      d3$1.select(this).style('display', 'none');
+    }
+  }
 
-    controls.append('small').html('Header Details: ');
-    var detailSelect = controls.append('select');
+  function makeHist(this_, d) {
+    var height = 15,
+      width = 100;
 
-    var detailItems = detailSelect
-      .selectAll('option')
-      .data(detailList)
+    var svg = d3
+      .select(this_)
+      .append('svg')
+      .attr('height', height)
+      .attr('width', width)
+      .style('margin-right', '0.1em');
+
+    if (d.type == 'categorical') {
+      var bins = d.statistics.values;
+      bins.forEach(function(d) {
+        d.title = d.key + ' - ' + d.n + ' (' + d.prop_n_text + ')';
+        d.color = '#999';
+      });
+    } else if (d.type == 'continuous') {
+      var values = d.values.map(function(m) {
+        return +m.value;
+      });
+      var x_linear = d3.scale
+        .linear()
+        .domain(d3.extent(values))
+        .range([0, width]);
+      var bins = d3.layout
+        .histogram()
+        .bins(x_linear.ticks(50))(values)
+        .map(function(m, i) {
+          m.key = '[' + m.x + '-' + (m.x + m.dx) + ')';
+          m.n = m.length;
+          m.title = m.key + ' - ' + m.n;
+          m.color = 'black';
+          return m;
+        });
+    }
+
+    // scales
+    var x = d3.scale
+      .ordinal()
+      .domain(
+        bins.map(function(d) {
+          return d.key;
+        })
+      )
+      .rangeBands([0, width], 0.1, 0);
+
+    var width = x.rangeBand();
+
+    var y = d3.scale
+      .linear()
+      .domain([
+        0,
+        d3.max(bins, function(d) {
+          return d.n;
+        })
+      ])
+      .range([height, 0]);
+
+    var bar = svg
+      .selectAll('.bar')
+      .data(bins)
       .enter()
-      .append('option')
-      .html(function(d) {
-        return d.key;
+      .append('g')
+      .attr('class', 'bar')
+      .attr('transform', function(d) {
+        return 'translate(' + x(d.key) + ',' + y(d.n) + ')';
       });
 
-    //Handlers for label events
-    detailSelect.on('change', function() {
-      var current = this.value;
-      var detailObj = detailList.filter(function(f) {
-        return f.key == current;
-      })[0];
-      detailObj.action(d, list);
-    });
+    bar
+      .append('rect')
+      .attr('x', 1)
+      .attr('width', width)
+      .attr('height', function(d) {
+        return height - y(d.n);
+      })
+      .attr('fill', d.type == 'categorical' ? '#999' : 'black')
+      .append('title')
+      .text(function(d) {
+        return d.title;
+      });
+  }
 
-    //render stats on initial load
-    renderStats(d, list);
+  function createSpark() {
+    var d = d3.select(this).datum();
+    if (d.statistics.n > 0) {
+      makeHist(this, d);
+    }
   }
 
   function makeTitle(d) {
-    var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
+    var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
     var chartDiv = rowDiv.select('.row-chart');
-    var hiddenFlag = rowDiv.classed('hiddenChart');
-    d3
+    var hiddenFlag = rowDiv.classed('hiddenDetails');
+
+    //Add row toggle
+    d3$1
       .select(this)
       .append('div')
       .attr('class', 'row-toggle')
@@ -2958,14 +3011,15 @@
         return d.chartVisibility == 'hidden';
       })
       .on('click', function() {
-        var rowDiv = d3.select(this.parentNode.parentNode.parentNode);
+        var rowDiv = d3$1.select(this.parentNode.parentNode.parentNode);
         var chartDiv = rowDiv.select('.row-chart');
-        var hiddenFlag = rowDiv.classed('hiddenChart');
-        rowDiv.classed('hiddenChart', !hiddenFlag);
-        d3.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
+        var hiddenFlag = rowDiv.classed('hiddenDetails');
+        rowDiv.classed('hiddenDetails', !hiddenFlag);
+        d3$1.select(this).html(hiddenFlag ? '&#9660;' : '&#9658;');
       });
 
-    d3
+    //add variable name in quotes
+    d3$1
       .select(this)
       .append('span')
       .attr('class', 'title-span')
@@ -2973,8 +3027,9 @@
         return "'" + d.value_col + "'";
       });
 
+    //add variable label (if any)
     if (d.value_col != d.label) {
-      d3
+      d3$1
         .select(this)
         .append('span')
         .attr('class', 'label-span')
@@ -2982,6 +3037,41 @@
           return d.label;
         });
     }
+
+    //add variable type
+    /*
+  d3select(this)
+    .append('span')
+    .attr('class', 'type')
+    .text(d => d.type);
+  */
+
+    //add sparklines
+    d3$1
+      .select(this)
+      .append('div')
+      .attr('class', 'spark')
+      .datum(d)
+      .each(createSpark);
+
+    //add percent missing (if > 0%)
+    d3$1
+      .select(this)
+      .append('span')
+      .attr('class', 'percent-missing')
+      .text(function(d) {
+        return d3$1.format('0.1%')(d.statistics.percentMissing) + ' missing';
+      })
+      .style('display', function(d) {
+        return d.statistics.percentMissing == 0 ? 'none' : null;
+      })
+      .style('cursor', 'pointer')
+      .style('color', function(d) {
+        return d.statistics.percentMissing >= 0.1 ? 'red' : '#999';
+      })
+      .attr('title', function(d) {
+        return d.statistics.nMissing + ' of ' + d.statistics.N + ' missing';
+      });
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -2989,26 +3079,30 @@
 \------------------------------------------------------------------------------------------------*/
 
   function renderRow(d) {
-    var rowWrap = d3.select(this);
+    var rowWrap = d3$1.select(this);
     rowWrap.selectAll('*').remove();
 
-    var rowHead = rowWrap.append('div').attr('class', 'row-head section');
-
-    rowHead
+    rowWrap
+      .append('div')
+      .attr('class', 'row-head section')
       .append('div')
       .attr('class', 'row-title')
       .each(makeTitle);
-    //rowHead.append('div').attr('class', 'row-values').each(makeValues);
+
+    rowWrap
+      .append('div')
+      .attr('class', 'row-details section')
+      .each(makeDetails);
 
     rowWrap
       .append('div')
       .attr('class', 'row-chart section')
       .each(makeChart);
 
-    rowHead
+    rowWrap
       .append('div')
-      .attr('class', 'row-details')
-      .each(makeDetails);
+      .attr('class', 'row-meta section')
+      .each(makeMeta);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -3048,7 +3142,7 @@
     });
   }
 
-  function init$7(codebook) {
+  function init$6(codebook) {
     //indicateLoading(codebook, '.web-codebook .dataListing .wc-chart');
 
     var dataListing = codebook.dataListing;
@@ -3086,7 +3180,7 @@
   Define dataListing object (the meat and potatoes).
 \------------------------------------------------------------------------------------------------*/
 
-  var dataListing = { init: init$7 };
+  var dataListing = { init: init$6 };
 
   var chartMakerSettings = {
     width: 800, //changed to 300 for paneled charts
@@ -3364,11 +3458,11 @@
   /*------------------------------------------------------------------------------------------------\
   Initialize detail select
 \------------------------------------------------------------------------------------------------*/
-  function init$9(codebook) {
+  function init$8(codebook) {
     initAxisSelect(codebook);
   }
 
-  function init$8(codebook) {
+  function init$7(codebook) {
     var chartMaker = codebook.chartMaker;
     chartMaker.codebook = codebook;
     chartMaker.config = codebook.config;
@@ -3383,7 +3477,7 @@
       .attr('class', 'cm-chart');
 
     if (codebook.data.summary.length > 2) {
-      init$9(codebook); //make controls
+      init$8(codebook); //make controls
       chartMaker.draw(codebook); //draw the initial codebook
     } else {
       chartMaker.wrap
@@ -3399,7 +3493,7 @@
 
   var chartMaker = {
     draw: draw$1,
-    init: init$8
+    init: init$7
   };
 
   var defaultSettings$1 = {
@@ -3715,7 +3809,7 @@
     var numericValues = nonMissingValues.filter(function(d) {
       return !isNaN(+d.value);
     });
-    var distinctValues = d3
+    var distinctValues = d3$1
       .set(
         numericValues.map(function(d) {
           return d.value;
@@ -3737,7 +3831,15 @@
     });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
-    statistics.values = d3
+    statistics.percentMissing = statistics.nMissing / statistics.N;
+    statistics.missingSummary =
+      statistics.nMissing +
+      '/' +
+      statistics.N +
+      ' (' +
+      d3$1.format('0.1%')(statistics.percentMissing) +
+      ')';
+    statistics.values = d3$1
       .nest()
       .key(function(d) {
         return d.value;
@@ -3747,8 +3849,8 @@
           n: d.length,
           prop_N: d.length / statistics.N,
           prop_n: d.length / statistics.n,
-          prop_N_text: d3.format('0.1%')(d.length / statistics.N),
-          prop_n_text: d3.format('0.1%')(d.length / statistics.n),
+          prop_N_text: d3$1.format('0.1%')(d.length / statistics.N),
+          prop_n_text: d3$1.format('0.1%')(d.length / statistics.n),
           indexes: d.map(function(di) {
             return di.index;
           })
@@ -3757,7 +3859,7 @@
       })
       .entries(nonMissing);
 
-    statistics.Unique = d3
+    statistics.Unique = d3$1
       .set(
         vector.map(function(d) {
           return d.value;
@@ -3773,7 +3875,7 @@
     });
 
     if (sub) {
-      statistics.highlightValues = d3
+      statistics.highlightValues = d3$1
         .nest()
         .key(function(d) {
           return d.value;
@@ -3783,8 +3885,8 @@
             n: d.length,
             prop_N: d.length / statistics.N,
             prop_n: d.length / statistics.n,
-            prop_N_text: d3.format('0.1%')(d.length / statistics.N),
-            prop_n_text: d3.format('0.1%')(d.length / statistics.n),
+            prop_N_text: d3$1.format('0.1%')(d.length / statistics.N),
+            prop_n_text: d3$1.format('0.1%')(d.length / statistics.n),
             indexes: d.map(function(di) {
               return di.index;
             })
@@ -3819,8 +3921,16 @@
       });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
-    statistics.mean = d3.format('0.2f')(d3.mean(nonMissing));
-    statistics.SD = d3.format('0.2f')(d3.deviation(nonMissing));
+    statistics.percentMissing = statistics.nMissing / statistics.N;
+    statistics.missingSummary =
+      statistics.nMissing +
+      '/' +
+      statistics.N +
+      ' (' +
+      d3$1.format('0.1%')(statistics.percentMissing) +
+      ')';
+    statistics.mean = d3$1.format('0.2f')(d3$1.mean(nonMissing));
+    statistics.SD = d3$1.format('0.2f')(d3$1.deviation(nonMissing));
     var quantiles = [
       ['min', 0],
       ['5th percentile', 0.05],
@@ -3832,8 +3942,8 @@
     ];
     quantiles.forEach(function(quantile$$1) {
       var statistic = quantile$$1[0];
-      statistics[statistic] = d3.format('0.1f')(
-        d3.quantile(nonMissing, quantile$$1[1])
+      statistics[statistic] = d3$1.format('0.1f')(
+        d3$1.quantile(nonMissing, quantile$$1[1])
       );
     });
 
@@ -3849,12 +3959,12 @@
         .sort(function(a, b) {
           return a - b;
         });
-      statistics.mean_sub = d3.format('0.2f')(d3.mean(sub_vector));
-      statistics.SD_sub = d3.format('0.2f')(d3.deviation(sub_vector));
+      statistics.mean_sub = d3$1.format('0.2f')(d3$1.mean(sub_vector));
+      statistics.SD_sub = d3$1.format('0.2f')(d3$1.deviation(sub_vector));
       quantiles.forEach(function(quantile$$1) {
         var statistic = quantile$$1[0];
-        statistics[statistic + '_sub'] = d3.format('0.1f')(
-          d3.quantile(sub_vector, quantile$$1[1])
+        statistics[statistic + '_sub'] = d3$1.format('0.1f')(
+          d3$1.quantile(sub_vector, quantile$$1[1])
         );
       });
     }
@@ -3964,7 +4074,7 @@
                   return variableLabel.value_col === group;
                 })[0].label
               : group;
-          variables[i].groups = d3
+          variables[i].groups = d3$1
             .set(
               data.map(function(d) {
                 return d[group];
@@ -4017,7 +4127,7 @@
     makeSummary: makeSummary
   };
 
-  function init$10(codebook) {
+  function init$9(codebook) {
     indicateLoading(codebook, '.web-codebook .settings .column-table');
 
     codebook.settings.layout(codebook);
@@ -4048,11 +4158,10 @@
 
         //redraw data summary, codebook, and listing.
         codebook.data.makeSummary(codebook);
-        codebook.title.updateColumnCount(codebook);
+        codebook.title.updateCountSummary(codebook);
         codebook.summaryTable.draw(codebook);
         codebook.dataListing.init(codebook);
         codebook.chartMaker.init(codebook);
-        codebook.controls.updateRowCount(codebook);
       }
     );
   }
@@ -4073,7 +4182,7 @@
       //redefine settings array
       codebook.config[setting] = inputs
         .filter(function() {
-          return d3
+          return d3$1
             .select(this)
             .select('input')
             .property('checked');
@@ -4086,7 +4195,7 @@
       //redefine settings array
       codebook.config[setting] = inputs
         .filter(function(d) {
-          d.value.label = d3
+          d.value.label = d3$1
             .select(this)
             .select('input')
             .property('value');
@@ -4185,7 +4294,7 @@
           return d.key;
         })
         .each(function(d, i) {
-          var cell = d3.select(this);
+          var cell = d3$1.select(this);
 
           switch (d.key) {
             case 'Column':
@@ -4229,11 +4338,11 @@
 \------------------------------------------------------------------------------------------------*/
 
   var settings = {
-    init: init$10,
+    init: init$9,
     layout: layout$1
   };
 
-  function init$11(codebook) {
+  function init$10(codebook) {
     codebook.title.fileWrap = codebook.title.wrap
       .append('span')
       .attr('class', 'file')
@@ -4243,22 +4352,79 @@
           : 'Codebook'
       );
 
-    codebook.title.countSpan = codebook.title.wrap
+    codebook.title.countSummary = codebook.title.wrap
       .append('span')
-      .attr('class', 'columnCount');
+      .attr('class', 'countSummary');
 
-    codebook.title.updateColumnCount(codebook);
+    codebook.title.highlight.init(codebook);
+
+    codebook.title.updateCountSummary(codebook);
   }
 
-  function updateColumnCount(codebook) {
+  /*------------------------------------------------------------------------------------------------\
+  Initialize clear highlighting button.
+\------------------------------------------------------------------------------------------------*/
+
+  function init$11(codebook) {
+    //initialize the wrapper
+    codebook.title.highlight.clearButton = codebook.title.wrap
+      .append('button')
+      .classed('clear-highlight', true)
+      .classed('hidden', codebook.data.highlighted.length == 0)
+      .text('Clear Highlighting')
+      .on('click', function() {
+        codebook.data.highlighted = [];
+
+        codebook.data.makeSummary(codebook);
+        codebook.dataListing.init(codebook);
+        codebook.summaryTable.draw(codebook);
+        codebook.chartMaker.draw(codebook);
+        codebook.title.updateCountSummary(codebook);
+      });
+  }
+
+  /*------------------------------------------------------------------------------------------------\
+  Define clear highlighting button object.
+\------------------------------------------------------------------------------------------------*/
+
+  var highlight = { init: init$11 };
+
+  function updateCountSummary(codebook) {
+    if (codebook.data.summary.length > 0) {
+      var nShown = codebook.data.summary[0].statistics.N;
+      var nTot = codebook.data.raw.length;
+      var percent = d3$1.format('0.1%')(nShown / nTot);
+      var rowSummary =
+        nShown + ' of ' + nTot + ' (' + percent + ') rows selected';
+    } else {
+      var rowSummary = 'No rows selected.';
+    }
+
+    //Add note regarding highlighted cells and show/hide the clear highlight button
+    var highlightSummary =
+      codebook.data.highlighted.length > 0
+        ? ' and ' +
+          codebook.data.highlighted.length +
+          ' <span class="highlightLegend">highlighted</span>. '
+        : '.';
+
+    codebook.title.highlight.clearButton.classed(
+      'hidden',
+      codebook.data.highlighted.length == 0
+    );
+
+    //get number of columns hidden
     var nCols_sub = codebook.data.summary.filter(function(d) {
       return !d.hidden;
     }).length;
     var nCols_all = codebook.data.summary.length - 1; //-1 is for the index var
-    var percent = d3.format('0.1%')(nCols_sub / nCols_all);
-    var tableSummary =
-      nCols_sub + ' of ' + nCols_all + ' (' + percent + ') columns selected.';
-    codebook.title.countSpan.text(tableSummary);
+    var nCols_diff = nCols_all - nCols_sub;
+    //var percent = d3format('0.1%')(nCols_sub / nCols_all);
+    var colSummary = nCols_diff > 0 ? nCols_diff + ' columns hidden' : '';
+
+    var tableSummary = rowSummary + highlightSummary + ' ' + colSummary;
+
+    codebook.title.countSummary.html(tableSummary);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -4266,8 +4432,9 @@
 \------------------------------------------------------------------------------------------------*/
 
   var title = {
-    init: init$11,
-    updateColumnCount: updateColumnCount
+    init: init$10,
+    highlight: highlight,
+    updateCountSummary: updateCountSummary
   };
 
   function init$12(codebook) {
@@ -4287,65 +4454,24 @@
       .attr('class', 'control chart-toggle')
       .classed('hidden', codebook.config.chartVisibility == 'hidden');
 
-    selector.append('small').text('Toggle Charts: ');
+    selector.append('small').text('Toggle Details: ');
     var showAllButton = selector
       .append('button')
-      .text('Show All Charts')
+      .text('Show All Details')
       .on('click', function() {
-        codebook.wrap.selectAll('.variable-row').classed('hiddenChart', false);
+        codebook.wrap
+          .selectAll('.variable-row')
+          .classed('hiddenDetails', false);
         codebook.wrap.selectAll('.row-toggle').html('&#9660;');
       });
 
     var hideAllButton = selector
       .append('button')
-      .text('Hide All Charts')
+      .text('Hide All Details')
       .on('click', function() {
-        codebook.wrap.selectAll('.variable-row').classed('hiddenChart', true);
+        codebook.wrap.selectAll('.variable-row').classed('hiddenDetails', true);
         codebook.wrap.selectAll('.row-toggle').html('&#9658;');
       });
-  }
-
-  /*------------------------------------------------------------------------------------------------\
-  Initialize detail select
-\------------------------------------------------------------------------------------------------*/
-  //export function init(selector, data, vars, settings) {
-  function init$14(codebook) {
-    //initialize the wrapper
-    var control = codebook.instructions.wrap
-      .append('span')
-      .attr('class', 'control detail-select');
-
-    control.append('small').html('Header Details: ');
-    var detailSelect = control.append('select');
-
-    var detailItems = detailSelect
-      .selectAll('option')
-      .data(detailList)
-      .enter()
-      .append('option')
-      .html(function(d) {
-        return d.key;
-      });
-
-    //Handlers for label events
-    detailSelect.on('change', function() {
-      var current = this.value;
-      var detailObj = detailList.filter(function(f) {
-        return f.key == current;
-      })[0];
-
-      codebook.wrap.selectAll('.variable-row').each(function(d) {
-        //show the requested detail for each row
-        var list = d3.select(this).select('.row-head .row-details ul');
-        detailObj.action(d, list);
-
-        //update the select on each row
-        d3
-          .select(this)
-          .select('.row-chart .row-controls .detail-controls select')
-          .property('value', current);
-      });
-    });
   }
 
   function update$2(codebook) {
@@ -4358,7 +4484,6 @@
 
     //add tab-specific controls
     if (activeTab.key == 'codebook') {
-      init$14(codebook);
       init$13(codebook);
     }
   }
@@ -4396,22 +4521,23 @@
       settings: settings
     };
 
-    codebook.events = {
+    var cbClone = clone(codebook);
+    cbClone.events = {
       init: function init$$1() {},
       complete: function complete() {}
     };
 
-    codebook.on = function(event, callback) {
+    cbClone.on = function(event, callback) {
       var possible_events = ['init', 'complete'];
       if (possible_events.indexOf(event) < 0) {
         return;
       }
       if (callback) {
-        codebook.events[event] = callback;
+        cbClone.events[event] = callback;
       }
     };
 
-    return clone(codebook);
+    return cbClone;
   }
 
   var defaultSettings$3 = {
@@ -4451,7 +4577,7 @@
   Initialize explorer
 \------------------------------------------------------------------------------------------------*/
 
-  function init$15() {
+  function init$14() {
     setDefaults$1(this);
 
     //prepare to draw the codebook for the first file
@@ -4459,7 +4585,7 @@
     this.current.event = 'load';
 
     //create wrapper in specified div
-    this.wrap = d3
+    this.wrap = d3$1
       .select(this.element)
       .append('div')
       .attr('class', 'web-codebook-explorer');
@@ -4506,7 +4632,7 @@
     });
   }
 
-  function init$16(explorer) {
+  function init$15(explorer) {
     var fileWrap = explorer.codebook.fileListing.wrap;
     fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -4548,7 +4674,7 @@
 \------------------------------------------------------------------------------------------------*/
 
   var fileListing = {
-    init: init$16
+    init: init$15
   };
 
   function makeCodebook(explorer) {
@@ -4558,7 +4684,7 @@
 
     //add the Files section to the nav for each config
     this.current.settings.tabs = this.current.settings.tabs
-      ? d3.merge([['files'], this.current.settings.tabs])
+      ? d3$1.merge([['files'], this.current.settings.tabs])
       : ['files', 'codebook', 'listing', 'chartMaker', 'settings'];
 
     //set the default tab to the codebook or listing view assuming they are visible
@@ -4599,7 +4725,7 @@
     if (this.current.json) {
       explorer.codebook.init(this.current.json);
     } else if (this.current.path) {
-      d3.csv(this.current.path, function(error, data) {
+      d3$1.csv(this.current.path, function(error, data) {
         explorer.codebook.init(data);
       });
     } else {
@@ -4615,7 +4741,7 @@
     });
 
     //add new files to file list
-    this.config.files = d3.merge([this.config.files, newFiles]);
+    this.config.files = d3$1.merge([this.config.files, newFiles]);
 
     //re-draw the file listing
     explorer.codebook.fileListing.table.draw(this.config.files);
@@ -4631,7 +4757,7 @@
     var explorer = {
       element: element,
       config: config,
-      init: init$15,
+      init: init$14,
       layout: layout$2,
       fileListing: fileListing,
       makeCodebook: makeCodebook,

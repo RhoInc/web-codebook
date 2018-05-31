@@ -14,7 +14,7 @@ export default function renderMeta(d, list) {
   //render the items
   var metaItems = list
     .selectAll('li.meta')
-    .data(d.meta)
+    .data(d.meta.filter(f => f.key != 'Type'))
     .enter()
     .append('li')
     .classed('meta', true)
@@ -32,8 +32,8 @@ export default function renderMeta(d, list) {
   if (dropped.length) {
     list
       .append('li')
-      .append('div')
       .attr('class', 'details')
+      .append('div')
       .html('&#9432;')
       .property(
         'title',

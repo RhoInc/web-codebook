@@ -3,9 +3,11 @@
 \------------------------------------------------------------------------------------------------*/
 
 import { init } from './title/init';
-import { updateColumnCount } from './title/updateColumnCount';
+import { highlight } from './title/highlight';
+import { updateCountSummary } from './title/updateCountSummary';
 
 export const title = {
   init: init,
-  updateColumnCount: updateColumnCount
+  highlight: highlight,
+  updateCountSummary: updateCountSummary
 };
