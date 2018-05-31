@@ -163,6 +163,12 @@
             "type": "array",
             "title": "Codebook Tabs",
             "description": "an array of the tabs displayed in the codebook",
+            "defaultObject": [
+                "codebook",
+                "listing",
+                "chartMaker",
+                "settings"
+             ]	             
              "items": {
                 "type": "string",
                  "enum": [
