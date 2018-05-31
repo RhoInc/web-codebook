@@ -48,7 +48,7 @@ export function update(codebook) {
       codebook.data.makeSummary(codebook);
       codebook.summaryTable.draw(codebook);
       codebook.chartMaker.draw(codebook);
-      codebook.controls.updateRowCount(codebook);
+      codebook.title.updateCountSummary(codebook);
     });
   });
 }

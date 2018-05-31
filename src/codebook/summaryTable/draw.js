@@ -34,7 +34,7 @@ export function draw(codebook) {
   //Set chart visibility (on initial load only - then keep user settings)
   if (codebook.config.chartVisibility != 'user-defined') {
     varRows.classed(
-      'hiddenChart',
+      'hiddenDetails',
       codebook.config.chartVisibility != 'visible'
     );
   }

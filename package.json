@@ -19,10 +19,10 @@
   },
   "dependencies": {
     "d3": "~3",
-    "webcharts": "~1"
+    "webcharts": "~1.7"
   },
   "scripts": {
-    "build": "npm run bundle && npm run format && npm run test-page",
+    "build": "npm run bundle && npm run format",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
@@ -30,17 +30,13 @@
     "test-page": "start chrome ./build/test-page/index.html && start firefox ./build/test-page/index.html && start iexplore file://%CD%/build/test-page/index.html",
     "watch": "rollup -c -w"
   },
-  "dependencies": {
-    "d3": "~3",
-    "webcharts": "~1.7"
-  },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
-    "prettier": "^1.7.4",
+    "prettier": "^1.13.3",
     "rollup": "^0.50.1",
-    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-babel": "^3.0.4",
     "rollup-watch": "^4.3.1"
   },
   "bugs": {

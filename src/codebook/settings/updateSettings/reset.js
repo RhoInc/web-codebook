@@ -20,10 +20,9 @@ export default function reset(codebook) {
 
     //redraw data summary, codebook, and listing.
     codebook.data.makeSummary(codebook);
-    codebook.title.updateColumnCount(codebook);
+    codebook.title.updateCountSummary(codebook);
     codebook.summaryTable.draw(codebook);
     codebook.dataListing.init(codebook);
     codebook.chartMaker.init(codebook);
-    codebook.controls.updateRowCount(codebook);
   });
 }
