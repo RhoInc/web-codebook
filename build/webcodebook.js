@@ -1654,11 +1654,7 @@
     var chartData = d.statistics.values.sort(function(a, b) {
       return a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n
-          ? 2
-          : a.key < b.key
-            ? -1
-            : 1;
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
     }); // sort data by descending rate and keep only the first five categories.
 
     chartSettings.y.order = chartData
@@ -1706,11 +1702,7 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1;
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
           });
 
         group.data.forEach(function(d) {
@@ -1895,11 +1887,7 @@
         .sort(function(a, b) {
           return a.prop_n > b.prop_n
             ? -2
-            : a.prop_n < b.prop_n
-              ? 2
-              : a.key < b.key
-                ? -1
-                : 1;
+            : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
         })
         .slice(0, 5); // sort data by descending rate and keep only the first five categories.
 
@@ -1924,11 +1912,7 @@
           .sort(function(a, b) {
             return a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1;
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1;
           })
           .forEach(function(value) {
             value.group = group.group;

@@ -49,11 +49,7 @@ export function createHorizontalBars(this_, d) {
     (a, b) =>
       a.prop_n > b.prop_n
         ? -2
-        : a.prop_n < b.prop_n
-          ? 2
-          : a.key < b.key
-            ? -1
-            : 1
+        : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
   ); // sort data by descending rate and keep only the first five categories.
 
   chartSettings.y.order = chartData.map(d => d.key).reverse();
@@ -94,11 +90,7 @@ export function createHorizontalBars(this_, d) {
           (a, b) =>
             a.prop_n > b.prop_n
               ? -2
-              : a.prop_n < b.prop_n
-                ? 2
-                : a.key < b.key
-                  ? -1
-                  : 1
+              : a.prop_n < b.prop_n ? 2 : a.key < b.key ? -1 : 1
         );
 
       group.data.forEach(function(d) {
