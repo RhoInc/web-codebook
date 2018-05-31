@@ -168,7 +168,7 @@
                 "listing",
                 "chartMaker",
                 "settings"
-             ]	             
+             ],	             
              "items": {
                 "type": "string",
                  "enum": [
