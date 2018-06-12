@@ -6,8 +6,6 @@ import {
 } from 'd3';
 
 export default function renderValues(d, list) {
-  list.selectAll('*').remove();
-
   //make a list of values
   if (d.type == 'categorical') {
     var topValues = d.statistics.values
@@ -18,9 +16,19 @@ export default function renderValues(d, list) {
         return i < 5;
       });
 
-    var valueItems = list.selectAll('li').data(topValues).enter().append('li');
+    var valueItems = list
+      .selectAll('li.value')
+      .data(topValues)
+      .enter()
+      .append('li')
+      .attr('class', 'value');
 
-    valueItems.append('div').text(d => d.key).attr('class', 'wcb-label');
+    valueItems
+      .append('div')
+      .text(d => d.key)
+      .attr('class', 'wcb-label')
+      .attr('title', d => d.key);
+
     valueItems
       .append('div')
       .text(d => d.n + ' (' + d3format('0.1%')(d.prop_n) + ')')
@@ -31,6 +39,7 @@ export default function renderValues(d, list) {
       var extraCount = totLength - 5;
       var extra_span = list
         .append('li')
+        .attr('class', 'value')
         .append('div')
         .attr('class', 'wcb-label')
         .html('and ' + extraCount + ' more.');
@@ -54,11 +63,19 @@ export default function renderValues(d, list) {
     } else {
       var valList = sortedValues;
     }
-    var valueItems = list.selectAll('li').data(valList).enter().append('li');
+    var valueItems = list
+      .selectAll('li.value')
+      .data(valList)
+      .enter()
+      .append('li')
+      .attr('class', 'value');
 
-    valueItems.append('div').attr('class', 'wcb-label').text(function(d, i) {
-      return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
-    });
+    valueItems
+      .append('div')
+      .attr('class', 'wcb-label')
+      .text(function(d, i) {
+        return i == 0 ? 'Min' : i == valList.length - 1 ? 'Max' : ' ';
+      });
     valueItems
       .append('div')
       .attr('class', 'value')

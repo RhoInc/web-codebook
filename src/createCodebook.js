@@ -10,6 +10,7 @@ import { data } from './codebook/data';
 import { settings } from './codebook/settings';
 import { title } from './codebook/title';
 import { instructions } from './codebook/instructions';
+import clone from './util/clone';
 
 export function createCodebook(element = 'body', config) {
   let codebook = {
@@ -29,20 +30,21 @@ export function createCodebook(element = 'body', config) {
     settings: settings
   };
 
-  codebook.events = {
+  var cbClone = clone(codebook);
+  cbClone.events = {
     init() {},
     complete() {}
   };
 
-  codebook.on = function(event, callback) {
+  cbClone.on = function(event, callback) {
     let possible_events = ['init', 'complete'];
     if (possible_events.indexOf(event) < 0) {
       return;
     }
     if (callback) {
-      codebook.events[event] = callback;
+      cbClone.events[event] = callback;
     }
   };
 
-  return codebook;
+  return cbClone;
 }

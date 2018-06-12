@@ -34,13 +34,15 @@ export function init(data) {
     //prepare the data summaries
     this.data.makeSummary(this);
 
+    //make the title
+    this.title.init(this);
+
     //draw controls
     this.util.makeAutomaticFilters(this);
     this.util.makeAutomaticGroups(this);
     this.controls.init(this);
 
     //initialize nav, title and instructions
-    this.title.init(this);
     this.nav.init(this);
     this.instructions.init(this);
 

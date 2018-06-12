@@ -1,7 +1,7 @@
 import { createChart } from 'webcharts';
 import { multiply } from 'webcharts';
 import indicateLoading from '../util/indicateLoading';
-import clone from '../util/clone';
+import clone from '../../util/clone';
 import chartMakerSettings from './chartMakerSettings.js';
 import makeSettings from './makeSettings.js';
 
@@ -45,7 +45,7 @@ export function draw(codebook) {
 
     //Define chart.
     chartMaker.chart = createChart(
-      '.web-codebook .chartMaker.section .cm-chart',
+      codebook.wrap.select('.chartMaker.section .cm-chart').node(),
       chartMaker.chartSettings
     );
 

@@ -89,13 +89,13 @@
     font-size: 1.4em;
 }
 
-.web-codebook .rowCount, .web-codebook .columnCount    {
+.web-codebook .title .countSummary    {
     padding-left: 1em;
     font-size: 0.8em;
     color: #666;
 }
 
-.web-codebook .rowCount.warn, .web-codebook .columnCount.warn{
+.web-codebook .title .countSummary.warn{
     color: red;
 }
 
@@ -148,7 +148,7 @@
     padding-right: 1em;
 }
 
-.web-codebook .controls button, .web-codebook .instructions button
+.web-codebook .controls button, .web-codebook .instructions button, .web-codebook .title button
 {
     margin-right: 0.5em;
     background-color: white;
@@ -157,7 +157,9 @@
     padding: .2em .4em;
 }
 
-.web-codebook .controls button: hover, .web-codebook .instructions button: hover{
+.web-codebook .controls button:hover,
+.web-codebook .instructions button:hover,
+.web-codebook .title button:hover{
     cursor: pointer;
     background-color: #008CBA;
     color: white;
@@ -182,7 +184,7 @@
     cursor: pointer;
 }
 
-.web-codebook .controls span.update-controls: hover
+.web-codebook .controls span.update-controls:hover
 {
     font-weight: bold;
 }
@@ -192,7 +194,7 @@
 }
 
 .web-codebook .controls .custom-filters ul li.active > a > label,
-.web-codebook .controls .custom-filters ul li: hover > a > label {
+.web-codebook .controls .custom-filters ul li:hover > a > label {
     color: white;
 }
 
@@ -236,15 +238,20 @@
 }
 
 .web-codebook .summaryTable .variable-row {
+  position: relative;
     margin-top: 0.3em;
     display: block;
     border: 1px solid #999;
 }
+
 .web-codebook .summaryTable .variable-row .section {
     display: block;
+    padding-left:0.2em;
 }
 
-.web-codebook .summaryTable .variable-row.hiddenChart .row-chart {
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-chart,
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-details,
+.web-codebook .summaryTable .variable-row.hiddenDetails .row-meta {
     display: none;
 }
 
@@ -266,7 +273,8 @@
     Header layout - Toggle
 \-------------------------------------------------------------------------------------------**/
 .web-codebook .summaryTable .variable-row .row-title{
-padding-right: 1em;
+  padding-right: 1em;
+  width:100%;
 }
 
 .web-codebook .summaryTable .variable-row .row-title > * {
@@ -281,7 +289,7 @@ padding-right: 1em;
     padding-right: 0.5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-title .row-toggle: hover{
+.web-codebook .summaryTable .variable-row .row-title .row-toggle:hover{
     background: #eee;
 }
 
@@ -299,69 +307,78 @@ padding-right: 1em;
 }
 
 /**-------------------------------------------------------------------------------------------\
-    Header - Details layout
+    Header - Type Tag
 \-------------------------------------------------------------------------------------------**/
-.web-codebook .summaryTable .variable-row {
-    position: relative;
+.web-codebook .summaryTable .variable-row .row-title .type{
+  background-color:white;
+  border:1px solid black;
+  border-radius:2px;
+  padding: 2px 4px 2px 4px;
+  margin-left: 0.4em;
+  font-size: 0.6em;
+  vertical-align: middle;
+  float:right;
 }
 
-.web-codebook .summaryTable .variable-row .type-label{
-    display: block;
-    position: absolute;
-    right: -2em;
-    top: 0;
-    width: 2em
+.web-codebook .summaryTable .variable-row .row-title .spark{
+  float:right;
 }
 
-.web-codebook .summaryTable .variable-row .type-label li{
-    display: block;
-    list-style: none;
-    text-align: left;
-    background: black;
-    color: white;
-    border: 1px solid #999;
-    border-radius: 0 5px 5px 0;
-    padding: 2px;
-    cursor: pointer;
-    font-size: 0.6em;
-    opacity: 0.8;
+/**-------------------------------------------------------------------------------------------\
+    Header - Missing Count
+\-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row .row-title .percent-missing {
+
+  margin-right: 0.4em;
+  font-size: 0.8em;
+  vertical-align: middle;
+  float:right;
 }
 
-.web-codebook .summaryTable .variable-row .type-label li.selected{
-    background: white;
-    color: black;
-    font-weight: bold;
+
+/**-------------------------------------------------------------------------------------------\
+    Row Details - layout
+\-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row .row-details{
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+  padding-bottom:0.2em;
+}
+.web-codebook .summaryTable .variable-row .row-details ul {
+  display:inline-block;
 }
 
-.web-codebook .summaryTable .variable-row .type-label li: hover{
-    text-decoration: underline;
+.web-codebook .summaryTable .variable-row .row-details ul.values {
+  float:right;
 }
 
-.web-codebook .summaryTable .variable-row .row-details {
-    float: right;
-}
-
-.web-codebook .summaryTable .variable-row .row-details ul    {
-
-
-}
 .web-codebook .summaryTable .variable-row .row-details ul li {
     display: inline-block;
-    padding-right: .5em;
     vertical-align: top;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div {
     display: block;
     text-align: left;
+    width:100%;
+    padding-right: .4em;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div.wcb-label {
     display: inline-block;
-    padding-right: .2em;
-    font-size: 0.8em;
+    font-size: 0.65em;
     color: #999;
     min-width: 1em;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.web-codebook .summaryTable .variable-row .row-details ul li div.value {
+    font-size: 0.85em;
+    color: #333;
+    vertical-align:bottom;
 }
 
 .web-codebook .summaryTable .variable-row .row-details ul li div.details {
@@ -371,40 +388,11 @@ padding-right: 1em;
     color: blue;
 }
 
-/**-------------------------------------------------------------------------------------------\
-    Header layout - variable summary
-\-------------------------------------------------------------------------------------------**/
-
-
-.web-codebook .summaryTable .variable-row .row-head .row-values .value-list{
-    margin-top: 0.1em;
-    font-size: 0.7em;
-    list-style: none;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li{
-    display: inline-block;
-    padding: 0 0.3em 0 0.3em;
-    border-right : 1px solid #333;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li: first-of-type{
-    padding-left: none;
-}
-
-.web-codebook .summaryTable .variable-row .row-head .row-values .value-list li: last-of-type{
-    border-right: none;
-}
 
 
 /**-------------------------------------------------------------------------------------------\
     Chart layout
 \-------------------------------------------------------------------------------------------**/
-
-.web-codebook .summaryTable .variable-row .row-controls {
-    border-bottom: 1px dashed #999;
-    padding: 0.2em 0em 0.2em 0.4em;
-}
 
 .web-codebook .summaryTable .variable-row .row-controls > * {
     display: inline-block;
@@ -424,7 +412,7 @@ padding-right: 1em;
     fill: orange;
 }
 
-.web-codebook .summaryTable g.bar-group rect: hover {
+.web-codebook .summaryTable g.bar-group rect:hover {
     cursor: pointer;
     stroke-width: 3px;
     stroke: black;
@@ -441,6 +429,58 @@ padding-right: 1em;
 
 .web-codebook .summaryTable .variable-row .row-chart .svg-tooltip.active {
     display: block;
+}
+
+/**-------------------------------------------------------------------------------------------\
+    Metadata - layout
+\-------------------------------------------------------------------------------------------**/
+.web-codebook .summaryTable .variable-row .row-meta{
+  border-top:1px solid #ccc;
+  padding-bottom:0.2em;
+}
+.web-codebook .summaryTable .variable-row .row-meta ul {
+  display:inline-block;
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li {
+    display: inline-block;
+    background-color:white;
+    border:1px solid black;
+    border-radius:2px;
+    padding: 2px 4px 2px 4px;
+    margin-left: 0.4em;
+    font-size: 0.6em;
+
+}
+.web-codebook .summaryTable .variable-row .row-meta ul li.details {
+    border:none;
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div {
+  display: inline-block;
+    text-align: left;
+    margin: .1em;
+    vertical-align: middle;
+
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div.wcb-label {
+    display: inline-block;
+    font-size: 0.65em;
+    color: #999;
+    min-width: 1em;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+
+}
+
+.web-codebook .summaryTable .variable-row .row-meta ul li div.value {
+    display: inline-block;
+    font-size: 0.85em;
+    color: #333;
 }
 
 /*------------------------------------------------------------------------------------------------\
@@ -471,7 +511,7 @@ padding-right: 1em;
         padding: 0;
     }
 
-    .web-codebook .wcb-nav     ul.wcb-nav-tabs li {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li {
         float: left;
         cursor: pointer;
         border: 2px solid black;
@@ -488,7 +528,7 @@ padding-right: 1em;
         text-decoration: none;
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li: hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li:hover {
         background-color: #777;
         border: 2px solid #777;
     }
@@ -497,16 +537,13 @@ padding-right: 1em;
         float: right;
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.settings a {
-    }
-
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active, ul.wcb-nav-tabs li.active: hover {
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active, ul.wcb-nav-tabs li.active:hover {
         background-color: white;
         border: 2px solid black;
 
     }
 
-    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active a, ul.wcb-nav-tabs li.active: hover a{
+    .web-codebook .wcb-nav ul.wcb-nav-tabs li.active a, ul.wcb-nav-tabs li.active:hover a{
         color: black;
     }
 

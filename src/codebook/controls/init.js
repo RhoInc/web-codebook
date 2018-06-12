@@ -23,8 +23,7 @@ export function init(codebook) {
   codebook.controls.groups.init(codebook);
   codebook.controls.filters.init(codebook);
   codebook.controls.controlToggle.init(codebook);
-  codebook.controls.highlight.init(codebook);
-  codebook.controls.updateRowCount(codebook);
+  codebook.title.updateCountSummary(codebook);
 
   //Hide group-by options corresponding to variables specified in settings.hiddenVariables.
   codebook.controls.wrap

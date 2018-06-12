@@ -7,9 +7,9 @@ export default function modifyOverallLegendMark(chart) {
     .append('line')
     .classed('legend-mark', true)
     .attr({
-      x1: 3 * BBox.width / 4,
+      x1: (3 * BBox.width) / 4,
       y1: 0,
-      x2: 3 * BBox.width / 4,
+      x2: (3 * BBox.width) / 4,
       y2: BBox.height
     })
     .style({

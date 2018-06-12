@@ -83,11 +83,12 @@ export default function addBoxPlot(chart) {
           y2: chart.plot_height + chart.config.boxPlotHeight
         })
         .style({
-          stroke: [0.05, 0.95].indexOf(quantile.probability) > -1
-            ? 'black'
-            : [0.25, 0.75].indexOf(quantile.probability) > -1
+          stroke:
+            [0.05, 0.95].indexOf(quantile.probability) > -1
               ? 'black'
-              : 'black',
+              : [0.25, 0.75].indexOf(quantile.probability) > -1
+                ? 'black'
+                : 'black',
           'stroke-width': '3px'
         });
       quantile.mark

@@ -22,8 +22,12 @@ export function createHorizontalBarsControls(this_, d) {
     .text(d => d);
 
   outcomeSelect.on('change', function() {
-    d3select(this_).selectAll('.wc-chart').remove();
-    d3select(this_).selectAll('.panel-label').remove();
+    d3select(this_)
+      .selectAll('.wc-chart')
+      .remove();
+    d3select(this_)
+      .selectAll('.panel-label')
+      .remove();
     if (type_control.property('value') === 'Paneled (Bar Charts)') {
       createHorizontalBars(this_, d);
     } else {
@@ -47,8 +51,12 @@ export function createHorizontalBarsControls(this_, d) {
     .text(d => d);
 
   type_control.on('change', function() {
-    d3select(this_).selectAll('.wc-chart').remove();
-    d3select(this_).selectAll('.panel-label').remove();
+    d3select(this_)
+      .selectAll('.wc-chart')
+      .remove();
+    d3select(this_)
+      .selectAll('.panel-label')
+      .remove();
     if (this.value == 'Paneled (Bar Charts)') {
       createHorizontalBars(this_, d);
     } else {
