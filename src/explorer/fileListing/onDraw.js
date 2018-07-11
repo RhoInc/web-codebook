@@ -6,7 +6,11 @@ export function onDraw(explorer) {
     this.table
       .select('tbody')
       .selectAll('tr')
-      .filter(f => f.path === explorer.current.path)
+      .filter(
+        f =>
+          f[explorer.config.labelColumn] ===
+          explorer.current[explorer.config.labelColumn]
+      )
       .classed('selected', true);
 
     //Linkify the labelColumn
