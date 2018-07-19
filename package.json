@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "d3": "~3",
-    "webcharts": "~1.7"
+    "webcharts": "^1.10.0"
   },
   "scripts": {
     "build": "npm run bundle && npm run format && npm run test-page",
