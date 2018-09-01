@@ -1,5 +1,6 @@
 import { csv as d3csv } from 'd3';
 import { merge as d3merge } from 'd3';
+import { initFileLoad } from './initFileLoad';
 
 export function makeCodebook(explorer) {
   explorer.codebookWrap.selectAll('*').remove();
@@ -40,6 +41,7 @@ export function makeCodebook(explorer) {
 
   explorer.codebook.on('complete', function() {
     explorer.fileListing.init(explorer);
+    initFileLoad.call(explorer);
   });
 
   if (this.current.json) {
