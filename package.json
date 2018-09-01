@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -22,7 +22,7 @@
     "webcharts": "^1.10.0"
   },
   "scripts": {
-    "build": "npm run bundle && npm run format && npm run test-page",
+    "build": "npm run bundle && npm run format",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
