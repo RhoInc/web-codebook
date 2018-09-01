@@ -4696,6 +4696,32 @@
     init: init$15
   };
 
+  function addFile(label, csv_raw) {
+    var explorer = this;
+
+    // parse the file object
+    var newFileObject = {};
+    newFileObject[explorer.config.labelColumn] = label;
+    newFileObject.json = d3.csv.parse(csv_raw);
+    newFileObject.settings = {};
+
+    //customize the data object if the user provides a function
+    if (explorer.config.customFileLoad) {
+      explorer.config.customFileLoad(newFileObject);
+    }
+
+    //remove duplicates
+    //  var newFiles = files.filter(function(f) {
+    //    return explorer.config.files.indexOf(f) == -1;
+    //  });
+
+    //add new files to file list
+    this.config.files = d3$1.merge([[newFileObject], this.config.files]);
+
+    //re-draw the file listing
+    explorer.codebook.fileListing.table.draw(this.config.files);
+  }
+
   function initFileLoad() {
     //draw the control
     var explorer = this;
@@ -4745,7 +4771,7 @@
 
     explorer.dataFileLoad.dataFileLoadButton = explorer.dataFileLoad.bottom
       .append('button')
-      .text('Load')
+      .text('Load File')
       .attr('class', 'file-load-button')
       .attr('disabled', true)
       .style('float', 'right')
@@ -4766,26 +4792,13 @@
           var d = new Date();
           var n = d3.time.format('%X')(d);
 
-          //make an object for the file
-          var dataObject = {
-            label: files[0].name + ' (added at ' + n + ')',
-            user_loaded: true,
-            csv_raw: e.target.result
-          };
-          console.log(dataObject);
-          /*
-      cat.config.dataFiles.push(dataObject);
-       //add it to the select dropdown
-      cat.controls.dataFileSelect
-        .append("option")
-        .datum(dataObject)
-        .text(d => d.label)
-        .attr("selected", true);
-       //clear the file input & disable the load button
-      loadStatus.text(files[0].name + " loaded").style("color", "green");
-       cat.controls.dataFileLoadButton.attr("disabled", true);
-      cat.controls.dataFileLoad.property("value", "");
-      */
+          addFile.call(explorer, files[0].name, e.target.result);
+
+          //clear the file input & disable the load button
+          loadStatus.text(files[0].name + ' loaded').style('color', 'green');
+
+          explorer.dataFileLoad.dataFileLoadButton.attr('disabled', true);
+          explorer.dataFileLoad.loader.property('value', '');
         };
 
         fr.readAsText(files.item(0));
@@ -4849,20 +4862,6 @@
     }
   }
 
-  function addFiles(files) {
-    var explorer = this;
-    //remove duplicates
-    var newFiles = files.filter(function(f) {
-      return explorer.config.files.indexOf(f) == -1;
-    });
-
-    //add new files to file list
-    this.config.files = d3$1.merge([this.config.files, newFiles]);
-
-    //re-draw the file listing
-    explorer.codebook.fileListing.table.draw(this.config.files);
-  }
-
   function createExplorer() {
     var element =
       arguments.length > 0 && arguments[0] !== undefined
@@ -4877,7 +4876,7 @@
       layout: layout$2,
       fileListing: fileListing,
       makeCodebook: makeCodebook,
-      addFiles: addFiles
+      addFile: addFile
     };
 
     return explorer;

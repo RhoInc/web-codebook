@@ -2,7 +2,7 @@ import { init } from './explorer/init';
 import { layout } from './explorer/layout';
 import { fileListing } from './explorer/fileListing';
 import { makeCodebook } from './explorer/makeCodebook';
-import { addFiles } from './explorer/addFiles';
+import { addFile } from './explorer/addFile';
 
 export function createExplorer(element = 'body', config) {
   let explorer = {
@@ -12,7 +12,7 @@ export function createExplorer(element = 'body', config) {
     layout: layout,
     fileListing: fileListing,
     makeCodebook: makeCodebook,
-    addFiles: addFiles
+    addFile: addFile
   };
 
   return explorer;

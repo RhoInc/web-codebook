@@ -1,3 +1,5 @@
+import { addFile } from './addFile';
+
 export function initFileLoad() {
   //draw the control
   var explorer = this;
@@ -68,29 +70,13 @@ export function initFileLoad() {
         var d = new Date();
         var n = d3.time.format('%X')(d);
 
-        //make an object for the file
-        var dataObject = {
-          label: files[0].name + ' (added at ' + n + ')',
-          user_loaded: true,
-          csv_raw: e.target.result
-        };
-        console.log(dataObject);
-        /*
-        cat.config.dataFiles.push(dataObject);
-
-        //add it to the select dropdown
-        cat.controls.dataFileSelect
-          .append("option")
-          .datum(dataObject)
-          .text(d => d.label)
-          .attr("selected", true);
+        addFile.call(explorer, files[0].name, e.target.result);
 
         //clear the file input & disable the load button
-        loadStatus.text(files[0].name + " loaded").style("color", "green");
+        loadStatus.text(files[0].name + ' loaded').style('color', 'green');
 
-        cat.controls.dataFileLoadButton.attr("disabled", true);
-        cat.controls.dataFileLoad.property("value", "");
-        */
+        explorer.dataFileLoad.dataFileLoadButton.attr('disabled', true);
+        explorer.dataFileLoad.loader.property('value', '');
       };
 
       fr.readAsText(files.item(0));
