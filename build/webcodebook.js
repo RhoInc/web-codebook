@@ -4728,11 +4728,11 @@
     //draw the control
     var explorer = this;
     explorer.dataFileLoad = {};
-    explorer.dataFileLoad.wrap = explorer.codebook.instructions.wrap
-      .append('span')
+    explorer.dataFileLoad.wrap = explorer.codebook.fileListing.wrap
+      .insert('div', '*')
       .attr('class', 'dataLoader');
 
-    explorer.dataFileLoad.wrap.append('span').text(' Load a csv: ');
+    explorer.dataFileLoad.wrap.append('span').text('Add a local .csv file: ');
 
     explorer.dataFileLoad.loader_wrap = explorer.dataFileLoad.wrap
       .append('label')

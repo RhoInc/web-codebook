@@ -600,7 +600,10 @@
     Data Listing - Data Loader
 \------------------------------------------------------------------------------------------------*/
 
-.web-codebook .instructions .dataLoader label{
+.web-codebook .fileListing .dataLoader{
+  padding-bottom:1em;
+}
+.web-codebook .fileListing .dataLoader label{
       font-size:0.8em;
       font-weight: 0;
       border-bottom:1px solid black;
@@ -610,24 +613,13 @@
       padding-right:0.5em;
   }
 
-  .web-codebook .instructions .dataLoader label:hover {
+  .web-codebook .fileListing .dataLoader label:hover {
       background-color: #ccc;
 
   }
 
-
-.web-codebook .instructions .dataLoader label input{
+.web-codebook .fileListing .dataLoader label input{
   display:none;
-}
-
-
-.web-codebook .instructions .dataLoader small{
-
-}
-
-.web-codebook .instructions .dataLoader button{
- padding:0.2em;
- border-radius:0.1em
 }
 
 /*------------------------------------------------------------------------------------------------\
