@@ -4559,6 +4559,7 @@
   var defaultSettings$3 = {
     ignoredColumns: [],
     meta: [],
+    defaultCodebookSettings: {},
     tableConfig: {
       sortable: false,
       searchable: false,
@@ -4584,9 +4585,14 @@
     explorer.config.tableConfig =
       explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
+    /********************* defaultCodebookSettings ***************/
+    explorer.config.defaultCodebookSettings =
+      explorer.config.defaultCodebookSettings ||
+      defaultSettings$3.defaultCodebookSettings;
+
     /********************* files[].settings ***************/
     explorer.config.files.forEach(function(f, i) {
-      f.settings = f.settings || {};
+      f.settings = f.settings || explorer.config.defaultCodebookSettings;
       f.fileID = i;
     });
   }
@@ -4599,6 +4605,7 @@
     this.events.init.call(this);
 
     //set the defailts
+    console.log(this.config.files);
     setDefaults$1(this);
 
     //prepare to draw the codebook for the first file

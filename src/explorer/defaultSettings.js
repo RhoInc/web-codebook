@@ -1,6 +1,7 @@
 const defaultSettings = {
   ignoredColumns: [],
   meta: [],
+  defaultCodebookSettings: {},
   tableConfig: {
     sortable: false,
     searchable: false,

@@ -16,9 +16,14 @@ export function setDefaults(explorer) {
   explorer.config.tableConfig =
     explorer.config.tableConfig || defaultSettings.tableConfig;
 
+  /********************* defaultCodebookSettings ***************/
+  explorer.config.defaultCodebookSettings =
+    explorer.config.defaultCodebookSettings ||
+    defaultSettings.defaultCodebookSettings;
+
   /********************* files[].settings ***************/
   explorer.config.files.forEach(function(f, i) {
-    f.settings = f.settings || {};
+    f.settings = f.settings || explorer.config.defaultCodebookSettings;
     f.fileID = i;
   });
 }

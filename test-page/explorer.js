@@ -31,7 +31,10 @@ function initExplorer(fileList) {
     ignoredColumns: ['local_path', 'rel_path', 'path'],
     files: fileList,
     fileLoader: true,
-    metaFiles: ['AE', 'DM', 'LB']
+    metaFiles: ['AE', 'DM', 'LB'],
+    defaultCodebookSettings: {
+      autogroups: 2
+    }
   };
 
   d3.csv(
