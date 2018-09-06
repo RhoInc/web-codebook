@@ -4585,8 +4585,9 @@
       explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
     /********************* files[].settings ***************/
-    explorer.config.files.forEach(function(f) {
+    explorer.config.files.forEach(function(f, i) {
       f.settings = f.settings || {};
+      f.fileID = i;
     });
   }
 
@@ -4629,10 +4630,7 @@
         .select('tbody')
         .selectAll('tr')
         .filter(function(f) {
-          return (
-            f[explorer.config.labelColumn] ===
-            explorer.current[explorer.config.labelColumn]
-          );
+          return f.fileID === explorer.current.fileID;
         })
         .classed('selected', true);
 
@@ -4667,7 +4665,9 @@
         return explorer.config.ignoredColumns.indexOf(f) == -1;
       })
       .filter(function(f) {
-        return ['settings', 'selected', 'event', 'json'].indexOf(f) == -1;
+        return (
+          ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+        );
       }); //drop system variables from table
 
     //Create the table
@@ -4680,6 +4680,7 @@
     explorer.config.files.forEach(function(d) {
       return (d.selected = d == explorer.current);
     });
+    console.log(explorer);
     var sortedFiles = explorer.config.files.sort(function(a, b) {
       return a.selected ? -1 : b.selected ? 1 : 0;
     });
@@ -4705,6 +4706,7 @@
     newFileObject[explorer.config.labelColumn] = label;
     newFileObject.json = d3.csv.parse(csv_raw);
     newFileObject.settings = {};
+    newFileObject.fileID = explorer.config.files.length + 1;
 
     //customize the data object if the user provides a function
     if (explorer.config.customFileLoad) {

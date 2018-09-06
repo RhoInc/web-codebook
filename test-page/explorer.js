@@ -26,8 +26,8 @@ document.onreadystatechange = function () {
                 labelColumn:"filename",
                 ignoredColumns: ["local_path","rel_path","path"],
                 files:fileList_clean,
-            meta:meta,
-            fileLoader:true
+                meta:meta,
+                fileLoader:true
             };
             var explorer = webcodebook.createExplorer("#container", settings).init();
         })

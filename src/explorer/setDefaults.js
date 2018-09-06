@@ -17,7 +17,8 @@ export function setDefaults(explorer) {
     explorer.config.tableConfig || defaultSettings.tableConfig;
 
   /********************* files[].settings ***************/
-  explorer.config.files.forEach(function(f) {
+  explorer.config.files.forEach(function(f, i) {
     f.settings = f.settings || {};
+    f.fileID = i;
   });
 }

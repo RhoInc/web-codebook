@@ -8,6 +8,7 @@ export function addFile(label, csv_raw) {
   newFileObject[explorer.config.labelColumn] = label;
   newFileObject.json = d3.csv.parse(csv_raw);
   newFileObject.settings = {};
+  newFileObject.fileID = explorer.config.files.length + 1;
 
   //customize the data object if the user provides a function
   if (explorer.config.customFileLoad) {

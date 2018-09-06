@@ -12,7 +12,9 @@ export function init(explorer) {
   //drop ignoredColumns and system variables
   explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
     .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
-    .filter(f => ['settings', 'selected', 'event', 'json'].indexOf(f) == -1); //drop system variables from table
+    .filter(
+      f => ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+    ); //drop system variables from table
 
   //Create the table
   explorer.codebook.fileListing.table = createTable(
@@ -22,6 +24,7 @@ export function init(explorer) {
 
   //show the selected file first
   explorer.config.files.forEach(d => (d.selected = d == explorer.current));
+  console.log(explorer);
   var sortedFiles = explorer.config.files.sort(function(a, b) {
     return a.selected ? -1 : b.selected ? 1 : 0;
   });
