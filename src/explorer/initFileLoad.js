@@ -3,7 +3,6 @@ import { addFile } from './addFile';
 export function initFileLoad() {
   //draw the control
   var explorer = this;
-  console.log(this);
   explorer.dataFileLoad = {};
   explorer.dataFileLoad.wrap = explorer.codebook.instructions.wrap
     .append('span')
@@ -61,18 +60,4 @@ export function initFileLoad() {
       'Create a codebook for a local file. File is added to the data set list, and is only available for a single session and is not saved.'
     )
     .style('cursor', 'help');
-
-  /*
-  explorer.dataFileLoad.dataFileLoadButton.on('click', function(d) {
-    //credit to https://jsfiddle.net/Ln37kqc0/
-
-    var files = explorer.dataFileLoad.loader.node().files;
-
-    if (files.length <= 0) {
-      //shouldn't happen since button is disabled when no file is present, but ...
-      console.log('No file selected ...');
-      return false;
-    }
-
-  });    */
 }

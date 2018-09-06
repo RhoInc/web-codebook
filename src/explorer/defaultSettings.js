@@ -6,7 +6,8 @@ const defaultSettings = {
     searchable: false,
     pagination: false,
     exportable: false
-  }
+  },
+  fileLoader: false
 };
 
 export default defaultSettings;

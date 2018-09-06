@@ -4564,7 +4564,8 @@
       searchable: false,
       pagination: false,
       exportable: false
-    }
+    },
+    fileLoader: false
   };
 
   function setDefaults$1(explorer) {
@@ -4725,7 +4726,6 @@
   function initFileLoad() {
     //draw the control
     var explorer = this;
-    console.log(this);
     explorer.dataFileLoad = {};
     explorer.dataFileLoad.wrap = explorer.codebook.instructions.wrap
       .append('span')
@@ -4785,17 +4785,6 @@
         'Create a codebook for a local file. File is added to the data set list, and is only available for a single session and is not saved.'
       )
       .style('cursor', 'help');
-
-    /*
-  explorer.dataFileLoad.dataFileLoadButton.on('click', function(d) {
-    //credit to https://jsfiddle.net/Ln37kqc0/
-     var files = explorer.dataFileLoad.loader.node().files;
-     if (files.length <= 0) {
-      //shouldn't happen since button is disabled when no file is present, but ...
-      console.log('No file selected ...');
-      return false;
-    }
-   });    */
   }
 
   function makeCodebook(explorer) {
@@ -4841,7 +4830,9 @@
 
     explorer.codebook.on('complete', function() {
       explorer.fileListing.init(explorer);
-      initFileLoad.call(explorer);
+      if (explorer.config.fileLoader) {
+        initFileLoad.call(explorer);
+      }
     });
 
     if (this.current.json) {

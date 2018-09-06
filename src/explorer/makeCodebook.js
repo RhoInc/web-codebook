@@ -41,7 +41,9 @@ export function makeCodebook(explorer) {
 
   explorer.codebook.on('complete', function() {
     explorer.fileListing.init(explorer);
-    initFileLoad.call(explorer);
+    if (explorer.config.fileLoader) {
+      initFileLoad.call(explorer);
+    }
   });
 
   if (this.current.json) {
