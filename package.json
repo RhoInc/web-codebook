@@ -24,9 +24,10 @@
   "scripts": {
     "build": "npm run bundle && npm run format",
     "bundle": "rollup -c",
-    "format": "npm run format-src && npm run format-bundle",
+    "format": "npm run format-src && npm run format-bundle && npm run format-test",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
     "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
+    "format-test": "prettier --single-quote --write \"./test-page/**/*.js\"",
     "test-page": "start chrome ./test-page/index.html && start firefox ./test-page/index.html && start iexplore file://%CD%/test-page/index.html",
     "watch": "rollup -c -w"
   },
