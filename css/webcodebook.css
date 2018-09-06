@@ -600,18 +600,32 @@
     Data Listing - Data Loader
 \------------------------------------------------------------------------------------------------*/
 
-.web-codebook .fileListing .dataLoader {
-    max-width:400px;
-    border:1px solid #999;
-    padding:.2em ;
+.web-codebook .instructions .dataLoader label{
+      font-size:0.8em;
+      font-weight: 0;
+      border-bottom:1px solid black;
+      display: inline-block;
+      padding:0.1em;
+      cursor:pointer;
+      padding-right:0.5em;
+  }
+
+  .web-codebook .instructions .dataLoader label:hover {
+      background-color: #ccc;
+
+  }
+
+
+.web-codebook .instructions .dataLoader label input{
+  display:none;
 }
 
 
-.web-codebook .fileListing .dataLoader small{
-font-size:0.8em;
+.web-codebook .instructions .dataLoader small{
+
 }
 
-.web-codebook .fileListing .dataLoader button{
+.web-codebook .instructions .dataLoader button{
  padding:0.2em;
  border-radius:0.1em
 }

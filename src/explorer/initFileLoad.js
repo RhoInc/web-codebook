@@ -5,16 +5,55 @@ export function initFileLoad() {
   var explorer = this;
   console.log(this);
   explorer.dataFileLoad = {};
-  explorer.dataFileLoad.wrap = explorer.codebook.fileListing.wrap
-    .insert('div', '*')
-    .attr('class', 'dataLoader')
-    .style('margin', 0);
-  explorer.dataFileLoad.top = explorer.dataFileLoad.wrap.append('div');
-  explorer.dataFileLoad.bottom = explorer.dataFileLoad.wrap.append('div');
+  explorer.dataFileLoad.wrap = explorer.codebook.instructions.wrap
+    .append('span')
+    .attr('class', 'dataLoader');
 
-  explorer.dataFileLoad.top
-    .append('small')
-    .text('Add a local .csv file:')
+  explorer.dataFileLoad.wrap.append('span').text(' Load a csv: ');
+
+  explorer.dataFileLoad.loader_wrap = explorer.dataFileLoad.wrap
+    .append('label')
+    .attr('class', 'file-load-label');
+
+  explorer.dataFileLoad.loader_label = explorer.dataFileLoad.loader_wrap
+    .append('span')
+    .text('Choose a File');
+
+  explorer.dataFileLoad.loader_input = explorer.dataFileLoad.loader_wrap
+    .append('input')
+    .attr('type', 'file')
+    .attr('class', 'file-load-input')
+    .on('change', function() {
+      var files = this.files;
+      explorer.dataFileLoad.loader_label.text(files[0].name);
+
+      if (this.value.slice(-4).toLowerCase() == '.csv') {
+        loadStatus.text(' loading ...').style('color', 'green');
+        var fr = new FileReader();
+        fr.onload = function(e) {
+          // get the current date/time
+          var d = new Date();
+          var n = d3.time.format('%X')(d);
+
+          addFile.call(explorer, files[0].name, e.target.result);
+
+          //clear the file input
+          loadStatus.text('Loaded.').style('color', 'green');
+          explorer.dataFileLoad.loader_input.property('value', '');
+        };
+
+        fr.readAsText(files.item(0));
+      } else {
+        loadStatus.text("Can't Load. File is not a csv.").style('color', 'red');
+      }
+    });
+
+  var loadStatus = explorer.dataFileLoad.wrap
+    .append('span')
+    .attr('class', 'loadStatus')
+    .text('');
+
+  loadStatus
     .append('sup')
     .html('&#9432;')
     .property(
@@ -23,62 +62,17 @@ export function initFileLoad() {
     )
     .style('cursor', 'help');
 
-  var loadStatus = explorer.dataFileLoad.top
-    .append('small')
-    .attr('class', 'loadStatus')
-    .style('float', 'right')
-    .text('Select a csv to load');
+  /*
+  explorer.dataFileLoad.dataFileLoadButton.on('click', function(d) {
+    //credit to https://jsfiddle.net/Ln37kqc0/
 
-  explorer.dataFileLoad.loader = explorer.dataFileLoad.bottom
-    .append('input')
-    .attr('type', 'file')
-    .attr('class', 'file-load-input')
-    .on('change', function() {
-      if (this.value.slice(-4).toLowerCase() == '.csv') {
-        loadStatus
-          .text(this.files[0].name + ' ready to load')
-          .style('color', 'green');
-        explorer.dataFileLoad.dataFileLoadButton.attr('disabled', null);
-      } else {
-        loadStatus
-          .text(this.files[0].name + ' is not a csv')
-          .style('color', 'red');
-        explorer.dataFileLoad.dataFileLoadButton.attr('disabled', true);
-      }
-    });
+    var files = explorer.dataFileLoad.loader.node().files;
 
-  explorer.dataFileLoad.dataFileLoadButton = explorer.dataFileLoad.bottom
-    .append('button')
-    .text('Load File')
-    .attr('class', 'file-load-button')
-    .attr('disabled', true)
-    .style('float', 'right')
-    .on('click', function(d) {
-      //credit to https://jsfiddle.net/Ln37kqc0/
+    if (files.length <= 0) {
+      //shouldn't happen since button is disabled when no file is present, but ...
+      console.log('No file selected ...');
+      return false;
+    }
 
-      var files = explorer.dataFileLoad.loader.node().files;
-
-      if (files.length <= 0) {
-        //shouldn't happen since button is disabled when no file is present, but ...
-        console.log('No file selected ...');
-        return false;
-      }
-
-      var fr = new FileReader();
-      fr.onload = function(e) {
-        // get the current date/time
-        var d = new Date();
-        var n = d3.time.format('%X')(d);
-
-        addFile.call(explorer, files[0].name, e.target.result);
-
-        //clear the file input & disable the load button
-        loadStatus.text(files[0].name + ' loaded').style('color', 'green');
-
-        explorer.dataFileLoad.dataFileLoadButton.attr('disabled', true);
-        explorer.dataFileLoad.loader.property('value', '');
-      };
-
-      fr.readAsText(files.item(0));
-    });
+  });    */
 }
