@@ -6,7 +6,13 @@ import { select as d3select } from 'd3';
 import { setDefaults } from './setDefaults';
 
 export function init() {
+  var explorer = this;
   var settings = this.config;
+
+  //call the init callback
+  this.events.init.call(this);
+
+  //set the defailts
   setDefaults(this);
 
   //prepare to draw the codebook for the first file

@@ -15,5 +15,21 @@ export function createExplorer(element = 'body', config) {
     addFile: addFile
   };
 
+  explorer.events = {
+    init() {},
+    addFile() {},
+    makeCodebook() {}
+  };
+
+  explorer.on = function(event, callback) {
+    let possible_events = ['init', 'addFile', 'makeCodebook'];
+    if (possible_events.indexOf(event) < 0) {
+      return;
+    }
+    if (callback) {
+      explorer.events[event] = callback;
+    }
+  };
+
   return explorer;
 }

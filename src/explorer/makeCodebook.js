@@ -55,4 +55,7 @@ export function makeCodebook(explorer) {
   } else {
     alert('No data provided for the selected file.');
   }
+
+  //call the makeCodebook event (if any)
+  explorer.events.makeCodebook.call(this);
 }

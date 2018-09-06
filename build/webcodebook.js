@@ -4596,6 +4596,9 @@
 \------------------------------------------------------------------------------------------------*/
 
   function init$14() {
+    this.events.init.call(this);
+
+    //set the defailts
     setDefaults$1(this);
 
     //prepare to draw the codebook for the first file
@@ -4702,24 +4705,20 @@
     var explorer = this;
 
     // parse the file object
-    var newFileObject = {};
-    newFileObject[explorer.config.labelColumn] = label;
-    newFileObject.json = d3.csv.parse(csv_raw);
-    newFileObject.settings = {};
-    newFileObject.fileID = explorer.config.files.length + 1;
+    this.newFileObject = {};
+    this.newFileObject[explorer.config.labelColumn] = label;
+    this.newFileObject.json = d3.csv.parse(csv_raw);
+    this.newFileObject.settings = {};
+    this.newFileObject.fileID = explorer.config.files.length + 1;
 
-    //customize the data object if the user provides a function
-    if (explorer.config.customFileLoad) {
-      explorer.config.customFileLoad(newFileObject);
-    }
-
-    //remove duplicates
-    //  var newFiles = files.filter(function(f) {
-    //    return explorer.config.files.indexOf(f) == -1;
-    //  });
+    //call the addFile event (if any)
+    explorer.events.addFile.call(this);
 
     //add new files to file list
-    this.config.files = d3$1.merge([[newFileObject], this.config.files]);
+    this.config.files = d3$1.merge([
+      [explorer.newFileObject],
+      this.config.files
+    ]);
 
     //re-draw the file listing
     explorer.codebook.fileListing.table.draw(this.config.files);
@@ -4846,6 +4845,9 @@
     } else {
       alert('No data provided for the selected file.');
     }
+
+    //call the makeCodebook event (if any)
+    explorer.events.makeCodebook.call(this);
   }
 
   function createExplorer() {
@@ -4863,6 +4865,22 @@
       fileListing: fileListing,
       makeCodebook: makeCodebook,
       addFile: addFile
+    };
+
+    explorer.events = {
+      init: function init() {},
+      addFile: function addFile$$1() {},
+      makeCodebook: function makeCodebook$$1() {}
+    };
+
+    explorer.on = function(event, callback) {
+      var possible_events = ['init', 'addFile', 'makeCodebook'];
+      if (possible_events.indexOf(event) < 0) {
+        return;
+      }
+      if (callback) {
+        explorer.events[event] = callback;
+      }
     };
 
     return explorer;
