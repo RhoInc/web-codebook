@@ -11,13 +11,6 @@ export function init() {
     .append('div')
     .classed('listing-container', true);
 
-  //drop ignoredColumns and system variables
-  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
-    .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
-    .filter(
-      f => ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
-    ); //drop system variables from table
-
   //Create the table
   explorer.codebook.fileListing.table = createTable(
     '.web-codebook .fileListing .listing-container',

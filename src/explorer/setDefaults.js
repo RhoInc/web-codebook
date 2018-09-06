@@ -17,6 +17,13 @@ export function setDefaults() {
   explorer.config.tableConfig =
     explorer.config.tableConfig || defaultSettings.tableConfig;
 
+  //drop ignoredColumns and system variables
+  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
+    .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
+    .filter(
+      f => ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+    ); //drop system variables from table
+
   /********************* defaultCodebookSettings ***************/
   explorer.config.defaultCodebookSettings =
     explorer.config.defaultCodebookSettings ||

@@ -4586,6 +4586,17 @@
     explorer.config.tableConfig =
       explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
+    //drop ignoredColumns and system variables
+    explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
+      .filter(function(f) {
+        return explorer.config.ignoredColumns.indexOf(f) == -1;
+      })
+      .filter(function(f) {
+        return (
+          ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+        );
+      }); //drop system variables from table
+
     /********************* defaultCodebookSettings ***************/
     explorer.config.defaultCodebookSettings =
       explorer.config.defaultCodebookSettings ||
@@ -4672,17 +4683,6 @@
     var file_select_wrap = fileWrap
       .append('div')
       .classed('listing-container', true);
-
-    //drop ignoredColumns and system variables
-    explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
-      .filter(function(f) {
-        return explorer.config.ignoredColumns.indexOf(f) == -1;
-      })
-      .filter(function(f) {
-        return (
-          ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
-        );
-      }); //drop system variables from table
 
     //Create the table
     explorer.codebook.fileListing.table = webcharts.createTable(
