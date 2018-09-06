@@ -4569,7 +4569,8 @@
     fileLoader: false
   };
 
-  function setDefaults$1(explorer) {
+  function setDefaults$1() {
+    var explorer = this;
     /********************* meta *********************/
     explorer.config.meta = explorer.config.meta || defaultSettings$3.meta;
 
@@ -4605,8 +4606,7 @@
     this.events.init.call(this);
 
     //set the defailts
-    console.log(this.config.files);
-    setDefaults$1(this);
+    setDefaults$1.call(this);
 
     //prepare to draw the codebook for the first file
     this.current = this.config.files[0];
@@ -4619,10 +4619,10 @@
       .attr('class', 'web-codebook-explorer');
 
     //layout the divs
-    this.layout(this);
+    this.layout.call(this);
 
     //draw first codebook
-    this.makeCodebook(this);
+    this.makeCodebook.call(this);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -4633,7 +4633,9 @@
     this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
   }
 
-  function onDraw$1(explorer) {
+  function onDraw$1() {
+    var explorer = this;
+
     explorer.codebook.fileListing.table.on('draw', function() {
       //highlight the current row
       this.table
@@ -4660,7 +4662,9 @@
     });
   }
 
-  function init$15(explorer) {
+  function init$15() {
+    var explorer = this;
+
     var fileWrap = explorer.codebook.fileListing.wrap;
     fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -4690,13 +4694,12 @@
     explorer.config.files.forEach(function(d) {
       return (d.selected = d == explorer.current);
     });
-    console.log(explorer);
     var sortedFiles = explorer.config.files.sort(function(a, b) {
       return a.selected ? -1 : b.selected ? 1 : 0;
     });
 
     //assign callbacks and initialize
-    onDraw$1(explorer);
+    onDraw$1.call(explorer);
     explorer.codebook.fileListing.table.init(sortedFiles);
   }
 
@@ -4795,8 +4798,10 @@
       .style('cursor', 'help');
   }
 
-  function makeCodebook(explorer) {
+  function makeCodebook() {
     var _this = this;
+
+    var explorer = this;
 
     explorer.codebookWrap.selectAll('*').remove();
 
@@ -4837,7 +4842,7 @@
     );
 
     explorer.codebook.on('complete', function() {
-      explorer.fileListing.init(explorer);
+      explorer.fileListing.init.call(explorer);
       if (explorer.config.fileLoader) {
         initFileLoad.call(explorer);
       }

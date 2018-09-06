@@ -1,6 +1,8 @@
 import { select as d3select } from 'd3';
 
-export function onDraw(explorer) {
+export function onDraw() {
+  var explorer = this;
+
   explorer.codebook.fileListing.table.on('draw', function() {
     //highlight the current row
     this.table

@@ -1,6 +1,7 @@
 import defaultSettings from './defaultSettings';
 
-export function setDefaults(explorer) {
+export function setDefaults() {
+  var explorer = this;
   /********************* meta *********************/
   explorer.config.meta = explorer.config.meta || defaultSettings.meta;
 

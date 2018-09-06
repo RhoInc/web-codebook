@@ -13,7 +13,7 @@ export function init() {
   this.events.init.call(this);
 
   //set the defailts
-  setDefaults(this);
+  setDefaults.call(this);
 
   //prepare to draw the codebook for the first file
   this.current = this.config.files[0];
@@ -25,8 +25,8 @@ export function init() {
     .attr('class', 'web-codebook-explorer');
 
   //layout the divs
-  this.layout(this);
+  this.layout.call(this);
 
   //draw first codebook
-  this.makeCodebook(this);
+  this.makeCodebook.call(this);
 }
