@@ -3533,7 +3533,9 @@
     controlVisibility: 'visible',
     chartVisibility: 'minimized',
     tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
-    dataName: ''
+    dataName: '',
+    whiteSpaceAsMissing: true,
+    missingValues: ['NA', null, NaN, undefined]
   };
 
   function setDefaults(codebook) {
@@ -3668,6 +3670,14 @@
       );
       codebook.config.defaultTab = codebook.config.tabs[0].key;
     }
+
+    /********************* Missing Value Settings *********************/
+    codebook.config.whiteSpaceAsMissing =
+      codebook.config.whiteSpaceAsMissing ||
+      defaultSettings$1.whiteSpaceAsMissing;
+
+    codebook.config.missingValues =
+      codebook.config.missingValues || defaultSettings$1.missingValues;
 
     /********************* Control Visibility Settings *********************/
     codebook.config.controlVisibility =
@@ -3826,8 +3836,8 @@
   }
 
   function determineType(vector, levelSplit) {
-    var nonMissingValues = vector.filter(function(d) {
-      return !/^\s*$/.test(d.value);
+    var nonMissingValues = vector.filter(function(f) {
+      return !f.missing;
     });
     var numericValues = nonMissingValues.filter(function(d) {
       return !isNaN(+d.value);
@@ -3849,8 +3859,8 @@
   function categorical(vector, sub) {
     var statistics = {};
     statistics.N = vector.length;
-    var nonMissing = vector.filter(function(d) {
-      return !/^\s*$/.test(d.value) && d.value !== 'NA';
+    var nonMissing = vector.filter(function(f) {
+      return !f.missing;
     });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
@@ -3934,7 +3944,9 @@
     statistics.N = vector.length;
     var nonMissing = vector
       .filter(function(d) {
-        return !isNaN(+d.value) && !/^\s*$/.test(d.value);
+        return function(d) {
+          return !d.missing;
+        };
       })
       .map(function(d) {
         return +d.value;
@@ -4002,6 +4014,7 @@
   };
 
   function makeSummary(codebook) {
+    var config = codebook.config;
     var data = codebook.data.filtered;
     var group = codebook.config.group;
 
@@ -4013,11 +4026,17 @@
 
         //get a list of raw values
         variables[i].values = data.map(function(d) {
-          return {
+          var current = {
             index: d['web-codebook-index'],
             value: d[variable],
-            highlighted: codebook.data.highlighted.indexOf(d) > -1
+            highlighted: codebook.data.highlighted.indexOf(d) > -1,
+            missingWhiteSpace: config.whiteSpaceAsMissing
+              ? /^\s*$/.test(d[variable])
+              : false,
+            missingValue: config.missingValues.indexOf(d[variable]) > -1
           };
+          current.missing = current.missingWhiteSpace || current.missingValue;
+          return current;
         });
 
         //get variable type
@@ -4133,7 +4152,7 @@
       });
 
       codebook.data.summary = variables;
-
+      console.log(codebook);
       //get bin counts
       codebook.util.getBinCounts(codebook);
     } else {

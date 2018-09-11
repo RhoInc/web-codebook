@@ -12,7 +12,9 @@ const defaultSettings = {
   controlVisibility: 'visible',
   chartVisibility: 'minimized',
   tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
-  dataName: ''
+  dataName: '',
+  whiteSpaceAsMissing: true,
+  missingValues: ['NA', null, NaN, undefined]
 };
 
 export default defaultSettings;

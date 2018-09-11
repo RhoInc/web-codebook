@@ -124,6 +124,13 @@ export function setDefaults(codebook) {
     codebook.config.defaultTab = codebook.config.tabs[0].key;
   }
 
+  /********************* Missing Value Settings *********************/
+  codebook.config.whiteSpaceAsMissing =
+    codebook.config.whiteSpaceAsMissing || defaultSettings.whiteSpaceAsMissing;
+
+  codebook.config.missingValues =
+    codebook.config.missingValues || defaultSettings.missingValues;
+
   /********************* Control Visibility Settings *********************/
   codebook.config.controlVisibility =
     codebook.config.controlVisibility || defaultSettings.controlVisibility;

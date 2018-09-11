@@ -1,0 +1,1068 @@
+USUBJID,SITEID,SITE,AGE,SEX,RACE,ARM,RFSTDTC,SAFFL,DOMAIN,STDT,STDY,ENDT,ENDY,SEQ,ONGO,TOOLTIP
+01-001,1,Site 01,30,F,Other/Mixed,Placebo,5/21/15,Y,Adverse Events,7/16/15,,8/14/15,,1,N,This mark definitely represents the Adverse Events domain
+01-001,1,Site 01,30,F,Other/Mixed,Placebo,5/21/15,Y,Concomitant Medications,7/16/15,,8/14/15,,1,Y,This mark definitely represents the Concomitant Medications domain
+01-001,1,Site 01,30,F,Other/Mixed,Placebo,5/21/15,Y,Enrollment,5/21/15,,5/21/15,,1,,This mark definitely represents the Enrollment domain
+01-001,1,Site 01,30,F,Other/Mixed,Placebo,5/21/15,Y,Randomization,7/17/15,,7/17/15,,1,,This mark definitely represents the Randomization domain
+01-001,1,Site 01,30,F,Other/Mixed,Placebo,5/21/15,Y,Study Completion,5/9/16,,5/9/16,,1,,This mark definitely represents the Study Completion domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Adverse Events,7/2/15,,7/16/15,,1,Y,This mark definitely represents the Adverse Events domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Adverse Events,11/18/15,,5/6/16,,2,Y,This mark definitely represents the Adverse Events domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Adverse Events,11/27/15,,5/2/16,,3,Y,This mark definitely represents the Adverse Events domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Adverse Events,12/19/15,,5/25/16,,4,Y,This mark definitely represents the Adverse Events domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Adverse Events,3/23/16,,4/12/16,,5,N,This mark definitely represents the Adverse Events domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Enrollment,5/30/15,,5/30/15,,1,,This mark definitely represents the Enrollment domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Randomization,7/29/15,,7/29/15,,1,,This mark definitely represents the Randomization domain
+01-002,1,Site 01,24,F,Black,Treatment A,5/30/15,Y,Study Completion,5/29/16,,5/29/16,,1,,This mark definitely represents the Study Completion domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Adverse Events,9/11/15,,3/2/16,,1,N,This mark definitely represents the Adverse Events domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Adverse Events,1/3/16,,1/12/16,,2,N,This mark definitely represents the Adverse Events domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Adverse Events,6/13/16,,6/21/16,,3,Y,This mark definitely represents the Adverse Events domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Concomitant Medications,12/4/15,,7/21/16,,1,Y,This mark definitely represents the Concomitant Medications domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Concomitant Medications,12/17/15,,5/8/16,,2,N,This mark definitely represents the Concomitant Medications domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Concomitant Medications,2/11/16,,7/17/16,,3,Y,This mark definitely represents the Concomitant Medications domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Enrollment,8/14/15,,8/14/15,,1,,This mark definitely represents the Enrollment domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Randomization,10/5/15,,10/5/15,,1,,This mark definitely represents the Randomization domain
+01-003,1,Site 01,43,F,Hispanic,Placebo,8/14/15,Y,Study Completion,8/19/16,,8/19/16,,1,,This mark definitely represents the Study Completion domain
+01-004,1,Site 01,42,F,Hispanic,Placebo,1/13/15,Y,Concomitant Medications,7/4/15,,12/21/15,,1,Y,This mark definitely represents the Concomitant Medications domain
+01-004,1,Site 01,42,F,Hispanic,Placebo,1/13/15,Y,Enrollment,1/13/15,,1/13/15,,1,,This mark definitely represents the Enrollment domain
+01-004,1,Site 01,42,F,Hispanic,Placebo,1/13/15,Y,Randomization,3/3/15,,3/3/15,,1,,This mark definitely represents the Randomization domain
+01-004,1,Site 01,42,F,Hispanic,Placebo,1/13/15,Y,Study Completion,1/6/16,,1/6/16,,1,,This mark definitely represents the Study Completion domain
+01-005,1,Site 01,30,M,White,Treatment B,12/27/15,Y,Adverse Events,7/31/16,,11/15/16,,1,N,This mark definitely represents the Adverse Events domain
+01-005,1,Site 01,30,M,White,Treatment B,12/27/15,Y,Enrollment,12/27/15,,12/27/15,,1,,This mark definitely represents the Enrollment domain
+01-005,1,Site 01,30,M,White,Treatment B,12/27/15,Y,Randomization,2/16/16,,2/16/16,,1,,This mark definitely represents the Randomization domain
+01-005,1,Site 01,30,M,White,Treatment B,12/27/15,Y,Study Completion,1/3/17,,1/3/17,,1,,This mark definitely represents the Study Completion domain
+01-006,1,Site 01,23,M,White,Placebo,5/12/15,N,Enrollment,5/12/15,,5/12/15,,1,,This mark definitely represents the Enrollment domain
+01-007,1,Site 01,20,M,Other/Mixed,Treatment A,9/11/15,N,Enrollment,9/11/15,,9/11/15,,1,,This mark definitely represents the Enrollment domain
+01-008,1,Site 01,29,F,Hispanic,Treatment B,2/14/15,Y,Adverse Events,3/21/15,,5/12/15,,1,N,This mark definitely represents the Adverse Events domain
+01-008,1,Site 01,29,F,Hispanic,Treatment B,2/14/15,Y,Enrollment,2/14/15,,2/14/15,,1,,This mark definitely represents the Enrollment domain
+01-008,1,Site 01,29,F,Hispanic,Treatment B,2/14/15,Y,Randomization,4/5/15,,4/5/15,,1,,This mark definitely represents the Randomization domain
+01-008,1,Site 01,29,F,Hispanic,Treatment B,2/14/15,Y,Study Completion,2/15/16,,2/15/16,,1,,This mark definitely represents the Study Completion domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Adverse Events,1/23/16,,1/28/16,,1,N,This mark definitely represents the Adverse Events domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Adverse Events,2/4/16,,4/18/16,,2,N,This mark definitely represents the Adverse Events domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Adverse Events,3/27/16,,8/27/16,,3,Y,This mark definitely represents the Adverse Events domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Adverse Events,8/22/16,,10/14/16,,4,Y,This mark definitely represents the Adverse Events domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Adverse Events,10/24/16,,11/4/16,,5,N,This mark definitely represents the Adverse Events domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Concomitant Medications,2/10/16,,4/8/16,,1,Y,This mark definitely represents the Concomitant Medications domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Concomitant Medications,2/24/16,,10/2/16,,2,Y,This mark definitely represents the Concomitant Medications domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Concomitant Medications,6/28/16,,9/28/16,,3,Y,This mark definitely represents the Concomitant Medications domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Enrollment,11/22/15,,11/22/15,,1,,This mark definitely represents the Enrollment domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Randomization,1/21/16,,1/21/16,,1,,This mark definitely represents the Randomization domain
+01-009,1,Site 01,53,F,Black,Treatment B,11/22/15,Y,Study Completion,11/20/16,,11/20/16,,1,,This mark definitely represents the Study Completion domain
+01-010,1,Site 01,35,F,Black,Treatment B,1/7/15,Y,Enrollment,1/7/15,,1/7/15,,1,,This mark definitely represents the Enrollment domain
+01-010,1,Site 01,35,F,Black,Treatment B,1/7/15,Y,Randomization,2/24/15,,2/24/15,,1,,This mark definitely represents the Randomization domain
+01-010,1,Site 01,35,F,Black,Treatment B,1/7/15,Y,Study Completion,1/1/16,,1/1/16,,1,,This mark definitely represents the Study Completion domain
+01-011,1,Site 01,33,F,Other/Mixed,Treatment A,10/4/15,Y,Adverse Events,,80,,85,1,N,This mark definitely represents the Adverse Events domain
+01-011,1,Site 01,33,F,Other/Mixed,Treatment A,10/4/15,Y,Enrollment,,1,,1,1,,This mark definitely represents the Enrollment domain
+01-011,1,Site 01,33,F,Other/Mixed,Treatment A,10/4/15,Y,Randomization,,61,,61,1,,This mark definitely represents the Randomization domain
+01-011,1,Site 01,33,F,Other/Mixed,Treatment A,10/4/15,Y,Study Completion,,371,,371,1,,This mark definitely represents the Study Completion domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Concomitant Medications,,6,,18,1,N,This mark definitely represents the Concomitant Medications domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Concomitant Medications,,88,,298,2,N,This mark definitely represents the Concomitant Medications domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Concomitant Medications,,305,,313,3,Y,This mark definitely represents the Concomitant Medications domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Enrollment,,1,,1,1,,This mark definitely represents the Enrollment domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Randomization,,49,,49,1,,This mark definitely represents the Randomization domain
+01-012,1,Site 01,36,M,White,Placebo,4/19/15,Y,Study Completion,,370,,370,1,,This mark definitely represents the Study Completion domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Adverse Events,,262,,266,1,Y,This mark definitely represents the Adverse Events domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Adverse Events,,331,,351,2,N,This mark definitely represents the Adverse Events domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Concomitant Medications,,83,,158,1,N,This mark definitely represents the Concomitant Medications domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Concomitant Medications,,215,,311,2,N,This mark definitely represents the Concomitant Medications domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Concomitant Medications,,247,,281,3,Y,This mark definitely represents the Concomitant Medications domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Enrollment,,1,,1,1,,This mark definitely represents the Enrollment domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Randomization,,58,,58,1,,This mark definitely represents the Randomization domain
+01-013,1,Site 01,40,F,White,Treatment A,7/15/15,Y,Study Completion,,359,,359,1,,This mark definitely represents the Study Completion domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Adverse Events,,150,,150,1,Y,This mark definitely represents the Adverse Events domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Adverse Events,,166,,206,2,Y,This mark definitely represents the Adverse Events domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Adverse Events,,200,,361,3,N,This mark definitely represents the Adverse Events domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Adverse Events,,250,,300,4,N,This mark definitely represents the Adverse Events domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Concomitant Medications,,75,,149,1,N,This mark definitely represents the Concomitant Medications domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Concomitant Medications,,150,,253,2,Y,This mark definitely represents the Concomitant Medications domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Concomitant Medications,,214,,217,3,N,This mark definitely represents the Concomitant Medications domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Concomitant Medications,,237,,302,4,Y,This mark definitely represents the Concomitant Medications domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Enrollment,,1,,1,1,,This mark definitely represents the Enrollment domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Randomization,,50,,50,1,,This mark definitely represents the Randomization domain
+01-014,1,Site 01,32,M,White,Treatment B,12/30/15,Y,Study Completion,,375,,375,1,,This mark definitely represents the Study Completion domain
+01-015,1,Site 01,37,M,Black,Treatment A,7/25/15,N,Enrollment,,1,,1,1,,This mark definitely represents the Enrollment domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Adverse Events,2/10/16,52,7/22/16,215,1,N,This mark definitely represents the Adverse Events domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Adverse Events,3/18/16,89,10/18/16,303,2,Y,This mark definitely represents the Adverse Events domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Adverse Events,4/8/16,110,6/27/16,190,3,Y,This mark definitely represents the Adverse Events domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Concomitant Medications,1/21/16,32,4/6/16,108,1,N,This mark definitely represents the Concomitant Medications domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Concomitant Medications,3/17/16,88,10/21/16,306,2,N,This mark definitely represents the Concomitant Medications domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Concomitant Medications,4/23/16,125,10/2/16,287,3,Y,This mark definitely represents the Concomitant Medications domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Concomitant Medications,9/5/16,260,10/28/16,313,4,Y,This mark definitely represents the Concomitant Medications domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Enrollment,12/21/15,1,12/21/15,1,1,,This mark definitely represents the Enrollment domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Randomization,2/17/16,59,2/17/16,59,1,,This mark definitely represents the Randomization domain
+01-016,1,Site 01,18,M,Black,Treatment A,12/21/15,Y,Study Completion,12/14/16,360,12/14/16,360,1,,This mark definitely represents the Study Completion domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Adverse Events,5/7/15,85,7/26/15,165,1,Y,This mark definitely represents the Adverse Events domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Adverse Events,10/27/15,258,12/14/15,306,2,N,This mark definitely represents the Adverse Events domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Adverse Events,11/15/15,277,1/19/16,342,3,N,This mark definitely represents the Adverse Events domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Concomitant Medications,5/12/15,90,9/11/15,212,1,Y,This mark definitely represents the Concomitant Medications domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Concomitant Medications,10/31/15,262,11/4/15,266,2,Y,This mark definitely represents the Concomitant Medications domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Enrollment,2/12/15,1,2/12/15,1,1,,This mark definitely represents the Enrollment domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Randomization,4/8/15,56,4/8/15,56,1,,This mark definitely represents the Randomization domain
+01-017,1,Site 01,40,M,Hispanic,Treatment A,2/12/15,Y,Study Completion,2/10/16,364,2/10/16,364,1,,This mark definitely represents the Study Completion domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Adverse Events,1/5/16,24,2/22/16,72,1,N,This mark definitely represents the Adverse Events domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Adverse Events,3/25/16,104,12/6/16,360,2,N,This mark definitely represents the Adverse Events domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Adverse Events,6/3/16,174,6/11/16,182,3,Y,This mark definitely represents the Adverse Events domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Adverse Events,9/4/16,267,12/6/16,360,4,Y,This mark definitely represents the Adverse Events domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Adverse Events,10/29/16,322,10/29/16,322,5,Y,This mark definitely represents the Adverse Events domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Enrollment,12/13/15,1,12/13/15,1,1,,This mark definitely represents the Enrollment domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Randomization,1/30/16,49,1/30/16,49,1,,This mark definitely represents the Randomization domain
+01-018,1,Site 01,18,M,Hispanic,Treatment B,12/13/15,Y,Study Completion,12/20/16,374,12/20/16,374,1,,This mark definitely represents the Study Completion domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Adverse Events,10/27/15,124,2/25/16,245,1,N,This mark definitely represents the Adverse Events domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Adverse Events,12/8/15,166,2/17/16,237,2,Y,This mark definitely represents the Adverse Events domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Adverse Events,2/8/16,228,3/30/16,279,3,Y,This mark definitely represents the Adverse Events domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Adverse Events,4/14/16,294,5/26/16,336,4,Y,This mark definitely represents the Adverse Events domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Adverse Events,6/16/16,357,6/19/16,360,5,Y,This mark definitely represents the Adverse Events domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Concomitant Medications,7/28/15,33,10/10/15,107,1,N,This mark definitely represents the Concomitant Medications domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Concomitant Medications,11/29/15,157,4/7/16,287,2,N,This mark definitely represents the Concomitant Medications domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Concomitant Medications,12/8/15,166,1/17/16,206,3,N,This mark definitely represents the Concomitant Medications domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Concomitant Medications,2/4/16,224,3/14/16,263,4,Y,This mark definitely represents the Concomitant Medications domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Enrollment,6/26/15,1,6/26/15,1,1,,This mark definitely represents the Enrollment domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Randomization,8/15/15,51,8/15/15,51,1,,This mark definitely represents the Randomization domain
+01-019,1,Site 01,43,M,Black,Treatment B,6/26/15,Y,Study Completion,7/3/16,374,7/3/16,374,1,,This mark definitely represents the Study Completion domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Concomitant Medications,10/1/15,160,1/1/16,252,1,Y,This mark definitely represents the Concomitant Medications domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Concomitant Medications,10/18/15,177,12/13/15,233,2,Y,This mark definitely represents the Concomitant Medications domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Concomitant Medications,12/26/15,246,12/30/15,250,3,Y,This mark definitely represents the Concomitant Medications domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Concomitant Medications,2/15/16,297,3/1/16,312,4,N,This mark definitely represents the Concomitant Medications domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Enrollment,4/25/15,1,4/25/15,1,1,,This mark definitely represents the Enrollment domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Randomization,6/15/15,52,6/15/15,52,1,,This mark definitely represents the Randomization domain
+01-020,1,Site 01,47,M,Other/Mixed,Treatment B,4/25/15,Y,Study Completion,5/1/16,373,5/1/16,373,1,,This mark definitely represents the Study Completion domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Adverse Events,6/24/16,265,6/26/16,267,1,N,This mark definitely represents the Adverse Events domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Concomitant Medications,10/29/15,26,1/15/16,104,1,N,This mark definitely represents the Concomitant Medications domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Concomitant Medications,12/31/15,89,8/1/16,303,2,N,This mark definitely represents the Concomitant Medications domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Concomitant Medications,1/21/16,110,5/23/16,233,3,N,This mark definitely represents the Concomitant Medications domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Concomitant Medications,1/30/16,119,3/19/16,168,4,N,This mark definitely represents the Concomitant Medications domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Enrollment,10/4/15,1,10/4/15,1,1,,This mark definitely represents the Enrollment domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Randomization,11/23/15,51,11/23/15,51,1,,This mark definitely represents the Randomization domain
+01-021,1,Site 01,23,F,Black,Treatment A,10/4/15,Y,Study Completion,9/29/16,362,9/29/16,362,1,,This mark definitely represents the Study Completion domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Adverse Events,1/22/16,114,8/24/16,329,1,Y,This mark definitely represents the Adverse Events domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Adverse Events,5/27/16,240,6/29/16,273,2,N,This mark definitely represents the Adverse Events domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Adverse Events,6/30/16,274,9/26/16,362,3,N,This mark definitely represents the Adverse Events domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Adverse Events,8/11/16,316,8/28/16,333,4,N,This mark definitely represents the Adverse Events domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Enrollment,10/1/15,1,10/1/15,1,1,,This mark definitely represents the Enrollment domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Randomization,11/22/15,53,11/22/15,53,1,,This mark definitely represents the Randomization domain
+01-022,1,Site 01,27,F,Black,Treatment A,10/1/15,Y,Study Completion,10/4/16,370,10/4/16,370,1,,This mark definitely represents the Study Completion domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Adverse Events,6/23/16,267,8/3/16,308,1,Y,This mark definitely represents the Adverse Events domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Concomitant Medications,3/1/16,153,8/17/16,322,1,N,This mark definitely represents the Concomitant Medications domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Concomitant Medications,3/11/16,163,9/19/16,355,2,N,This mark definitely represents the Concomitant Medications domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Concomitant Medications,4/3/16,186,4/13/16,196,3,Y,This mark definitely represents the Concomitant Medications domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Concomitant Medications,5/3/16,216,9/17/16,353,4,N,This mark definitely represents the Concomitant Medications domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Enrollment,10/1/15,1,10/1/15,1,1,,This mark definitely represents the Enrollment domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Randomization,11/27/15,58,11/27/15,58,1,,This mark definitely represents the Randomization domain
+01-023,1,Site 01,37,F,Other/Mixed,Treatment B,10/1/15,Y,Study Completion,10/1/16,367,10/1/16,367,1,,This mark definitely represents the Study Completion domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Concomitant Medications,4/15/15,17,8/6/15,130,1,N,This mark definitely represents the Concomitant Medications domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Concomitant Medications,9/8/15,163,3/13/16,350,2,N,This mark definitely represents the Concomitant Medications domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Concomitant Medications,12/9/15,255,1/9/16,286,3,Y,This mark definitely represents the Concomitant Medications domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Concomitant Medications,12/21/15,267,3/23/16,360,4,N,This mark definitely represents the Concomitant Medications domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Concomitant Medications,1/12/16,289,1/16/16,293,5,Y,This mark definitely represents the Concomitant Medications domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Enrollment,3/30/15,1,3/30/15,1,1,,This mark definitely represents the Enrollment domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Randomization,5/17/15,49,5/17/15,49,1,,This mark definitely represents the Randomization domain
+01-024,1,Site 01,48,M,Black,Treatment A,3/30/15,Y,Study Completion,3/27/16,364,3/27/16,364,1,,This mark definitely represents the Study Completion domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Adverse Events,6/28/15,7,1/29/16,222,1,N,This mark definitely represents the Adverse Events domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Adverse Events,1/20/16,213,4/17/16,301,2,Y,This mark definitely represents the Adverse Events domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Adverse Events,2/1/16,225,6/7/16,352,3,Y,This mark definitely represents the Adverse Events domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Adverse Events,3/27/16,280,4/22/16,306,4,Y,This mark definitely represents the Adverse Events domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Enrollment,6/22/15,1,6/22/15,1,1,,This mark definitely represents the Enrollment domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Randomization,8/19/15,59,8/19/15,59,1,,This mark definitely represents the Randomization domain
+01-025,1,Site 01,21,M,White,Placebo,6/22/15,Y,Study Completion,6/28/16,373,6/28/16,373,1,,This mark definitely represents the Study Completion domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Adverse Events,4/19/15,60,9/11/15,205,1,Y,This mark definitely represents the Adverse Events domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Adverse Events,8/22/15,185,8/23/15,186,2,N,This mark definitely represents the Adverse Events domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Adverse Events,12/13/15,298,12/20/15,305,3,N,This mark definitely represents the Adverse Events domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Adverse Events,2/13/16,360,2/13/16,360,4,N,This mark definitely represents the Adverse Events domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Concomitant Medications,7/1/15,133,7/3/15,135,1,Y,This mark definitely represents the Concomitant Medications domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Concomitant Medications,8/28/15,191,9/9/15,203,2,N,This mark definitely represents the Concomitant Medications domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Concomitant Medications,2/10/16,357,2/13/16,360,3,Y,This mark definitely represents the Concomitant Medications domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Concomitant Medications,2/11/16,358,2/11/16,358,4,Y,This mark definitely represents the Concomitant Medications domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Enrollment,2/19/15,1,2/19/15,1,1,,This mark definitely represents the Enrollment domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Randomization,4/14/15,55,4/14/15,55,1,,This mark definitely represents the Randomization domain
+01-026,1,Site 01,25,F,White,Treatment A,2/19/15,Y,Study Completion,2/13/16,360,2/13/16,360,1,,This mark definitely represents the Study Completion domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Adverse Events,4/26/15,50,6/6/15,91,1,Y,This mark definitely represents the Adverse Events domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Adverse Events,5/22/15,76,7/18/15,133,2,Y,This mark definitely represents the Adverse Events domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Adverse Events,6/12/15,97,8/17/15,163,3,N,This mark definitely represents the Adverse Events domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Adverse Events,11/30/15,268,12/26/15,294,4,N,This mark definitely represents the Adverse Events domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Adverse Events,3/1/16,360,3/3/16,362,5,N,This mark definitely represents the Adverse Events domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Concomitant Medications,3/17/15,10,6/15/15,100,1,N,This mark definitely represents the Concomitant Medications domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Concomitant Medications,3/30/15,23,4/24/15,48,2,N,This mark definitely represents the Concomitant Medications domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Concomitant Medications,7/22/15,137,8/13/15,159,3,N,This mark definitely represents the Concomitant Medications domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Concomitant Medications,11/17/15,255,2/15/16,345,4,N,This mark definitely represents the Concomitant Medications domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Enrollment,3/8/15,1,3/8/15,1,1,,This mark definitely represents the Enrollment domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Randomization,4/25/15,49,4/25/15,49,1,,This mark definitely represents the Randomization domain
+01-027,1,Site 01,36,F,Hispanic,Treatment B,3/8/15,Y,Study Completion,3/10/16,369,3/10/16,369,1,,This mark definitely represents the Study Completion domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Adverse Events,6/30/15,30,5/7/16,342,1,Y,This mark definitely represents the Adverse Events domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Adverse Events,9/6/15,98,12/12/15,195,2,N,This mark definitely represents the Adverse Events domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Adverse Events,1/12/16,226,5/29/16,364,3,N,This mark definitely represents the Adverse Events domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Adverse Events,1/29/16,243,5/7/16,342,4,Y,This mark definitely represents the Adverse Events domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Adverse Events,5/1/16,336,5/2/16,337,5,N,This mark definitely represents the Adverse Events domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Concomitant Medications,7/23/15,53,11/13/15,166,1,N,This mark definitely represents the Concomitant Medications domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Concomitant Medications,9/22/15,114,4/24/16,329,2,N,This mark definitely represents the Concomitant Medications domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Enrollment,6/1/15,1,6/1/15,1,1,,This mark definitely represents the Enrollment domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Randomization,7/25/15,55,7/25/15,55,1,,This mark definitely represents the Randomization domain
+01-028,1,Site 01,40,F,Other/Mixed,Treatment B,6/1/15,Y,Study Completion,6/2/16,368,6/2/16,368,1,,This mark definitely represents the Study Completion domain
+01-029,1,Site 01,50,M,Black,Placebo,6/11/15,Y,Adverse Events,1/15/16,219,3/26/16,290,1,N,This mark definitely represents the Adverse Events domain
+01-029,1,Site 01,50,M,Black,Placebo,6/11/15,Y,Enrollment,6/11/15,1,6/11/15,1,1,,This mark definitely represents the Enrollment domain
+01-029,1,Site 01,50,M,Black,Placebo,6/11/15,Y,Randomization,7/30/15,50,7/30/15,50,1,,This mark definitely represents the Randomization domain
+01-029,1,Site 01,50,M,Black,Placebo,6/11/15,Y,Study Completion,6/16/16,372,6/16/16,372,1,,This mark definitely represents the Study Completion domain
+01-030,1,Site 01,25,M,Other/Mixed,Treatment A,1/18/15,N,Enrollment,1/18/15,1,1/18/15,1,1,,This mark definitely represents the Enrollment domain
+02-001,2,Site 02,20,M,White,Treatment A,12/11/15,N,Enrollment,12/11/15,1,12/11/15,1,1,,This mark definitely represents the Enrollment domain
+02-002,2,Site 02,18,M,Hispanic,Treatment A,9/21/15,Y,Adverse Events,11/22/15,63,1/13/16,115,1,N,This mark definitely represents the Adverse Events domain
+02-002,2,Site 02,18,M,Hispanic,Treatment A,9/21/15,Y,Concomitant Medications,7/10/16,294,8/29/16,344,1,N,This mark definitely represents the Concomitant Medications domain
+02-002,2,Site 02,18,M,Hispanic,Treatment A,9/21/15,Y,Enrollment,9/21/15,1,9/21/15,1,1,,This mark definitely represents the Enrollment domain
+02-002,2,Site 02,18,M,Hispanic,Treatment A,9/21/15,Y,Randomization,11/15/15,56,11/15/15,56,1,,This mark definitely represents the Randomization domain
+02-002,2,Site 02,18,M,Hispanic,Treatment A,9/21/15,Y,Study Completion,9/14/16,360,9/14/16,360,1,,This mark definitely represents the Study Completion domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Adverse Events,5/18/15,22,8/4/15,100,1,N,This mark definitely represents the Adverse Events domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Adverse Events,11/13/15,201,4/21/16,361,2,N,This mark definitely represents the Adverse Events domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Adverse Events,1/8/16,257,2/25/16,305,3,Y,This mark definitely represents the Adverse Events domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Adverse Events,1/12/16,261,2/26/16,306,4,N,This mark definitely represents the Adverse Events domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Adverse Events,2/27/16,307,2/29/16,309,5,N,This mark definitely represents the Adverse Events domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Concomitant Medications,5/9/15,13,4/13/16,353,1,Y,This mark definitely represents the Concomitant Medications domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Concomitant Medications,1/18/16,267,2/28/16,308,2,Y,This mark definitely represents the Concomitant Medications domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Enrollment,4/27/15,1,4/27/15,1,1,,This mark definitely represents the Enrollment domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Randomization,6/17/15,52,6/17/15,52,1,,This mark definitely represents the Randomization domain
+02-003,2,Site 02,27,F,Hispanic,Placebo,4/27/15,Y,Study Completion,4/19/16,359,4/19/16,359,1,,This mark definitely represents the Study Completion domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Adverse Events,2/20/16,144,7/31/16,306,1,Y,This mark definitely represents the Adverse Events domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Adverse Events,3/4/16,157,7/7/16,282,2,N,This mark definitely represents the Adverse Events domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Adverse Events,6/22/16,267,7/20/16,295,3,N,This mark definitely represents the Adverse Events domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Adverse Events,6/22/16,267,9/20/16,357,4,Y,This mark definitely represents the Adverse Events domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Enrollment,9/30/15,1,9/30/15,1,1,,This mark definitely represents the Enrollment domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Randomization,11/26/15,58,11/26/15,58,1,,This mark definitely represents the Randomization domain
+02-004,2,Site 02,21,F,White,Placebo,9/30/15,Y,Study Completion,10/6/16,373,10/6/16,373,1,,This mark definitely represents the Study Completion domain
+02-005,2,Site 02,36,M,Other/Mixed,Treatment B,5/14/15,Y,Adverse Events,2/24/16,287,4/8/16,331,1,N,This mark definitely represents the Adverse Events domain
+02-005,2,Site 02,36,M,Other/Mixed,Treatment B,5/14/15,Y,Enrollment,5/14/15,1,5/14/15,1,1,,This mark definitely represents the Enrollment domain
+02-005,2,Site 02,36,M,Other/Mixed,Treatment B,5/14/15,Y,Randomization,7/8/15,56,7/8/15,56,1,,This mark definitely represents the Randomization domain
+02-005,2,Site 02,36,M,Other/Mixed,Treatment B,5/14/15,Y,Study Completion,5/10/16,363,5/10/16,363,1,,This mark definitely represents the Study Completion domain
+02-006,2,Site 02,36,M,White,Placebo,6/4/15,Y,Adverse Events,6/27/15,24,5/17/16,349,1,Y,This mark definitely represents the Adverse Events domain
+02-006,2,Site 02,36,M,White,Placebo,6/4/15,Y,Adverse Events,12/11/15,191,1/5/16,216,2,Y,This mark definitely represents the Adverse Events domain
+02-006,2,Site 02,36,M,White,Placebo,6/4/15,Y,Enrollment,6/4/15,1,6/4/15,1,1,,This mark definitely represents the Enrollment domain
+02-006,2,Site 02,36,M,White,Placebo,6/4/15,Y,Randomization,8/1/15,59,8/1/15,59,1,,This mark definitely represents the Randomization domain
+02-006,2,Site 02,36,M,White,Placebo,6/4/15,Y,Study Completion,6/12/16,375,6/12/16,375,1,,This mark definitely represents the Study Completion domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Concomitant Medications,11/24/15,7,6/26/16,222,1,Y,This mark definitely represents the Concomitant Medications domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Concomitant Medications,5/9/16,174,8/17/16,274,2,Y,This mark definitely represents the Concomitant Medications domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Concomitant Medications,5/24/16,189,7/20/16,246,3,N,This mark definitely represents the Concomitant Medications domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Concomitant Medications,6/14/16,210,10/2/16,320,4,Y,This mark definitely represents the Concomitant Medications domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Enrollment,11/18/15,1,11/18/15,1,1,,This mark definitely represents the Enrollment domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Randomization,1/18/16,62,1/18/16,62,1,,This mark definitely represents the Randomization domain
+02-007,2,Site 02,54,M,White,Treatment A,11/18/15,Y,Study Completion,11/24/16,373,11/24/16,373,1,,This mark definitely represents the Study Completion domain
+02-008,2,Site 02,31,M,Hispanic,Treatment B,9/1/15,N,Enrollment,9/1/15,1,9/1/15,1,1,,This mark definitely represents the Enrollment domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Adverse Events,12/20/15,126,4/26/16,254,1,N,This mark definitely represents the Adverse Events domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Adverse Events,1/7/16,144,7/4/16,323,2,Y,This mark definitely represents the Adverse Events domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Adverse Events,1/14/16,151,5/4/16,262,3,Y,This mark definitely represents the Adverse Events domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Adverse Events,3/21/16,218,5/26/16,284,4,N,This mark definitely represents the Adverse Events domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Concomitant Medications,8/20/15,4,2/17/16,185,1,Y,This mark definitely represents the Concomitant Medications domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Concomitant Medications,9/20/15,35,10/8/15,53,2,Y,This mark definitely represents the Concomitant Medications domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Concomitant Medications,1/22/16,159,2/28/16,196,3,N,This mark definitely represents the Concomitant Medications domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Concomitant Medications,4/18/16,246,8/13/16,363,4,N,This mark definitely represents the Concomitant Medications domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Enrollment,8/17/15,1,8/17/15,1,1,,This mark definitely represents the Enrollment domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Randomization,10/16/15,61,10/16/15,61,1,,This mark definitely represents the Randomization domain
+02-009,2,Site 02,21,F,Other/Mixed,Treatment B,8/17/15,Y,Study Completion,8/25/16,375,8/25/16,375,1,,This mark definitely represents the Study Completion domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Adverse Events,1/22/15,11,8/15/15,216,1,N,This mark definitely represents the Adverse Events domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Adverse Events,2/8/15,28,6/4/15,144,2,Y,This mark definitely represents the Adverse Events domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Adverse Events,3/7/15,55,4/28/15,107,3,Y,This mark definitely represents the Adverse Events domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Adverse Events,6/13/15,153,9/22/15,254,4,N,This mark definitely represents the Adverse Events domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Adverse Events,10/7/15,269,10/23/15,285,5,N,This mark definitely represents the Adverse Events domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Concomitant Medications,1/26/15,15,1/1/16,355,1,N,This mark definitely represents the Concomitant Medications domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Concomitant Medications,3/20/15,68,8/19/15,220,2,Y,This mark definitely represents the Concomitant Medications domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Concomitant Medications,7/4/15,174,10/4/15,266,3,N,This mark definitely represents the Concomitant Medications domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Enrollment,1/12/15,1,1/12/15,1,1,,This mark definitely represents the Enrollment domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Randomization,3/4/15,52,3/4/15,52,1,,This mark definitely represents the Randomization domain
+02-010,2,Site 02,38,F,Hispanic,Treatment B,1/12/15,Y,Study Completion,1/18/16,372,1/18/16,372,1,,This mark definitely represents the Study Completion domain
+02-011,2,Site 02,36,F,White,Treatment B,7/27/15,N,Enrollment,7/27/15,1,7/27/15,1,1,,This mark definitely represents the Enrollment domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Adverse Events,7/5/16,271,7/26/16,292,1,N,This mark definitely represents the Adverse Events domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Adverse Events,8/5/16,302,8/25/16,322,2,N,This mark definitely represents the Adverse Events domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Adverse Events,9/16/16,344,9/19/16,347,3,N,This mark definitely represents the Adverse Events domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Concomitant Medications,3/25/16,169,5/22/16,227,1,N,This mark definitely represents the Concomitant Medications domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Enrollment,10/9/15,1,10/9/15,1,1,,This mark definitely represents the Enrollment domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Randomization,12/7/15,60,12/7/15,60,1,,This mark definitely represents the Randomization domain
+02-012,2,Site 02,40,F,Other/Mixed,Treatment A,10/9/15,Y,Study Completion,10/11/16,369,10/11/16,369,1,,This mark definitely represents the Study Completion domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Adverse Events,3/12/15,4,10/15/15,221,1,N,This mark definitely represents the Adverse Events domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Adverse Events,7/26/15,140,12/13/15,280,2,Y,This mark definitely represents the Adverse Events domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Adverse Events,8/19/15,164,1/28/16,326,3,N,This mark definitely represents the Adverse Events domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Adverse Events,12/5/15,272,3/3/16,361,4,N,This mark definitely represents the Adverse Events domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Concomitant Medications,5/19/15,72,11/3/15,240,1,N,This mark definitely represents the Concomitant Medications domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Concomitant Medications,8/29/15,174,1/16/16,314,2,Y,This mark definitely represents the Concomitant Medications domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Concomitant Medications,1/8/16,306,2/3/16,332,3,N,This mark definitely represents the Concomitant Medications domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Concomitant Medications,1/20/16,318,2/10/16,339,4,Y,This mark definitely represents the Concomitant Medications domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Concomitant Medications,2/25/16,354,3/5/16,363,5,Y,This mark definitely represents the Concomitant Medications domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Enrollment,3/9/15,1,3/9/15,1,1,,This mark definitely represents the Enrollment domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Randomization,5/7/15,60,5/7/15,60,1,,This mark definitely represents the Randomization domain
+02-013,2,Site 02,46,M,Black,Treatment B,3/9/15,Y,Study Completion,2/28/16,357,2/28/16,357,1,,This mark definitely represents the Study Completion domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Adverse Events,10/13/15,184,3/31/16,354,1,Y,This mark definitely represents the Adverse Events domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Adverse Events,11/16/15,218,11/24/15,226,2,N,This mark definitely represents the Adverse Events domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Concomitant Medications,8/24/15,134,10/20/15,191,1,N,This mark definitely represents the Concomitant Medications domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Concomitant Medications,10/6/15,177,12/12/15,244,2,Y,This mark definitely represents the Concomitant Medications domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Concomitant Medications,12/30/15,262,3/8/16,331,3,N,This mark definitely represents the Concomitant Medications domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Concomitant Medications,2/11/16,305,2/26/16,320,4,N,This mark definitely represents the Concomitant Medications domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Enrollment,4/13/15,1,4/13/15,1,1,,This mark definitely represents the Enrollment domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Randomization,6/6/15,55,6/6/15,55,1,,This mark definitely represents the Randomization domain
+02-014,2,Site 02,19,F,Other/Mixed,Treatment A,4/13/15,Y,Study Completion,4/17/16,371,4/17/16,371,1,,This mark definitely represents the Study Completion domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Adverse Events,5/5/15,8,9/2/15,128,1,Y,This mark definitely represents the Adverse Events domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Adverse Events,10/30/15,186,12/29/15,246,2,N,This mark definitely represents the Adverse Events domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Adverse Events,12/22/15,239,3/15/16,323,3,N,This mark definitely represents the Adverse Events domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Adverse Events,2/1/16,280,2/26/16,305,4,Y,This mark definitely represents the Adverse Events domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Adverse Events,3/21/16,329,4/10/16,349,5,N,This mark definitely represents the Adverse Events domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Enrollment,4/28/15,1,4/28/15,1,1,,This mark definitely represents the Enrollment domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Randomization,6/23/15,57,6/23/15,57,1,,This mark definitely represents the Randomization domain
+02-015,2,Site 02,40,M,Hispanic,Treatment A,4/28/15,Y,Study Completion,4/25/16,364,4/25/16,364,1,,This mark definitely represents the Study Completion domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Adverse Events,3/13/15,18,6/8/15,105,1,N,This mark definitely represents the Adverse Events domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Adverse Events,5/26/15,92,7/24/15,151,2,N,This mark definitely represents the Adverse Events domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Adverse Events,11/11/15,261,11/28/15,278,3,N,This mark definitely represents the Adverse Events domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Adverse Events,11/29/15,279,1/11/16,322,4,N,This mark definitely represents the Adverse Events domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Concomitant Medications,3/27/15,32,12/22/15,302,1,N,This mark definitely represents the Concomitant Medications domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Concomitant Medications,4/27/15,63,6/18/15,115,2,Y,This mark definitely represents the Concomitant Medications domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Concomitant Medications,8/21/15,179,9/28/15,217,3,Y,This mark definitely represents the Concomitant Medications domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Concomitant Medications,10/7/15,226,2/22/16,364,4,Y,This mark definitely represents the Concomitant Medications domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Concomitant Medications,10/21/15,240,1/28/16,339,5,Y,This mark definitely represents the Concomitant Medications domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Enrollment,2/24/15,1,2/24/15,1,1,,This mark definitely represents the Enrollment domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Randomization,4/18/15,54,4/18/15,54,1,,This mark definitely represents the Randomization domain
+02-016,2,Site 02,29,M,White,Placebo,2/24/15,Y,Study Completion,2/21/16,363,2/21/16,363,1,,This mark definitely represents the Study Completion domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Adverse Events,5/26/15,51,9/30/15,178,1,Y,This mark definitely represents the Adverse Events domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Adverse Events,6/9/15,65,3/31/16,361,2,N,This mark definitely represents the Adverse Events domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Adverse Events,10/4/15,182,1/21/16,291,3,N,This mark definitely represents the Adverse Events domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Adverse Events,2/19/16,320,3/22/16,352,4,N,This mark definitely represents the Adverse Events domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Adverse Events,3/2/16,332,3/2/16,332,5,Y,This mark definitely represents the Adverse Events domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Concomitant Medications,4/24/15,19,7/22/15,108,1,N,This mark definitely represents the Concomitant Medications domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Concomitant Medications,5/21/15,46,12/4/15,243,2,N,This mark definitely represents the Concomitant Medications domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Concomitant Medications,1/6/16,276,3/9/16,339,3,N,This mark definitely represents the Concomitant Medications domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Concomitant Medications,3/5/16,335,3/19/16,349,4,Y,This mark definitely represents the Concomitant Medications domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Concomitant Medications,3/24/16,354,3/28/16,358,5,N,This mark definitely represents the Concomitant Medications domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Enrollment,4/6/15,1,4/6/15,1,1,,This mark definitely represents the Enrollment domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Randomization,5/25/15,50,5/25/15,50,1,,This mark definitely represents the Randomization domain
+02-017,2,Site 02,33,M,White,Placebo,4/6/15,Y,Study Completion,4/6/16,367,4/6/16,367,1,,This mark definitely represents the Study Completion domain
+02-018,2,Site 02,19,F,White,Placebo,11/23/15,Y,Concomitant Medications,1/6/16,45,11/16/16,360,1,Y,This mark definitely represents the Concomitant Medications domain
+02-018,2,Site 02,19,F,White,Placebo,11/23/15,Y,Concomitant Medications,8/3/16,255,10/14/16,327,2,N,This mark definitely represents the Concomitant Medications domain
+02-018,2,Site 02,19,F,White,Placebo,11/23/15,Y,Enrollment,11/23/15,1,11/23/15,1,1,,This mark definitely represents the Enrollment domain
+02-018,2,Site 02,19,F,White,Placebo,11/23/15,Y,Randomization,1/12/16,51,1/12/16,51,1,,This mark definitely represents the Randomization domain
+02-018,2,Site 02,19,F,White,Placebo,11/23/15,Y,Study Completion,11/29/16,373,11/29/16,373,1,,This mark definitely represents the Study Completion domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Adverse Events,3/28/15,40,8/18/15,183,1,Y,This mark definitely represents the Adverse Events domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Adverse Events,5/5/15,78,8/12/15,177,2,N,This mark definitely represents the Adverse Events domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Adverse Events,1/23/16,341,2/15/16,364,3,N,This mark definitely represents the Adverse Events domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Concomitant Medications,7/27/15,161,9/7/15,203,1,Y,This mark definitely represents the Concomitant Medications domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Concomitant Medications,11/10/15,267,2/8/16,357,2,N,This mark definitely represents the Concomitant Medications domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Concomitant Medications,1/31/16,349,2/2/16,351,3,N,This mark definitely represents the Concomitant Medications domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Enrollment,2/17/15,1,2/17/15,1,1,,This mark definitely represents the Enrollment domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Randomization,4/15/15,58,4/15/15,58,1,,This mark definitely represents the Randomization domain
+02-019,2,Site 02,49,F,Black,Placebo,2/17/15,Y,Study Completion,2/6/16,355,2/6/16,355,1,,This mark definitely represents the Study Completion domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Adverse Events,5/2/15,21,6/15/15,65,1,N,This mark definitely represents the Adverse Events domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Adverse Events,7/19/15,99,8/16/15,127,2,N,This mark definitely represents the Adverse Events domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Adverse Events,2/3/16,298,3/21/16,345,3,N,This mark definitely represents the Adverse Events domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Adverse Events,2/12/16,307,3/13/16,337,4,Y,This mark definitely represents the Adverse Events domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Adverse Events,4/1/16,356,4/8/16,363,5,Y,This mark definitely represents the Adverse Events domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Concomitant Medications,8/11/15,122,2/11/16,306,1,Y,This mark definitely represents the Concomitant Medications domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Enrollment,4/12/15,1,4/12/15,1,1,,This mark definitely represents the Enrollment domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Randomization,6/8/15,58,6/8/15,58,1,,This mark definitely represents the Randomization domain
+02-020,2,Site 02,48,F,Black,Treatment A,4/12/15,Y,Study Completion,4/1/16,356,4/1/16,356,1,,This mark definitely represents the Study Completion domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Adverse Events,2/22/16,224,3/1/16,232,1,Y,This mark definitely represents the Adverse Events domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Adverse Events,3/17/16,248,6/16/16,339,2,N,This mark definitely represents the Adverse Events domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Concomitant Medications,11/1/15,111,5/24/16,316,1,N,This mark definitely represents the Concomitant Medications domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Concomitant Medications,2/4/16,206,3/9/16,240,2,Y,This mark definitely represents the Concomitant Medications domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Concomitant Medications,2/25/16,227,4/29/16,291,3,N,This mark definitely represents the Concomitant Medications domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Enrollment,7/14/15,1,7/14/15,1,1,,This mark definitely represents the Enrollment domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Randomization,9/5/15,54,9/5/15,54,1,,This mark definitely represents the Randomization domain
+02-021,2,Site 02,23,F,White,Treatment A,7/14/15,Y,Study Completion,7/17/16,370,7/17/16,370,1,,This mark definitely represents the Study Completion domain
+02-022,2,Site 02,53,F,Black,Treatment B,10/2/15,Y,Adverse Events,12/10/15,70,3/14/16,165,1,N,This mark definitely represents the Adverse Events domain
+02-022,2,Site 02,53,F,Black,Treatment B,10/2/15,Y,Adverse Events,4/25/16,207,8/6/16,310,2,N,This mark definitely represents the Adverse Events domain
+02-022,2,Site 02,53,F,Black,Treatment B,10/2/15,Y,Enrollment,10/2/15,1,10/2/15,1,1,,This mark definitely represents the Enrollment domain
+02-022,2,Site 02,53,F,Black,Treatment B,10/2/15,Y,Randomization,11/23/15,53,11/23/15,53,1,,This mark definitely represents the Randomization domain
+02-022,2,Site 02,53,F,Black,Treatment B,10/2/15,Y,Study Completion,9/27/16,362,9/27/16,362,1,,This mark definitely represents the Study Completion domain
+02-023,2,Site 02,20,M,Other/Mixed,Treatment B,6/6/15,Y,Adverse Events,10/8/15,125,5/18/16,348,1,Y,This mark definitely represents the Adverse Events domain
+02-023,2,Site 02,20,M,Other/Mixed,Treatment B,6/6/15,Y,Enrollment,6/6/15,1,6/6/15,1,1,,This mark definitely represents the Enrollment domain
+02-023,2,Site 02,20,M,Other/Mixed,Treatment B,6/6/15,Y,Randomization,7/27/15,52,7/27/15,52,1,,This mark definitely represents the Randomization domain
+02-023,2,Site 02,20,M,Other/Mixed,Treatment B,6/6/15,Y,Study Completion,6/12/16,373,6/12/16,373,1,,This mark definitely represents the Study Completion domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Adverse Events,5/15/15,76,11/2/15,247,1,N,This mark definitely represents the Adverse Events domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Adverse Events,7/19/15,141,1/27/16,333,2,Y,This mark definitely represents the Adverse Events domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Adverse Events,7/29/15,151,12/23/15,298,3,N,This mark definitely represents the Adverse Events domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Adverse Events,8/4/15,157,1/4/16,310,4,Y,This mark definitely represents the Adverse Events domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Adverse Events,8/5/15,158,1/20/16,326,5,N,This mark definitely represents the Adverse Events domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Concomitant Medications,10/13/15,227,10/18/15,232,1,Y,This mark definitely represents the Concomitant Medications domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Enrollment,3/1/15,1,3/1/15,1,1,,This mark definitely represents the Enrollment domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Randomization,4/28/15,59,4/28/15,59,1,,This mark definitely represents the Randomization domain
+02-024,2,Site 02,45,M,White,Treatment A,3/1/15,Y,Study Completion,2/18/16,355,2/18/16,355,1,,This mark definitely represents the Study Completion domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Adverse Events,11/4/15,39,7/11/16,289,1,Y,This mark definitely represents the Adverse Events domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Adverse Events,4/26/16,213,8/5/16,314,2,N,This mark definitely represents the Adverse Events domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Adverse Events,6/5/16,253,7/29/16,307,3,Y,This mark definitely represents the Adverse Events domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Concomitant Medications,7/23/16,301,8/7/16,316,1,N,This mark definitely represents the Concomitant Medications domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Enrollment,9/27/15,1,9/27/15,1,1,,This mark definitely represents the Enrollment domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Randomization,11/20/15,55,11/20/15,55,1,,This mark definitely represents the Randomization domain
+02-025,2,Site 02,42,M,Black,Treatment B,9/27/15,Y,Study Completion,9/17/16,357,9/17/16,357,1,,This mark definitely represents the Study Completion domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Adverse Events,3/9/16,242,3/16/16,249,1,Y,This mark definitely represents the Adverse Events domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Concomitant Medications,7/19/15,8,5/15/16,309,1,N,This mark definitely represents the Concomitant Medications domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Concomitant Medications,9/26/15,77,1/3/16,176,2,N,This mark definitely represents the Concomitant Medications domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Concomitant Medications,1/7/16,180,3/10/16,243,3,Y,This mark definitely represents the Concomitant Medications domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Concomitant Medications,5/1/16,295,6/26/16,351,4,Y,This mark definitely represents the Concomitant Medications domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Enrollment,7/12/15,1,7/12/15,1,1,,This mark definitely represents the Enrollment domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Randomization,8/30/15,50,8/30/15,50,1,,This mark definitely represents the Randomization domain
+02-026,2,Site 02,36,F,Black,Treatment A,7/12/15,Y,Study Completion,7/8/16,363,7/8/16,363,1,,This mark definitely represents the Study Completion domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Adverse Events,6/18/15,77,12/20/15,262,1,Y,This mark definitely represents the Adverse Events domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Adverse Events,10/27/15,208,11/22/15,234,2,N,This mark definitely represents the Adverse Events domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Adverse Events,11/25/15,237,1/14/16,287,3,N,This mark definitely represents the Adverse Events domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Concomitant Medications,11/13/15,225,12/10/15,252,1,N,This mark definitely represents the Concomitant Medications domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Concomitant Medications,11/23/15,235,2/9/16,313,2,Y,This mark definitely represents the Concomitant Medications domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Enrollment,4/3/15,1,4/3/15,1,1,,This mark definitely represents the Enrollment domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Randomization,5/24/15,52,5/24/15,52,1,,This mark definitely represents the Randomization domain
+02-027,2,Site 02,27,F,Black,Placebo,4/3/15,Y,Study Completion,4/1/16,365,4/1/16,365,1,,This mark definitely represents the Study Completion domain
+02-028,2,Site 02,29,M,Hispanic,Placebo,4/25/15,Y,Adverse Events,4/26/15,2,7/10/15,77,1,Y,This mark definitely represents the Adverse Events domain
+02-028,2,Site 02,29,M,Hispanic,Placebo,4/25/15,Y,Adverse Events,11/16/15,206,3/22/16,333,2,Y,This mark definitely represents the Adverse Events domain
+02-028,2,Site 02,29,M,Hispanic,Placebo,4/25/15,Y,Enrollment,4/25/15,1,4/25/15,1,1,,This mark definitely represents the Enrollment domain
+02-028,2,Site 02,29,M,Hispanic,Placebo,4/25/15,Y,Randomization,6/16/15,53,6/16/15,53,1,,This mark definitely represents the Randomization domain
+02-028,2,Site 02,29,M,Hispanic,Placebo,4/25/15,Y,Study Completion,4/28/16,370,4/28/16,370,1,,This mark definitely represents the Study Completion domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Adverse Events,11/13/15,23,1/14/16,85,1,N,This mark definitely represents the Adverse Events domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Adverse Events,2/4/16,106,7/1/16,254,2,N,This mark definitely represents the Adverse Events domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Adverse Events,7/30/16,283,10/2/16,347,3,N,This mark definitely represents the Adverse Events domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Concomitant Medications,10/24/15,3,4/16/16,178,1,N,This mark definitely represents the Concomitant Medications domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Concomitant Medications,4/10/16,172,9/20/16,335,2,Y,This mark definitely represents the Concomitant Medications domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Enrollment,10/22/15,1,10/22/15,1,1,,This mark definitely represents the Enrollment domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Randomization,12/11/15,51,12/11/15,51,1,,This mark definitely represents the Randomization domain
+02-029,2,Site 02,39,M,Hispanic,Treatment A,10/22/15,Y,Study Completion,10/11/16,356,10/11/16,356,1,,This mark definitely represents the Study Completion domain
+02-030,2,Site 02,47,M,Black,Placebo,4/27/15,N,Enrollment,4/27/15,1,4/27/15,1,1,,This mark definitely represents the Enrollment domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Adverse Events,12/21/15,8,9/23/16,285,1,N,This mark definitely represents the Adverse Events domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Adverse Events,3/14/16,92,6/26/16,196,2,N,This mark definitely represents the Adverse Events domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Adverse Events,4/24/16,133,6/30/16,200,3,N,This mark definitely represents the Adverse Events domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Adverse Events,8/13/16,244,10/3/16,295,4,N,This mark definitely represents the Adverse Events domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Adverse Events,10/8/16,300,10/19/16,311,5,Y,This mark definitely represents the Adverse Events domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Concomitant Medications,9/22/16,284,10/10/16,302,1,N,This mark definitely represents the Concomitant Medications domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Concomitant Medications,11/10/16,333,12/6/16,359,2,N,This mark definitely represents the Concomitant Medications domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Enrollment,12/14/15,1,12/14/15,1,1,,This mark definitely represents the Enrollment domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Randomization,2/11/16,60,2/11/16,60,1,,This mark definitely represents the Randomization domain
+03-001,3,Site 03,18,F,White,Treatment B,12/14/15,Y,Study Completion,12/4/16,357,12/4/16,357,1,,This mark definitely represents the Study Completion domain
+03-002,3,Site 03,43,F,Hispanic,Treatment A,4/25/15,Y,Adverse Events,4/11/16,353,4/12/16,354,1,Y,This mark definitely represents the Adverse Events domain
+03-002,3,Site 03,43,F,Hispanic,Treatment A,4/25/15,Y,Enrollment,4/25/15,1,4/25/15,1,1,,This mark definitely represents the Enrollment domain
+03-002,3,Site 03,43,F,Hispanic,Treatment A,4/25/15,Y,Randomization,6/22/15,59,6/22/15,59,1,,This mark definitely represents the Randomization domain
+03-002,3,Site 03,43,F,Hispanic,Treatment A,4/25/15,Y,Study Completion,4/23/16,365,4/23/16,365,1,,This mark definitely represents the Study Completion domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Adverse Events,11/27/15,87,1/22/16,143,1,N,This mark definitely represents the Adverse Events domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Adverse Events,12/27/15,117,1/8/16,129,2,Y,This mark definitely represents the Adverse Events domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Adverse Events,1/29/16,150,3/25/16,206,3,N,This mark definitely represents the Adverse Events domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Concomitant Medications,8/31/16,365,8/31/16,365,1,Y,This mark definitely represents the Concomitant Medications domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Enrollment,9/2/15,1,9/2/15,1,1,,This mark definitely represents the Enrollment domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Randomization,10/24/15,53,10/24/15,53,1,,This mark definitely represents the Randomization domain
+03-003,3,Site 03,27,F,White,Treatment A,9/2/15,Y,Study Completion,8/24/16,358,8/24/16,358,1,,This mark definitely represents the Study Completion domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Adverse Events,10/21/15,148,4/29/16,339,1,Y,This mark definitely represents the Adverse Events domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Concomitant Medications,6/28/15,33,4/6/16,316,1,Y,This mark definitely represents the Concomitant Medications domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Concomitant Medications,12/17/15,205,2/22/16,272,2,N,This mark definitely represents the Concomitant Medications domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Concomitant Medications,1/11/16,230,5/2/16,342,3,N,This mark definitely represents the Concomitant Medications domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Enrollment,5/27/15,1,5/27/15,1,1,,This mark definitely represents the Enrollment domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Randomization,7/14/15,49,7/14/15,49,1,,This mark definitely represents the Randomization domain
+03-004,3,Site 03,42,M,Black,Treatment B,5/27/15,Y,Study Completion,5/18/16,358,5/18/16,358,1,,This mark definitely represents the Study Completion domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Adverse Events,7/24/16,235,7/26/16,237,1,N,This mark definitely represents the Adverse Events domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Concomitant Medications,3/21/16,110,6/17/16,198,1,N,This mark definitely represents the Concomitant Medications domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Concomitant Medications,4/10/16,130,4/18/16,138,2,N,This mark definitely represents the Concomitant Medications domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Concomitant Medications,5/14/16,164,10/23/16,326,3,Y,This mark definitely represents the Concomitant Medications domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Concomitant Medications,9/11/16,284,10/12/16,315,4,Y,This mark definitely represents the Concomitant Medications domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Concomitant Medications,9/15/16,288,11/7/16,341,5,N,This mark definitely represents the Concomitant Medications domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Enrollment,12/3/15,1,12/3/15,1,1,,This mark definitely represents the Enrollment domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Randomization,1/20/16,49,1/20/16,49,1,,This mark definitely represents the Randomization domain
+03-005,3,Site 03,19,F,Hispanic,Placebo,12/3/15,Y,Study Completion,11/27/16,361,11/27/16,361,1,,This mark definitely represents the Study Completion domain
+03-006,3,Site 03,18,M,Hispanic,Treatment B,3/30/15,Y,Adverse Events,3/31/15,2,11/14/15,230,1,N,This mark definitely represents the Adverse Events domain
+03-006,3,Site 03,18,M,Hispanic,Treatment B,3/30/15,Y,Enrollment,3/30/15,1,3/30/15,1,1,,This mark definitely represents the Enrollment domain
+03-006,3,Site 03,18,M,Hispanic,Treatment B,3/30/15,Y,Randomization,5/23/15,55,5/23/15,55,1,,This mark definitely represents the Randomization domain
+03-006,3,Site 03,18,M,Hispanic,Treatment B,3/30/15,Y,Study Completion,3/20/16,357,3/20/16,357,1,,This mark definitely represents the Study Completion domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Adverse Events,5/28/15,73,7/3/15,109,1,N,This mark definitely represents the Adverse Events domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Adverse Events,12/12/15,271,3/14/16,364,2,N,This mark definitely represents the Adverse Events domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Concomitant Medications,9/26/15,194,3/15/16,365,1,Y,This mark definitely represents the Concomitant Medications domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Concomitant Medications,12/19/15,278,2/28/16,349,2,N,This mark definitely represents the Concomitant Medications domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Concomitant Medications,3/9/16,359,3/11/16,361,3,Y,This mark definitely represents the Concomitant Medications domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Enrollment,3/17/15,1,3/17/15,1,1,,This mark definitely represents the Enrollment domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Randomization,5/8/15,53,5/8/15,53,1,,This mark definitely represents the Randomization domain
+03-007,3,Site 03,42,F,White,Treatment B,3/17/15,Y,Study Completion,3/10/16,360,3/10/16,360,1,,This mark definitely represents the Study Completion domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Adverse Events,10/3/15,46,10/24/15,67,1,Y,This mark definitely represents the Adverse Events domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Adverse Events,10/6/15,49,11/15/15,89,2,Y,This mark definitely represents the Adverse Events domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Adverse Events,11/2/15,76,7/24/16,341,3,N,This mark definitely represents the Adverse Events domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Adverse Events,3/22/16,217,5/19/16,275,4,N,This mark definitely represents the Adverse Events domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Adverse Events,4/30/16,256,7/11/16,328,5,N,This mark definitely represents the Adverse Events domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Enrollment,8/19/15,1,8/19/15,1,1,,This mark definitely represents the Enrollment domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Randomization,10/19/15,62,10/19/15,62,1,,This mark definitely represents the Randomization domain
+03-008,3,Site 03,49,F,Other/Mixed,Treatment A,8/19/15,Y,Study Completion,8/19/16,367,8/19/16,367,1,,This mark definitely represents the Study Completion domain
+03-009,3,Site 03,27,M,Hispanic,Treatment B,6/17/15,N,Enrollment,6/17/15,1,6/17/15,1,1,,This mark definitely represents the Enrollment domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Adverse Events,2/2/16,80,3/18/16,125,1,Y,This mark definitely represents the Adverse Events domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Adverse Events,4/8/16,146,5/10/16,178,2,N,This mark definitely represents the Adverse Events domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Adverse Events,6/7/16,206,10/31/16,352,3,Y,This mark definitely represents the Adverse Events domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Adverse Events,8/23/16,283,9/19/16,310,4,Y,This mark definitely represents the Adverse Events domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Concomitant Medications,1/11/16,58,8/6/16,266,1,N,This mark definitely represents the Concomitant Medications domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Concomitant Medications,10/11/16,332,11/9/16,361,2,Y,This mark definitely represents the Concomitant Medications domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Enrollment,11/15/15,1,11/15/15,1,1,,This mark definitely represents the Enrollment domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Randomization,1/4/16,51,1/4/16,51,1,,This mark definitely represents the Randomization domain
+03-010,3,Site 03,28,F,White,Placebo,11/15/15,Y,Study Completion,11/8/16,360,11/8/16,360,1,,This mark definitely represents the Study Completion domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Adverse Events,2/26/15,22,10/27/15,265,1,Y,This mark definitely represents the Adverse Events domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Adverse Events,7/28/15,174,8/23/15,200,2,Y,This mark definitely represents the Adverse Events domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Adverse Events,11/19/15,288,1/3/16,333,3,N,This mark definitely represents the Adverse Events domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Adverse Events,1/20/16,350,1/28/16,358,4,Y,This mark definitely represents the Adverse Events domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Concomitant Medications,4/21/15,76,6/14/15,130,1,N,This mark definitely represents the Concomitant Medications domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Concomitant Medications,10/1/15,239,12/24/15,323,2,N,This mark definitely represents the Concomitant Medications domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Concomitant Medications,11/12/15,281,1/26/16,356,3,Y,This mark definitely represents the Concomitant Medications domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Enrollment,2/5/15,1,2/5/15,1,1,,This mark definitely represents the Enrollment domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Randomization,4/5/15,60,4/5/15,60,1,,This mark definitely represents the Randomization domain
+03-011,3,Site 03,49,M,Other/Mixed,Treatment A,2/5/15,Y,Study Completion,2/8/16,369,2/8/16,369,1,,This mark definitely represents the Study Completion domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Adverse Events,10/23/15,66,11/27/15,101,1,Y,This mark definitely represents the Adverse Events domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Adverse Events,12/29/15,133,3/19/16,214,2,N,This mark definitely represents the Adverse Events domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Adverse Events,7/12/16,329,7/30/16,347,3,N,This mark definitely represents the Adverse Events domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Concomitant Medications,10/31/15,74,2/10/16,176,1,N,This mark definitely represents the Concomitant Medications domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Concomitant Medications,3/22/16,217,7/18/16,335,2,Y,This mark definitely represents the Concomitant Medications domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Concomitant Medications,7/4/16,321,8/10/16,358,3,N,This mark definitely represents the Concomitant Medications domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Enrollment,8/19/15,1,8/19/15,1,1,,This mark definitely represents the Enrollment domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Randomization,10/10/15,53,10/10/15,53,1,,This mark definitely represents the Randomization domain
+03-012,3,Site 03,32,M,Black,Placebo,8/19/15,Y,Study Completion,8/22/16,370,8/22/16,370,1,,This mark definitely represents the Study Completion domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Adverse Events,11/6/15,10,6/3/16,220,1,Y,This mark definitely represents the Adverse Events domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Adverse Events,12/11/15,45,8/24/16,302,2,N,This mark definitely represents the Adverse Events domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Adverse Events,3/3/16,128,5/8/16,194,3,Y,This mark definitely represents the Adverse Events domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Adverse Events,5/14/16,200,6/2/16,219,4,Y,This mark definitely represents the Adverse Events domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Adverse Events,10/26/16,365,10/26/16,365,5,N,This mark definitely represents the Adverse Events domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Concomitant Medications,10/5/16,344,10/22/16,361,1,N,This mark definitely represents the Concomitant Medications domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Enrollment,10/28/15,1,10/28/15,1,1,,This mark definitely represents the Enrollment domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Randomization,12/27/15,61,12/27/15,61,1,,This mark definitely represents the Randomization domain
+03-013,3,Site 03,33,M,Other/Mixed,Placebo,10/28/15,Y,Study Completion,11/4/16,374,11/4/16,374,1,,This mark definitely represents the Study Completion domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Adverse Events,3/5/15,27,12/9/15,306,1,N,This mark definitely represents the Adverse Events domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Adverse Events,4/1/15,54,4/6/15,59,2,N,This mark definitely represents the Adverse Events domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Adverse Events,5/12/15,95,1/13/16,341,3,N,This mark definitely represents the Adverse Events domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Adverse Events,7/30/15,174,8/3/15,178,4,Y,This mark definitely represents the Adverse Events domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Adverse Events,10/4/15,240,10/7/15,243,5,Y,This mark definitely represents the Adverse Events domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Concomitant Medications,4/4/15,57,10/30/15,266,1,Y,This mark definitely represents the Concomitant Medications domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Enrollment,2/7/15,1,2/7/15,1,1,,This mark definitely represents the Enrollment domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Randomization,4/8/15,61,4/8/15,61,1,,This mark definitely represents the Randomization domain
+03-014,3,Site 03,53,F,Black,Placebo,2/7/15,Y,Study Completion,2/15/16,374,2/15/16,374,1,,This mark definitely represents the Study Completion domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Adverse Events,6/30/15,4,7/9/15,13,1,N,This mark definitely represents the Adverse Events domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Adverse Events,11/16/15,143,5/13/16,322,2,Y,This mark definitely represents the Adverse Events domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Adverse Events,5/17/16,326,5/28/16,337,3,N,This mark definitely represents the Adverse Events domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Concomitant Medications,9/29/15,95,2/19/16,238,1,N,This mark definitely represents the Concomitant Medications domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Enrollment,6/27/15,1,6/27/15,1,1,,This mark definitely represents the Enrollment domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Randomization,8/16/15,51,8/16/15,51,1,,This mark definitely represents the Randomization domain
+03-015,3,Site 03,33,M,Black,Treatment B,6/27/15,Y,Study Completion,6/19/16,359,6/19/16,359,1,,This mark definitely represents the Study Completion domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Concomitant Medications,1/9/16,173,5/23/16,308,1,Y,This mark definitely represents the Concomitant Medications domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Concomitant Medications,4/8/16,263,6/5/16,321,2,N,This mark definitely represents the Concomitant Medications domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Concomitant Medications,6/25/16,341,7/19/16,365,3,Y,This mark definitely represents the Concomitant Medications domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Enrollment,7/21/15,1,7/21/15,1,1,,This mark definitely represents the Enrollment domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Randomization,9/13/15,55,9/13/15,55,1,,This mark definitely represents the Randomization domain
+03-016,3,Site 03,24,F,Black,Placebo,7/21/15,Y,Study Completion,7/19/16,365,7/19/16,365,1,,This mark definitely represents the Study Completion domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Adverse Events,9/11/15,131,10/25/15,175,1,Y,This mark definitely represents the Adverse Events domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Adverse Events,3/12/16,314,3/15/16,317,2,N,This mark definitely represents the Adverse Events domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Concomitant Medications,6/30/15,58,7/31/15,89,1,N,This mark definitely represents the Concomitant Medications domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Concomitant Medications,8/12/15,101,9/27/15,147,2,Y,This mark definitely represents the Concomitant Medications domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Concomitant Medications,11/7/15,188,3/19/16,321,3,N,This mark definitely represents the Concomitant Medications domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Concomitant Medications,1/12/16,254,4/29/16,362,4,Y,This mark definitely represents the Concomitant Medications domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Concomitant Medications,3/18/16,320,4/19/16,352,5,N,This mark definitely represents the Concomitant Medications domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Enrollment,5/4/15,1,5/4/15,1,1,,This mark definitely represents the Enrollment domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Randomization,6/21/15,49,6/21/15,49,1,,This mark definitely represents the Randomization domain
+03-017,3,Site 03,20,F,White,Treatment A,5/4/15,Y,Study Completion,4/26/16,359,4/26/16,359,1,,This mark definitely represents the Study Completion domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Concomitant Medications,7/14/15,78,10/21/15,177,1,Y,This mark definitely represents the Concomitant Medications domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Concomitant Medications,8/10/15,105,1/9/16,257,2,N,This mark definitely represents the Concomitant Medications domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Concomitant Medications,9/8/15,134,2/22/16,301,3,Y,This mark definitely represents the Concomitant Medications domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Enrollment,4/28/15,1,4/28/15,1,1,,This mark definitely represents the Enrollment domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Randomization,6/17/15,51,6/17/15,51,1,,This mark definitely represents the Randomization domain
+03-018,3,Site 03,26,M,Hispanic,Treatment B,4/28/15,Y,Study Completion,5/1/16,370,5/1/16,370,1,,This mark definitely represents the Study Completion domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Adverse Events,1/9/16,225,3/29/16,305,1,Y,This mark definitely represents the Adverse Events domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Adverse Events,3/26/16,302,4/8/16,315,2,N,This mark definitely represents the Adverse Events domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Concomitant Medications,8/18/15,81,9/2/15,96,1,N,This mark definitely represents the Concomitant Medications domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Concomitant Medications,10/25/15,149,4/25/16,332,2,N,This mark definitely represents the Concomitant Medications domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Concomitant Medications,12/5/15,190,5/14/16,351,3,N,This mark definitely represents the Concomitant Medications domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Concomitant Medications,12/16/15,201,3/31/16,307,4,Y,This mark definitely represents the Concomitant Medications domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Concomitant Medications,4/4/16,311,5/7/16,344,5,N,This mark definitely represents the Concomitant Medications domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Enrollment,5/30/15,1,5/30/15,1,1,,This mark definitely represents the Enrollment domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Randomization,7/27/15,59,7/27/15,59,1,,This mark definitely represents the Randomization domain
+03-019,3,Site 03,19,M,Hispanic,Placebo,5/30/15,Y,Study Completion,5/27/16,364,5/27/16,364,1,,This mark definitely represents the Study Completion domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Concomitant Medications,9/26/15,87,1/21/16,204,1,N,This mark definitely represents the Concomitant Medications domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Concomitant Medications,11/5/15,127,4/27/16,301,2,Y,This mark definitely represents the Concomitant Medications domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Concomitant Medications,11/15/15,137,1/21/16,204,3,Y,This mark definitely represents the Concomitant Medications domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Concomitant Medications,5/18/16,322,5/22/16,326,4,Y,This mark definitely represents the Concomitant Medications domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Enrollment,7/2/15,1,7/2/15,1,1,,This mark definitely represents the Enrollment domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Randomization,8/20/15,50,8/20/15,50,1,,This mark definitely represents the Randomization domain
+03-020,3,Site 03,32,M,Other/Mixed,Treatment A,7/2/15,Y,Study Completion,6/28/16,363,6/28/16,363,1,,This mark definitely represents the Study Completion domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Adverse Events,12/26/15,45,6/30/16,232,1,N,This mark definitely represents the Adverse Events domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Adverse Events,4/9/16,150,9/16/16,310,2,N,This mark definitely represents the Adverse Events domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Concomitant Medications,12/3/15,22,2/20/16,101,1,N,This mark definitely represents the Concomitant Medications domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Concomitant Medications,3/9/16,119,11/1/16,356,2,Y,This mark definitely represents the Concomitant Medications domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Concomitant Medications,7/31/16,263,9/27/16,321,3,N,This mark definitely represents the Concomitant Medications domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Concomitant Medications,9/9/16,303,10/3/16,327,4,Y,This mark definitely represents the Concomitant Medications domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Enrollment,11/12/15,1,11/12/15,1,1,,This mark definitely represents the Enrollment domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Randomization,1/6/16,56,1/6/16,56,1,,This mark definitely represents the Randomization domain
+03-021,3,Site 03,51,M,White,Treatment B,11/12/15,Y,Study Completion,11/15/16,370,11/15/16,370,1,,This mark definitely represents the Study Completion domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Adverse Events,10/4/15,144,10/22/15,162,1,N,This mark definitely represents the Adverse Events domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Adverse Events,10/21/15,161,11/19/15,190,2,N,This mark definitely represents the Adverse Events domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Concomitant Medications,9/4/15,114,10/31/15,171,1,N,This mark definitely represents the Concomitant Medications domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Concomitant Medications,1/19/16,251,3/8/16,300,2,N,This mark definitely represents the Concomitant Medications domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Enrollment,5/14/15,1,5/14/15,1,1,,This mark definitely represents the Enrollment domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Randomization,7/7/15,55,7/7/15,55,1,,This mark definitely represents the Randomization domain
+03-022,3,Site 03,49,M,Hispanic,Placebo,5/14/15,Y,Study Completion,5/6/16,359,5/6/16,359,1,,This mark definitely represents the Study Completion domain
+03-023,3,Site 03,46,M,Other/Mixed,Treatment A,1/21/15,Y,Adverse Events,8/18/15,210,8/18/15,210,1,Y,This mark definitely represents the Adverse Events domain
+03-023,3,Site 03,46,M,Other/Mixed,Treatment A,1/21/15,Y,Concomitant Medications,9/3/15,226,10/24/15,277,1,N,This mark definitely represents the Concomitant Medications domain
+03-023,3,Site 03,46,M,Other/Mixed,Treatment A,1/21/15,Y,Enrollment,1/21/15,1,1/21/15,1,1,,This mark definitely represents the Enrollment domain
+03-023,3,Site 03,46,M,Other/Mixed,Treatment A,1/21/15,Y,Randomization,3/24/15,63,3/24/15,63,1,,This mark definitely represents the Randomization domain
+03-023,3,Site 03,46,M,Other/Mixed,Treatment A,1/21/15,Y,Study Completion,1/10/16,355,1/10/16,355,1,,This mark definitely represents the Study Completion domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Adverse Events,11/29/15,249,12/6/15,256,1,Y,This mark definitely represents the Adverse Events domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Adverse Events,2/24/16,336,3/1/16,342,2,N,This mark definitely represents the Adverse Events domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Concomitant Medications,10/9/15,198,3/23/16,364,1,Y,This mark definitely represents the Concomitant Medications domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Concomitant Medications,12/19/15,269,2/19/16,331,2,Y,This mark definitely represents the Concomitant Medications domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Enrollment,3/26/15,1,3/26/15,1,1,,This mark definitely represents the Enrollment domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Randomization,5/23/15,59,5/23/15,59,1,,This mark definitely represents the Randomization domain
+03-024,3,Site 03,52,M,Hispanic,Placebo,3/26/15,Y,Study Completion,4/2/16,374,4/2/16,374,1,,This mark definitely represents the Study Completion domain
+03-025,3,Site 03,27,F,White,Treatment B,3/17/15,N,Enrollment,3/17/15,1,3/17/15,1,1,,This mark definitely represents the Enrollment domain
+03-026,3,Site 03,53,F,Black,Treatment B,4/30/15,Y,Concomitant Medications,12/29/15,244,3/3/16,309,1,Y,This mark definitely represents the Concomitant Medications domain
+03-026,3,Site 03,53,F,Black,Treatment B,4/30/15,Y,Concomitant Medications,1/4/16,250,4/11/16,348,2,N,This mark definitely represents the Concomitant Medications domain
+03-026,3,Site 03,53,F,Black,Treatment B,4/30/15,Y,Enrollment,4/30/15,1,4/30/15,1,1,,This mark definitely represents the Enrollment domain
+03-026,3,Site 03,53,F,Black,Treatment B,4/30/15,Y,Randomization,6/26/15,58,6/26/15,58,1,,This mark definitely represents the Randomization domain
+03-026,3,Site 03,53,F,Black,Treatment B,4/30/15,Y,Study Completion,4/18/16,355,4/18/16,355,1,,This mark definitely represents the Study Completion domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Adverse Events,9/14/15,125,1/12/16,245,1,N,This mark definitely represents the Adverse Events domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Adverse Events,9/24/15,135,10/10/15,151,2,N,This mark definitely represents the Adverse Events domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Adverse Events,3/23/16,316,4/20/16,344,3,Y,This mark definitely represents the Adverse Events domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Concomitant Medications,6/20/15,39,2/25/16,289,1,Y,This mark definitely represents the Concomitant Medications domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Concomitant Medications,8/18/15,98,11/28/15,200,2,Y,This mark definitely represents the Concomitant Medications domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Concomitant Medications,11/5/15,177,4/7/16,331,3,N,This mark definitely represents the Concomitant Medications domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Concomitant Medications,3/3/16,296,3/5/16,298,4,N,This mark definitely represents the Concomitant Medications domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Enrollment,5/13/15,1,5/13/15,1,1,,This mark definitely represents the Enrollment domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Randomization,7/1/15,50,7/1/15,50,1,,This mark definitely represents the Randomization domain
+03-027,3,Site 03,49,M,Hispanic,Treatment A,5/13/15,Y,Study Completion,5/7/16,361,5/7/16,361,1,,This mark definitely represents the Study Completion domain
+03-028,3,Site 03,37,F,Other/Mixed,Treatment B,5/11/15,Y,Adverse Events,1/12/16,247,1/15/16,250,1,Y,This mark definitely represents the Adverse Events domain
+03-028,3,Site 03,37,F,Other/Mixed,Treatment B,5/11/15,Y,Adverse Events,4/20/16,346,4/22/16,348,2,Y,This mark definitely represents the Adverse Events domain
+03-028,3,Site 03,37,F,Other/Mixed,Treatment B,5/11/15,Y,Enrollment,5/11/15,1,5/11/15,1,1,,This mark definitely represents the Enrollment domain
+03-028,3,Site 03,37,F,Other/Mixed,Treatment B,5/11/15,Y,Randomization,7/1/15,52,7/1/15,52,1,,This mark definitely represents the Randomization domain
+03-028,3,Site 03,37,F,Other/Mixed,Treatment B,5/11/15,Y,Study Completion,5/17/16,373,5/17/16,373,1,,This mark definitely represents the Study Completion domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Adverse Events,5/5/15,58,7/17/15,131,1,Y,This mark definitely represents the Adverse Events domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Adverse Events,5/22/15,75,11/23/15,260,2,Y,This mark definitely represents the Adverse Events domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Adverse Events,9/5/15,181,3/6/16,364,3,Y,This mark definitely represents the Adverse Events domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Concomitant Medications,11/5/15,242,11/12/15,249,1,N,This mark definitely represents the Concomitant Medications domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Enrollment,3/9/15,1,3/9/15,1,1,,This mark definitely represents the Enrollment domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Randomization,5/8/15,61,5/8/15,61,1,,This mark definitely represents the Randomization domain
+03-029,3,Site 03,37,F,Other/Mixed,Placebo,3/9/15,Y,Study Completion,2/26/16,355,2/26/16,355,1,,This mark definitely represents the Study Completion domain
+03-030,3,Site 03,25,M,Hispanic,Treatment B,10/24/15,N,Enrollment,10/24/15,1,10/24/15,1,1,,This mark definitely represents the Enrollment domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Adverse Events,11/15/15,35,3/31/16,172,1,Y,This mark definitely represents the Adverse Events domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Adverse Events,4/25/16,197,4/25/16,197,2,Y,This mark definitely represents the Adverse Events domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Adverse Events,8/20/16,314,9/19/16,344,3,N,This mark definitely represents the Adverse Events domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Enrollment,10/12/15,1,10/12/15,1,1,,This mark definitely represents the Enrollment domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Randomization,11/30/15,50,11/30/15,50,1,,This mark definitely represents the Randomization domain
+04-001,4,Site 04,26,F,Hispanic,Treatment B,10/12/15,Y,Study Completion,10/3/16,358,10/3/16,358,1,,This mark definitely represents the Study Completion domain
+04-002,4,Site 04,21,M,Hispanic,Placebo,2/11/15,N,Enrollment,2/11/15,1,2/11/15,1,1,,This mark definitely represents the Enrollment domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Adverse Events,12/14/15,178,2/10/16,236,1,Y,This mark definitely represents the Adverse Events domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Adverse Events,12/21/15,185,1/8/16,203,2,N,This mark definitely represents the Adverse Events domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Adverse Events,5/1/16,317,5/29/16,345,3,N,This mark definitely represents the Adverse Events domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Concomitant Medications,9/8/15,81,10/31/15,134,1,N,This mark definitely represents the Concomitant Medications domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Concomitant Medications,11/10/15,144,12/24/15,188,2,Y,This mark definitely represents the Concomitant Medications domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Concomitant Medications,2/1/16,227,4/20/16,306,3,N,This mark definitely represents the Concomitant Medications domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Concomitant Medications,3/3/16,258,5/4/16,320,4,N,This mark definitely represents the Concomitant Medications domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Concomitant Medications,4/3/16,289,4/3/16,289,5,N,This mark definitely represents the Concomitant Medications domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Enrollment,6/20/15,1,6/20/15,1,1,,This mark definitely represents the Enrollment domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Randomization,8/11/15,53,8/11/15,53,1,,This mark definitely represents the Randomization domain
+04-003,4,Site 04,54,F,White,Treatment A,6/20/15,Y,Study Completion,6/10/16,357,6/10/16,357,1,,This mark definitely represents the Study Completion domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Adverse Events,12/3/15,17,7/3/16,230,1,Y,This mark definitely represents the Adverse Events domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Adverse Events,1/2/16,47,9/29/16,318,2,N,This mark definitely represents the Adverse Events domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Adverse Events,1/3/16,48,1/11/16,56,3,N,This mark definitely represents the Adverse Events domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Adverse Events,3/1/16,106,10/9/16,328,4,N,This mark definitely represents the Adverse Events domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Adverse Events,4/17/16,153,7/1/16,228,5,N,This mark definitely represents the Adverse Events domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Concomitant Medications,12/11/15,25,10/26/16,345,1,Y,This mark definitely represents the Concomitant Medications domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Concomitant Medications,6/12/16,209,10/11/16,330,2,Y,This mark definitely represents the Concomitant Medications domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Concomitant Medications,7/12/16,239,7/20/16,247,3,Y,This mark definitely represents the Concomitant Medications domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Concomitant Medications,7/15/16,242,7/22/16,249,4,N,This mark definitely represents the Concomitant Medications domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Enrollment,11/17/15,1,11/17/15,1,1,,This mark definitely represents the Enrollment domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Randomization,1/5/16,50,1/5/16,50,1,,This mark definitely represents the Randomization domain
+04-004,4,Site 04,25,M,Other/Mixed,Treatment A,11/17/15,Y,Study Completion,11/21/16,371,11/21/16,371,1,,This mark definitely represents the Study Completion domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Adverse Events,1/16/16,167,1/17/16,168,1,N,This mark definitely represents the Adverse Events domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Adverse Events,1/22/16,173,3/24/16,235,2,N,This mark definitely represents the Adverse Events domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Adverse Events,1/31/16,182,2/5/16,187,3,N,This mark definitely represents the Adverse Events domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Concomitant Medications,2/20/16,202,7/21/16,354,1,N,This mark definitely represents the Concomitant Medications domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Concomitant Medications,2/26/16,208,3/24/16,235,2,Y,This mark definitely represents the Concomitant Medications domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Concomitant Medications,5/11/16,283,5/18/16,290,3,Y,This mark definitely represents the Concomitant Medications domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Enrollment,8/3/15,1,8/3/15,1,1,,This mark definitely represents the Enrollment domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Randomization,10/3/15,62,10/3/15,62,1,,This mark definitely represents the Randomization domain
+04-005,4,Site 04,39,M,Black,Placebo,8/3/15,Y,Study Completion,7/24/16,357,7/24/16,357,1,,This mark definitely represents the Study Completion domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Adverse Events,8/24/15,7,2/25/16,192,1,N,This mark definitely represents the Adverse Events domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Adverse Events,1/5/16,141,3/9/16,205,2,N,This mark definitely represents the Adverse Events domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Adverse Events,3/5/16,201,6/12/16,300,3,N,This mark definitely represents the Adverse Events domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Adverse Events,3/15/16,211,4/4/16,231,4,Y,This mark definitely represents the Adverse Events domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Adverse Events,4/15/16,242,5/27/16,284,5,Y,This mark definitely represents the Adverse Events domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Enrollment,8/18/15,1,8/18/15,1,1,,This mark definitely represents the Enrollment domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Randomization,10/8/15,52,10/8/15,52,1,,This mark definitely represents the Randomization domain
+04-006,4,Site 04,42,M,White,Treatment B,8/18/15,Y,Study Completion,8/13/16,362,8/13/16,362,1,,This mark definitely represents the Study Completion domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Adverse Events,11/15/15,2,12/9/15,26,1,Y,This mark definitely represents the Adverse Events domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Adverse Events,4/6/16,145,6/5/16,205,2,Y,This mark definitely represents the Adverse Events domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Adverse Events,10/19/16,341,11/1/16,354,3,N,This mark definitely represents the Adverse Events domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Concomitant Medications,5/11/16,180,5/18/16,187,1,Y,This mark definitely represents the Concomitant Medications domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Concomitant Medications,9/2/16,294,9/28/16,320,2,Y,This mark definitely represents the Concomitant Medications domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Enrollment,11/14/15,1,11/14/15,1,1,,This mark definitely represents the Enrollment domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Randomization,1/9/16,57,1/9/16,57,1,,This mark definitely represents the Randomization domain
+04-007,4,Site 04,23,F,Hispanic,Treatment A,11/14/15,Y,Study Completion,11/20/16,373,11/20/16,373,1,,This mark definitely represents the Study Completion domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Adverse Events,2/13/16,221,7/5/16,364,1,N,This mark definitely represents the Adverse Events domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Adverse Events,2/22/16,230,2/27/16,235,2,N,This mark definitely represents the Adverse Events domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Adverse Events,5/14/16,312,6/20/16,349,3,Y,This mark definitely represents the Adverse Events domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Concomitant Medications,2/24/16,232,2/26/16,234,1,Y,This mark definitely represents the Concomitant Medications domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Concomitant Medications,3/30/16,267,4/11/16,279,2,N,This mark definitely represents the Concomitant Medications domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Enrollment,7/8/15,1,7/8/15,1,1,,This mark definitely represents the Enrollment domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Randomization,9/1/15,56,9/1/15,56,1,,This mark definitely represents the Randomization domain
+04-008,4,Site 04,43,M,White,Treatment B,7/8/15,Y,Study Completion,7/16/16,375,7/16/16,375,1,,This mark definitely represents the Study Completion domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Adverse Events,4/18/15,9,2/18/16,315,1,Y,This mark definitely represents the Adverse Events domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Adverse Events,4/26/15,17,10/7/15,181,2,N,This mark definitely represents the Adverse Events domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Adverse Events,5/6/15,27,9/14/15,158,3,Y,This mark definitely represents the Adverse Events domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Adverse Events,7/21/15,103,11/10/15,215,4,N,This mark definitely represents the Adverse Events domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Adverse Events,3/20/16,346,3/27/16,353,5,N,This mark definitely represents the Adverse Events domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Concomitant Medications,7/9/15,91,2/15/16,312,1,N,This mark definitely represents the Concomitant Medications domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Concomitant Medications,3/27/16,353,3/28/16,354,2,N,This mark definitely represents the Concomitant Medications domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Enrollment,4/10/15,1,4/10/15,1,1,,This mark definitely represents the Enrollment domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Randomization,6/6/15,58,6/6/15,58,1,,This mark definitely represents the Randomization domain
+04-009,4,Site 04,31,F,Black,Placebo,4/10/15,Y,Study Completion,4/10/16,367,4/10/16,367,1,,This mark definitely represents the Study Completion domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Concomitant Medications,4/21/15,90,9/10/15,232,1,N,This mark definitely represents the Concomitant Medications domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Concomitant Medications,4/27/15,96,9/30/15,252,2,N,This mark definitely represents the Concomitant Medications domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Concomitant Medications,8/20/15,211,11/9/15,292,3,Y,This mark definitely represents the Concomitant Medications domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Enrollment,1/22/15,1,1/22/15,1,1,,This mark definitely represents the Enrollment domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Randomization,3/18/15,56,3/18/15,56,1,,This mark definitely represents the Randomization domain
+04-010,4,Site 04,39,F,Hispanic,Placebo,1/22/15,Y,Study Completion,1/21/16,365,1/21/16,365,1,,This mark definitely represents the Study Completion domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Adverse Events,12/21/15,26,7/3/16,221,1,N,This mark definitely represents the Adverse Events domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Adverse Events,12/22/15,27,7/13/16,231,2,Y,This mark definitely represents the Adverse Events domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Adverse Events,1/1/16,37,6/10/16,198,3,N,This mark definitely represents the Adverse Events domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Adverse Events,9/5/16,285,11/10/16,351,4,N,This mark definitely represents the Adverse Events domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Concomitant Medications,1/13/16,49,3/9/16,105,1,Y,This mark definitely represents the Concomitant Medications domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Concomitant Medications,4/16/16,143,7/15/16,233,2,Y,This mark definitely represents the Concomitant Medications domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Concomitant Medications,5/9/16,166,10/17/16,327,3,Y,This mark definitely represents the Concomitant Medications domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Enrollment,11/26/15,1,11/26/15,1,1,,This mark definitely represents the Enrollment domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Randomization,1/23/16,59,1/23/16,59,1,,This mark definitely represents the Randomization domain
+04-011,4,Site 04,44,M,White,Treatment B,11/26/15,Y,Study Completion,11/30/16,371,11/30/16,371,1,,This mark definitely represents the Study Completion domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Concomitant Medications,8/17/15,2,4/1/16,230,1,Y,This mark definitely represents the Concomitant Medications domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Concomitant Medications,6/23/16,313,7/30/16,350,2,Y,This mark definitely represents the Concomitant Medications domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Concomitant Medications,7/25/16,345,7/30/16,350,3,N,This mark definitely represents the Concomitant Medications domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Enrollment,8/16/15,1,8/16/15,1,1,,This mark definitely represents the Enrollment domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Randomization,10/15/15,61,10/15/15,61,1,,This mark definitely represents the Randomization domain
+04-012,4,Site 04,49,M,Hispanic,Treatment A,8/16/15,Y,Study Completion,8/6/16,357,8/6/16,357,1,,This mark definitely represents the Study Completion domain
+04-013,4,Site 04,18,M,Hispanic,Treatment B,11/6/15,Y,Concomitant Medications,10/16/16,346,10/24/16,354,1,N,This mark definitely represents the Concomitant Medications domain
+04-013,4,Site 04,18,M,Hispanic,Treatment B,11/6/15,Y,Enrollment,11/6/15,1,11/6/15,1,1,,This mark definitely represents the Enrollment domain
+04-013,4,Site 04,18,M,Hispanic,Treatment B,11/6/15,Y,Randomization,12/26/15,51,12/26/15,51,1,,This mark definitely represents the Randomization domain
+04-013,4,Site 04,18,M,Hispanic,Treatment B,11/6/15,Y,Study Completion,10/26/16,356,10/26/16,356,1,,This mark definitely represents the Study Completion domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Adverse Events,5/14/15,23,12/16/15,239,1,Y,This mark definitely represents the Adverse Events domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Adverse Events,12/9/15,232,2/12/16,297,2,N,This mark definitely represents the Adverse Events domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Adverse Events,1/1/16,255,2/13/16,298,3,N,This mark definitely represents the Adverse Events domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Adverse Events,2/1/16,286,2/6/16,291,4,Y,This mark definitely represents the Adverse Events domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Adverse Events,3/6/16,320,4/14/16,359,5,N,This mark definitely represents the Adverse Events domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Concomitant Medications,7/6/15,76,3/27/16,341,1,Y,This mark definitely represents the Concomitant Medications domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Concomitant Medications,9/30/15,162,10/4/15,166,2,N,This mark definitely represents the Concomitant Medications domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Concomitant Medications,11/9/15,202,3/23/16,337,3,N,This mark definitely represents the Concomitant Medications domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Concomitant Medications,12/3/15,226,3/15/16,329,4,Y,This mark definitely represents the Concomitant Medications domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Enrollment,4/22/15,1,4/22/15,1,1,,This mark definitely represents the Enrollment domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Randomization,6/18/15,58,6/18/15,58,1,,This mark definitely represents the Randomization domain
+04-014,4,Site 04,19,M,Hispanic,Treatment A,4/22/15,Y,Study Completion,4/10/16,355,4/10/16,355,1,,This mark definitely represents the Study Completion domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Concomitant Medications,7/12/15,49,8/21/15,89,1,Y,This mark definitely represents the Concomitant Medications domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Concomitant Medications,2/14/16,266,4/21/16,333,2,N,This mark definitely represents the Concomitant Medications domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Concomitant Medications,4/7/16,319,4/23/16,335,3,Y,This mark definitely represents the Concomitant Medications domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Enrollment,5/25/15,1,5/25/15,1,1,,This mark definitely represents the Enrollment domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Randomization,7/13/15,50,7/13/15,50,1,,This mark definitely represents the Randomization domain
+04-015,4,Site 04,52,M,Other/Mixed,Treatment B,5/25/15,Y,Study Completion,5/21/16,363,5/21/16,363,1,,This mark definitely represents the Study Completion domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Concomitant Medications,7/5/16,206,11/28/16,352,1,N,This mark definitely represents the Concomitant Medications domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Concomitant Medications,8/18/16,250,9/10/16,273,2,Y,This mark definitely represents the Concomitant Medications domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Concomitant Medications,8/21/16,253,9/28/16,291,3,N,This mark definitely represents the Concomitant Medications domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Concomitant Medications,9/16/16,279,9/16/16,279,4,N,This mark definitely represents the Concomitant Medications domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Enrollment,12/13/15,1,12/13/15,1,1,,This mark definitely represents the Enrollment domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Randomization,2/7/16,57,2/7/16,57,1,,This mark definitely represents the Randomization domain
+04-016,4,Site 04,27,F,Black,Treatment B,12/13/15,Y,Study Completion,12/5/16,359,12/5/16,359,1,,This mark definitely represents the Study Completion domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Adverse Events,8/20/15,85,12/14/15,201,1,Y,This mark definitely represents the Adverse Events domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Adverse Events,10/13/15,139,3/30/16,308,2,Y,This mark definitely represents the Adverse Events domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Adverse Events,2/3/16,252,5/11/16,350,3,N,This mark definitely represents the Adverse Events domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Adverse Events,3/16/16,294,4/28/16,337,4,N,This mark definitely represents the Adverse Events domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Enrollment,5/28/15,1,5/28/15,1,1,,This mark definitely represents the Enrollment domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Randomization,7/26/15,60,7/26/15,60,1,,This mark definitely represents the Randomization domain
+04-017,4,Site 04,28,F,Hispanic,Treatment A,5/28/15,Y,Study Completion,5/24/16,363,5/24/16,363,1,,This mark definitely represents the Study Completion domain
+04-018,4,Site 04,42,M,Other/Mixed,Placebo,1/27/15,N,Enrollment,1/27/15,1,1/27/15,1,1,,This mark definitely represents the Enrollment domain
+04-019,4,Site 04,26,F,White,Treatment A,6/13/15,N,Enrollment,6/13/15,1,6/13/15,1,1,,This mark definitely represents the Enrollment domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Adverse Events,2/19/15,30,3/26/15,65,1,N,This mark definitely represents the Adverse Events domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Adverse Events,3/5/15,44,11/8/15,292,2,N,This mark definitely represents the Adverse Events domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Adverse Events,3/13/15,52,11/29/15,313,3,N,This mark definitely represents the Adverse Events domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Adverse Events,7/4/15,165,12/24/15,338,4,N,This mark definitely represents the Adverse Events domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Adverse Events,8/1/15,193,10/19/15,272,5,Y,This mark definitely represents the Adverse Events domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Concomitant Medications,3/20/15,59,11/23/15,307,1,N,This mark definitely represents the Concomitant Medications domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Concomitant Medications,6/25/15,156,12/16/15,330,2,N,This mark definitely represents the Concomitant Medications domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Concomitant Medications,8/16/15,208,10/30/15,283,3,N,This mark definitely represents the Concomitant Medications domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Enrollment,1/21/15,1,1/21/15,1,1,,This mark definitely represents the Enrollment domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Randomization,3/22/15,61,3/22/15,61,1,,This mark definitely represents the Randomization domain
+04-020,4,Site 04,55,F,Other/Mixed,Placebo,1/21/15,Y,Study Completion,1/22/16,367,1/22/16,367,1,,This mark definitely represents the Study Completion domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Adverse Events,10/27/15,44,11/13/15,61,1,N,This mark definitely represents the Adverse Events domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Adverse Events,11/5/15,53,1/29/16,138,2,N,This mark definitely represents the Adverse Events domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Adverse Events,12/1/15,79,7/20/16,311,3,N,This mark definitely represents the Adverse Events domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Adverse Events,12/12/15,90,6/3/16,264,4,Y,This mark definitely represents the Adverse Events domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Concomitant Medications,5/14/16,244,7/19/16,310,1,N,This mark definitely represents the Concomitant Medications domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Concomitant Medications,6/16/16,277,7/8/16,299,2,Y,This mark definitely represents the Concomitant Medications domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Concomitant Medications,6/22/16,283,6/25/16,286,3,Y,This mark definitely represents the Concomitant Medications domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Concomitant Medications,8/28/16,350,9/5/16,358,4,Y,This mark definitely represents the Concomitant Medications domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Enrollment,9/14/15,1,9/14/15,1,1,,This mark definitely represents the Enrollment domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Randomization,11/6/15,54,11/6/15,54,1,,This mark definitely represents the Randomization domain
+04-021,4,Site 04,24,F,White,Treatment B,9/14/15,Y,Study Completion,9/14/16,367,9/14/16,367,1,,This mark definitely represents the Study Completion domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Adverse Events,7/24/15,35,12/9/15,173,1,Y,This mark definitely represents the Adverse Events domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Adverse Events,8/5/15,47,6/1/16,348,2,N,This mark definitely represents the Adverse Events domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Adverse Events,11/18/15,152,12/25/15,189,3,Y,This mark definitely represents the Adverse Events domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Adverse Events,12/28/15,192,5/21/16,337,4,N,This mark definitely represents the Adverse Events domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Adverse Events,2/27/16,253,4/10/16,296,5,N,This mark definitely represents the Adverse Events domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Enrollment,6/20/15,1,6/20/15,1,1,,This mark definitely represents the Enrollment domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Randomization,8/12/15,54,8/12/15,54,1,,This mark definitely represents the Randomization domain
+04-022,4,Site 04,21,M,White,Placebo,6/20/15,Y,Study Completion,6/28/16,375,6/28/16,375,1,,This mark definitely represents the Study Completion domain
+04-023,4,Site 04,54,F,White,Placebo,12/27/15,Y,Adverse Events,11/21/16,331,12/3/16,343,1,N,This mark definitely represents the Adverse Events domain
+04-023,4,Site 04,54,F,White,Placebo,12/27/15,Y,Concomitant Medications,5/7/16,133,7/27/16,214,1,N,This mark definitely represents the Concomitant Medications domain
+04-023,4,Site 04,54,F,White,Placebo,12/27/15,Y,Enrollment,12/27/15,1,12/27/15,1,1,,This mark definitely represents the Enrollment domain
+04-023,4,Site 04,54,F,White,Placebo,12/27/15,Y,Randomization,2/23/16,59,2/23/16,59,1,,This mark definitely represents the Randomization domain
+04-023,4,Site 04,54,F,White,Placebo,12/27/15,Y,Study Completion,1/3/17,374,1/3/17,374,1,,This mark definitely represents the Study Completion domain
+04-024,4,Site 04,21,M,Hispanic,Treatment A,10/4/15,Y,Concomitant Medications,8/27/16,329,9/14/16,347,1,Y,This mark definitely represents the Concomitant Medications domain
+04-024,4,Site 04,21,M,Hispanic,Treatment A,10/4/15,Y,Enrollment,10/4/15,1,10/4/15,1,1,,This mark definitely represents the Enrollment domain
+04-024,4,Site 04,21,M,Hispanic,Treatment A,10/4/15,Y,Randomization,12/2/15,60,12/2/15,60,1,,This mark definitely represents the Randomization domain
+04-024,4,Site 04,21,M,Hispanic,Treatment A,10/4/15,Y,Study Completion,10/4/16,367,10/4/16,367,1,,This mark definitely represents the Study Completion domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Adverse Events,8/24/15,112,5/1/16,363,1,N,This mark definitely represents the Adverse Events domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Adverse Events,1/10/16,251,4/14/16,346,2,N,This mark definitely represents the Adverse Events domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Adverse Events,3/20/16,321,3/20/16,321,3,N,This mark definitely represents the Adverse Events domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Concomitant Medications,7/9/15,66,8/13/15,101,1,Y,This mark definitely represents the Concomitant Medications domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Enrollment,5/5/15,1,5/5/15,1,1,,This mark definitely represents the Enrollment domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Randomization,6/28/15,55,6/28/15,55,1,,This mark definitely represents the Randomization domain
+04-025,4,Site 04,26,M,Other/Mixed,Placebo,5/5/15,Y,Study Completion,4/26/16,358,4/26/16,358,1,,This mark definitely represents the Study Completion domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Concomitant Medications,10/30/15,84,3/31/16,237,1,Y,This mark definitely represents the Concomitant Medications domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Concomitant Medications,1/30/16,176,5/11/16,278,2,Y,This mark definitely represents the Concomitant Medications domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Concomitant Medications,3/10/16,216,6/20/16,318,3,Y,This mark definitely represents the Concomitant Medications domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Enrollment,8/8/15,1,8/8/15,1,1,,This mark definitely represents the Enrollment domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Randomization,10/5/15,59,10/5/15,59,1,,This mark definitely represents the Randomization domain
+04-026,4,Site 04,26,M,Black,Treatment A,8/8/15,Y,Study Completion,8/2/16,361,8/2/16,361,1,,This mark definitely represents the Study Completion domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Adverse Events,9/12/15,72,1/21/16,203,1,N,This mark definitely represents the Adverse Events domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Adverse Events,4/5/16,278,5/4/16,307,2,N,This mark definitely represents the Adverse Events domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Adverse Events,6/6/16,340,6/29/16,363,3,Y,This mark definitely represents the Adverse Events domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Concomitant Medications,8/6/15,35,9/15/15,75,1,N,This mark definitely represents the Concomitant Medications domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Concomitant Medications,10/12/15,102,11/2/15,123,2,Y,This mark definitely represents the Concomitant Medications domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Concomitant Medications,10/28/15,118,11/19/15,140,3,Y,This mark definitely represents the Concomitant Medications domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Enrollment,7/3/15,1,7/3/15,1,1,,This mark definitely represents the Enrollment domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Randomization,8/29/15,58,8/29/15,58,1,,This mark definitely represents the Randomization domain
+04-027,4,Site 04,27,M,Other/Mixed,Placebo,7/3/15,Y,Study Completion,7/9/16,373,7/9/16,373,1,,This mark definitely represents the Study Completion domain
+04-028,4,Site 04,28,M,White,Treatment A,1/14/15,Y,Concomitant Medications,2/8/15,26,11/1/15,292,1,Y,This mark definitely represents the Concomitant Medications domain
+04-028,4,Site 04,28,M,White,Treatment A,1/14/15,Y,Enrollment,1/14/15,1,1/14/15,1,1,,This mark definitely represents the Enrollment domain
+04-028,4,Site 04,28,M,White,Treatment A,1/14/15,Y,Randomization,3/8/15,54,3/8/15,54,1,,This mark definitely represents the Randomization domain
+04-028,4,Site 04,28,M,White,Treatment A,1/14/15,Y,Study Completion,1/21/16,373,1/21/16,373,1,,This mark definitely represents the Study Completion domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Adverse Events,3/13/15,49,6/2/15,130,1,N,This mark definitely represents the Adverse Events domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Adverse Events,6/4/15,132,10/7/15,257,2,N,This mark definitely represents the Adverse Events domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Adverse Events,7/24/15,182,8/12/15,201,3,N,This mark definitely represents the Adverse Events domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Adverse Events,8/8/15,197,10/1/15,251,4,Y,This mark definitely represents the Adverse Events domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Adverse Events,11/29/15,310,1/18/16,360,5,Y,This mark definitely represents the Adverse Events domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Concomitant Medications,4/28/15,95,12/30/15,341,1,Y,This mark definitely represents the Concomitant Medications domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Concomitant Medications,1/17/16,359,1/23/16,365,2,Y,This mark definitely represents the Concomitant Medications domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Enrollment,1/24/15,1,1/24/15,1,1,,This mark definitely represents the Enrollment domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Randomization,3/25/15,61,3/25/15,61,1,,This mark definitely represents the Randomization domain
+04-029,4,Site 04,51,M,Black,Placebo,1/24/15,Y,Study Completion,1/20/16,362,1/20/16,362,1,,This mark definitely represents the Study Completion domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Adverse Events,6/19/15,4,10/20/15,127,1,N,This mark definitely represents the Adverse Events domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Adverse Events,7/23/15,38,8/3/15,49,2,N,This mark definitely represents the Adverse Events domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Adverse Events,8/23/15,69,11/10/15,148,3,Y,This mark definitely represents the Adverse Events domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Adverse Events,11/4/15,142,12/8/15,176,4,N,This mark definitely represents the Adverse Events domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Concomitant Medications,9/26/15,103,2/8/16,238,1,Y,This mark definitely represents the Concomitant Medications domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Concomitant Medications,2/10/16,240,2/13/16,243,2,N,This mark definitely represents the Concomitant Medications domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Concomitant Medications,3/6/16,265,4/22/16,312,3,Y,This mark definitely represents the Concomitant Medications domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Enrollment,6/16/15,1,6/16/15,1,1,,This mark definitely represents the Enrollment domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Randomization,8/6/15,52,8/6/15,52,1,,This mark definitely represents the Randomization domain
+04-030,4,Site 04,42,F,Other/Mixed,Treatment A,6/16/15,Y,Study Completion,6/20/16,371,6/20/16,371,1,,This mark definitely represents the Study Completion domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Adverse Events,2/8/15,3,5/30/15,114,1,N,This mark definitely represents the Adverse Events domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Adverse Events,6/9/15,124,10/21/15,258,2,Y,This mark definitely represents the Adverse Events domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Adverse Events,6/12/15,127,7/1/15,146,3,Y,This mark definitely represents the Adverse Events domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Adverse Events,6/21/15,136,12/12/15,310,4,N,This mark definitely represents the Adverse Events domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Concomitant Medications,6/28/15,143,12/24/15,322,1,N,This mark definitely represents the Concomitant Medications domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Concomitant Medications,10/7/15,244,10/30/15,267,2,Y,This mark definitely represents the Concomitant Medications domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Concomitant Medications,1/8/16,337,1/26/16,355,3,N,This mark definitely represents the Concomitant Medications domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Concomitant Medications,1/10/16,339,1/11/16,340,4,Y,This mark definitely represents the Concomitant Medications domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Enrollment,2/6/15,1,2/6/15,1,1,,This mark definitely represents the Enrollment domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Randomization,4/5/15,59,4/5/15,59,1,,This mark definitely represents the Randomization domain
+05-001,5,Site 05,43,F,White,Treatment B,2/6/15,Y,Study Completion,1/30/16,359,1/30/16,359,1,,This mark definitely represents the Study Completion domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Adverse Events,12/30/15,84,3/23/16,168,1,Y,This mark definitely represents the Adverse Events domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Adverse Events,4/26/16,202,9/3/16,332,2,N,This mark definitely represents the Adverse Events domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Adverse Events,6/14/16,251,7/16/16,283,3,N,This mark definitely represents the Adverse Events domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Enrollment,10/8/15,1,10/8/15,1,1,,This mark definitely represents the Enrollment domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Randomization,12/5/15,59,12/5/15,59,1,,This mark definitely represents the Randomization domain
+05-002,5,Site 05,18,M,White,Treatment B,10/8/15,Y,Study Completion,10/11/16,370,10/11/16,370,1,,This mark definitely represents the Study Completion domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Concomitant Medications,5/6/15,14,12/8/15,230,1,N,This mark definitely represents the Concomitant Medications domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Concomitant Medications,8/29/15,129,11/7/15,199,2,Y,This mark definitely represents the Concomitant Medications domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Concomitant Medications,8/31/15,131,10/14/15,175,3,Y,This mark definitely represents the Concomitant Medications domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Concomitant Medications,9/5/15,136,10/23/15,184,4,N,This mark definitely represents the Concomitant Medications domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Concomitant Medications,10/30/15,191,11/20/15,212,5,N,This mark definitely represents the Concomitant Medications domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Enrollment,4/23/15,1,4/23/15,1,1,,This mark definitely represents the Enrollment domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Randomization,6/13/15,52,6/13/15,52,1,,This mark definitely represents the Randomization domain
+05-003,5,Site 05,24,F,Other/Mixed,Treatment B,4/23/15,Y,Study Completion,4/27/16,371,4/27/16,371,1,,This mark definitely represents the Study Completion domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Adverse Events,4/12/16,129,4/23/16,140,1,Y,This mark definitely represents the Adverse Events domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Adverse Events,7/10/16,218,7/11/16,219,2,N,This mark definitely represents the Adverse Events domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Concomitant Medications,10/2/16,302,10/15/16,315,1,Y,This mark definitely represents the Concomitant Medications domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Concomitant Medications,10/18/16,318,11/24/16,355,2,N,This mark definitely represents the Concomitant Medications domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Enrollment,12/6/15,1,12/6/15,1,1,,This mark definitely represents the Enrollment domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Randomization,1/24/16,50,1/24/16,50,1,,This mark definitely represents the Randomization domain
+05-004,5,Site 05,45,F,Black,Treatment A,12/6/15,Y,Study Completion,12/2/16,363,12/2/16,363,1,,This mark definitely represents the Study Completion domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Adverse Events,4/4/16,158,8/31/16,307,1,Y,This mark definitely represents the Adverse Events domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Adverse Events,6/25/16,240,10/15/16,352,2,Y,This mark definitely represents the Adverse Events domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Adverse Events,9/6/16,313,9/21/16,328,3,Y,This mark definitely represents the Adverse Events domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Concomitant Medications,12/13/15,45,6/17/16,232,1,Y,This mark definitely represents the Concomitant Medications domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Concomitant Medications,6/1/16,216,8/19/16,295,2,N,This mark definitely represents the Concomitant Medications domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Enrollment,10/30/15,1,10/30/15,1,1,,This mark definitely represents the Enrollment domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Randomization,12/30/15,62,12/30/15,62,1,,This mark definitely represents the Randomization domain
+05-005,5,Site 05,47,M,White,Placebo,10/30/15,Y,Study Completion,11/1/16,369,11/1/16,369,1,,This mark definitely represents the Study Completion domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Adverse Events,5/7/15,13,7/13/15,80,1,Y,This mark definitely represents the Adverse Events domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Adverse Events,6/11/15,48,12/7/15,227,2,Y,This mark definitely represents the Adverse Events domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Adverse Events,10/23/15,182,1/3/16,254,3,Y,This mark definitely represents the Adverse Events domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Adverse Events,3/15/16,326,3/30/16,341,4,Y,This mark definitely represents the Adverse Events domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Concomitant Medications,4/25/15,1,11/11/15,201,1,N,This mark definitely represents the Concomitant Medications domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Concomitant Medications,5/11/15,17,11/27/15,217,2,Y,This mark definitely represents the Concomitant Medications domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Concomitant Medications,9/15/15,144,10/3/15,162,3,Y,This mark definitely represents the Concomitant Medications domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Concomitant Medications,3/16/16,327,4/7/16,349,4,Y,This mark definitely represents the Concomitant Medications domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Enrollment,4/25/15,1,4/25/15,1,1,,This mark definitely represents the Enrollment domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Randomization,6/20/15,57,6/20/15,57,1,,This mark definitely represents the Randomization domain
+05-006,5,Site 05,31,F,Hispanic,Treatment B,4/25/15,Y,Study Completion,5/1/16,373,5/1/16,373,1,,This mark definitely represents the Study Completion domain
+05-007,5,Site 05,21,M,Hispanic,Placebo,10/15/15,N,Enrollment,10/15/15,1,10/15/15,1,1,,This mark definitely represents the Enrollment domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Adverse Events,11/15/15,4,12/13/15,32,1,N,This mark definitely represents the Adverse Events domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Adverse Events,4/2/16,143,7/5/16,237,2,N,This mark definitely represents the Adverse Events domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Adverse Events,8/23/16,286,10/16/16,340,3,Y,This mark definitely represents the Adverse Events domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Adverse Events,11/9/16,364,11/10/16,365,4,N,This mark definitely represents the Adverse Events domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Concomitant Medications,4/27/16,168,8/28/16,291,1,Y,This mark definitely represents the Concomitant Medications domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Enrollment,11/12/15,1,11/12/15,1,1,,This mark definitely represents the Enrollment domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Randomization,1/3/16,53,1/3/16,53,1,,This mark definitely represents the Randomization domain
+05-008,5,Site 05,21,F,Hispanic,Treatment B,11/12/15,Y,Study Completion,11/2/16,357,11/2/16,357,1,,This mark definitely represents the Study Completion domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Adverse Events,5/3/16,160,9/14/16,294,1,N,This mark definitely represents the Adverse Events domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Adverse Events,5/4/16,161,6/10/16,198,2,Y,This mark definitely represents the Adverse Events domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Concomitant Medications,4/7/16,134,5/19/16,176,1,Y,This mark definitely represents the Concomitant Medications domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Enrollment,11/26/15,1,11/26/15,1,1,,This mark definitely represents the Enrollment domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Randomization,1/20/16,56,1/20/16,56,1,,This mark definitely represents the Randomization domain
+05-009,5,Site 05,40,F,Hispanic,Treatment B,11/26/15,Y,Study Completion,12/3/16,374,12/3/16,374,1,,This mark definitely represents the Study Completion domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Adverse Events,12/26/15,10,7/31/16,228,1,N,This mark definitely represents the Adverse Events domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Adverse Events,3/23/16,98,3/30/16,105,2,N,This mark definitely represents the Adverse Events domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Adverse Events,7/16/16,213,9/1/16,260,3,N,This mark definitely represents the Adverse Events domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Enrollment,12/17/15,1,12/17/15,1,1,,This mark definitely represents the Enrollment domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Randomization,2/13/16,59,2/13/16,59,1,,This mark definitely represents the Randomization domain
+05-010,5,Site 05,42,F,Hispanic,Placebo,12/17/15,Y,Study Completion,12/8/16,358,12/8/16,358,1,,This mark definitely represents the Study Completion domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Adverse Events,11/23/15,8,8/25/16,284,1,Y,This mark definitely represents the Adverse Events domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Adverse Events,4/24/16,161,6/4/16,202,2,N,This mark definitely represents the Adverse Events domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Adverse Events,6/19/16,217,8/27/16,286,3,N,This mark definitely represents the Adverse Events domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Adverse Events,8/23/16,282,8/27/16,286,4,Y,This mark definitely represents the Adverse Events domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Adverse Events,10/16/16,336,10/17/16,337,5,N,This mark definitely represents the Adverse Events domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Concomitant Medications,2/14/16,91,5/25/16,192,1,N,This mark definitely represents the Concomitant Medications domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Concomitant Medications,6/11/16,209,8/15/16,274,2,N,This mark definitely represents the Concomitant Medications domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Concomitant Medications,7/4/16,232,11/2/16,353,3,N,This mark definitely represents the Concomitant Medications domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Concomitant Medications,10/15/16,335,11/13/16,364,4,Y,This mark definitely represents the Concomitant Medications domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Concomitant Medications,11/9/16,360,11/10/16,361,5,N,This mark definitely represents the Concomitant Medications domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Enrollment,11/16/15,1,11/16/15,1,1,,This mark definitely represents the Enrollment domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Randomization,1/10/16,56,1/10/16,56,1,,This mark definitely represents the Randomization domain
+05-011,5,Site 05,43,M,Black,Treatment A,11/16/15,Y,Study Completion,11/19/16,370,11/19/16,370,1,,This mark definitely represents the Study Completion domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Adverse Events,12/4/15,185,3/25/16,297,1,N,This mark definitely represents the Adverse Events domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Adverse Events,12/17/15,198,12/21/15,202,2,Y,This mark definitely represents the Adverse Events domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Adverse Events,1/25/16,237,3/20/16,292,3,N,This mark definitely represents the Adverse Events domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Adverse Events,3/31/16,303,5/27/16,360,4,Y,This mark definitely represents the Adverse Events domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Adverse Events,4/4/16,307,4/6/16,309,5,N,This mark definitely represents the Adverse Events domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Concomitant Medications,4/3/16,306,4/30/16,333,1,N,This mark definitely represents the Concomitant Medications domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Concomitant Medications,5/13/16,346,5/15/16,348,2,N,This mark definitely represents the Concomitant Medications domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Enrollment,6/3/15,1,6/3/15,1,1,,This mark definitely represents the Enrollment domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Randomization,7/25/15,53,7/25/15,53,1,,This mark definitely represents the Randomization domain
+05-012,5,Site 05,26,M,White,Placebo,6/3/15,Y,Study Completion,6/1/16,365,6/1/16,365,1,,This mark definitely represents the Study Completion domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Adverse Events,7/18/15,91,1/30/16,287,1,N,This mark definitely represents the Adverse Events domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Adverse Events,11/2/15,198,1/7/16,264,2,N,This mark definitely represents the Adverse Events domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Adverse Events,1/5/16,262,4/14/16,362,3,Y,This mark definitely represents the Adverse Events domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Concomitant Medications,6/15/15,58,8/27/15,131,1,Y,This mark definitely represents the Concomitant Medications domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Concomitant Medications,9/29/15,164,1/14/16,271,2,N,This mark definitely represents the Concomitant Medications domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Enrollment,4/19/15,1,4/19/15,1,1,,This mark definitely represents the Enrollment domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Randomization,6/14/15,57,6/14/15,57,1,,This mark definitely represents the Randomization domain
+05-013,5,Site 05,45,M,Black,Treatment A,4/19/15,Y,Study Completion,4/26/16,374,4/26/16,374,1,,This mark definitely represents the Study Completion domain
+05-014,5,Site 05,24,M,Black,Treatment B,10/26/15,Y,Adverse Events,3/12/16,139,5/1/16,189,1,N,This mark definitely represents the Adverse Events domain
+05-014,5,Site 05,24,M,Black,Treatment B,10/26/15,Y,Concomitant Medications,4/23/16,181,10/23/16,364,1,N,This mark definitely represents the Concomitant Medications domain
+05-014,5,Site 05,24,M,Black,Treatment B,10/26/15,Y,Enrollment,10/26/15,1,10/26/15,1,1,,This mark definitely represents the Enrollment domain
+05-014,5,Site 05,24,M,Black,Treatment B,10/26/15,Y,Randomization,12/25/15,61,12/25/15,61,1,,This mark definitely represents the Randomization domain
+05-014,5,Site 05,24,M,Black,Treatment B,10/26/15,Y,Study Completion,10/31/16,372,10/31/16,372,1,,This mark definitely represents the Study Completion domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Adverse Events,11/27/15,43,3/8/16,145,1,N,This mark definitely represents the Adverse Events domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Adverse Events,12/19/15,65,2/4/16,112,2,Y,This mark definitely represents the Adverse Events domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Adverse Events,2/17/16,125,6/27/16,256,3,Y,This mark definitely represents the Adverse Events domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Concomitant Medications,11/4/15,20,6/19/16,248,1,Y,This mark definitely represents the Concomitant Medications domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Concomitant Medications,6/4/16,233,6/23/16,252,2,N,This mark definitely represents the Concomitant Medications domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Enrollment,10/16/15,1,10/16/15,1,1,,This mark definitely represents the Enrollment domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Randomization,12/16/15,62,12/16/15,62,1,,This mark definitely represents the Randomization domain
+05-015,5,Site 05,48,M,Other/Mixed,Treatment B,10/16/15,Y,Study Completion,10/6/16,357,10/6/16,357,1,,This mark definitely represents the Study Completion domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Adverse Events,11/7/15,36,4/12/16,193,1,Y,This mark definitely represents the Adverse Events domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Adverse Events,1/2/16,92,7/12/16,284,2,Y,This mark definitely represents the Adverse Events domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Adverse Events,4/16/16,197,9/6/16,340,3,N,This mark definitely represents the Adverse Events domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Adverse Events,6/18/16,260,7/12/16,284,4,Y,This mark definitely represents the Adverse Events domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Enrollment,10/3/15,1,10/3/15,1,1,,This mark definitely represents the Enrollment domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Randomization,12/4/15,63,12/4/15,63,1,,This mark definitely represents the Randomization domain
+05-016,5,Site 05,42,F,Black,Treatment B,10/3/15,Y,Study Completion,10/8/16,372,10/8/16,372,1,,This mark definitely represents the Study Completion domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Adverse Events,4/29/15,82,12/27/15,324,1,N,This mark definitely represents the Adverse Events domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Adverse Events,7/31/15,175,12/6/15,303,2,N,This mark definitely represents the Adverse Events domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Adverse Events,9/24/15,230,10/27/15,263,3,N,This mark definitely represents the Adverse Events domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Adverse Events,1/19/16,347,2/5/16,364,4,N,This mark definitely represents the Adverse Events domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Enrollment,2/7/15,1,2/7/15,1,1,,This mark definitely represents the Enrollment domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Randomization,3/27/15,49,3/27/15,49,1,,This mark definitely represents the Randomization domain
+05-017,5,Site 05,40,M,White,Placebo,2/7/15,Y,Study Completion,2/10/16,369,2/10/16,369,1,,This mark definitely represents the Study Completion domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Adverse Events,6/12/16,345,6/27/16,360,1,Y,This mark definitely represents the Adverse Events domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Concomitant Medications,11/6/15,126,1/15/16,196,1,Y,This mark definitely represents the Concomitant Medications domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Concomitant Medications,5/8/16,310,6/18/16,351,2,Y,This mark definitely represents the Concomitant Medications domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Enrollment,7/4/15,1,7/4/15,1,1,,This mark definitely represents the Enrollment domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Randomization,8/26/15,54,8/26/15,54,1,,This mark definitely represents the Randomization domain
+05-018,5,Site 05,40,M,Hispanic,Placebo,7/4/15,Y,Study Completion,6/28/16,361,6/28/16,361,1,,This mark definitely represents the Study Completion domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Adverse Events,4/7/16,116,5/8/16,147,1,Y,This mark definitely represents the Adverse Events domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Concomitant Medications,12/19/15,6,5/22/16,161,1,Y,This mark definitely represents the Concomitant Medications domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Concomitant Medications,1/5/16,23,6/26/16,196,2,N,This mark definitely represents the Concomitant Medications domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Concomitant Medications,5/28/16,167,12/6/16,359,3,Y,This mark definitely represents the Concomitant Medications domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Concomitant Medications,9/28/16,290,11/9/16,332,4,Y,This mark definitely represents the Concomitant Medications domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Concomitant Medications,10/25/16,317,11/22/16,345,5,Y,This mark definitely represents the Concomitant Medications domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Enrollment,12/14/15,1,12/14/15,1,1,,This mark definitely represents the Enrollment domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Randomization,2/6/16,55,2/6/16,55,1,,This mark definitely represents the Randomization domain
+05-019,5,Site 05,36,F,White,Treatment A,12/14/15,Y,Study Completion,12/11/16,364,12/11/16,364,1,,This mark definitely represents the Study Completion domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Adverse Events,10/2/15,142,11/3/15,174,1,N,This mark definitely represents the Adverse Events domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Adverse Events,10/21/15,161,11/17/15,188,2,N,This mark definitely represents the Adverse Events domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Adverse Events,12/17/15,218,5/1/16,354,3,N,This mark definitely represents the Adverse Events domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Adverse Events,1/19/16,251,3/30/16,322,4,Y,This mark definitely represents the Adverse Events domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Adverse Events,2/3/16,266,3/28/16,320,5,N,This mark definitely represents the Adverse Events domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Concomitant Medications,5/23/15,10,10/10/15,150,1,N,This mark definitely represents the Concomitant Medications domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Concomitant Medications,12/19/15,220,2/26/16,289,2,Y,This mark definitely represents the Concomitant Medications domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Concomitant Medications,3/12/16,304,4/6/16,329,3,Y,This mark definitely represents the Concomitant Medications domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Enrollment,5/14/15,1,5/14/15,1,1,,This mark definitely represents the Enrollment domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Randomization,7/7/15,55,7/7/15,55,1,,This mark definitely represents the Randomization domain
+05-020,5,Site 05,42,F,Black,Placebo,5/14/15,Y,Study Completion,5/22/16,375,5/22/16,375,1,,This mark definitely represents the Study Completion domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Adverse Events,8/4/15,106,8/12/15,114,1,N,This mark definitely represents the Adverse Events domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Adverse Events,8/28/15,130,1/21/16,276,2,N,This mark definitely represents the Adverse Events domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Concomitant Medications,5/7/15,17,12/6/15,230,1,Y,This mark definitely represents the Concomitant Medications domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Concomitant Medications,8/27/15,129,11/19/15,213,2,N,This mark definitely represents the Concomitant Medications domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Concomitant Medications,12/19/15,243,4/19/16,365,3,N,This mark definitely represents the Concomitant Medications domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Concomitant Medications,1/16/16,271,4/17/16,363,4,N,This mark definitely represents the Concomitant Medications domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Enrollment,4/21/15,1,4/21/15,1,1,,This mark definitely represents the Enrollment domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Randomization,6/14/15,55,6/14/15,55,1,,This mark definitely represents the Randomization domain
+05-021,5,Site 05,32,M,Other/Mixed,Treatment A,4/21/15,Y,Study Completion,4/15/16,361,4/15/16,361,1,,This mark definitely represents the Study Completion domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Adverse Events,7/11/15,88,4/1/16,353,1,Y,This mark definitely represents the Adverse Events domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Adverse Events,7/24/15,101,8/29/15,137,2,Y,This mark definitely represents the Adverse Events domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Adverse Events,12/28/15,258,1/31/16,292,3,N,This mark definitely represents the Adverse Events domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Enrollment,4/15/15,1,4/15/15,1,1,,This mark definitely represents the Enrollment domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Randomization,6/9/15,56,6/9/15,56,1,,This mark definitely represents the Randomization domain
+05-022,5,Site 05,24,M,Hispanic,Treatment B,4/15/15,Y,Study Completion,4/23/16,375,4/23/16,375,1,,This mark definitely represents the Study Completion domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Concomitant Medications,5/27/15,137,7/20/15,191,1,N,This mark definitely represents the Concomitant Medications domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Concomitant Medications,6/26/15,167,6/27/15,168,2,N,This mark definitely represents the Concomitant Medications domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Concomitant Medications,7/11/15,182,10/13/15,276,3,Y,This mark definitely represents the Concomitant Medications domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Enrollment,1/11/15,1,1/11/15,1,1,,This mark definitely represents the Enrollment domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Randomization,2/28/15,49,2/28/15,49,1,,This mark definitely represents the Randomization domain
+05-023,5,Site 05,29,F,Black,Placebo,1/11/15,Y,Study Completion,1/19/16,374,1/19/16,374,1,,This mark definitely represents the Study Completion domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Adverse Events,7/7/15,83,8/17/15,124,1,N,This mark definitely represents the Adverse Events domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Adverse Events,3/8/16,328,4/11/16,362,2,Y,This mark definitely represents the Adverse Events domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Adverse Events,3/17/16,337,4/5/16,356,3,Y,This mark definitely represents the Adverse Events domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Concomitant Medications,1/9/16,269,4/5/16,356,1,N,This mark definitely represents the Concomitant Medications domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Concomitant Medications,3/8/16,328,4/6/16,357,2,Y,This mark definitely represents the Concomitant Medications domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Enrollment,4/16/15,1,4/16/15,1,1,,This mark definitely represents the Enrollment domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Randomization,6/7/15,53,6/7/15,53,1,,This mark definitely represents the Randomization domain
+05-024,5,Site 05,48,M,Hispanic,Placebo,4/16/15,Y,Study Completion,4/13/16,364,4/13/16,364,1,,This mark definitely represents the Study Completion domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Adverse Events,9/2/15,24,4/10/16,245,1,Y,This mark definitely represents the Adverse Events domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Adverse Events,11/20/15,103,4/19/16,254,2,N,This mark definitely represents the Adverse Events domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Adverse Events,11/28/15,111,7/25/16,351,3,Y,This mark definitely represents the Adverse Events domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Adverse Events,1/5/16,149,4/19/16,254,4,N,This mark definitely represents the Adverse Events domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Adverse Events,4/11/16,246,7/18/16,344,5,N,This mark definitely represents the Adverse Events domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Enrollment,8/10/15,1,8/10/15,1,1,,This mark definitely represents the Enrollment domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Randomization,10/3/15,55,10/3/15,55,1,,This mark definitely represents the Randomization domain
+05-025,5,Site 05,50,M,White,Treatment A,8/10/15,Y,Study Completion,8/18/16,375,8/18/16,375,1,,This mark definitely represents the Study Completion domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Adverse Events,4/27/16,170,7/5/16,239,1,Y,This mark definitely represents the Adverse Events domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Concomitant Medications,1/2/16,54,6/8/16,212,1,N,This mark definitely represents the Concomitant Medications domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Concomitant Medications,1/8/16,60,5/25/16,198,2,N,This mark definitely represents the Concomitant Medications domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Concomitant Medications,3/13/16,125,11/7/16,364,3,Y,This mark definitely represents the Concomitant Medications domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Concomitant Medications,4/11/16,154,7/6/16,240,4,N,This mark definitely represents the Concomitant Medications domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Concomitant Medications,4/25/16,168,8/16/16,281,5,Y,This mark definitely represents the Concomitant Medications domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Enrollment,11/10/15,1,11/10/15,1,1,,This mark definitely represents the Enrollment domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Randomization,1/5/16,57,1/5/16,57,1,,This mark definitely represents the Randomization domain
+05-026,5,Site 05,41,M,Hispanic,Placebo,11/10/15,Y,Study Completion,11/9/16,366,11/9/16,366,1,,This mark definitely represents the Study Completion domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Adverse Events,6/1/15,127,12/13/15,322,1,Y,This mark definitely represents the Adverse Events domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Adverse Events,8/24/15,211,10/8/15,256,2,N,This mark definitely represents the Adverse Events domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Adverse Events,10/15/15,263,1/6/16,346,3,N,This mark definitely represents the Adverse Events domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Concomitant Medications,2/9/15,15,3/8/15,42,1,Y,This mark definitely represents the Concomitant Medications domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Concomitant Medications,7/4/15,160,12/1/15,310,2,Y,This mark definitely represents the Concomitant Medications domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Concomitant Medications,1/1/16,341,1/14/16,354,3,Y,This mark definitely represents the Concomitant Medications domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Enrollment,1/26/15,1,1/26/15,1,1,,This mark definitely represents the Enrollment domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Randomization,3/21/15,55,3/21/15,55,1,,This mark definitely represents the Randomization domain
+05-027,5,Site 05,32,M,Black,Placebo,1/26/15,Y,Study Completion,1/25/16,365,1/25/16,365,1,,This mark definitely represents the Study Completion domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Adverse Events,6/9/15,101,2/22/16,359,1,N,This mark definitely represents the Adverse Events domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Adverse Events,11/3/15,248,2/11/16,348,2,N,This mark definitely represents the Adverse Events domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Adverse Events,1/12/16,318,2/25/16,362,3,Y,This mark definitely represents the Adverse Events domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Enrollment,3/1/15,1,3/1/15,1,1,,This mark definitely represents the Enrollment domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Randomization,4/30/15,61,4/30/15,61,1,,This mark definitely represents the Randomization domain
+05-028,5,Site 05,54,M,White,Treatment A,3/1/15,Y,Study Completion,2/26/16,363,2/26/16,363,1,,This mark definitely represents the Study Completion domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Adverse Events,3/3/16,93,5/18/16,169,1,N,This mark definitely represents the Adverse Events domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Adverse Events,3/13/16,103,9/20/16,294,2,Y,This mark definitely represents the Adverse Events domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Concomitant Medications,5/11/16,162,7/21/16,233,1,Y,This mark definitely represents the Concomitant Medications domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Concomitant Medications,10/18/16,322,11/13/16,348,2,Y,This mark definitely represents the Concomitant Medications domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Enrollment,12/2/15,1,12/2/15,1,1,,This mark definitely represents the Enrollment domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Randomization,1/31/16,61,1/31/16,61,1,,This mark definitely represents the Randomization domain
+05-029,5,Site 05,42,M,Other/Mixed,Treatment A,12/2/15,Y,Study Completion,12/8/16,373,12/8/16,373,1,,This mark definitely represents the Study Completion domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Adverse Events,2/7/16,129,2/16/16,138,1,N,This mark definitely represents the Adverse Events domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Adverse Events,2/23/16,145,3/2/16,153,2,Y,This mark definitely represents the Adverse Events domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Adverse Events,5/3/16,215,5/18/16,230,3,N,This mark definitely represents the Adverse Events domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Concomitant Medications,5/10/16,222,8/8/16,312,1,N,This mark definitely represents the Concomitant Medications domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Enrollment,10/2/15,1,10/2/15,1,1,,This mark definitely represents the Enrollment domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Randomization,11/30/15,60,11/30/15,60,1,,This mark definitely represents the Randomization domain
+05-030,5,Site 05,35,M,White,Placebo,10/2/15,Y,Study Completion,9/25/16,360,9/25/16,360,1,,This mark definitely represents the Study Completion domain

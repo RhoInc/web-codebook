@@ -2,6 +2,7 @@ import { set as d3set } from 'd3';
 import summarize from './summarize/index';
 
 export function makeSummary(codebook) {
+  const config = codebook.config;
   var data = codebook.data.filtered;
   var group = codebook.config.group;
 
@@ -13,11 +14,17 @@ export function makeSummary(codebook) {
 
       //get a list of raw values
       variables[i].values = data.map(d => {
-        return {
+        var current = {
           index: d['web-codebook-index'],
           value: d[variable],
-          highlighted: codebook.data.highlighted.indexOf(d) > -1
+          highlighted: codebook.data.highlighted.indexOf(d) > -1,
+          missingWhiteSpace: config.whiteSpaceAsMissing
+            ? /^\s*$/.test(d[variable])
+            : false,
+          missingValue: config.missingValues.indexOf(d[variable]) > -1
         };
+        current.missing = current.missingWhiteSpace || current.missingValue;
+        return current;
       });
 
       //get variable type
@@ -117,7 +124,7 @@ export function makeSummary(codebook) {
     });
 
     codebook.data.summary = variables;
-
+    console.log(codebook);
     //get bin counts
     codebook.util.getBinCounts(codebook);
   } else {
