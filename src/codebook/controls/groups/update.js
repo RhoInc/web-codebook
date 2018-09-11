@@ -7,7 +7,7 @@ import { select as d3select } from 'd3';
 import indicateLoading from '../../util/indicateLoading';
 
 export function update(codebook) {
-  const groupControl = codebook.controls.wrap.select('div.group-select'),
+  var groupControl = codebook.controls.wrap.select('div.group-select'),
     groupSelect = groupControl.select('select'),
     columns = Object.keys(codebook.data.raw[0]),
     groupLevels = d3merge([
@@ -34,10 +34,13 @@ export function update(codebook) {
     )
     .text(d => d.value_col);
   groupOptions.exit().remove();
-  groupOptions.classed(
-    'hidden',
-    d => codebook.config.hiddenVariables.indexOf(d.value_col) > -1
-  );
+  var visibleOptionCount = 0;
+  groupOptions.classed('hidden', function(d) {
+    const hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+    if (!hidden) visibleOptionCount = visibleOptionCount + 1;
+    return hidden;
+  });
+
   groupOptions.sort((a, b) => columns.indexOf(a) - columns.indexOf(b));
   groupSelect.on('change', function() {
     indicateLoading(codebook, '#loading-indicator', () => {
@@ -51,4 +54,7 @@ export function update(codebook) {
       codebook.title.updateCountSummary(codebook);
     });
   });
+
+  //Hide the group select if only the "None" option is visible;
+  groupControl.style('display', visibleOptionCount <= 1 ? 'none' : null);
 }

@@ -7,6 +7,8 @@ document.onreadystatechange = function() {
 
         var settings = {
           //    chartVisibility: 'hidden',
+          //autogroups: 3,
+          groups: ['SEX'],
           meta: [
             {
               value_col: 'USUBJID',

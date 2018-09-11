@@ -659,9 +659,13 @@
         return d.value_col;
       });
     groupOptions.exit().remove();
+    var visibleOptionCount = 0;
     groupOptions.classed('hidden', function(d) {
-      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+      var hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+      if (!hidden) visibleOptionCount = visibleOptionCount + 1;
+      return hidden;
     });
+
     groupOptions.sort(function(a, b) {
       return columns.indexOf(a) - columns.indexOf(b);
     });
@@ -679,6 +683,9 @@
         codebook.title.updateCountSummary(codebook);
       });
     });
+
+    //Hide the group select if only the "None" option is visible;
+    groupControl.style('display', visibleOptionCount <= 1 ? 'none' : null);
   }
 
   /*------------------------------------------------------------------------------------------------\
