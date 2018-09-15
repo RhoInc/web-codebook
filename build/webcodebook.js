@@ -4652,10 +4652,9 @@
       this.table
         .select('tbody')
         .selectAll('tr')
-        .filter(function(f) {
+        .classed('selected', function(f) {
           return f.fileID === explorer.current.fileID;
-        })
-        .classed('selected', true);
+        });
 
       //Linkify the labelColumn
       var labelCells = this.table
