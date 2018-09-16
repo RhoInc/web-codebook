@@ -7,8 +7,7 @@ export function makeSummary(codebook) {
   var group = codebook.config.group;
 
   if (codebook.data.filtered.length > 0) {
-    const variables = Object.keys(data[0]);
-    variables.map(function(variable) {
+    const variables = Object.keys(data[0]).map(function(variable) {
       //change from string to object
       var varObj = { value_col: variable };
 
@@ -126,6 +125,7 @@ export function makeSummary(codebook) {
           else g.statistics = summarize.continuous(g.values, sub);
         });
       }
+      return varObj;
     });
 
     codebook.data.summary = variables;

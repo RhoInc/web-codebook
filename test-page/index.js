@@ -11,7 +11,13 @@ document.onreadystatechange = function() {
           {
             value_col: 'USUBJID',
             label: 'Subject ID',
-            description: 'Unique Identifier'
+            description: 'Unique Identifier',
+            Type: 'categorical'
+          },
+          {
+            value_col: 'SITEID',
+            label: 'Site ID',
+            type: 'continuous'
           }
         ]
       };

@@ -2914,7 +2914,7 @@
           return !f.hidden;
         })
         .filter(function(f) {
-          return f.key != 'Type';
+          return f.key.toLowerCase() != 'type';
         }).length > 0;
     if (hasMeta) {
       var meta_list = d3$1
@@ -4019,8 +4019,7 @@
     var group = codebook.config.group;
 
     if (codebook.data.filtered.length > 0) {
-      var variables = Object.keys(data[0]);
-      variables.map(function(variable) {
+      var variables = Object.keys(data[0]).map(function(variable) {
         //change from string to object
         var varObj = { value_col: variable };
 
@@ -4153,6 +4152,7 @@
             else g.statistics = summarize.continuous(g.values, sub);
           });
         }
+        return varObj;
       });
 
       codebook.data.summary = variables;
