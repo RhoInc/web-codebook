@@ -8,12 +8,12 @@ export function makeSummary(codebook) {
 
   if (codebook.data.filtered.length > 0) {
     const variables = Object.keys(data[0]);
-    variables.forEach(function(variable, i) {
+    variables.map(function(variable) {
       //change from string to object
-      variables[i] = { value_col: variable };
+      var varObj = { value_col: variable };
 
       //get a list of raw values
-      variables[i].values = data.map(d => {
+      varObj.values = data.map(d => {
         var current = {
           index: d['web-codebook-index'],
           value: d[variable],
@@ -27,19 +27,12 @@ export function makeSummary(codebook) {
         return current;
       });
 
-      //get variable type
-      variables[i].type = summarize.determineType(
-        variables[i].values,
-        codebook.config.levelSplit
-      );
-
       //get hidden status
-      variables[i].hidden =
-        codebook.config.hiddenVariables.indexOf(variable) > -1;
-      variables[i].chartVisibility = codebook.config.chartVisibility;
+      varObj.hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
+      varObj.chartVisibility = codebook.config.chartVisibility;
 
       //get variable label
-      variables[i].label =
+      varObj.label =
         codebook.config.variableLabels
           .map(variableLabel => variableLabel.value_col)
           .indexOf(variable) > -1
@@ -49,17 +42,30 @@ export function makeSummary(codebook) {
           : variable;
 
       // Add metadata Object
-      variables[i].meta = [{ key: 'Type', value: variables[i].type }];
-
+      varObj.userType = 'none'; //we will update in loop below if meta.type is specified
+      varObj.meta = [];
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);
       if (metaMatch.length == 1) {
         var metaKeys = Object.keys(metaMatch[0]).filter(
           f => ['value_col', 'label'].indexOf(f) === -1
         );
         metaKeys.forEach(function(m) {
-          variables[i].meta.push({ key: m, value: metaMatch[0][m] });
+          varObj.meta.push({ key: m, value: metaMatch[0][m] });
+          if (m.toLowerCase() == 'type') {
+            if (metaMatch[0][m].toLowerCase() == 'continuous') {
+              varObj.userType = 'continuous';
+            } else if (metaMatch[0][m].toLowerCase() == 'categorical') {
+              varObj.userType = 'categorical';
+            }
+          }
         });
       }
+
+      //Determine Type
+      varObj.type =
+        varObj.userType == 'none'
+          ? summarize.determineType(varObj.values, codebook.config.levelSplit)
+          : varObj.userType;
 
       //calculate variable statistics (including for highlights - if any)
       var sub =
@@ -68,28 +74,27 @@ export function makeSummary(codebook) {
               return d.highlighted;
             }
           : null;
-      variables[i].statistics =
-        variables[i].type === 'continuous'
-          ? summarize.continuous(variables[i].values, sub)
-          : summarize.categorical(variables[i].values, sub);
+      varObj.statistics =
+        varObj.type === 'continuous'
+          ? summarize.continuous(varObj.values, sub)
+          : summarize.categorical(varObj.values, sub);
 
       //get chart type
-      variables[i].chartType =
-        variables[i].type == 'continuous'
+      varObj.chartType =
+        varObj.type == 'continuous'
           ? 'histogramBoxPlot'
-          : (variables[i].type == 'categorical') &
-            (variables[i].statistics.values.length > codebook.config.levelSplit)
+          : (varObj.type == 'categorical') &
+            (varObj.statistics.values.length > codebook.config.levelSplit)
             ? 'verticalBars'
-            : (variables[i].type == 'categorical') &
-              (variables[i].statistics.values.length <=
-                codebook.config.levelSplit)
+            : (varObj.type == 'categorical') &
+              (varObj.statistics.values.length <= codebook.config.levelSplit)
               ? 'horizontalBars'
               : 'error';
 
       //Handle groups.
       if (group) {
-        variables[i].group = group;
-        variables[i].groupLabel =
+        varObj.group = group;
+        varObj.groupLabel =
           codebook.config.variableLabels
             .map(variableLabel => variableLabel.value_col)
             .indexOf(group) > -1
@@ -97,13 +102,13 @@ export function makeSummary(codebook) {
                 variableLabel => variableLabel.value_col === group
               )[0].label
             : group;
-        variables[i].groups = d3set(data.map(d => d[group]))
+        varObj.groups = d3set(data.map(d => d[group]))
           .values()
           .map(g => {
             return { group: g };
           });
 
-        variables[i].groups.forEach(g => {
+        varObj.groups.forEach(g => {
           //Define variable metadata and generate data array.
           g.value_col = variable;
           g.values = data.filter(d => d[group] === g.group).map(d => {
@@ -113,10 +118,10 @@ export function makeSummary(codebook) {
               highlighted: codebook.data.highlighted.indexOf(d) > -1
             };
           });
-          g.type = variables[i].type;
+          g.type = varObj.type;
 
           //Calculate statistics.
-          if (variables[i].type === 'categorical')
+          if (varObj.type === 'categorical')
             g.statistics = summarize.categorical(g.values, sub);
           else g.statistics = summarize.continuous(g.values, sub);
         });
@@ -124,7 +129,6 @@ export function makeSummary(codebook) {
     });
 
     codebook.data.summary = variables;
-    console.log(codebook);
     //get bin counts
     codebook.util.getBinCounts(codebook);
   } else {
