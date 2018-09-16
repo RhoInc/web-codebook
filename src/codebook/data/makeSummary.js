@@ -41,7 +41,7 @@ export function makeSummary(codebook) {
           : variable;
 
       // Add metadata Object
-      varObj.userType = 'none'; //we will update in loop below if meta.type is specified
+      varObj.userType = 'automatic'; //we will update in loop below if meta.type is specified
       varObj.meta = [];
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);
       if (metaMatch.length == 1) {
@@ -62,7 +62,7 @@ export function makeSummary(codebook) {
 
       //Determine Type
       varObj.type =
-        varObj.userType == 'none'
+        varObj.userType == 'automatic'
           ? summarize.determineType(varObj.values, codebook.config.levelSplit)
           : varObj.userType;
 

@@ -8,7 +8,7 @@ export function layout(codebook) {
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
     labeledColumns = codebook.config.variableLabels.map(d => d.value_col),
-    columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
+    columnTableColumns = ['Column', 'Label', 'Type', 'Group', 'Filter', 'Hide'],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
@@ -19,6 +19,13 @@ export function layout(codebook) {
               ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
                   .label
               : ''
+        },
+        Type: {
+          type: 'text',
+          userType: codebook.data.summary.filter(f => f.value_col == column)[0]
+            .userType,
+          autoType: codebook.data.summary.filter(f => f.value_col == column)[0]
+            .type
         },
         Group: {
           type: 'checkbox',
@@ -81,6 +88,25 @@ export function layout(codebook) {
               .attr('type', d.value.type)
               .property('value', d.value.label)
               .on('change', () => updateSettings(codebook, d.key));
+            break;
+          case 'Type':
+            cell.attr('title', 'Specify Variable Type');
+            const typeSelect = cell
+              .append('select')
+              .on('change', () => updateSettings(codebook, d.key));
+            var typeOptions = [
+              'automatic (' + d.value.autoType + ')',
+              'continuous',
+              'categorical'
+            ];
+
+            typeSelect
+              .selectAll('option')
+              .data(typeOptions)
+              .enter()
+              .append('option')
+              .property('selected', opt => opt == d.value.userType)
+              .text(opt => opt);
             break;
           default:
             cell.attr(

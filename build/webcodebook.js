@@ -4055,7 +4055,7 @@
             : variable;
 
         // Add metadata Object
-        varObj.userType = 'none'; //we will update in loop below if meta.type is specified
+        varObj.userType = 'automatic'; //we will update in loop below if meta.type is specified
         varObj.meta = [];
         var metaMatch = codebook.config.meta.filter(function(f) {
           return f.value_col == variable;
@@ -4078,7 +4078,7 @@
 
         //Determine Type
         varObj.type =
-          varObj.userType == 'none'
+          varObj.userType == 'automatic'
             ? summarize.determineType(varObj.values, codebook.config.levelSplit)
             : varObj.userType;
 
@@ -4271,7 +4271,14 @@
       labeledColumns = codebook.config.variableLabels.map(function(d) {
         return d.value_col;
       }),
-      columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
+      columnTableColumns = [
+        'Column',
+        'Label',
+        'Type',
+        'Group',
+        'Filter',
+        'Hide'
+      ],
       columnMetadata = columns.map(function(column) {
         var columnDatum = {
           Column: column,
@@ -4282,6 +4289,15 @@
                 ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
                     .label
                 : ''
+          },
+          Type: {
+            type: 'text',
+            userType: codebook.data.summary.filter(function(f) {
+              return f.value_col == column;
+            })[0].userType,
+            autoType: codebook.data.summary.filter(function(f) {
+              return f.value_col == column;
+            })[0].type
           },
           Group: {
             type: 'checkbox',
@@ -4353,6 +4369,29 @@
                 .property('value', d.value.label)
                 .on('change', function() {
                   return updateSettings(codebook, d.key);
+                });
+              break;
+            case 'Type':
+              cell.attr('title', 'Specify Variable Type');
+              var typeSelect = cell.append('select').on('change', function() {
+                return updateSettings(codebook, d.key);
+              });
+              var typeOptions = [
+                'automatic (' + d.value.autoType + ')',
+                'continuous',
+                'categorical'
+              ];
+
+              typeSelect
+                .selectAll('option')
+                .data(typeOptions)
+                .enter()
+                .append('option')
+                .property('selected', function(opt) {
+                  return opt == d.value.userType;
+                })
+                .text(function(opt) {
+                  return opt;
                 });
               break;
             default:
