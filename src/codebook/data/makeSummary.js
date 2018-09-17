@@ -50,6 +50,14 @@ export function makeSummary(codebook) {
             )[0].type
           : summarize.determineType(varObj.values, codebook.config.levelSplit);
 
+      // update missingness for non-numeric values in continuous columns
+      if (varObj.type == 'continuous') {
+        varObj.values.forEach(function(d, i) {
+          d.numeric = !isNaN(+d.value);
+          d.missing = d.missing || !d.numeric;
+        });
+      }
+
       // Add metadata Object
       varObj.meta = [];
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);

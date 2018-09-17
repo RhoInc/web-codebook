@@ -4030,9 +4030,7 @@
     statistics.N = vector.length;
     var nonMissing = vector
       .filter(function(d) {
-        return function(d) {
-          return !d.missing;
-        };
+        return !d.missing;
       })
       .map(function(d) {
         return +d.value;
@@ -4154,6 +4152,14 @@
                 varObj.values,
                 codebook.config.levelSplit
               );
+
+        // update missingness for non-numeric values in continuous columns
+        if (varObj.type == 'continuous') {
+          varObj.values.forEach(function(d, i) {
+            d.numeric = !isNaN(+d.value);
+            d.missing = d.missing || !d.numeric;
+          });
+        }
 
         // Add metadata Object
         varObj.meta = [];
