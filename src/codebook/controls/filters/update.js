@@ -18,7 +18,9 @@ export function update(codebook) {
         })
         .entries(codebook.data.raw)
         .map(function(d) {
-          return { value: d.key, selected: true };
+          var obj = { value: d.key, selected: true };
+          obj.label = /^\s*$/.test(d.key) ? '[No value provided]' : d.key;
+          return obj;
         });
     e.label = codebook.data.summary.filter(
       d => d.value_col === e.value_col
@@ -69,7 +71,8 @@ export function update(codebook) {
     .enter()
     .append('option')
     .html(function(d) {
-      return d.value;
+      console.log(d);
+      return d.label;
     })
     .attr('value', function(d) {
       return d.value;

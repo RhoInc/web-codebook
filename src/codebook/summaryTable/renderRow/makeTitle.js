@@ -68,6 +68,11 @@ export default function makeTitle(d) {
     .style('color', d => (d.statistics.percentMissing >= 0.1 ? 'red' : '#999'))
     .attr(
       'title',
-      d => d.statistics.nMissing + ' of ' + d.statistics.N + ' missing'
+      d =>
+        d.statistics.nMissing +
+        ' of ' +
+        d.statistics.N +
+        ' missing. Missing values include:\n' +
+        d.missingSummary
     );
 }

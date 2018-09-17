@@ -58,6 +58,23 @@ export function makeSummary(codebook) {
         });
       }
 
+      //create a list of missing values
+      const missings = varObj.values.filter(f => f.missing).map(m => m.value);
+      if (missings.length) {
+        varObj.missingList = d3
+          .nest()
+          .key(d => d)
+          .rollup(d => d.length)
+          .entries(missings)
+          .sort((a, b) => b.values - a.values);
+
+        varObj.missingSummary = varObj.missingList
+          .map(m => '"' + m.key + '" (n=' + m.values + ')')
+          .join('\n');
+      } else {
+        varObj.missingList = [];
+      }
+
       // Add metadata Object
       varObj.meta = [];
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);

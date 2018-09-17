@@ -501,7 +501,9 @@
           })
           .entries(codebook.data.raw)
           .map(function(d) {
-            return { value: d.key, selected: true };
+            var obj = { value: d.key, selected: true };
+            obj.label = /^\s*$/.test(d.key) ? '[No value provided]' : d.key;
+            return obj;
           });
       e.label = codebook.data.summary.filter(function(d) {
         return d.value_col === e.value_col;
@@ -557,7 +559,8 @@
       .enter()
       .append('option')
       .html(function(d) {
-        return d.value;
+        console.log(d);
+        return d.label;
       })
       .attr('value', function(d) {
         return d.value;
@@ -3103,7 +3106,13 @@
         return d.statistics.percentMissing >= 0.1 ? 'red' : '#999';
       })
       .attr('title', function(d) {
-        return d.statistics.nMissing + ' of ' + d.statistics.N + ' missing';
+        return (
+          d.statistics.nMissing +
+          ' of ' +
+          d.statistics.N +
+          ' missing. Missing values include:\n' +
+          d.missingSummary
+        );
       });
   }
 
@@ -4159,6 +4168,37 @@
             d.numeric = !isNaN(+d.value);
             d.missing = d.missing || !d.numeric;
           });
+        }
+
+        //create a list of missing values
+        var missings = varObj.values
+          .filter(function(f) {
+            return f.missing;
+          })
+          .map(function(m) {
+            return m.value;
+          });
+        if (missings.length) {
+          varObj.missingList = d3
+            .nest()
+            .key(function(d) {
+              return d;
+            })
+            .rollup(function(d) {
+              return d.length;
+            })
+            .entries(missings)
+            .sort(function(a, b) {
+              return b.values - a.values;
+            });
+
+          varObj.missingSummary = varObj.missingList
+            .map(function(m) {
+              return '"' + m.key + '" (n=' + m.values + ')';
+            })
+            .join('\n');
+        } else {
+          varObj.missingList = [];
         }
 
         // Add metadata Object
