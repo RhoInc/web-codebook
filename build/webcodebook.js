@@ -3989,7 +3989,7 @@
 
     statistics.Unique = d3$1
       .set(
-        vector.map(function(d) {
+        nonMissing.map(function(d) {
           return d.value;
         })
       )

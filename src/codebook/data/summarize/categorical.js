@@ -29,7 +29,7 @@ export default function categorical(vector, sub) {
     })
     .entries(nonMissing);
 
-  statistics.Unique = d3set(vector.map(d => d.value)).values().length;
+  statistics.Unique = d3set(nonMissing.map(d => d.value)).values().length;
 
   statistics.values.forEach(value => {
     for (var statistic in value.values) {
