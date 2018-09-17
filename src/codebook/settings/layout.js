@@ -8,13 +8,14 @@ export function layout(codebook) {
     filterColumns = codebook.config.filters.map(d => d.value_col),
     hiddenColumns = codebook.config.hiddenVariables,
     labeledColumns = codebook.config.variableLabels.map(d => d.value_col),
+    typedColumns = codebook.config.variableTypes.map(d => d.value_col),
     columnTableColumns = ['Column', 'Label', 'Type', 'Group', 'Filter', 'Hide'],
     columnMetadata = columns.map(column => {
       const columnDatum = {
         Column: column,
         Label: {
           type: 'text',
-          label:
+          value:
             labeledColumns.indexOf(column) > -1
               ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
                   .label
@@ -22,8 +23,10 @@ export function layout(codebook) {
         },
         Type: {
           type: 'text',
-          userType: codebook.data.summary.filter(f => f.value_col == column)[0]
-            .userType,
+          value:
+            typedColumns.indexOf(column) > -1
+              ? codebook.config.variableTypes[typedColumns.indexOf(column)].type
+              : '',
           autoType: codebook.data.summary.filter(f => f.value_col == column)[0]
             .type
         },
@@ -86,7 +89,7 @@ export function layout(codebook) {
             cell
               .append('input')
               .attr('type', d.value.type)
-              .property('value', d.value.label)
+              .property('value', d.value.value)
               .on('change', () => updateSettings(codebook, d.key));
             break;
           case 'Type':
@@ -105,7 +108,7 @@ export function layout(codebook) {
               .data(typeOptions)
               .enter()
               .append('option')
-              .property('selected', opt => opt == d.value.userType)
+              .property('selected', opt => opt == d.value.value)
               .text(opt => opt);
             break;
           default:

@@ -11,7 +11,9 @@ export default function updateSettings(codebook, column) {
           ? 'filters'
           : column === 'Hide'
             ? 'hiddenVariables'
-            : console.warn('Something unsetting has occurred...');
+            : column === 'Type'
+              ? 'variableTypes'
+              : console.warn('Something unsetting has occurred...');
   const inputs = codebook.settings.wrap.selectAll(`.column-table td.${column}`);
   if (['Group', 'Filter', 'Hide'].indexOf(column) > -1) {
     //redefine settings array
@@ -25,19 +27,28 @@ export default function updateSettings(codebook, column) {
       .map(d => {
         return column !== 'Hide' ? { value_col: d.column } : d.column;
       });
-  } else if (['Label'].indexOf(column) > -1) {
+  } else if (['Label', 'Type'].indexOf(column) > -1) {
     //redefine settings array
-    codebook.config[setting] = inputs
+    var inputType = column == 'Label' ? 'input' : 'select';
+    var currentValues = inputs
       .filter(function(d) {
-        d.value.label = d3select(this)
-          .select('input')
+        d.value.value = d3select(this)
+          .select(inputType)
           .property('value');
-        return d.value.label !== '';
+        return d.value.value !== '';
       })
       .data()
       .map(d => {
-        return { value_col: d.column, label: d.value.label };
+        var obj = { value_col: d.column };
+        obj[column.toLowerCase()] = d.value.value;
+        return obj;
       });
+    console.log(currentValues);
+    if (column == 'Type') {
+      currentValues = currentValues.filter(f => f.type.slice(0, 4) != 'auto');
+    }
+    console.log(currentValues);
+    codebook.config[setting] = currentValues;
   }
 
   //reset

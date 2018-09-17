@@ -40,8 +40,17 @@ export function makeSummary(codebook) {
             )[0].label
           : variable;
 
+      //Determine Type
+      varObj.type =
+        codebook.config.variableTypes
+          .map(variableType => variableType.value_col)
+          .indexOf(variable) > -1
+          ? codebook.config.variableTypes.filter(
+              variableLabel => variableLabel.value_col === variable
+            )[0].type
+          : summarize.determineType(varObj.values, codebook.config.levelSplit);
+
       // Add metadata Object
-      varObj.userType = 'automatic'; //we will update in loop below if meta.type is specified
       varObj.meta = [];
       var metaMatch = codebook.config.meta.filter(f => f.value_col == variable);
       if (metaMatch.length == 1) {
@@ -50,21 +59,8 @@ export function makeSummary(codebook) {
         );
         metaKeys.forEach(function(m) {
           varObj.meta.push({ key: m, value: metaMatch[0][m] });
-          if (m.toLowerCase() == 'type') {
-            if (metaMatch[0][m].toLowerCase() == 'continuous') {
-              varObj.userType = 'continuous';
-            } else if (metaMatch[0][m].toLowerCase() == 'categorical') {
-              varObj.userType = 'categorical';
-            }
-          }
         });
       }
-
-      //Determine Type
-      varObj.type =
-        varObj.userType == 'automatic'
-          ? summarize.determineType(varObj.values, codebook.config.levelSplit)
-          : varObj.userType;
 
       //calculate variable statistics (including for highlights - if any)
       var sub =
