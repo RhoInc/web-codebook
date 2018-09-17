@@ -43,11 +43,9 @@ export default function updateSettings(codebook, column) {
         obj[column.toLowerCase()] = d.value.value;
         return obj;
       });
-    console.log(currentValues);
     if (column == 'Type') {
       currentValues = currentValues.filter(f => f.type.slice(0, 4) != 'auto');
     }
-    console.log(currentValues);
     codebook.config[setting] = currentValues;
   }
 
