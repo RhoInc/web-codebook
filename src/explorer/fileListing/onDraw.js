@@ -8,8 +8,7 @@ export function onDraw() {
     this.table
       .select('tbody')
       .selectAll('tr')
-      .filter(f => f.fileID === explorer.current.fileID)
-      .classed('selected', true);
+      .classed('selected', f => f.fileID === explorer.current.fileID);
 
     //Linkify the labelColumn
     var labelCells = this.table
