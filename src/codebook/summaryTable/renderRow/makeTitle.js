@@ -46,11 +46,17 @@ export default function makeTitle(d) {
   */
 
   //add sparklines
-  d3select(this)
+  var sparkDiv = d3select(this)
     .append('div')
     .attr('class', 'spark')
     .datum(d)
     .each(createSpark);
+
+  sparkDiv
+    .insert('span', '*')
+    .attr('class', d => (d.type == 'continuous' ? 'sparkLabel' : ''))
+    .text(d => (d.type == 'continuous' ? '#' : null))
+    .attr('title', 'Contiuous column');
 
   //add percent missing (if > 0%)
   d3select(this)

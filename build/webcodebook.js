@@ -3070,12 +3070,22 @@
   */
 
     //add sparklines
-    d3$1
+    var sparkDiv = d3$1
       .select(this)
       .append('div')
       .attr('class', 'spark')
       .datum(d)
       .each(createSpark);
+
+    sparkDiv
+      .insert('span', '*')
+      .attr('class', function(d) {
+        return d.type == 'continuous' ? 'sparkLabel' : '';
+      })
+      .text(function(d) {
+        return d.type == 'continuous' ? '#' : null;
+      })
+      .attr('title', 'Contiuous column');
 
     //add percent missing (if > 0%)
     d3$1
