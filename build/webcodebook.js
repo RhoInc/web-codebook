@@ -4559,15 +4559,18 @@
   var defaultSettings$3 = {
     ignoredColumns: [],
     meta: [],
+    defaultCodebookSettings: {},
     tableConfig: {
       sortable: false,
       searchable: false,
       pagination: false,
       exportable: false
-    }
+    },
+    fileLoader: false
   };
 
-  function setDefaults$1(explorer) {
+  function setDefaults$1() {
+    var explorer = this;
     /********************* meta *********************/
     explorer.config.meta = explorer.config.meta || defaultSettings$3.meta;
 
@@ -4583,9 +4586,26 @@
     explorer.config.tableConfig =
       explorer.config.tableConfig || defaultSettings$3.tableConfig;
 
+    //drop ignoredColumns and system variables
+    explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
+      .filter(function(f) {
+        return explorer.config.ignoredColumns.indexOf(f) == -1;
+      })
+      .filter(function(f) {
+        return (
+          ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+        );
+      }); //drop system variables from table
+
+    /********************* defaultCodebookSettings ***************/
+    explorer.config.defaultCodebookSettings =
+      explorer.config.defaultCodebookSettings ||
+      defaultSettings$3.defaultCodebookSettings;
+
     /********************* files[].settings ***************/
-    explorer.config.files.forEach(function(f) {
-      f.settings = f.settings || {};
+    explorer.config.files.forEach(function(f, i) {
+      f.settings = f.settings || explorer.config.defaultCodebookSettings;
+      f.fileID = i;
     });
   }
 
@@ -4594,7 +4614,10 @@
 \------------------------------------------------------------------------------------------------*/
 
   function init$14() {
-    setDefaults$1(this);
+    this.events.init.call(this);
+
+    //set the defailts
+    setDefaults$1.call(this);
 
     //prepare to draw the codebook for the first file
     this.current = this.config.files[0];
@@ -4607,10 +4630,10 @@
       .attr('class', 'web-codebook-explorer');
 
     //layout the divs
-    this.layout(this);
+    this.layout.call(this);
 
     //draw first codebook
-    this.makeCodebook(this);
+    this.makeCodebook.call(this);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -4621,19 +4644,17 @@
     this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
   }
 
-  function onDraw$1(explorer) {
+  function onDraw$1() {
+    var explorer = this;
+
     explorer.codebook.fileListing.table.on('draw', function() {
       //highlight the current row
       this.table
         .select('tbody')
         .selectAll('tr')
-        .filter(function(f) {
-          return (
-            f[explorer.config.labelColumn] ===
-            explorer.current[explorer.config.labelColumn]
-          );
-        })
-        .classed('selected', true);
+        .classed('selected', function(f) {
+          return f.fileID === explorer.current.fileID;
+        });
 
       //Linkify the labelColumn
       var labelCells = this.table
@@ -4651,7 +4672,9 @@
     });
   }
 
-  function init$15(explorer) {
+  function init$15() {
+    var explorer = this;
+
     var fileWrap = explorer.codebook.fileListing.wrap;
     fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -4659,15 +4682,6 @@
     var file_select_wrap = fileWrap
       .append('div')
       .classed('listing-container', true);
-
-    //drop ignoredColumns and system variables
-    explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
-      .filter(function(f) {
-        return explorer.config.ignoredColumns.indexOf(f) == -1;
-      })
-      .filter(function(f) {
-        return ['settings', 'selected', 'event', 'json'].indexOf(f) == -1;
-      }); //drop system variables from table
 
     //Create the table
     explorer.codebook.fileListing.table = webcharts.createTable(
@@ -4684,7 +4698,7 @@
     });
 
     //assign callbacks and initialize
-    onDraw$1(explorer);
+    onDraw$1.call(explorer);
     explorer.codebook.fileListing.table.init(sortedFiles);
   }
 
@@ -4696,8 +4710,97 @@
     init: init$15
   };
 
-  function makeCodebook(explorer) {
+  function addFile(label, csv_raw) {
+    var explorer = this;
+
+    // parse the file object
+    this.newFileObject = {};
+    this.newFileObject[explorer.config.labelColumn] = label;
+    this.newFileObject.json = d3.csv.parse(csv_raw);
+    this.newFileObject.settings = {};
+    this.newFileObject.fileID = explorer.config.files.length + 1;
+
+    //call the addFile event (if any)
+    explorer.events.addFile.call(this);
+
+    //add new files to file list
+    this.config.files = d3$1.merge([
+      [explorer.newFileObject],
+      this.config.files
+    ]);
+
+    //re-draw the file listing
+    explorer.codebook.fileListing.table.draw(this.config.files);
+  }
+
+  function initFileLoad() {
+    //draw the control
+    var explorer = this;
+    explorer.dataFileLoad = {};
+    explorer.dataFileLoad.wrap = explorer.codebook.fileListing.wrap
+      .insert('div', '*')
+      .attr('class', 'dataLoader');
+
+    explorer.dataFileLoad.wrap.append('span').text('Add a local .csv file: ');
+
+    explorer.dataFileLoad.loader_wrap = explorer.dataFileLoad.wrap
+      .append('label')
+      .attr('class', 'file-load-label');
+
+    explorer.dataFileLoad.loader_label = explorer.dataFileLoad.loader_wrap
+      .append('span')
+      .text('Choose a File');
+
+    explorer.dataFileLoad.loader_input = explorer.dataFileLoad.loader_wrap
+      .append('input')
+      .attr('type', 'file')
+      .attr('class', 'file-load-input')
+      .on('change', function() {
+        var files = this.files;
+        explorer.dataFileLoad.loader_label.text(files[0].name);
+
+        if (this.value.slice(-4).toLowerCase() == '.csv') {
+          loadStatus.text(' loading ...').style('color', 'green');
+          var fr = new FileReader();
+          fr.onload = function(e) {
+            // get the current date/time
+            var d = new Date();
+            var n = d3.time.format('%X')(d);
+
+            addFile.call(explorer, files[0].name, e.target.result);
+
+            //clear the file input
+            loadStatus.text('Loaded.').style('color', 'green');
+            explorer.dataFileLoad.loader_input.property('value', '');
+          };
+
+          fr.readAsText(files.item(0));
+        } else {
+          loadStatus
+            .text("Can't Load. File is not a csv.")
+            .style('color', 'red');
+        }
+      });
+
+    var loadStatus = explorer.dataFileLoad.wrap
+      .append('span')
+      .attr('class', 'loadStatus')
+      .text('');
+
+    loadStatus
+      .append('sup')
+      .html('&#9432;')
+      .property(
+        'title',
+        'Create a codebook for a local file. File is added to the data set list, and is only available for a single session and is not saved.'
+      )
+      .style('cursor', 'help');
+  }
+
+  function makeCodebook() {
     var _this = this;
+
+    var explorer = this;
 
     explorer.codebookWrap.selectAll('*').remove();
 
@@ -4738,7 +4841,10 @@
     );
 
     explorer.codebook.on('complete', function() {
-      explorer.fileListing.init(explorer);
+      explorer.fileListing.init.call(explorer);
+      if (explorer.config.fileLoader) {
+        initFileLoad.call(explorer);
+      }
     });
 
     if (this.current.json) {
@@ -4750,20 +4856,9 @@
     } else {
       alert('No data provided for the selected file.');
     }
-  }
 
-  function addFiles(files) {
-    var explorer = this;
-    //remove duplicates
-    var newFiles = files.filter(function(f) {
-      return explorer.config.files.indexOf(f) == -1;
-    });
-
-    //add new files to file list
-    this.config.files = d3$1.merge([this.config.files, newFiles]);
-
-    //re-draw the file listing
-    explorer.codebook.fileListing.table.draw(this.config.files);
+    //call the makeCodebook event (if any)
+    explorer.events.makeCodebook.call(this);
   }
 
   function createExplorer() {
@@ -4780,7 +4875,23 @@
       layout: layout$2,
       fileListing: fileListing,
       makeCodebook: makeCodebook,
-      addFiles: addFiles
+      addFile: addFile
+    };
+
+    explorer.events = {
+      init: function init() {},
+      addFile: function addFile$$1() {},
+      makeCodebook: function makeCodebook$$1() {}
+    };
+
+    explorer.on = function(event, callback) {
+      var possible_events = ['init', 'addFile', 'makeCodebook'];
+      if (possible_events.indexOf(event) < 0) {
+        return;
+      }
+      if (callback) {
+        explorer.events[event] = callback;
+      }
     };
 
     return explorer;

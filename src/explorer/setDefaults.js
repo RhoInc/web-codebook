@@ -1,6 +1,7 @@
 import defaultSettings from './defaultSettings';
 
-export function setDefaults(explorer) {
+export function setDefaults() {
+  var explorer = this;
   /********************* meta *********************/
   explorer.config.meta = explorer.config.meta || defaultSettings.meta;
 
@@ -16,8 +17,21 @@ export function setDefaults(explorer) {
   explorer.config.tableConfig =
     explorer.config.tableConfig || defaultSettings.tableConfig;
 
+  //drop ignoredColumns and system variables
+  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
+    .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
+    .filter(
+      f => ['fileID', 'settings', 'selected', 'event', 'json'].indexOf(f) == -1
+    ); //drop system variables from table
+
+  /********************* defaultCodebookSettings ***************/
+  explorer.config.defaultCodebookSettings =
+    explorer.config.defaultCodebookSettings ||
+    defaultSettings.defaultCodebookSettings;
+
   /********************* files[].settings ***************/
-  explorer.config.files.forEach(function(f) {
-    f.settings = f.settings || {};
+  explorer.config.files.forEach(function(f, i) {
+    f.settings = f.settings || explorer.config.defaultCodebookSettings;
+    f.fileID = i;
   });
 }

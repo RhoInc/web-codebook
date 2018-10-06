@@ -2,7 +2,7 @@ import { init } from './explorer/init';
 import { layout } from './explorer/layout';
 import { fileListing } from './explorer/fileListing';
 import { makeCodebook } from './explorer/makeCodebook';
-import { addFiles } from './explorer/addFiles';
+import { addFile } from './explorer/addFile';
 
 export function createExplorer(element = 'body', config) {
   let explorer = {
@@ -12,7 +12,23 @@ export function createExplorer(element = 'body', config) {
     layout: layout,
     fileListing: fileListing,
     makeCodebook: makeCodebook,
-    addFiles: addFiles
+    addFile: addFile
+  };
+
+  explorer.events = {
+    init() {},
+    addFile() {},
+    makeCodebook() {}
+  };
+
+  explorer.on = function(event, callback) {
+    let possible_events = ['init', 'addFile', 'makeCodebook'];
+    if (possible_events.indexOf(event) < 0) {
+      return;
+    }
+    if (callback) {
+      explorer.events[event] = callback;
+    }
   };
 
   return explorer;

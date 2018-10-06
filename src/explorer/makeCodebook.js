@@ -1,7 +1,10 @@
 import { csv as d3csv } from 'd3';
 import { merge as d3merge } from 'd3';
+import { initFileLoad } from './initFileLoad';
 
-export function makeCodebook(explorer) {
+export function makeCodebook() {
+  var explorer = this;
+
   explorer.codebookWrap.selectAll('*').remove();
 
   //add the Files section to the nav for each config
@@ -39,7 +42,10 @@ export function makeCodebook(explorer) {
   );
 
   explorer.codebook.on('complete', function() {
-    explorer.fileListing.init(explorer);
+    explorer.fileListing.init.call(explorer);
+    if (explorer.config.fileLoader) {
+      initFileLoad.call(explorer);
+    }
   });
 
   if (this.current.json) {
@@ -51,4 +57,7 @@ export function makeCodebook(explorer) {
   } else {
     alert('No data provided for the selected file.');
   }
+
+  //call the makeCodebook event (if any)
+  explorer.events.makeCodebook.call(this);
 }

@@ -1,6 +1,8 @@
 import { createTable } from 'webcharts';
 import { onDraw } from './onDraw';
-export function init(explorer) {
+export function init() {
+  var explorer = this;
+
   var fileWrap = explorer.codebook.fileListing.wrap;
   fileWrap.selectAll('*').remove(); //Clear controls.
 
@@ -8,11 +10,6 @@ export function init(explorer) {
   var file_select_wrap = fileWrap
     .append('div')
     .classed('listing-container', true);
-
-  //drop ignoredColumns and system variables
-  explorer.config.tableConfig.cols = Object.keys(explorer.config.files[0])
-    .filter(f => explorer.config.ignoredColumns.indexOf(f) == -1)
-    .filter(f => ['settings', 'selected', 'event', 'json'].indexOf(f) == -1); //drop system variables from table
 
   //Create the table
   explorer.codebook.fileListing.table = createTable(
@@ -27,6 +24,6 @@ export function init(explorer) {
   });
 
   //assign callbacks and initialize
-  onDraw(explorer);
+  onDraw.call(explorer);
   explorer.codebook.fileListing.table.init(sortedFiles);
 }

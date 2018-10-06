@@ -1,17 +1,14 @@
 import { select as d3select } from 'd3';
 
-export function onDraw(explorer) {
+export function onDraw() {
+  var explorer = this;
+
   explorer.codebook.fileListing.table.on('draw', function() {
     //highlight the current row
     this.table
       .select('tbody')
       .selectAll('tr')
-      .filter(
-        f =>
-          f[explorer.config.labelColumn] ===
-          explorer.current[explorer.config.labelColumn]
-      )
-      .classed('selected', true);
+      .classed('selected', f => f.fileID === explorer.current.fileID);
 
     //Linkify the labelColumn
     var labelCells = this.table
