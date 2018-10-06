@@ -25,7 +25,7 @@ function cleanData() {
   });
 }
 
-function initExplorer(fileList,settings) {
+function initExplorer(fileList, settings) {
   d3.csv(
     'https://rawgit.com/RhoInc/viz-library/master/data/safetyData/variableMetaData.csv',
     function(error, meta) {
@@ -56,16 +56,20 @@ var settings = {
 };
 
 document.onreadystatechange = function() {
-
   initExplorer(dataFiles, settings);
-  d3.select("body").append("p").text("Settings:")
-  d3.select("body").append("textarea")
-  .property("rows","10")
-  .property("cols",'100')
-  .property("value",JSON.stringify(settings))
-  .on("change",function(){
-    delete explorer;
-    d3.select("#container").selectAll("*").remove()
-    initExplorer(dataFiles, JSON.parse(this.value));
-  })
+  d3.select('body')
+    .append('p')
+    .text('Settings:');
+  d3.select('body')
+    .append('textarea')
+    .property('rows', '10')
+    .property('cols', '100')
+    .property('value', JSON.stringify(settings))
+    .on('change', function() {
+      delete explorer;
+      d3.select('#container')
+        .selectAll('*')
+        .remove();
+      initExplorer(dataFiles, JSON.parse(this.value));
+    });
 };

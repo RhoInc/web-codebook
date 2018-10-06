@@ -559,7 +559,6 @@
       .enter()
       .append('option')
       .html(function(d) {
-        console.log(d);
         return d.label;
       })
       .attr('value', function(d) {
@@ -3542,6 +3541,7 @@
     filters: [],
     groups: [],
     variableLabels: [],
+    variableTypes: [],
     hiddenVariables: [],
     meta: [],
     autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown

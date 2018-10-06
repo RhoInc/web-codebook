@@ -71,7 +71,6 @@ export function update(codebook) {
     .enter()
     .append('option')
     .html(function(d) {
-      console.log(d);
       return d.label;
     })
     .attr('value', function(d) {
