@@ -4168,7 +4168,7 @@
         // update missingness for non-numeric values in continuous columns
         if (varObj.type == 'continuous') {
           varObj.values.forEach(function(d, i) {
-            d.numeric = !isNaN(+d.value);
+            d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
             d.missing = d.missing || !d.numeric;
           });
         }
