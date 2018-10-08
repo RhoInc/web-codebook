@@ -3554,7 +3554,7 @@
     tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
     dataName: '',
     whiteSpaceAsMissing: true,
-    missingValues: ['NA', null, NaN, undefined]
+    missingValues: [null, NaN, undefined]
   };
 
   function setDefaults(codebook) {

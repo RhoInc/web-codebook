@@ -210,6 +210,22 @@
             "title": "Data Name",
             "description": "the name of the data file summarized in the codebook",
             "default": ""
+        },
+        "whiteSpaceAsMissing": {
+            "type": "boolean",
+            "title": "White space as missing",
+            "description": "White space will be treated as missing values",
+            "default": true
+        },
+        "missingValues": {
+          "type": "array",
+            "title": "missing Values",
+            "description": "Array of missing values",
+            "default": [
+                null,
+                NaN,
+                undefined
+             ]
         }
     }
 }
