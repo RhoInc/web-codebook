@@ -3687,7 +3687,7 @@
             'object',
           has_value_col = type.hasOwnProperty('value_col'),
           has_type = type.hasOwnProperty('type'),
-          legit_structure = is_object && has_value_col && has_label,
+          legit_structure = is_object && has_value_col && has_type,
           legit = legit_structure
             ? ['continuous', 'categorical'].indexOf(type.type) > -1
             : false;
