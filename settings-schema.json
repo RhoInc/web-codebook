@@ -220,12 +220,7 @@
         "missingValues": {
           "type": "array",
             "title": "missing Values",
-            "description": "Array of missing values",
-            "default": [
-                null,
-                NaN,
-                undefined
-             ]
+            "description": "Array of missing values. Note that json schema does not support the default value of [null, NaN, undefined]"
         }
     }
 }
