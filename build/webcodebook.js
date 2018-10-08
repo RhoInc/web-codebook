@@ -2949,9 +2949,13 @@
         d.color = '#999';
       });
     } else if (d.type == 'continuous') {
-      var values = d.values.map(function(m) {
-        return +m.value;
-      });
+      var values = d.values
+        .filter(function(f) {
+          return !f.missing;
+        })
+        .map(function(m) {
+          return +m.value;
+        });
       var x_linear = d3.scale
         .linear()
         .domain(d3.extent(values))
@@ -4118,7 +4122,6 @@
         var varObj = { value_col: variable };
 
         //get a list of raw values
-        console.log(config.whiteSpaceAsMissing);
         varObj.values = data.map(function(d) {
           var current = {
             index: d['web-codebook-index'],

@@ -12,7 +12,6 @@ export function makeSummary(codebook) {
       var varObj = { value_col: variable };
 
       //get a list of raw values
-      console.log(config.whiteSpaceAsMissing);
       varObj.values = data.map(d => {
         var current = {
           index: d['web-codebook-index'],

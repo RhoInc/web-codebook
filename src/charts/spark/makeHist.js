@@ -16,7 +16,7 @@ export default function makeHist(this_, d) {
       d.color = '#999';
     });
   } else if (d.type == 'continuous') {
-    var values = d.values.map(function(m) {
+    var values = d.values.filter(f => !f.missing).map(function(m) {
       return +m.value;
     });
     var x_linear = d3.scale
