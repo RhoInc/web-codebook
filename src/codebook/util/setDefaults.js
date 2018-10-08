@@ -192,7 +192,9 @@ export function setDefaults(codebook) {
 
   /********************* Missing Value Settings *********************/
   codebook.config.whiteSpaceAsMissing =
-    codebook.config.whiteSpaceAsMissing || defaultSettings.whiteSpaceAsMissing;
+    codebook.config.whiteSpaceAsMissing == undefined
+      ? defaultSettings.whiteSpaceAsMissing
+      : codebook.config.whiteSpaceAsMissing;
 
   codebook.config.missingValues =
     codebook.config.missingValues || defaultSettings.missingValues;

@@ -12,6 +12,7 @@ export function makeSummary(codebook) {
       var varObj = { value_col: variable };
 
       //get a list of raw values
+      console.log(config.whiteSpaceAsMissing);
       varObj.values = data.map(d => {
         var current = {
           index: d['web-codebook-index'],
@@ -23,6 +24,7 @@ export function makeSummary(codebook) {
           missingValue: config.missingValues.indexOf(d[variable]) > -1
         };
         current.missing = current.missingWhiteSpace || current.missingValue;
+
         return current;
       });
 

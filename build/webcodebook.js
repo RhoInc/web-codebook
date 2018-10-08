@@ -3768,8 +3768,9 @@
 
     /********************* Missing Value Settings *********************/
     codebook.config.whiteSpaceAsMissing =
-      codebook.config.whiteSpaceAsMissing ||
-      defaultSettings$1.whiteSpaceAsMissing;
+      codebook.config.whiteSpaceAsMissing == undefined
+        ? defaultSettings$1.whiteSpaceAsMissing
+        : codebook.config.whiteSpaceAsMissing;
 
     codebook.config.missingValues =
       codebook.config.missingValues || defaultSettings$1.missingValues;
@@ -4117,6 +4118,7 @@
         var varObj = { value_col: variable };
 
         //get a list of raw values
+        console.log(config.whiteSpaceAsMissing);
         varObj.values = data.map(function(d) {
           var current = {
             index: d['web-codebook-index'],
@@ -4128,6 +4130,7 @@
             missingValue: config.missingValues.indexOf(d[variable]) > -1
           };
           current.missing = current.missingWhiteSpace || current.missingValue;
+
           return current;
         });
 
