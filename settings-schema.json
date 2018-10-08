@@ -64,7 +64,7 @@
                 }
             }
         },
-        "variableType": {
+        "variableTypes": {
             "type": "array",
             "title": "Variable Type",
             "description": "an array of variable objects with both the variable name and the type of the variable",
