@@ -1,4 +1,4 @@
-import { set as d3set } from 'd3';
+import { nest, set as d3set } from 'd3';
 import summarize from './summarize/index';
 
 export function makeSummary(codebook) {
@@ -62,8 +62,7 @@ export function makeSummary(codebook) {
       //create a list of missing values
       const missings = varObj.values.filter(f => f.missing).map(m => m.value);
       if (missings.length) {
-        varObj.missingList = d3
-          .nest()
+        varObj.missingList = nest()
           .key(d => d)
           .rollup(d => d.length)
           .entries(missings)

@@ -1,6 +1,6 @@
 {
   "name": "webcodebook",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Interactive data set summaries",
   "keywords": [
     "data",
@@ -22,7 +22,7 @@
     "webcharts": "^1.10.0"
   },
   "scripts": {
-    "build": "npm run bundle && npm run format",
+    "build": "npm audit fix && npm run bundle && npm run format",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle && npm run format-test",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
@@ -35,10 +35,9 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
-    "prettier": "^1.13.3",
-    "rollup": "^0.50.1",
-    "rollup-plugin-babel": "^3.0.4",
-    "rollup-watch": "^4.3.1"
+    "prettier": "^1.14.3",
+    "rollup": "^0.66.6",
+    "rollup-plugin-babel": "^3.0.7"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"
