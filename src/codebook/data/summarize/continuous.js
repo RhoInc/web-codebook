@@ -9,7 +9,7 @@ export default function continuous(vector, sub) {
   const statistics = {};
   statistics.N = vector.length;
   const nonMissing = vector
-    .filter(d => !isNaN(+d.value) && !/^\s*$/.test(d.value))
+    .filter(d => !d.missing)
     .map(d => +d.value)
     .sort((a, b) => a - b);
   statistics.n = nonMissing.length;

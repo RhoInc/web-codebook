@@ -9,12 +9,35 @@ export function setDefaults(codebook) {
   if (codebook.config.meta.length) {
     var metaLabels = [];
     codebook.config.meta.forEach(function(m) {
-      var mKeys = Object.keys(m);
+      var mKeys = Object.keys(m).map(m => m.toLowerCase());
       if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('label') > -1)) {
         metaLabels.push({ value_col: m['value_col'], label: m['label'] });
       }
     });
     defaultSettings.variableLabels = metaLabels;
+
+    // If types are specified in the metadata, use them as the default
+    var metaTypes = [];
+    codebook.config.meta.forEach(function(m) {
+      var mKeys = Object.keys(m);
+      if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('type') > -1)) {
+        if (['categorical', 'continuous'].indexOf(m.type.toLowerCase()) > -1) {
+          metaTypes.push({
+            value_col: m['value_col'],
+            type: m['type'].toLowerCase()
+          });
+        } else {
+          console.log(
+            "Invalid type ('" +
+              m.type +
+              "') for " +
+              m.value_col +
+              ' specified in metadata.'
+          );
+        }
+      }
+    });
+    defaultSettings.variableTypes = metaTypes;
   }
 
   /********************* Filter Settings *********************/
@@ -86,6 +109,49 @@ export function setDefaults(codebook) {
         ? defaultSettings.autogroups
         : codebook.config.autogroups;
 
+  /********************* Variable Type Settings *********************/
+
+  //check any user specified types to make sure they are in the correct format
+  codebook.config.variableTypes = codebook.config.variableTypes || [];
+  codebook.config.variableTypes = codebook.config.variableTypes.filter(
+    (type, i) => {
+      const is_object = typeof type === 'object',
+        has_value_col = type.hasOwnProperty('value_col'),
+        has_type = type.hasOwnProperty('type'),
+        legit_structure = is_object && has_value_col && has_type,
+        legit = legit_structure
+          ? ['continuous', 'categorical'].indexOf(type.type) > -1
+          : false;
+      if (!legit)
+        console.warn(
+          `Item ${i} of settings.variableType (${JSON.stringify(
+            type
+          )}) must be an object with both a "value_col" and a "type" property of "continuous" or "categorical".`
+        );
+
+      return legit;
+    }
+  );
+
+  if (
+    codebook.config.variableTypes.length &&
+    defaultSettings.variableTypes.length
+  ) {
+    //merge the defaults with the user specified type if both are populated
+    var userTypeVars = codebook.config.variableTypes.map(m => m.value_col);
+
+    //Keep the default Type if the user hasn't specified a label for the column
+    defaultSettings.variableTypes.forEach(function(defaultType) {
+      if (userTypeVars.indexOf(defaultType.value_col) == -1) {
+        codebook.config.variableTypes.push(defaultType);
+      }
+    });
+  } else {
+    codebook.config.variableTypes = codebook.config.variableTypes.length
+      ? codebook.config.variableTypes
+      : defaultSettings.variableTypes;
+  }
+
   /********************* Hidden Variable Settings ***************/
   codebook.config.hiddenVariables =
     codebook.config.hiddenVariables || defaultSettings.hiddenVariables;
@@ -123,6 +189,15 @@ export function setDefaults(codebook) {
     );
     codebook.config.defaultTab = codebook.config.tabs[0].key;
   }
+
+  /********************* Missing Value Settings *********************/
+  codebook.config.whiteSpaceAsMissing =
+    codebook.config.whiteSpaceAsMissing == undefined
+      ? defaultSettings.whiteSpaceAsMissing
+      : codebook.config.whiteSpaceAsMissing;
+
+  codebook.config.missingValues =
+    codebook.config.missingValues || defaultSettings.missingValues;
 
   /********************* Control Visibility Settings *********************/
   codebook.config.controlVisibility =

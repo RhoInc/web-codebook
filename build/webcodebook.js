@@ -501,7 +501,9 @@
           })
           .entries(codebook.data.raw)
           .map(function(d) {
-            return { value: d.key, selected: true };
+            var obj = { value: d.key, selected: true };
+            obj.label = /^\s*$/.test(d.key) ? '[No value provided]' : d.key;
+            return obj;
           });
       e.label = codebook.data.summary.filter(function(d) {
         return d.value_col === e.value_col;
@@ -557,7 +559,7 @@
       .enter()
       .append('option')
       .html(function(d) {
-        return d.value;
+        return d.label;
       })
       .attr('value', function(d) {
         return d.value;
@@ -659,9 +661,13 @@
         return d.value_col;
       });
     groupOptions.exit().remove();
+    var visibleOptionCount = 0;
     groupOptions.classed('hidden', function(d) {
-      return codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+      var hidden = codebook.config.hiddenVariables.indexOf(d.value_col) > -1;
+      if (!hidden) visibleOptionCount = visibleOptionCount + 1;
+      return hidden;
     });
+
     groupOptions.sort(function(a, b) {
       return columns.indexOf(a) - columns.indexOf(b);
     });
@@ -679,6 +685,9 @@
         codebook.title.updateCountSummary(codebook);
       });
     });
+
+    //Hide the group select if only the "None" option is visible;
+    groupControl.style('display', visibleOptionCount <= 1 ? 'none' : null);
   }
 
   /*------------------------------------------------------------------------------------------------\
@@ -2907,7 +2916,7 @@
           return !f.hidden;
         })
         .filter(function(f) {
-          return f.key != 'Type';
+          return f.key.toLowerCase() != 'type';
         }).length > 0;
     if (hasMeta) {
       var meta_list = d3$1
@@ -2940,9 +2949,13 @@
         d.color = '#999';
       });
     } else if (d.type == 'continuous') {
-      var values = d.values.map(function(m) {
-        return +m.value;
-      });
+      var values = d.values
+        .filter(function(f) {
+          return !f.missing;
+        })
+        .map(function(m) {
+          return +m.value;
+        });
       var x_linear = d3.scale
         .linear()
         .domain(d3.extent(values))
@@ -3063,12 +3076,22 @@
   */
 
     //add sparklines
-    d3$1
+    var sparkDiv = d3$1
       .select(this)
       .append('div')
       .attr('class', 'spark')
       .datum(d)
       .each(createSpark);
+
+    sparkDiv
+      .insert('span', '*')
+      .attr('class', function(d) {
+        return d.type == 'continuous' ? 'sparkLabel' : '';
+      })
+      .text(function(d) {
+        return d.type == 'continuous' ? '#' : null;
+      })
+      .attr('title', 'Contiuous column');
 
     //add percent missing (if > 0%)
     d3$1
@@ -3086,7 +3109,13 @@
         return d.statistics.percentMissing >= 0.1 ? 'red' : '#999';
       })
       .attr('title', function(d) {
-        return d.statistics.nMissing + ' of ' + d.statistics.N + ' missing';
+        return (
+          d.statistics.nMissing +
+          ' of ' +
+          d.statistics.N +
+          ' missing. Missing values include:\n' +
+          d.missingSummary
+        );
       });
   }
 
@@ -3516,6 +3545,7 @@
     filters: [],
     groups: [],
     variableLabels: [],
+    variableTypes: [],
     hiddenVariables: [],
     meta: [],
     autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
@@ -3526,7 +3556,9 @@
     controlVisibility: 'visible',
     chartVisibility: 'minimized',
     tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
-    dataName: ''
+    dataName: '',
+    whiteSpaceAsMissing: true,
+    missingValues: [null, NaN, undefined]
   };
 
   function setDefaults(codebook) {
@@ -3537,12 +3569,39 @@
     if (codebook.config.meta.length) {
       var metaLabels = [];
       codebook.config.meta.forEach(function(m) {
-        var mKeys = Object.keys(m);
+        var mKeys = Object.keys(m).map(function(m) {
+          return m.toLowerCase();
+        });
         if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('label') > -1)) {
           metaLabels.push({ value_col: m['value_col'], label: m['label'] });
         }
       });
       defaultSettings$1.variableLabels = metaLabels;
+
+      // If types are specified in the metadata, use them as the default
+      var metaTypes = [];
+      codebook.config.meta.forEach(function(m) {
+        var mKeys = Object.keys(m);
+        if ((mKeys.indexOf('value_col') > -1) & (mKeys.indexOf('type') > -1)) {
+          if (
+            ['categorical', 'continuous'].indexOf(m.type.toLowerCase()) > -1
+          ) {
+            metaTypes.push({
+              value_col: m['value_col'],
+              type: m['type'].toLowerCase()
+            });
+          } else {
+            console.log(
+              "Invalid type ('" +
+                m.type +
+                "') for " +
+                m.value_col +
+                ' specified in metadata.'
+            );
+          }
+        }
+      });
+      defaultSettings$1.variableTypes = metaTypes;
     }
 
     /********************* Filter Settings *********************/
@@ -3621,6 +3680,55 @@
           ? defaultSettings$1.autogroups
           : codebook.config.autogroups;
 
+    /********************* Variable Type Settings *********************/
+
+    //check any user specified types to make sure they are in the correct format
+    codebook.config.variableTypes = codebook.config.variableTypes || [];
+    codebook.config.variableTypes = codebook.config.variableTypes.filter(
+      function(type, i) {
+        var is_object =
+            (typeof type === 'undefined' ? 'undefined' : _typeof(type)) ===
+            'object',
+          has_value_col = type.hasOwnProperty('value_col'),
+          has_type = type.hasOwnProperty('type'),
+          legit_structure = is_object && has_value_col && has_type,
+          legit = legit_structure
+            ? ['continuous', 'categorical'].indexOf(type.type) > -1
+            : false;
+        if (!legit)
+          console.warn(
+            'Item ' +
+              i +
+              ' of settings.variableType (' +
+              JSON.stringify(type) +
+              ') must be an object with both a "value_col" and a "type" property of "continuous" or "categorical".'
+          );
+
+        return legit;
+      }
+    );
+
+    if (
+      codebook.config.variableTypes.length &&
+      defaultSettings$1.variableTypes.length
+    ) {
+      //merge the defaults with the user specified type if both are populated
+      var userTypeVars = codebook.config.variableTypes.map(function(m) {
+        return m.value_col;
+      });
+
+      //Keep the default Type if the user hasn't specified a label for the column
+      defaultSettings$1.variableTypes.forEach(function(defaultType) {
+        if (userTypeVars.indexOf(defaultType.value_col) == -1) {
+          codebook.config.variableTypes.push(defaultType);
+        }
+      });
+    } else {
+      codebook.config.variableTypes = codebook.config.variableTypes.length
+        ? codebook.config.variableTypes
+        : defaultSettings$1.variableTypes;
+    }
+
     /********************* Hidden Variable Settings ***************/
     codebook.config.hiddenVariables =
       codebook.config.hiddenVariables || defaultSettings$1.hiddenVariables;
@@ -3661,6 +3769,15 @@
       );
       codebook.config.defaultTab = codebook.config.tabs[0].key;
     }
+
+    /********************* Missing Value Settings *********************/
+    codebook.config.whiteSpaceAsMissing =
+      codebook.config.whiteSpaceAsMissing == undefined
+        ? defaultSettings$1.whiteSpaceAsMissing
+        : codebook.config.whiteSpaceAsMissing;
+
+    codebook.config.missingValues =
+      codebook.config.missingValues || defaultSettings$1.missingValues;
 
     /********************* Control Visibility Settings *********************/
     codebook.config.controlVisibility =
@@ -3819,8 +3936,8 @@
   }
 
   function determineType(vector, levelSplit) {
-    var nonMissingValues = vector.filter(function(d) {
-      return !/^\s*$/.test(d.value);
+    var nonMissingValues = vector.filter(function(f) {
+      return !f.missing;
     });
     var numericValues = nonMissingValues.filter(function(d) {
       return !isNaN(+d.value);
@@ -3842,8 +3959,8 @@
   function categorical(vector, sub) {
     var statistics = {};
     statistics.N = vector.length;
-    var nonMissing = vector.filter(function(d) {
-      return !/^\s*$/.test(d.value) && d.value !== 'NA';
+    var nonMissing = vector.filter(function(f) {
+      return !f.missing;
     });
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
@@ -3877,7 +3994,7 @@
 
     statistics.Unique = d3$1
       .set(
-        vector.map(function(d) {
+        nonMissing.map(function(d) {
           return d.value;
         })
       )
@@ -3927,7 +4044,7 @@
     statistics.N = vector.length;
     var nonMissing = vector
       .filter(function(d) {
-        return !isNaN(+d.value) && !/^\s*$/.test(d.value);
+        return !d.missing;
       })
       .map(function(d) {
         return +d.value;
@@ -3995,37 +4112,37 @@
   };
 
   function makeSummary(codebook) {
+    var config = codebook.config;
     var data = codebook.data.filtered;
     var group = codebook.config.group;
 
     if (codebook.data.filtered.length > 0) {
-      var variables = Object.keys(data[0]);
-      variables.forEach(function(variable, i) {
+      var variables = Object.keys(data[0]).map(function(variable) {
         //change from string to object
-        variables[i] = { value_col: variable };
+        var varObj = { value_col: variable };
 
         //get a list of raw values
-        variables[i].values = data.map(function(d) {
-          return {
+        varObj.values = data.map(function(d) {
+          var current = {
             index: d['web-codebook-index'],
             value: d[variable],
-            highlighted: codebook.data.highlighted.indexOf(d) > -1
+            highlighted: codebook.data.highlighted.indexOf(d) > -1,
+            missingWhiteSpace: config.whiteSpaceAsMissing
+              ? /^\s*$/.test(d[variable])
+              : false,
+            missingValue: config.missingValues.indexOf(d[variable]) > -1
           };
+          current.missing = current.missingWhiteSpace || current.missingValue;
+
+          return current;
         });
 
-        //get variable type
-        variables[i].type = summarize.determineType(
-          variables[i].values,
-          codebook.config.levelSplit
-        );
-
         //get hidden status
-        variables[i].hidden =
-          codebook.config.hiddenVariables.indexOf(variable) > -1;
-        variables[i].chartVisibility = codebook.config.chartVisibility;
+        varObj.hidden = codebook.config.hiddenVariables.indexOf(variable) > -1;
+        varObj.chartVisibility = codebook.config.chartVisibility;
 
         //get variable label
-        variables[i].label =
+        varObj.label =
           codebook.config.variableLabels
             .map(function(variableLabel) {
               return variableLabel.value_col;
@@ -4036,9 +4153,62 @@
               })[0].label
             : variable;
 
-        // Add metadata Object
-        variables[i].meta = [{ key: 'Type', value: variables[i].type }];
+        //Determine Type
+        varObj.type =
+          codebook.config.variableTypes
+            .map(function(variableType) {
+              return variableType.value_col;
+            })
+            .indexOf(variable) > -1
+            ? codebook.config.variableTypes.filter(function(variableLabel) {
+                return variableLabel.value_col === variable;
+              })[0].type
+            : summarize.determineType(
+                varObj.values,
+                codebook.config.levelSplit
+              );
 
+        // update missingness for non-numeric values in continuous columns
+        if (varObj.type == 'continuous') {
+          varObj.values.forEach(function(d, i) {
+            d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
+            d.missing = d.missing || !d.numeric;
+          });
+        }
+
+        //create a list of missing values
+        var missings = varObj.values
+          .filter(function(f) {
+            return f.missing;
+          })
+          .map(function(m) {
+            return m.value;
+          });
+        if (missings.length) {
+          varObj.missingList = d3
+            .nest()
+            .key(function(d) {
+              return d;
+            })
+            .rollup(function(d) {
+              return d.length;
+            })
+            .entries(missings)
+            .sort(function(a, b) {
+              return b.values - a.values;
+            });
+
+          varObj.missingSummary = varObj.missingList
+            .map(function(m) {
+              return '"' + m.key + '" (n=' + m.values + ')';
+            })
+            .join('\n');
+        } else {
+          varObj.missingList = [];
+        }
+
+        // Add metadata Object
+        varObj.meta = [];
         var metaMatch = codebook.config.meta.filter(function(f) {
           return f.value_col == variable;
         });
@@ -4047,7 +4217,7 @@
             return ['value_col', 'label'].indexOf(f) === -1;
           });
           metaKeys.forEach(function(m) {
-            variables[i].meta.push({ key: m, value: metaMatch[0][m] });
+            varObj.meta.push({ key: m, value: metaMatch[0][m] });
           });
         }
 
@@ -4058,29 +4228,27 @@
                 return d.highlighted;
               }
             : null;
-        variables[i].statistics =
-          variables[i].type === 'continuous'
-            ? summarize.continuous(variables[i].values, sub)
-            : summarize.categorical(variables[i].values, sub);
+        varObj.statistics =
+          varObj.type === 'continuous'
+            ? summarize.continuous(varObj.values, sub)
+            : summarize.categorical(varObj.values, sub);
 
         //get chart type
-        variables[i].chartType =
-          variables[i].type == 'continuous'
+        varObj.chartType =
+          varObj.type == 'continuous'
             ? 'histogramBoxPlot'
-            : (variables[i].type == 'categorical') &
-              (variables[i].statistics.values.length >
-                codebook.config.levelSplit)
+            : (varObj.type == 'categorical') &
+              (varObj.statistics.values.length > codebook.config.levelSplit)
               ? 'verticalBars'
-              : (variables[i].type == 'categorical') &
-                (variables[i].statistics.values.length <=
-                  codebook.config.levelSplit)
+              : (varObj.type == 'categorical') &
+                (varObj.statistics.values.length <= codebook.config.levelSplit)
                 ? 'horizontalBars'
                 : 'error';
 
         //Handle groups.
         if (group) {
-          variables[i].group = group;
-          variables[i].groupLabel =
+          varObj.group = group;
+          varObj.groupLabel =
             codebook.config.variableLabels
               .map(function(variableLabel) {
                 return variableLabel.value_col;
@@ -4090,7 +4258,7 @@
                   return variableLabel.value_col === group;
                 })[0].label
               : group;
-          variables[i].groups = d3$1
+          varObj.groups = d3$1
             .set(
               data.map(function(d) {
                 return d[group];
@@ -4101,7 +4269,7 @@
               return { group: g };
             });
 
-          variables[i].groups.forEach(function(g) {
+          varObj.groups.forEach(function(g) {
             //Define variable metadata and generate data array.
             g.value_col = variable;
             g.values = data
@@ -4115,18 +4283,18 @@
                   highlighted: codebook.data.highlighted.indexOf(d) > -1
                 };
               });
-            g.type = variables[i].type;
+            g.type = varObj.type;
 
             //Calculate statistics.
-            if (variables[i].type === 'categorical')
+            if (varObj.type === 'categorical')
               g.statistics = summarize.categorical(g.values, sub);
             else g.statistics = summarize.continuous(g.values, sub);
           });
         }
+        return varObj;
       });
 
       codebook.data.summary = variables;
-
       //get bin counts
       codebook.util.getBinCounts(codebook);
     } else {
@@ -4192,7 +4360,9 @@
             ? 'filters'
             : column === 'Hide'
               ? 'hiddenVariables'
-              : console.warn('Something unsetting has occurred...');
+              : column === 'Type'
+                ? 'variableTypes'
+                : console.warn('Something unsetting has occurred...');
     var inputs = codebook.settings.wrap.selectAll('.column-table td.' + column);
     if (['Group', 'Filter', 'Hide'].indexOf(column) > -1) {
       //redefine settings array
@@ -4207,20 +4377,29 @@
         .map(function(d) {
           return column !== 'Hide' ? { value_col: d.column } : d.column;
         });
-    } else if (['Label'].indexOf(column) > -1) {
+    } else if (['Label', 'Type'].indexOf(column) > -1) {
       //redefine settings array
-      codebook.config[setting] = inputs
+      var inputType = column == 'Label' ? 'input' : 'select';
+      var currentValues = inputs
         .filter(function(d) {
-          d.value.label = d3$1
+          d.value.value = d3$1
             .select(this)
-            .select('input')
+            .select(inputType)
             .property('value');
-          return d.value.label !== '';
+          return d.value.value !== '';
         })
         .data()
         .map(function(d) {
-          return { value_col: d.column, label: d.value.label };
+          var obj = { value_col: d.column };
+          obj[column.toLowerCase()] = d.value.value;
+          return obj;
         });
+      if (column == 'Type') {
+        currentValues = currentValues.filter(function(f) {
+          return f.type.slice(0, 4) != 'auto';
+        });
+      }
+      codebook.config[setting] = currentValues;
     }
 
     //reset
@@ -4242,17 +4421,38 @@
       labeledColumns = codebook.config.variableLabels.map(function(d) {
         return d.value_col;
       }),
-      columnTableColumns = ['Column', 'Label', 'Group', 'Filter', 'Hide'],
+      typedColumns = codebook.config.variableTypes.map(function(d) {
+        return d.value_col;
+      }),
+      columnTableColumns = [
+        'Column',
+        'Label',
+        'Type',
+        'Group',
+        'Filter',
+        'Hide'
+      ],
       columnMetadata = columns.map(function(column) {
         var columnDatum = {
           Column: column,
           Label: {
             type: 'text',
-            label:
+            value:
               labeledColumns.indexOf(column) > -1
                 ? codebook.config.variableLabels[labeledColumns.indexOf(column)]
                     .label
                 : ''
+          },
+          Type: {
+            type: 'text',
+            value:
+              typedColumns.indexOf(column) > -1
+                ? codebook.config.variableTypes[typedColumns.indexOf(column)]
+                    .type
+                : '',
+            autoType: codebook.data.summary.filter(function(f) {
+              return f.value_col == column;
+            })[0].type
           },
           Group: {
             type: 'checkbox',
@@ -4321,9 +4521,32 @@
               cell
                 .append('input')
                 .attr('type', d.value.type)
-                .property('value', d.value.label)
+                .property('value', d.value.value)
                 .on('change', function() {
                   return updateSettings(codebook, d.key);
+                });
+              break;
+            case 'Type':
+              cell.attr('title', 'Specify Variable Type');
+              var typeSelect = cell.append('select').on('change', function() {
+                return updateSettings(codebook, d.key);
+              });
+              var typeOptions = [
+                'automatic (' + d.value.autoType + ')',
+                'continuous',
+                'categorical'
+              ];
+
+              typeSelect
+                .selectAll('option')
+                .data(typeOptions)
+                .enter()
+                .append('option')
+                .property('selected', function(opt) {
+                  return opt == d.value.value;
+                })
+                .text(function(opt) {
+                  return opt;
                 });
               break;
             default:

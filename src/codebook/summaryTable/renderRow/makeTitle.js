@@ -46,11 +46,17 @@ export default function makeTitle(d) {
   */
 
   //add sparklines
-  d3select(this)
+  var sparkDiv = d3select(this)
     .append('div')
     .attr('class', 'spark')
     .datum(d)
     .each(createSpark);
+
+  sparkDiv
+    .insert('span', '*')
+    .attr('class', d => (d.type == 'continuous' ? 'sparkLabel' : ''))
+    .text(d => (d.type == 'continuous' ? '#' : null))
+    .attr('title', 'Contiuous column');
 
   //add percent missing (if > 0%)
   d3select(this)
@@ -62,6 +68,11 @@ export default function makeTitle(d) {
     .style('color', d => (d.statistics.percentMissing >= 0.1 ? 'red' : '#999'))
     .attr(
       'title',
-      d => d.statistics.nMissing + ' of ' + d.statistics.N + ' missing'
+      d =>
+        d.statistics.nMissing +
+        ' of ' +
+        d.statistics.N +
+        ' missing. Missing values include:\n' +
+        d.missingSummary
     );
 }

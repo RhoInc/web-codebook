@@ -3,7 +3,8 @@ import renderMeta from './details/renderMeta';
 
 export default function makeMeta(d) {
   var hasMeta =
-    d.meta.filter(f => !f.hidden).filter(f => f.key != 'Type').length > 0;
+    d.meta.filter(f => !f.hidden).filter(f => f.key.toLowerCase() != 'type')
+      .length > 0;
   if (hasMeta) {
     var meta_list = d3select(this)
       .append('ul')

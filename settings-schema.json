@@ -64,6 +64,31 @@
                 }
             }
         },
+        "variableTypes": {
+            "type": "array",
+            "title": "Variable Type",
+            "description": "an array of variable objects with both the variable name and the type of the variable",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value_col": {
+                        "type": "string",
+                        "title": "Variable Name",
+                        "description": "the name of the variable"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Variable Type",
+                        "description": "a label that describes the variable",
+                        "enum": [
+                            "continuous",
+                            "categorical"
+                        ]
+
+                    }
+                }
+            }
+        },
         "hiddenVariables": {
             "type": "array",
             "title": "Hidden Variables",
@@ -168,7 +193,7 @@
                 "listing",
                 "chartMaker",
                 "settings"
-             ],	             
+             ],
              "items": {
                 "type": "string",
                  "enum": [
@@ -185,6 +210,17 @@
             "title": "Data Name",
             "description": "the name of the data file summarized in the codebook",
             "default": ""
+        },
+        "whiteSpaceAsMissing": {
+            "type": "boolean",
+            "title": "White space as missing",
+            "description": "White space will be treated as missing values",
+            "default": true
+        },
+        "missingValues": {
+          "type": "array",
+            "title": "missing Values",
+            "description": "Array of missing values. Note that json schema does not support the default value of [null, NaN, undefined]"
         }
     }
 }

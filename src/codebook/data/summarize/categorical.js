@@ -3,9 +3,7 @@ import { nest as d3nest, format as d3format, set as d3set } from 'd3';
 export default function categorical(vector, sub) {
   const statistics = {};
   statistics.N = vector.length;
-  const nonMissing = vector.filter(
-    d => !/^\s*$/.test(d.value) && d.value !== 'NA'
-  );
+  const nonMissing = vector.filter(f => !f.missing);
   statistics.n = nonMissing.length;
   statistics.nMissing = vector.length - statistics.n;
   statistics.percentMissing = statistics.nMissing / statistics.N;
@@ -31,7 +29,7 @@ export default function categorical(vector, sub) {
     })
     .entries(nonMissing);
 
-  statistics.Unique = d3set(vector.map(d => d.value)).values().length;
+  statistics.Unique = d3set(nonMissing.map(d => d.value)).values().length;
 
   statistics.values.forEach(value => {
     for (var statistic in value.values) {

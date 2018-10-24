@@ -2,6 +2,7 @@ const defaultSettings = {
   filters: [],
   groups: [],
   variableLabels: [],
+  variableTypes: [],
   hiddenVariables: [],
   meta: [],
   autogroups: 5, //automatically include categorical vars with 2-5 levels in the groups dropdown
@@ -12,7 +13,9 @@ const defaultSettings = {
   controlVisibility: 'visible',
   chartVisibility: 'minimized',
   tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
-  dataName: ''
+  dataName: '',
+  whiteSpaceAsMissing: true,
+  missingValues: [null, NaN, undefined]
 };
 
 export default defaultSettings;
