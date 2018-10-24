@@ -1,4 +1,4 @@
-import { merge } from 'd3';
+import { csv, merge } from 'd3';
 
 export function addFile(label, csv_raw) {
   var explorer = this;
@@ -6,7 +6,7 @@ export function addFile(label, csv_raw) {
   // parse the file object
   this.newFileObject = {};
   this.newFileObject[explorer.config.labelColumn] = label;
-  this.newFileObject.json = d3.csv.parse(csv_raw);
+  this.newFileObject.json = csv.parse(csv_raw);
   this.newFileObject.settings = {};
   this.newFileObject.fileID = explorer.config.files.length + 1;
 

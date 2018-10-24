@@ -1,9 +1,10 @@
+import { select, scale, extent, layout, max } from 'd3';
+
 export default function makeHist(this_, d) {
   var height = 15,
     width = 100;
 
-  var svg = d3
-    .select(this_)
+  var svg = select(this_)
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -19,11 +20,11 @@ export default function makeHist(this_, d) {
     var values = d.values.filter(f => !f.missing).map(function(m) {
       return +m.value;
     });
-    var x_linear = d3.scale
+    var x_linear = scale
       .linear()
-      .domain(d3.extent(values))
+      .domain(extent(values))
       .range([0, width]);
-    var bins = d3.layout
+    var bins = layout
       .histogram()
       .bins(x_linear.ticks(50))(values)
       .map(function(m, i) {
@@ -36,7 +37,7 @@ export default function makeHist(this_, d) {
   }
 
   // scales
-  var x = d3.scale
+  var x = scale
     .ordinal()
     .domain(
       bins.map(function(d) {
@@ -47,11 +48,11 @@ export default function makeHist(this_, d) {
 
   var width = x.rangeBand();
 
-  var y = d3.scale
+  var y = scale
     .linear()
     .domain([
       0,
-      d3.max(bins, function(d) {
+      max(bins, function(d) {
         return d.n;
       })
     ])

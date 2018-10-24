@@ -1,3 +1,4 @@
+import { time } from 'd3';
 import { addFile } from './addFile';
 
 export function initFileLoad() {
@@ -32,7 +33,7 @@ export function initFileLoad() {
         fr.onload = function(e) {
           // get the current date/time
           var d = new Date();
-          var n = d3.time.format('%X')(d);
+          var n = time.format('%X')(d);
 
           addFile.call(explorer, files[0].name, e.target.result);
 
