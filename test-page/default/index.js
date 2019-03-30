@@ -1,5 +1,5 @@
 d3.csv(
-  'https://rawgit.com/RhoInc/viz-library/master/data/testData/ADTIMELINES_partialMissing.csv',
+  'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/renderer-specific/ADTIMELINES_partialMissing.csv',
   function(d) {
     return d;
   },
