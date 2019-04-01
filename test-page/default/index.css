@@ -6,20 +6,20 @@
 }
 #title {
     width: 96%;
-    padding: 0 0 1% 0;
+    padding: 0 0 12px 0;
     border-bottom: 2px solid lightgray;
-    margin: 2% 2% 1% 2%;
+    margin: 24px 2% 12px 2%;
     font-size: 32px;
     font-weight: normal;
 }
 #subtitle {
     width: 96%;
-    margin: 0 2% 1% 2%;
+    margin: 0 2% 12px 2%;
     font-size: 24px;
     font-weight: lighter;
 }
 #container {
     width: 96%;
-    margin: 1% 2%;
+    margin: 12px 2%;
     display: inline-block;
 }

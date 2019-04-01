@@ -1,30 +1,44 @@
-d3.csv(
-  'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/renderer-specific/ADTIMELINES_partialMissing.csv',
-  function(d) {
-    return d;
-  },
-  function(error, data) {
-    if (error) console.log(error);
+fetch('https://raw.githubusercontent.com/RhoInc/data-library/master/dataFiles.json')
+    .then(response => response.json())
+    .then(json => {
+        json.forEach(fileObj => {
+			fileObj.github_url = `https://raw.githubusercontent.com/RhoInc/data-library/master/${fileObj.rel_path.replace(/^\.\//, '')}`;
+            fileObj.dataName = (
+                /sdtm|adam/.test(fileObj.rel_path)
+                    ? fileObj.filename.toUpperCase()
+                    : fileObj.filename.split(/[_-]|(?=[A-Z])/)
+                        .map(str => {
+                            return /^ad(?!verse)/i.test(str)
+                                ? str.toUpperCase()
+                                : str.substring(0,1).toUpperCase() + str.substring(1).toLowerCase();
+                        })
+                        .join(' ')
+            ).replace(/\.csv/i, '');
+        });
+        console.log('Data file metadata:');
+        console.log(json);
+        const fileObj = json[Math.floor(Math.random()*json.length)];
+        console.log('Select data file metadata:');
+        console.log(fileObj);
+        d3.csv(
+			fileObj.github_url,
+			function(d) {
+				return d;
+			},
+			function(error,data) {
+			    if (error) {
+			        console.log(error);
+			        alert(`${fileObj.github_url} does not exist. Please reload page.`);
+			    }
 
-    var settings = {
-      //        chartVisibility: 'hidden',
-      //autogroups: 3,
-      groups: ['SEX'],
-      meta: [
-        {
-          value_col: 'USUBJID',
-          label: 'Subject ID',
-          description: 'Unique Identifier',
-          type: 'categorical'
-        },
-        {
-          value_col: 'SITEID',
-          label: 'Site ID',
-          type: 'continuous'
-        }
-      ]
-    };
-    var instance = webcodebook.createCodebook('#container', settings);
-    instance.init(data);
-  }
-);
+				var instance = webcodebook
+				    .createCodebook(
+				        '#container',
+                        {
+                            dataName: fileObj.dataName
+                        }
+                    );
+				instance.init(data);
+			}
+        );
+    });
