@@ -100,16 +100,30 @@ export function makeSummary(codebook) {
           : summarize.categorical(varObj.values, sub);
 
       //get chart type
-      varObj.chartType =
-        varObj.type == 'continuous'
-          ? 'histogramBoxPlot'
-          : (varObj.type == 'categorical') &
-            (varObj.statistics.values.length > codebook.config.levelSplit)
-            ? 'verticalBars'
-            : (varObj.type == 'categorical') &
-              (varObj.statistics.values.length <= codebook.config.levelSplit)
-              ? 'horizontalBars'
-              : 'error';
+      varObj.chartType = 'none';
+      if (varObj.type == 'continuous') {
+        varObj.chartType = 'histogramBoxPlot';
+      } else if (varObj.type == 'categorical') {
+        if (varObj.statistics.values.length > codebook.config.maxLevels) {
+          varObj.chartType = 'character';
+          varObj.summaryText =
+            'Character columns with ' +
+            varObj.statistics.values.length +
+            ' unique levels.<br>' +
+            "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " +
+            varObj.statistics.values.length +
+            ' levels. Note that this may slow down or crash your browser.</span>';
+          console.log('Level Warning otw!');
+        } else if (
+          varObj.statistics.values.length > codebook.config.levelSplit
+        ) {
+          varObj.chartType = 'verticalBars';
+        } else if (
+          varObj.statistics.values.length <= codebook.config.levelSplit
+        ) {
+          varObj.chartType = 'horizontalBars';
+        }
+      }
 
       //Handle groups.
       if (group) {

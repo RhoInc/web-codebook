@@ -410,8 +410,23 @@
     margin-right: .5em;
 }
 
-.web-codebook .summaryTable .variable-row .row-chart div.missingText{
+.web-codebook .summaryTable .variable-row .row-chart .missingText{
     padding: .5em;
+    color: #f03b20;
+    font-size:0.8em;
+}
+
+.web-codebook .summaryTable .variable-row .row-chart div.characterSummary{
+    padding: .5em;
+}
+
+.web-codebook .summaryTable .variable-row .row-chart div.characterSummary span.caution{
+    font-size:0.8em;
+    color: #f03b20;
+}
+.web-codebook .summaryTable .variable-row .row-chart div.characterSummary span.caution span.drawLevel{
+    text-decoration:underline;
+    cursor:pointer;    
 }
 
 .web-codebook .summaryTable .variable-row .row-chart p.panel-label{
