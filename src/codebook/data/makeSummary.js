@@ -107,7 +107,7 @@ export function makeSummary(codebook) {
         if (varObj.statistics.values.length > codebook.config.maxLevels) {
           varObj.chartType = 'character';
           varObj.summaryText =
-            'Character columns with ' +
+            'Character variable with ' +
             varObj.statistics.values.length +
             ' unique levels.<br>' +
             "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " +
