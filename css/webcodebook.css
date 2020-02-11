@@ -1,4 +1,4 @@
-@import url(//fonts.googleapis.com/css?family=Open+Sans: 400,300);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,300);
 
 /*------------------------------------------------------------------------------------------------\
   General
@@ -229,8 +229,7 @@
     Row layout
 \------------------------------------------------------------------------------------------------*/
 
-.web-codebook .summaryTable > * {
-}
+
 
 .web-codebook .summaryTable .summaryText {
     display: block;
@@ -512,10 +511,6 @@
 /*------------------------------------------------------------------------------------------------\
     Data listing
 \------------------------------------------------------------------------------------------------*/
-
-    .web-codebook .dataListing {
-
-    }
 
     .web-codebook .dataListing .description {
         padding: 0 5px 0 5px;

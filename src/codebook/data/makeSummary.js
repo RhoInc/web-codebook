@@ -113,7 +113,6 @@ export function makeSummary(codebook) {
             "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " +
             varObj.statistics.values.length +
             ' levels. Note that this may slow down or crash your browser.</span>';
-          console.log('Level Warning otw!');
         } else if (
           varObj.statistics.values.length > codebook.config.levelSplit
         ) {
