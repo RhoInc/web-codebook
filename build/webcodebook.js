@@ -2978,18 +2978,23 @@
       .select(this)
       .append('div')
       .attr('class', 'spark')
-      .datum(d)
-      .each(createSpark);
+      .datum(d);
 
+    if (d.chartType != 'character') {
+      sparkDiv.each(createSpark);
+    }
+
+    var type =
+      d.type == 'continuous'
+        ? 'continuous'
+        : d.chartType == 'character'
+          ? 'character'
+          : 'categorical';
     sparkDiv
-      .insert('span', '*')
-      .attr('class', function(d) {
-        return d.type == 'continuous' ? 'sparkLabel' : '';
-      })
-      .text(function(d) {
-        return d.type == 'continuous' ? '#' : null;
-      })
-      .attr('title', 'Contiuous column');
+      .append('div')
+      .attr('class', 'sparkLabel')
+      .text(type == 'continuous' ? '#' : type == 'character' ? 'abc' : 'cat')
+      .attr('title', type + ' column');
 
     //add percent missing (if > 0%)
     d3$1

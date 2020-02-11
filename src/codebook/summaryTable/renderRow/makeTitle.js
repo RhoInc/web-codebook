@@ -49,14 +49,23 @@ export default function makeTitle(d) {
   var sparkDiv = d3select(this)
     .append('div')
     .attr('class', 'spark')
-    .datum(d)
-    .each(createSpark);
+    .datum(d);
 
+  if (d.chartType != 'character') {
+    sparkDiv.each(createSpark);
+  }
+
+  let type =
+    d.type == 'continuous'
+      ? 'continuous'
+      : d.chartType == 'character'
+        ? 'character'
+        : 'categorical';
   sparkDiv
-    .insert('span', '*')
-    .attr('class', d => (d.type == 'continuous' ? 'sparkLabel' : ''))
-    .text(d => (d.type == 'continuous' ? '#' : null))
-    .attr('title', 'Contiuous column');
+    .append('div')
+    .attr('class', 'sparkLabel')
+    .text(type == 'continuous' ? '#' : type == 'character' ? 'abc' : 'cat')
+    .attr('title', type + ' column');
 
   //add percent missing (if > 0%)
   d3select(this)
