@@ -114,21 +114,29 @@ export default function addBoxPlot(chart) {
       return low_outlier || high_outlier;
     });
 
-    chart.svg
-      .selectAll('line.outlier')
-      .data(outliers)
-      .enter()
-      .append('line')
-      .attr('class', 'outlier')
-      .attr('x1', d => chart.x(d))
-      .attr('x2', d => chart.x(d))
-      .attr('y1', d => chart.plot_height * 1.07)
-      .attr('y2', d => (chart.plot_height + chart.config.boxPlotHeight) / 1.07)
-      .style({
-        fill: '#000000',
-        stroke: 'black',
-        'stroke-width': '1px'
-      });
+    if (outliers.length < 100) {
+      chart.svg
+        .selectAll('line.outlier')
+        .data(outliers)
+        .enter()
+        .append('line')
+        .attr('class', 'outlier')
+        .attr('x1', d => chart.x(d))
+        .attr('x2', d => chart.x(d))
+        .attr('y1', d => chart.plot_height * 1.07)
+        .attr(
+          'y2',
+          d => (chart.plot_height + chart.config.boxPlotHeight) / 1.07
+        )
+        .style({
+          fill: '#000000',
+          stroke: 'black',
+          'stroke-width': '1px'
+        });
+    } else {
+      console.log(outliers.length + ' not draw for the following chart:');
+      console.log(chart.wrap);
+    }
   }
 
   //Annotate mean.
