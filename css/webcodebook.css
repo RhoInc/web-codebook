@@ -237,10 +237,9 @@
 }
 
 .web-codebook .summaryTable .variable-row {
-  position: relative;
-    margin-top: 0.3em;
+    position: relative;
     display: block;
-    border: 1px solid #999;
+    border-bottom: 1px solid #ccc;
 }
 
 .web-codebook .summaryTable .variable-row .section {
