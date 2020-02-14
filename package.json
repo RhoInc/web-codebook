@@ -24,8 +24,9 @@
   "scripts": {
     "build": "npm audit fix && npm run bundle && npm run format",
     "bundle": "rollup -c",
-    "format": "npm run format-src && npm run format-bundle && npm run format-test",
+    "format": "npm run format-src && npm run format-bundle && npm run format-test && npm run format-css",
     "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
+    "format-css": "stylefmt ./css/webcodebook.css",
     "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
     "format-test": "prettier --single-quote --write \"./test-page/**/*.js\"",
     "test-page": "start chrome ./test-page/index.html && start firefox ./test-page/index.html && start iexplore file://%CD%/test-page/index.html",
@@ -37,7 +38,8 @@
     "babel-register": "^6.26.0",
     "prettier": "^1.14.3",
     "rollup": "^0.66.6",
-    "rollup-plugin-babel": "^3.0.7"
+    "rollup-plugin-babel": "^3.0.7",
+    "stylefmt": "^6.0.3"
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"
