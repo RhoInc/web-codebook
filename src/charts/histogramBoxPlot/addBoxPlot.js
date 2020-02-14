@@ -134,7 +134,9 @@ export default function addBoxPlot(chart) {
           'stroke-width': '1px'
         });
     } else {
-      console.log(`${outliers.length} not drawn for the following chart:`);
+      console.log(
+        `${outliers.length} outliers not drawn for the following chart:`
+      );
       console.log(chart.wrap);
     }
   }
