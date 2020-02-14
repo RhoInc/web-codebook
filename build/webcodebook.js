@@ -3299,7 +3299,9 @@
       chartMaker.wrap
         .append('div')
         .attr('class', 'status error')
-        .text('Data not found. Update filters to try again.');
+        .text(
+          'No continuous and/or group variables available to plot. Visit the settings tabs to update variable settings.'
+        );
     } else {
       chartMaker.chartSettings = makeSettings(chartMakerSettings, x_obj, y_obj);
       chartMaker.chartSettings.width = codebook.config.group ? 320 : 600;
