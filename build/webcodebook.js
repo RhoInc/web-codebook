@@ -2648,12 +2648,15 @@
           .html('and ' + extraCount + ' more.');
       }
     } else if (d.type == 'continuous') {
+      var nonMissing = d.values
+        .filter(function(f) {
+          return !f.missing;
+        })
+        .map(function(m) {
+          return +m.value;
+        });
       var sortedValues = d3$1
-        .set(
-          d.values.map(function(d) {
-            return +d.value;
-          })
-        )
+        .set(nonMissing)
         .values() //get unique
         .sort(function(a, b) {
           return a - b;
