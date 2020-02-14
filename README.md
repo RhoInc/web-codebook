@@ -5,11 +5,12 @@
 ## Overview
 
 The web codebook is a JavaScript library that provides a concise summary of every variable in a dataset. The codebook includes interactive features such as real-time filters and requires minimal user configuration.
- [Click here for a live demo](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html). When the page loads, the user sees a "codebook" providing a graphical data summary for each data column.
+ [Click here for a live demo](https://rhoinc.github.io/web-codebook/test-page/default/). When the page loads, the user sees a "codebook" providing a graphical data summary for each data column.
  
  
 ![alt tag](https://user-images.githubusercontent.com/31038805/33683185-0f6d9c44-da98-11e7-829d-24f41e77ffc2.gif)
 
+The library also provides an `explorer` function ([demo](https://rhoinc.github.io/web-codebook/test-page/explorer/)) that lets users explorer codebooks for multiple files from the same webpage. Finally, the associated [datadigest R package](https://github.com/RhoInc/datadigest) wraps the web-codebook functionality in easy-to-use R functions. 
 
 ## Background
 
@@ -26,9 +27,11 @@ See the [API](https://github.com/RhoInc/web-codebook/wiki/API) and [Configuratio
 
 ## Links 
 
-- [Interactive Example](https://rhoinc.github.io/viz-library/examples/0009-web-codebook-demo/example.html)
+- [Interactive Codebook Example](https://rhoinc.github.io/web-codebook/test-page/default/)
+- [Interactive Explorer Example](https://rhoinc.github.io/web-codebook/test-page/explorer/)
 - [Configuration](https://github.com/RhoInc/web-codebook/wiki/Codebook-Configuration) 
 - [API](https://github.com/RhoInc/web-codebook/wiki/API)
 - [Technical Documentation](https://github.com/RhoInc/web-codebook/wiki/Technical-Documentation) 
 - [Data Guidelines](https://github.com/RhoInc/web-codebook/wiki/Data-Guidelines)
+- [datadigest R Package](https://github.com/RhoInc/datadigest)
 
