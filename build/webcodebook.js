@@ -865,6 +865,16 @@
 
     //EXIT
     varRows.exit().remove();
+
+    codebook.summaryTable.wrap.selectAll('div.status.error').remove();
+    if (varRows[0].length == 0) {
+      codebook.summaryTable.wrap
+        .append('div')
+        .attr('class', 'status error')
+        .text(
+          'No values selected. Update the filters above or load a different data set.'
+        );
+    }
   }
 
   function moveYaxis(chart) {
