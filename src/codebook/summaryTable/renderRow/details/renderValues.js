@@ -45,7 +45,8 @@ export default function renderValues(d, list) {
         .html('and ' + extraCount + ' more.');
     }
   } else if (d.type == 'continuous') {
-    var sortedValues = d3set(d.values.map(d => +d.value))
+    let nonMissing = d.values.filter(f => !f.missing).map(m => +m.value);
+    var sortedValues = d3set(nonMissing)
       .values() //get unique
       .sort(function(a, b) {
         return a - b;

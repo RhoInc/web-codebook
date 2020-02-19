@@ -10,6 +10,7 @@ const defaultSettings = {
   autobins: true,
   nBins: 100,
   levelSplit: 5, //cutpoint for # of levels to use levelPlot() renderer
+  maxLevels: 100, //bar charts with more than maxLevels are hidden by default
   controlVisibility: 'visible',
   chartVisibility: 'minimized',
   tabs: ['codebook', 'listing', 'chartMaker', 'settings'],

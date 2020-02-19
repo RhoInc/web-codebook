@@ -12,6 +12,20 @@ export default function makeChart(d) {
     } else if (d.chartType === 'verticalBars') {
       charts.createVerticalBarsControls(this, d);
       charts.createVerticalBars(this, d);
+    } else if (d.chartType === 'character') {
+      let summary = d3select(this)
+        .append('div')
+        .attr('class', 'characterSummary')
+        .html(d.summaryText);
+
+      summary.select('span.drawLevel').on('click', function() {
+        let node = this.parentNode.parentNode.parentNode;
+        d3.select(node)
+          .select('div.characterSummary')
+          .remove();
+        charts.createVerticalBarsControls(node, d);
+        charts.createVerticalBars(node, d);
+      });
     } else if (d.chartType === 'histogramBoxPlot') {
       charts.createHistogramBoxPlotControls(this, d);
       charts.createHistogramBoxPlot(this, d);

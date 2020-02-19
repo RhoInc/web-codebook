@@ -167,6 +167,9 @@ export function setDefaults(codebook) {
   codebook.config.levelSplit =
     codebook.config.levelSplit || defaultSettings.levelSplit;
 
+  codebook.config.maxLevels =
+    codebook.config.maxLevels || defaultSettings.maxLevels;
+
   /********************* Nav Settings *********************/
   codebook.config.tabs = codebook.config.tabs || defaultSettings.tabs;
   codebook.config.tabs = codebook.config.tabs.map(function(d) {
