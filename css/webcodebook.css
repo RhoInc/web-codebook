@@ -1,8 +1,16 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,300);
 
+html.wcb-wait, html.wcb-wait * {
+    cursor: wait !important;
+}
+body.wcb-wait, body.wcb-wait * {
+    cursor: wait !important;
+}
+
 /*------------------------------------------------------------------------------------------------\
   General
 \------------------------------------------------------------------------------------------------*/
+
 
 .web-codebook {
   position: relative;
@@ -16,7 +24,8 @@
   width: 100%;
 }
 
-.web-codebook .hidden {
+.web-codebook .hidden,
+.web-codebook .wcb-hidden {
   display: none !important;
 }
 

@@ -6,6 +6,6 @@ import { init } from './controlToggle/init';
 import { set } from './controlToggle/set';
 
 export const controlToggle = {
-  init: init,
-  set: set
+    init: init,
+    set: set
 };

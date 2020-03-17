@@ -5,6 +5,6 @@ import { draw } from './summaryTable/draw';
 import { renderRow } from './summaryTable/renderRow';
 
 export const summaryTable = {
-  draw: draw,
-  renderRow: renderRow
+    draw: draw,
+    renderRow: renderRow
 };

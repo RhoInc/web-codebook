@@ -5,5 +5,5 @@
 import { init } from './nav/init';
 
 export const nav = {
-  init: init
+    init: init
 };

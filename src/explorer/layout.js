@@ -3,5 +3,5 @@
 \------------------------------------------------------------------------------------------------*/
 
 export function layout() {
-  this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
+    this.codebookWrap = this.wrap.append('div').attr('class', 'codebookWrap');
 }

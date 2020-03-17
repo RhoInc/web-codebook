@@ -6,6 +6,6 @@ import { init } from './settings/init';
 import { layout } from './settings/layout';
 
 export const settings = {
-  init: init,
-  layout: layout
+    init: init,
+    layout: layout
 };

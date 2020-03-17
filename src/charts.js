@@ -11,11 +11,11 @@ import { createHistogramBoxPlotControls } from './charts/createHistogramBoxPlotC
 import { createDotPlot } from './charts/createDotPlot';
 
 export const charts = {
-  createVerticalBars: createVerticalBars,
-  createVerticalBarsControls: createVerticalBarsControls,
-  createHorizontalBars: createHorizontalBars,
-  createHorizontalBarsControls: createHorizontalBarsControls,
-  createHistogramBoxPlot: createHistogramBoxPlot,
-  createHistogramBoxPlotControls: createHistogramBoxPlotControls,
-  createDotPlot: createDotPlot
+    createVerticalBars: createVerticalBars,
+    createVerticalBarsControls: createVerticalBarsControls,
+    createHorizontalBars: createHorizontalBars,
+    createHorizontalBarsControls: createHorizontalBarsControls,
+    createHistogramBoxPlot: createHistogramBoxPlot,
+    createHistogramBoxPlotControls: createHistogramBoxPlotControls,
+    createDotPlot: createDotPlot
 };

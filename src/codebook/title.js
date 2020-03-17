@@ -7,7 +7,7 @@ import { highlight } from './title/highlight';
 import { updateCountSummary } from './title/updateCountSummary';
 
 export const title = {
-  init: init,
-  highlight: highlight,
-  updateCountSummary: updateCountSummary
+    init: init,
+    highlight: highlight,
+    updateCountSummary: updateCountSummary
 };

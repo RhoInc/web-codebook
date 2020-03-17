@@ -12,39 +12,38 @@ import { title } from './codebook/title';
 import { instructions } from './codebook/instructions';
 import clone from './util/clone';
 
-export function createCodebook(element = 'body', config) {
-  let codebook = {
-    element: element,
-    config: config,
-    init: init,
-    layout: layout,
-    controls: controls,
-    title: title,
-    nav: nav,
-    instructions: instructions,
-    summaryTable: summaryTable,
-    dataListing: dataListing,
-    chartMaker: chartMaker,
-    data: data,
-    util: util,
-    settings: settings
-  };
+export function createCodebook(element = 'body', config = {}) {
+    const codebook = {
+        element: element,
+        config: config,
+        init: init,
+        layout: layout,
+        controls: controls,
+        title: title,
+        nav: nav,
+        instructions: instructions,
+        summaryTable: summaryTable,
+        dataListing: dataListing,
+        chartMaker: chartMaker,
+        data: data,
+        util: util,
+        settings: settings
+    };
 
-  var cbClone = clone(codebook);
-  cbClone.events = {
-    init() {},
-    complete() {}
-  };
+    codebook.events = {
+        init() {},
+        complete() {}
+    };
 
-  cbClone.on = function(event, callback) {
-    let possible_events = ['init', 'complete'];
-    if (possible_events.indexOf(event) < 0) {
-      return;
-    }
-    if (callback) {
-      cbClone.events[event] = callback;
-    }
-  };
+    codebook.on = function(event, callback) {
+        let possible_events = ['init', 'complete'];
+        if (possible_events.indexOf(event) < 0) {
+            return;
+        }
+        if (callback) {
+            codebook.events[event] = callback;
+        }
+    };
 
-  return cbClone;
+    return codebook;
 }

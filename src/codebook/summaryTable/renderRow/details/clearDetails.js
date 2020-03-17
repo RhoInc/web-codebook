@@ -1,3 +1,3 @@
 export default function clearDetails(d, list) {
-  list.selectAll('*').remove();
+    list.selectAll('*').remove();
 }

@@ -8,8 +8,8 @@ import { groups } from './controls/groups';
 import { controlToggle } from './controls/controlToggle';
 
 export const controls = {
-  init: init,
-  filters: filters,
-  groups: groups,
-  controlToggle: controlToggle
+    init: init,
+    filters: filters,
+    groups: groups,
+    controlToggle: controlToggle
 };

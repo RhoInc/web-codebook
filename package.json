@@ -25,10 +25,10 @@
     "build": "npm audit fix && npm run bundle && npm run format",
     "bundle": "rollup -c",
     "format": "npm run format-src && npm run format-bundle && npm run format-test && npm run format-css",
-    "format-bundle": "prettier --single-quote --write ./build/webcodebook.js",
+    "format-bundle": "prettier --write --single-quote --tab-width=4 ./build/webcodebook.js",
     "format-css": "stylefmt ./css/webcodebook.css",
-    "format-src": "prettier --single-quote --write \"./src/**/*.js\"",
-    "format-test": "prettier --single-quote --write \"./test-page/**/*.js\"",
+    "format-src": "prettier --write --single-quote --tab-width=4 \"./src/**/*.js\"",
+    "format-test": "prettier --write --single-quote --tab-width=4 \"./test-page/**/*.js\"",
     "test-page": "start chrome ./test-page/index.html && start firefox ./test-page/index.html && start iexplore file://%CD%/test-page/index.html",
     "watch": "rollup -c -w"
   },
@@ -43,5 +43,8 @@
   },
   "bugs": {
     "url": "https://github.com/rhoinc/web-codebook/issues"
+  },
+  "optionalDependencies": {
+    "nested-data-explorer": "^0.4.4"
   }
 }

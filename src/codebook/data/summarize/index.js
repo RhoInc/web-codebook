@@ -3,7 +3,7 @@ import categorical from './categorical';
 import continuous from './continuous';
 
 export default {
-  determineType: determineType,
-  categorical: categorical,
-  continuous: continuous
+    determineType: determineType,
+    categorical: categorical,
+    continuous: continuous
 };

@@ -2,63 +2,50 @@
   Initialize codebook
 \------------------------------------------------------------------------------------------------*/
 
-import { select as d3select } from 'd3';
-import clone from '../util/clone';
+//import clone from '../util/clone';
 import indicateLoading from './util/indicateLoading';
 
 export function init(data) {
-  var settings = this.config;
+    this.layout();
 
-  //create chart wrapper in specified div
-  this.wrap = d3select(this.element)
-    .append('div')
-    .attr('class', 'web-codebook')
-    .datum(this); // bind codebook object to codebook container so as to pass down to successive child elements
+    indicateLoading(this, 'Codebook initialization', () => {
+        // Call init event.
+        this.events.init.call(this);
 
-  // call the before callback (if any)
-  this.events.init.call(this);
+        // Attach data to codebook object.
+        //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
+        this.data.raw = data;
+        this.data.raw.forEach((d, i) => {
+            d['web-codebook-index'] = i + 1; // uniquely identifies each record
+        });
+        this.data.filtered = this.data.raw; // assume no filters active on init :/
+        this.data.highlighted = [];
 
-  //save raw data
-  this.data.raw = clone(data);
-  this.data.raw.forEach((d, i) => {
-    d['web-codebook-index'] = i + 1; // define an index with which to identify records uniquely
-  });
-  this.data.filtered = this.data.raw; //assume no filters active on init :/
-  this.data.highlighted = [];
+        // settings and defaults
+        this.util.setDefaults(this);
 
-  //settings and defaults
-  this.util.setDefaults(this);
-  this.layout();
+        // data manipulation
+        this.data.makeSummary(this);
 
-  indicateLoading(this, '.web-codebook .settings', () => {
-    //prepare the data summaries
-    this.data.makeSummary(this);
+        // title
+        this.title.init(this);
 
-    //make the title
-    this.title.init(this);
+        // Intialize controls.
+        this.util.makeAutomaticFilters(this);
+        this.util.makeAutomaticGroups(this);
+        this.controls.init(this);
 
-    //draw controls
-    this.util.makeAutomaticFilters(this);
-    this.util.makeAutomaticGroups(this);
-    this.controls.init(this);
+        // Intialize nav, title, and instructions.
+        this.nav.init(this);
+        this.instructions.init(this);
 
-    //initialize nav, title and instructions
-    this.nav.init(this);
-    this.instructions.init(this);
+        // Call complete event.
+        this.events.complete.call(this);
 
-    //call after event (if any)
-    this.events.complete.call(this);
-
-    //initialize and then draw the codebook
-    this.summaryTable.draw(this);
-
-    //initialize and then draw the data listing
-    this.dataListing.init(this);
-
-    //initialize the chart maker
-    this.chartMaker.init(this);
-
-    //initialize the settings
-    this.settings.init(this);
-  });
+        // Initialize each module.
+        this.summaryTable.draw(this);
+        this.dataListing.init(this);
+        this.chartMaker.init(this);
+        this.settings.init(this);
+    });
 }

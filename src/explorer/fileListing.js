@@ -5,5 +5,5 @@
 import { init } from './fileListing/init';
 
 export const fileListing = {
-  init: init
+    init: init
 };
