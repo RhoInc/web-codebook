@@ -56,5 +56,10 @@ export default function continuous(vector, sub) {
         });
     }
 
+    vector.forEach(function(d, i) {
+        d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
+        d.missing = d.missing || !d.numeric;
+    });
+
     return statistics;
 }

@@ -8,13 +8,15 @@ import indicateLoading from './util/indicateLoading';
 export function init(data) {
     this.layout();
 
-    indicateLoading(this, 'Codebook initialization', () => {
+    //indicateLoading(this, 'Codebook initialization', () => {
         // Call init event.
         this.events.init.call(this);
 
         // Attach data to codebook object.
         //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
         this.data.raw = data;
+        this.data.variables = Object.keys(data[0]);
+        this.data.nVariables = this.data.variables.length;
         this.data.raw.forEach((d, i) => {
             d['web-codebook-index'] = i + 1; // uniquely identifies each record
         });
@@ -25,7 +27,7 @@ export function init(data) {
         this.util.setDefaults(this);
 
         // data manipulation
-        this.data.makeSummary(this);
+        this.data.summary = this.data.makeSummary(this);
 
         // title
         this.title.init(this);
@@ -47,5 +49,5 @@ export function init(data) {
         this.dataListing.init(this);
         this.chartMaker.init(this);
         this.settings.init(this);
-    });
+    //});
 }

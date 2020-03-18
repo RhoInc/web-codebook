@@ -1,4 +1,4 @@
-const defaultSettings = {
+export default {
     filters: [],
     groups: [],
     variableLabels: [],
@@ -18,5 +18,3 @@ const defaultSettings = {
     whiteSpaceAsMissing: true,
     missingValues: [null, NaN, undefined]
 };
-
-export default defaultSettings;

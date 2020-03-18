@@ -188,50 +188,50 @@
     \------------------------------------------------------------------------------------------------*/
 
     function init(data) {
-            var _this = this;
-
             this.layout();
 
-            indicateLoading(this, 'Codebook initialization', function () {
-                    // Call init event.
-                    _this.events.init.call(_this);
+            //indicateLoading(this, 'Codebook initialization', () => {
+            // Call init event.
+            this.events.init.call(this);
 
-                    // Attach data to codebook object.
-                    //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
-                    _this.data.raw = data;
-                    _this.data.raw.forEach(function (d, i) {
-                            d['web-codebook-index'] = i + 1; // uniquely identifies each record
-                    });
-                    _this.data.filtered = _this.data.raw; // assume no filters active on init :/
-                    _this.data.highlighted = [];
-
-                    // settings and defaults
-                    _this.util.setDefaults(_this);
-
-                    // data manipulation
-                    _this.data.makeSummary(_this);
-
-                    // title
-                    _this.title.init(_this);
-
-                    // Intialize controls.
-                    _this.util.makeAutomaticFilters(_this);
-                    _this.util.makeAutomaticGroups(_this);
-                    _this.controls.init(_this);
-
-                    // Intialize nav, title, and instructions.
-                    _this.nav.init(_this);
-                    _this.instructions.init(_this);
-
-                    // Call complete event.
-                    _this.events.complete.call(_this);
-
-                    // Initialize each module.
-                    _this.summaryTable.draw(_this);
-                    _this.dataListing.init(_this);
-                    _this.chartMaker.init(_this);
-                    _this.settings.init(_this);
+            // Attach data to codebook object.
+            //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
+            this.data.raw = data;
+            this.data.variables = Object.keys(data[0]);
+            this.data.nVariables = this.data.variables.length;
+            this.data.raw.forEach(function (d, i) {
+                    d['web-codebook-index'] = i + 1; // uniquely identifies each record
             });
+            this.data.filtered = this.data.raw; // assume no filters active on init :/
+            this.data.highlighted = [];
+
+            // settings and defaults
+            this.util.setDefaults(this);
+
+            // data manipulation
+            this.data.summary = this.data.makeSummary(this);
+
+            // title
+            this.title.init(this);
+
+            // Intialize controls.
+            this.util.makeAutomaticFilters(this);
+            this.util.makeAutomaticGroups(this);
+            this.controls.init(this);
+
+            // Intialize nav, title, and instructions.
+            this.nav.init(this);
+            this.instructions.init(this);
+
+            // Call complete event.
+            this.events.complete.call(this);
+
+            // Initialize each module.
+            this.summaryTable.draw(this);
+            this.dataListing.init(this);
+            this.chartMaker.init(this);
+            this.settings.init(this);
+            //});
     }
 
     function layout() {
@@ -2924,24 +2924,82 @@
         return filtered;
     }
 
-    function determineType(vector, levelSplit) {
-        var nonMissingValues = vector.filter(function (f) {
-            return !f.missing;
-        });
-        var numericValues = nonMissingValues.filter(function (d) {
-            return !isNaN(+d.value);
-        });
-        var distinctValues = d3$1.set(numericValues.map(function (d) {
-            return d.value;
-        })).values();
+    function hidden(codebook, variable) {
+        var hidden = codebook.config.hiddenVariables.includes(variable.value_col);
+        return hidden;
+    }
 
-        return vector.some(function (scalar) {
-            return !isNaN(+scalar.value);
-        }) ? 'continuous' : 'categorical';
-        //nonMissingValues.length === numericValues.length &&
-        //    distinctValues.length > levelSplit
-        //    ? 'continuous'
-        //    : 'categorical';
+    function chartVisibility(codebook, variable) {
+        var chartVisibility = codebook.config.chartVisibility;
+        return chartVisibility;
+    }
+
+    function label(codebook, variable) {
+        var variableLabel = codebook.config.variableLabels.find(function (variableLabel) {
+            return variableLabel.value_col === variable.value_col;
+        });
+        var label = variableLabel !== undefined ? variableLabel.label : variable.value_col;
+        return label;
+    }
+
+    function determineType(vector, levelSplit) {
+        var type = 'continuous';
+
+        for (var i = 0; i < vector.length; i++) {
+            var scalar = vector[i];
+
+            if (scalar.missing) {
+                continue;
+            }
+
+            if (scalar.number) {
+                continue;
+            }
+
+            type = 'categorical';
+            break;
+        }
+
+        return type;
+    }
+
+    function type(codebook, variable) {
+        var variableType = codebook.config.variableTypes.find(function (variableType) {
+            return variableType.value_col === variable.value_col;
+        });
+        var type = variableType ? variableType.type : determineType(variable.values, codebook.config.levelSplit);
+        return type;
+    }
+
+    function meta(codebook, variable) {
+        var meta = [];
+        var variableMeta = codebook.config.meta.find(function (variableMetadata) {
+            return variableMetadata.value_col === variable.value_col;
+        });
+
+        if (variableMeta !== undefined) Object.keys(variableMeta).filter(function (key) {
+            return !['value_col', 'label'].includes(key);
+        }).forEach(function (key) {
+            meta.push({ key: key, value: variableMeta[key] });
+        });
+
+        return meta;
+    }
+
+    function attachMetadata(codebook, variable) {
+        variable.hidden = hidden(codebook, variable);
+        variable.chartVisibility = chartVisibility(codebook, variable);
+        variable.label = label(codebook, variable);
+        variable.type = type(codebook, variable);
+        variable.meta = meta(codebook, variable);
+
+        return {
+            hidden: hidden,
+            chartVisibility: chartVisibility,
+            label: label,
+            type: type,
+            meta: meta
+        };
     }
 
     function categorical(vector, sub) {
@@ -3055,165 +3113,166 @@
             });
         }
 
+        vector.forEach(function (d, i) {
+            d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
+            d.missing = d.missing || !d.numeric;
+        });
+
         return statistics;
     }
 
-    var summarize = {
-        determineType: determineType,
-        categorical: categorical,
-        continuous: continuous
-    };
+    function calculateStatistics(codebook, variable) {
+        var summaries = { categorical: categorical, continuous: continuous };
+        var statistics = summaries[variable.type](variable.values, codebook.data.highlighted.length > 0 ? function (d) {
+            return d.highlighted;
+        } : null);
+
+        return statistics;
+    }
+
+    function chartType(codebook, variable) {
+        var chartType = 'none';
+
+        if (variable.type === 'continuous') {
+            chartType = 'histogramBoxPlot';
+        } else if (variable.type === 'categorical') {
+            if (variable.statistics.values.length > codebook.config.maxLevels) {
+                chartType = 'character';
+                variable.summaryText = 'Character variable with ' + variable.statistics.values.length + ' unique levels.<br>' + "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " + variable.statistics.values.length + ' levels. Note that this may slow down or crash your browser.</span>';
+            } else if (variable.statistics.values.length > codebook.config.levelSplit) {
+                chartType = 'verticalBars';
+            } else if (variable.statistics.values.length <= codebook.config.levelSplit) {
+                chartType = 'horizontalBars';
+            }
+        }
+
+        return chartType;
+    }
+
+    function calculateNumberOfBins(codebook, variable) {
+        var IQR = +variable.statistics['3rd quartile'] - +variable.statistics['1st quartile'];
+        var n = variable.statistics['n'];
+        var range = +variable.statistics['max'] - +variable.statistics['min'];
+        var binSize = 2 * (IQR / Math.pow(n, 1.0 / 3.0));
+        var bins = binSize > 0 ? Math.ceil(range / binSize) : codebook.config.nBins > 0 ? codebook.config.nBins : defaultSettings$1.nBins;
+
+        return bins;
+    }
+
+    function bins(codebook, variable) {
+        var bins = void 0;
+
+        if (variable.type === 'continuous') {
+            var _bins = codebook.config.autoBins ? codebook.config.nBins : calculateNumberOfBins(codebook, variable);
+
+            if (Object.keys(codebook.config).indexOf('group') > -1) {
+                variable.groups.forEach(function (group) {
+                    group.bins = codebook.config.autoBins ? codebook.config.nBins : calculateNumberOfBins(codebook, group);
+                });
+            }
+        }
+
+        return bins;
+    }
+
+    function summarizeGroups(codebook, variable) {
+        if (codebook.config.group) {
+            variable.group = codebook.config.group;
+            variable.groupLabel = codebook.config.variableLabels.map(function (variableLabel) {
+                return variableLabel.value_col;
+            }).includes(codebook.config.group) ? codebook.config.variableLabels.filter(function (variableLabel) {
+                return variableLabel.value_col === codebook.config.group;
+            })[0].label : codebook.config.group;
+            variable.groups = d3.nest().key(function (d) {
+                return d[codebook.config.book];
+            }).rollup(function (data) {
+                return data.map(function (d) {
+                    var datum = {
+                        index: d['web-codebook-index'],
+                        value: datum[variable.value_col],
+                        highlighted: codebook.data.highlighted.includes(d)
+                    };
+                });
+            }).entries(codebook.data.filtered).map(function (group) {
+                group.group = group.key;
+                delete group.key;
+                group.value_col = variable.value_col;
+                group.type = variable.type;
+                group.statistics = calculateStatistics(codebook, group);
+                return group;
+            });
+        }
+    }
 
     function makeSummary(codebook) {
         var t0 = performance.now();
         //begin performance test
 
-        var config = codebook.config;
-        var data = codebook.data.filtered;
-        var group = codebook.config.group;
+        var summary = codebook.data.variables.map(function (variable) {
+            var varObj = {
+                value_col: variable,
+                values: Array(codebook.data.filtered.length),
+                statistics: {},
 
-        if (data.length > 0) {
-            var variables = Object.keys(data[0]).map(function (variable) {
-                var varObj = { value_col: variable };
+                // variable metadata
+                metadata: {},
+                hidden: null,
+                chartVisibility: null,
+                label: null,
+                type: null,
+                meta: null,
+                chartType: null,
+                bins: null
+            };
 
-                // get a list of raw values
-                varObj.values = data.map(function (d) {
-                    var current = {
-                        index: d['web-codebook-index'],
-                        value: d[variable],
-                        highlighted: codebook.data.highlighted.includes(d), // this doesn't make sense - d is an object
-                        missingWhiteSpace: config.whiteSpaceAsMissing ? /^\s*$/.test(d[variable]) : false,
-                        missingValue: config.missingValues.includes(d[variable])
-                    };
-                    current.missing = current.missingWhiteSpace || current.missingValue;
+            return varObj;
+        });
 
-                    return current;
-                });
-
-                // get hidden status
-                varObj.hidden = codebook.config.hiddenVariables.includes(variable);
-                varObj.chartVisibility = codebook.config.chartVisibility;
-
-                // get variable label
-                varObj.label = codebook.config.variableLabels.map(function (variableLabel) {
-                    return variableLabel.value_col;
-                }).includes(variable) ? codebook.config.variableLabels.filter(function (variableLabel) {
-                    return variableLabel.value_col === variable;
-                })[0].label : variable;
-
-                // Determine Type
-                varObj.type = codebook.config.variableTypes.map(function (variableType) {
-                    return variableType.value_col;
-                }).includes(variable) ? codebook.config.variableTypes.filter(function (variableLabel) {
-                    return variableLabel.value_col === variable;
-                })[0].type : summarize.determineType(varObj.values, codebook.config.levelSplit);
-
-                // update missingness for non-numeric values in continuous columns
-                if (varObj.type == 'continuous') {
-                    varObj.values.forEach(function (d, i) {
-                        d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
-                        d.missing = d.missing || !d.numeric;
-                    });
-                }
-
-                // create a list of missing values
-                //const missings = varObj.values
-                //    .filter(f => f.missing)
-                //    .map(m => m.value);
-                //if (missings.length) {
-                //    varObj.missingList = nest()
-                //        .key(d => d)
-                //        .rollup(d => d.length)
-                //        .entries(missings)
-                //        .sort((a, b) => b.values - a.values);
-
-                //    varObj.missingSummary = varObj.missingList
-                //        .map(m => '"' + m.key + '" (n=' + m.values + ')')
-                //        .join('\n');
-                //} else {
-                //    varObj.missingList = [];
-                //}
-
-                // Add metadata Object
-                varObj.meta = [];
-                var metaMatch = codebook.config.meta.filter(function (f) {
-                    return f.value_col == variable;
-                });
-                if (metaMatch.length == 1) {
-                    var metaKeys = Object.keys(metaMatch[0]).filter(function (f) {
-                        return !['value_col', 'label'].includes(f);
-                    });
-                    metaKeys.forEach(function (m) {
-                        varObj.meta.push({ key: m, value: metaMatch[0][m] });
-                    });
-                }
-
-                // calculate variable statistics (including for highlights - if any)
-                var sub = codebook.data.highlighted.length > 0 ? function (d) {
-                    return d.highlighted;
-                } : null;
-                varObj.statistics = varObj.type === 'continuous' ? summarize.continuous(varObj.values, sub) : summarize.categorical(varObj.values, sub);
-
-                // get chart type
-                varObj.chartType = 'none';
-                if (varObj.type == 'continuous') {
-                    varObj.chartType = 'histogramBoxPlot';
-                } else if (varObj.type == 'categorical') {
-                    if (varObj.statistics.values.length > codebook.config.maxLevels) {
-                        varObj.chartType = 'character';
-                        varObj.summaryText = 'Character variable with ' + varObj.statistics.values.length + ' unique levels.<br>' + "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " + varObj.statistics.values.length + ' levels. Note that this may slow down or crash your browser.</span>';
-                    } else if (varObj.statistics.values.length > codebook.config.levelSplit) {
-                        varObj.chartType = 'verticalBars';
-                    } else if (varObj.statistics.values.length <= codebook.config.levelSplit) {
-                        varObj.chartType = 'horizontalBars';
-                    }
-                }
-
-                // Handle groups.
-                if (group) {
-                    varObj.group = group;
-                    varObj.groupLabel = codebook.config.variableLabels.map(function (variableLabel) {
-                        return variableLabel.value_col;
-                    }).includes(group) ? codebook.config.variableLabels.filter(function (variableLabel) {
-                        return variableLabel.value_col === group;
-                    })[0].label : group;
-                    varObj.groups = d3$1.set(data.map(function (d) {
-                        return d[group];
-                    })).values().map(function (g) {
-                        return { group: g };
-                    });
-
-                    varObj.groups.forEach(function (g) {
-                        // Define variable metadata and generate data array.
-                        g.value_col = variable;
-                        g.values = data.filter(function (d) {
-                            return d[group] === g.group;
-                        }).map(function (d) {
-                            return {
-                                index: d['web-codebook-index'],
-                                value: d[variable],
-                                highlighted: codebook.data.highlighted.includes(d)
-                            };
-                        });
-                        g.type = varObj.type;
-
-                        // Calculate statistics.
-                        if (varObj.type === 'categorical') g.statistics = summarize.categorical(g.values, sub);else g.statistics = summarize.continuous(g.values, sub);
-                    });
-                }
-                return varObj;
-            });
-
-            codebook.data.summary = variables;
-            // get bin counts
-            codebook.util.getBinCounts(codebook);
-        } else {
-            codebook.data.summary = [];
+        var missingRegex = /^\s*$/;
+        var numberRegex = /^-?[0-9]*\.?[0-9]*$/;
+        for (var i = 0; i < codebook.data.filtered.length; i++) {
+            var d = codebook.data.filtered[i];
+            for (var j = 0; j < codebook.data.nVariables; j++) {
+                var variable = codebook.data.variables[j];
+                summary[j].values[i] = {};
+                var datum = summary[j].values[i];
+                datum.index = d['web-codebook-index'];
+                datum.value = d[variable];
+                datum.missing = codebook.config.whiteSpaceMissing && missingRegex.test(datum.value) || codebook.config.missingValues.includes(datum.value);
+                datum.number = !datum.missing ? numberRegex.test(datum.value) : false;
+                datum.string = !datum.missing && !datum.number;
+                datum.highlighted = codebook.data.highlighted.includes(d);
+            }
         }
+
+        summary.forEach(function (variable) {
+            variable.metadata = attachMetadata(codebook, variable);
+            variable.statistics = calculateStatistics(codebook, variable);
+            variable.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
+            variable.bins = bins(codebook, variable); // calculate statistics prior to calculating number of bins
+            summarizeGroups(codebook, variable); // update summarizeGroups to return a value rather than modifying variable in place
+        });
+        console.log(summary);
+        //codebook.data.summary = codebook.data.filtered.length > 0
+        //    ? codebook.data.variables.map(variable => {
+        //        const varObj = {value_col: variable};
+
+        //        varObj.values = defineVariableArray(codebook, varObj);
+        //        varObj.metadata = attachMetadata(codebook, varObj);
+        //        varObj.statistics = calculateStatistics(codebook, varObj);
+        //        varObj.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
+        //        varObj.bins = bins(codebook, varObj); // calculate statistics prior to calculating number of bins
+        //        summarizeGroups(codebook, varObj); // update summarizeGroups to return a value rather than modifying varObj in place
+
+        //        return varObj;
+        //    })
+        //    : [];
 
         //end performance test
         var t1 = performance.now();
         console.log('[makeSummary] took ' + (t1 - t0) + ' milliseconds.');
+
+        return summary;
     }
 
     /*------------------------------------------------------------------------------------------------\

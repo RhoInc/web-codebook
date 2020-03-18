@@ -1,189 +1,79 @@
-import { nest, set as d3set } from 'd3';
-import summarize from './summarize/index';
+import defineVariableArray from './makeSummary/defineVariableArray';
+import attachMetadata from './makeSummary/attachMetadata';
+import calculateStatistics from './makeSummary/calculateStatistics';
+import chartType from './makeSummary/attachMetadata/chartType';
+import bins from './makeSummary/attachMetadata/bins';
+import summarizeGroups from './makeSummary/summarizeGroups';
 
 export function makeSummary(codebook) {
     const t0 = performance.now();
     //begin performance test
 
-    const config = codebook.config;
-    const data = codebook.data.filtered;
-    const group = codebook.config.group;
+    const summary = codebook.data.variables.map(variable => {
+        const varObj = {
+            value_col: variable,
+            values: Array(codebook.data.filtered.length),
+            statistics: {},
 
-    if (data.length > 0) {
-        const variables = Object.keys(data[0])
-            .map(variable => {
-                const varObj = { value_col: variable };
+            // variable metadata
+            metadata: {},
+            hidden: null,
+            chartVisibility: null,
+            label: null,
+            type: null,
+            meta: null,
+            chartType: null,
+            bins: null,
+        };
 
-                // get a list of raw values
-                varObj.values = data.map(d => {
-                    const current = {
-                        index: d['web-codebook-index'],
-                        value: d[variable],
-                        highlighted: codebook.data.highlighted.includes(d), // this doesn't make sense - d is an object
-                        missingWhiteSpace: config.whiteSpaceAsMissing
-                            ? /^\s*$/.test(d[variable])
-                            : false,
-                        missingValue: config.missingValues.includes(d[variable])
-                    };
-                    current.missing =
-                        current.missingWhiteSpace || current.missingValue;
+        return varObj;
+    });
 
-                    return current;
-                });
-
-                // get hidden status
-                varObj.hidden = codebook.config.hiddenVariables.includes(variable);
-                varObj.chartVisibility = codebook.config.chartVisibility;
-
-                // get variable label
-                varObj.label =
-                    codebook.config.variableLabels
-                        .map(variableLabel => variableLabel.value_col)
-                        .includes(variable)
-                        ? codebook.config.variableLabels.filter(
-                            variableLabel => variableLabel.value_col === variable
-                        )[0].label
-                        : variable;
-
-                // Determine Type
-                varObj.type =
-                    codebook.config.variableTypes
-                        .map(variableType => variableType.value_col)
-                        .includes(variable)
-                        ? codebook.config.variableTypes.filter(
-                            variableLabel => variableLabel.value_col === variable
-                        )[0].type
-                        : summarize.determineType(
-                            varObj.values,
-                            codebook.config.levelSplit
-                        );
-
-                // update missingness for non-numeric values in continuous columns
-                if (varObj.type == 'continuous') {
-                    varObj.values.forEach(function(d, i) {
-                        d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
-                        d.missing = d.missing || !d.numeric;
-                    });
-                }
-
-                // create a list of missing values
-                //const missings = varObj.values
-                //    .filter(f => f.missing)
-                //    .map(m => m.value);
-                //if (missings.length) {
-                //    varObj.missingList = nest()
-                //        .key(d => d)
-                //        .rollup(d => d.length)
-                //        .entries(missings)
-                //        .sort((a, b) => b.values - a.values);
-
-                //    varObj.missingSummary = varObj.missingList
-                //        .map(m => '"' + m.key + '" (n=' + m.values + ')')
-                //        .join('\n');
-                //} else {
-                //    varObj.missingList = [];
-                //}
-
-                // Add metadata Object
-                varObj.meta = [];
-                var metaMatch = codebook.config.meta.filter(
-                    f => f.value_col == variable
-                );
-                if (metaMatch.length == 1) {
-                    var metaKeys = Object.keys(metaMatch[0]).filter(
-                        f => !['value_col', 'label'].includes(f)
-                    );
-                    metaKeys.forEach(function(m) {
-                        varObj.meta.push({ key: m, value: metaMatch[0][m] });
-                    });
-                }
-
-                // calculate variable statistics (including for highlights - if any)
-                var sub =
-                    codebook.data.highlighted.length > 0
-                        ? function(d) {
-                            return d.highlighted;
-                        }
-                        : null;
-                varObj.statistics =
-                    varObj.type === 'continuous'
-                        ? summarize.continuous(varObj.values, sub)
-                        : summarize.categorical(varObj.values, sub);
-
-                // get chart type
-                varObj.chartType = 'none';
-                if (varObj.type == 'continuous') {
-                    varObj.chartType = 'histogramBoxPlot';
-                } else if (varObj.type == 'categorical') {
-                    if (
-                        varObj.statistics.values.length > codebook.config.maxLevels
-                    ) {
-                        varObj.chartType = 'character';
-                        varObj.summaryText =
-                            'Character variable with ' +
-                            varObj.statistics.values.length +
-                            ' unique levels.<br>' +
-                            "<span class='caution'><span class='drawLevel'>Click here</span> to treat this variable as categorical and draw a histogram with " +
-                            varObj.statistics.values.length +
-                            ' levels. Note that this may slow down or crash your browser.</span>';
-                    } else if (
-                        varObj.statistics.values.length > codebook.config.levelSplit
-                    ) {
-                        varObj.chartType = 'verticalBars';
-                    } else if (
-                        varObj.statistics.values.length <=
-                        codebook.config.levelSplit
-                    ) {
-                        varObj.chartType = 'horizontalBars';
-                    }
-                }
-
-                // Handle groups.
-                if (group) {
-                    varObj.group = group;
-                    varObj.groupLabel =
-                        codebook.config.variableLabels
-                            .map(variableLabel => variableLabel.value_col)
-                            .includes(group)
-                            ? codebook.config.variableLabels.filter(
-                                variableLabel => variableLabel.value_col === group
-                            )[0].label
-                            : group;
-                    varObj.groups = d3set(data.map(d => d[group]))
-                        .values()
-                        .map(g => {
-                            return { group: g };
-                        });
-
-                    varObj.groups.forEach(g => {
-                        // Define variable metadata and generate data array.
-                        g.value_col = variable;
-                        g.values = data.filter(d => d[group] === g.group).map(d => {
-                            return {
-                                index: d['web-codebook-index'],
-                                value: d[variable],
-                                highlighted: codebook.data.highlighted.includes(d)
-                            };
-                        });
-                        g.type = varObj.type;
-
-                        // Calculate statistics.
-                        if (varObj.type === 'categorical')
-                            g.statistics = summarize.categorical(g.values, sub);
-                        else g.statistics = summarize.continuous(g.values, sub);
-                    });
-                }
-                return varObj;
-            });
-
-        codebook.data.summary = variables;
-        // get bin counts
-        codebook.util.getBinCounts(codebook);
-    } else {
-        codebook.data.summary = [];
+    const missingRegex = /^\s*$/;
+    const numberRegex = /^-?[0-9]*\.?[0-9]*$/;
+    for (let i = 0; i < codebook.data.filtered.length; i++) {
+        const d = codebook.data.filtered[i];
+        for (let j = 0; j < codebook.data.nVariables; j++) {
+            const variable = codebook.data.variables[j];
+            summary[j].values[i] = {};
+            const datum = summary[j].values[i];
+            datum.index = d['web-codebook-index'];
+            datum.value = d[variable];
+            datum.missing = (codebook.config.whiteSpaceMissing && missingRegex.test(datum.value)) || codebook.config.missingValues.includes(datum.value);
+            datum.number = !datum.missing
+                ? numberRegex.test(datum.value)
+                : false;
+            datum.string = !datum.missing && !datum.number;
+            datum.highlighted = codebook.data.highlighted.includes(d);
+        }
     }
+
+    summary.forEach(variable => {
+        variable.metadata = attachMetadata(codebook, variable);
+        variable.statistics = calculateStatistics(codebook, variable);
+        variable.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
+        variable.bins = bins(codebook, variable); // calculate statistics prior to calculating number of bins
+        summarizeGroups(codebook, variable); // update summarizeGroups to return a value rather than modifying variable in place
+    });
+    console.log(summary);
+    //codebook.data.summary = codebook.data.filtered.length > 0
+    //    ? codebook.data.variables.map(variable => {
+    //        const varObj = {value_col: variable};
+
+    //        varObj.values = defineVariableArray(codebook, varObj);
+    //        varObj.metadata = attachMetadata(codebook, varObj);
+    //        varObj.statistics = calculateStatistics(codebook, varObj);
+    //        varObj.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
+    //        varObj.bins = bins(codebook, varObj); // calculate statistics prior to calculating number of bins
+    //        summarizeGroups(codebook, varObj); // update summarizeGroups to return a value rather than modifying varObj in place
+
+    //        return varObj;
+    //    })
+    //    : [];
 
     //end performance test
     const t1 = performance.now();
     console.log(`[makeSummary] took ${t1 - t0} milliseconds.`);
+
+    return summary;
 }
