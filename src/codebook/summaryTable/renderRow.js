@@ -10,7 +10,7 @@ import makeTitle from './renderRow/makeTitle.js';
 import { select as d3select } from 'd3';
 
 export function renderRow(d) {
-    var rowWrap = d3select(this);
+    const rowWrap = d3select(this);
     rowWrap.selectAll('*').remove();
 
     rowWrap

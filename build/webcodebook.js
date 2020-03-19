@@ -188,50 +188,52 @@
     \------------------------------------------------------------------------------------------------*/
 
     function init(data) {
+            var _this = this;
+
             this.layout();
 
-            //indicateLoading(this, 'Codebook initialization', () => {
-            // Call init event.
-            this.events.init.call(this);
+            indicateLoading(this, 'Codebook initialization', function () {
+                    // Call init event.
+                    _this.events.init.call(_this);
 
-            // Attach data to codebook object.
-            //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
-            this.data.raw = data;
-            this.data.variables = Object.keys(data[0]);
-            this.data.nVariables = this.data.variables.length;
-            this.data.raw.forEach(function (d, i) {
-                    d['web-codebook-index'] = i + 1; // uniquely identifies each record
+                    // Attach data to codebook object.
+                    //this.data.raw = clone(data); // not sure why we're cloning the data, but this definitely adds overhead
+                    _this.data.raw = data;
+                    _this.data.variables = Object.keys(data[0]);
+                    _this.data.nVariables = _this.data.variables.length;
+                    _this.data.raw.forEach(function (d, i) {
+                            d['web-codebook-index'] = i + 1; // uniquely identifies each record
+                    });
+                    _this.data.filtered = _this.data.raw; // assume no filters active on init :/
+                    _this.data.highlighted = [];
+
+                    // settings and defaults
+                    _this.util.setDefaults(_this);
+
+                    // data manipulation
+                    _this.data.makeSummary(_this);
+
+                    // title
+                    _this.title.init(_this);
+
+                    // Intialize controls.
+                    _this.util.makeAutomaticFilters(_this);
+                    _this.util.makeAutomaticGroups(_this);
+                    _this.controls.init(_this);
+
+                    // Intialize nav, title, and instructions.
+                    _this.nav.init(_this);
+                    _this.instructions.init(_this);
+
+                    // Call complete event.
+                    _this.events.complete.call(_this);
+
+                    // Initialize each module.
+                    _this.summaryTable.draw(_this);
+                    _this.dataListing.init(_this);
+                    _this.chartMaker.init(_this);
+                    _this.settings.init(_this);
             });
-            this.data.filtered = this.data.raw; // assume no filters active on init :/
-            this.data.highlighted = [];
-
-            // settings and defaults
-            this.util.setDefaults(this);
-
-            // data manipulation
-            this.data.summary = this.data.makeSummary(this);
-
-            // title
-            this.title.init(this);
-
-            // Intialize controls.
-            this.util.makeAutomaticFilters(this);
-            this.util.makeAutomaticGroups(this);
-            this.controls.init(this);
-
-            // Intialize nav, title, and instructions.
-            this.nav.init(this);
-            this.instructions.init(this);
-
-            // Call complete event.
-            this.events.complete.call(this);
-
-            // Initialize each module.
-            this.summaryTable.draw(this);
-            this.dataListing.init(this);
-            this.chartMaker.init(this);
-            this.settings.init(this);
-            //});
     }
 
     function layout() {
@@ -712,10 +714,9 @@
         });
 
         //Set chart visibility (on initial load only - then keep user settings)
-        if (codebook.config.chartVisibility != 'user-defined') {
-            varRows.classed('hiddenDetails', codebook.config.chartVisibility != 'visible');
-        }
+        if (codebook.config.chartVisibility !== 'user-defined') varRows.classed('hiddenDetails', codebook.config.chartVisibility != 'visible');
 
+        // TODO: update this setting somewhere more appropriate
         codebook.config.chartVisibility = codebook.config.chartVisibility == 'hidden' ? 'hidden' : 'user-defined';
 
         //ENTER + Update
@@ -725,9 +726,8 @@
         varRows.exit().remove();
 
         codebook.summaryTable.wrap.selectAll('div.status.error').remove();
-        if (varRows[0].length == 0) {
-            codebook.summaryTable.wrap.append('div').attr('class', 'status error').text('No values selected. Update the filters above or load a different data set.');
-        }
+
+        if (varRows.size() === 0) codebook.summaryTable.wrap.append('div').attr('class', 'status error').text('No values selected. Update the filters above or load a different data set.');
     }
 
     function moveYaxis(chart) {
@@ -1784,6 +1784,7 @@
 
     function onResize$3() {
         var context = this;
+        console.log(this);
 
         //Hide overall plot if [settings.overall] is set to false.
         if (!this.config.overall && !this.group) {
@@ -1834,17 +1835,13 @@
         }
 
         //Create array of values.
-        this.values = this.raw_data.map(function (d) {
-            return +d[measure];
-        }).sort(function (a, b) {
-            return a - b;
-        });
+        //this.values = this.raw_data.map(d => +d[measure]).sort((a, b) => a - b);
 
         //Define x-axis domain as the range of the measure, regardless of subgrouping.
-        if (!this.initialSettings.xDomain) {
-            this.initialSettings.xDomain = d3$1.extent(this.values);
-        }
-        this.config.x.domain = this.initialSettings.xDomain;
+        //if (!this.initialSettings.xDomain) {
+        //    this.initialSettings.xDomain = d3extent(this.values);
+        //}
+        //this.config.x.domain = this.initialSettings.xDomain;
 
         /**-------------------------------------------------------------------------------------------\
           Paneling
@@ -1929,6 +1926,7 @@
     }
 
     function createHistogramBoxPlot(this_, d) {
+        console.log(d);
         var chartContainer = d3$1.select(this_).node();
         var chartSettings = {
             measure: ' ',
@@ -1958,7 +1956,7 @@
         } else {
             d.values.forEach(function (d) {
                 chartData.push({
-                    ' ': d.value,
+                    ' ': d,
                     index: d.index,
                     highlighted: d.highlighted
                 });
@@ -2183,8 +2181,9 @@
     }
 
     function makeHist(this_, d) {
-        var height = 15,
-            width = 100;
+        // TODO: move these settings somewhere else, and make sure the height is synced with row height
+        var height = 15;
+        var width = 100;
 
         var svg = d3$1.select(this_).append('svg').attr('height', height).attr('width', width).style('margin-right', '0.1em');
 
@@ -2198,7 +2197,7 @@
             var values = d.values.filter(function (f) {
                 return !f.missing;
             }).map(function (m) {
-                return +m.value;
+                return +m;
             });
             var x_linear = d3$1.scale.linear().domain(d3$1.extent(values)).range([0, width]);
             var bins = d3$1.layout.histogram().bins(x_linear.ticks(50))(values).map(function (m, i) {
@@ -2215,7 +2214,7 @@
             return d.key;
         })).rangeBands([0, width], 0.1, 0);
 
-        var width = x.rangeBand();
+        var xWidth = x.rangeBand();
 
         var y = d3$1.scale.linear().domain([0, d3$1.max(bins, function (d) {
             return d.n;
@@ -2225,7 +2224,7 @@
             return 'translate(' + x(d.key) + ',' + y(d.n) + ')';
         });
 
-        bar.append('rect').attr('x', 1).attr('width', width).attr('height', function (d) {
+        bar.append('rect').attr('x', 1).attr('width', xWidth).attr('height', function (d) {
             return height - y(d.n);
         }).attr('fill', d.type == 'categorical' ? '#999' : 'black').append('title').text(function (d) {
             return d.title;
@@ -2234,9 +2233,7 @@
 
     function createSpark() {
         var d = d3$1.select(this).datum();
-        if (d.statistics.n > 0) {
-            makeHist(this, d);
-        }
+        if (d.statistics.n > 0) makeHist(this, d);
     }
 
     function makeTitle(d) {
@@ -2924,6 +2921,36 @@
         return filtered;
     }
 
+    function defineVariableArray(codebook, variable) {
+        var variableArray = codebook.data.filtered.map(function (d) {
+            return d[variable.value_col];
+        });
+        //{
+        //    const index = d['web-codebook-index'];
+        //    const value = d[variable.value_col];
+        //    const isMissing = (
+        //        (codebook.config.whiteSpaceMissing && /^\s*$/.test(value))
+        //        || codebook.config.missingValues.includes(value)
+        //    );
+        //    const isNumber = !isMissing
+        //        ? /^-?[0-9]*\.?[0-9]*$/.test(value)
+        //        : false;
+        //    const isString = !isMissing && !isNumber;
+        //    const isHighlighted = codebook.data.highlighted.includes(d);
+
+        //    return {
+        //        index,
+        //        value,
+        //        missing: isMissing,
+        //        number: isNumber,
+        //        string: isString,
+        //        highlighted: isHighlighted,
+        //    };
+        //});
+
+        return variableArray;
+    }
+
     function hidden(codebook, variable) {
         var hidden = codebook.config.hiddenVariables.includes(variable.value_col);
         return hidden;
@@ -2945,20 +2972,27 @@
     function determineType(vector, levelSplit) {
         var type = 'continuous';
 
-        for (var i = 0; i < vector.length; i++) {
+        var n = vector.length;
+        var nUnique = [];
+        var missingRegex = /^\s*$/;
+        var numberRegex = /^-?[0-9]*\.?[0-9]*$/;
+
+        for (var i = 0; i < n; i++) {
             var scalar = vector[i];
 
-            if (scalar.missing) {
-                continue;
-            }
+            if (typeof scalar === 'number') break;
 
-            if (scalar.number) {
-                continue;
-            }
+            if (!nUnique.includes(scalar)) nUnique.push(scalar);
+
+            if (scalar === null || scalar === undefined || missingRegex.test(scalar)) continue;
+
+            if (numberRegex.test(scalar)) continue;
 
             type = 'categorical';
             break;
         }
+
+        if (type === 'continuous' && nUnique.length <= levelSplit) type = 'categorical';
 
         return type;
     }
@@ -3004,16 +3038,20 @@
 
     function categorical(vector, sub) {
         var statistics = {};
+
+        // frequencies
         statistics.N = vector.length;
         var nonMissing = vector.filter(function (f) {
             return !f.missing;
         });
         statistics.n = nonMissing.length;
         statistics.nMissing = vector.length - statistics.n;
+
+        // rates
         statistics.percentMissing = statistics.nMissing / statistics.N;
         statistics.missingSummary = statistics.nMissing + '/' + statistics.N + ' (' + d3$1.format('0.1%')(statistics.percentMissing) + ')';
         statistics.values = d3$1.nest().key(function (d) {
-            return d.value;
+            return d;
         }).rollup(function (d) {
             var stats = {
                 n: d.length,
@@ -3036,13 +3074,6 @@
             return d.value;
         })).values().length;
 
-        //statistics.values.forEach(value => {
-        //    for (const statistic in value.values) {
-        //        value[statistic] = value.values[statistic];
-        //    }
-        //    delete value.values;
-        //});
-
         if (sub) {
             statistics.highlightValues = d3$1.nest().key(function (d) {
                 return d.value;
@@ -3063,13 +3094,6 @@
                 delete d.values;
                 return d;
             });
-
-            //statistics.highlightValues.forEach(value => {
-            //    for (const statistic in value.values) {
-            //        value[statistic] = value.values[statistic];
-            //    }
-            //    delete value.values;
-            //});
         }
 
         return statistics;
@@ -3077,18 +3101,24 @@
 
     function continuous(vector, sub) {
         var statistics = {};
+
+        // frequencies
         statistics.N = vector.length;
-        var nonMissing = vector.filter(function (d) {
-            return !d.missing;
-        }).map(function (d) {
-            return +d.value;
+        var nonMissing = vector.map(function (scalar) {
+            return +scalar;
+        }).filter(function (scalar) {
+            return scalar !== undefined && scalar !== null && !isNaN(scalar);
         }).sort(function (a, b) {
             return a - b;
         });
         statistics.n = nonMissing.length;
-        statistics.nMissing = vector.length - statistics.n;
+        statistics.nMissing = statistics.N - statistics.n;
+
+        // rates
         statistics.percentMissing = statistics.nMissing / statistics.N;
         statistics.missingSummary = statistics.nMissing + '/' + statistics.N + ' (' + d3$1.format('0.1%')(statistics.percentMissing) + ')';
+
+        // descriptive
         statistics.mean = d3$1.format('0.2f')(d3$1.mean(nonMissing));
         statistics.SD = d3$1.format('0.2f')(d3$1.deviation(nonMissing));
         var quantiles = [['min', 0], ['5th percentile', 0.05], ['1st quartile', 0.25], ['median', 0.5], ['3rd quartile', 0.75], ['95th percentile', 0.95], ['max', 1]];
@@ -3098,8 +3128,8 @@
         });
 
         if (sub) {
-            var sub_vector = vector.filter(sub).filter(function (d) {
-                return !isNaN(+d.value) && !/^\s*$/.test(d.value);
+            var sub_vector = vector.filter(sub).filter(function (scalar) {
+                return scalar !== undefined && scalar !== null && !isNaN(scalar);
             }).map(function (d) {
                 return +d.value;
             }).sort(function (a, b) {
@@ -3112,11 +3142,6 @@
                 statistics[statistic + '_sub'] = d3$1.format('0.1f')(d3$1.quantile(sub_vector, quantile[1]));
             });
         }
-
-        vector.forEach(function (d, i) {
-            d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
-            d.missing = d.missing || !d.numeric;
-        });
 
         return statistics;
     }
@@ -3208,71 +3233,24 @@
         var t0 = performance.now();
         //begin performance test
 
-        var summary = codebook.data.variables.map(function (variable) {
-            var varObj = {
-                value_col: variable,
-                values: Array(codebook.data.filtered.length),
-                statistics: {},
+        //codebook.data.summary = summary;
+        codebook.data.summary = codebook.data.filtered.length > 0 ? codebook.data.variables.map(function (variable) {
+            var varObj = { value_col: variable };
 
-                // variable metadata
-                metadata: {},
-                hidden: null,
-                chartVisibility: null,
-                label: null,
-                type: null,
-                meta: null,
-                chartType: null,
-                bins: null
-            };
+            varObj.values = defineVariableArray(codebook, varObj);
+            varObj.metadata = attachMetadata(codebook, varObj);
+            varObj.statistics = calculateStatistics(codebook, varObj);
+            varObj.chartType = chartType(codebook, varObj); // calculate statistics prior to determining chart type
+            varObj.bins = bins(codebook, varObj); // calculate statistics prior to calculating number of bins
+            summarizeGroups(codebook, varObj); // update summarizeGroups to return a value rather than modifying varObj in place
 
             return varObj;
-        });
-
-        var missingRegex = /^\s*$/;
-        var numberRegex = /^-?[0-9]*\.?[0-9]*$/;
-        for (var i = 0; i < codebook.data.filtered.length; i++) {
-            var d = codebook.data.filtered[i];
-            for (var j = 0; j < codebook.data.nVariables; j++) {
-                var variable = codebook.data.variables[j];
-                summary[j].values[i] = {};
-                var datum = summary[j].values[i];
-                datum.index = d['web-codebook-index'];
-                datum.value = d[variable];
-                datum.missing = codebook.config.whiteSpaceMissing && missingRegex.test(datum.value) || codebook.config.missingValues.includes(datum.value);
-                datum.number = !datum.missing ? numberRegex.test(datum.value) : false;
-                datum.string = !datum.missing && !datum.number;
-                datum.highlighted = codebook.data.highlighted.includes(d);
-            }
-        }
-
-        summary.forEach(function (variable) {
-            variable.metadata = attachMetadata(codebook, variable);
-            variable.statistics = calculateStatistics(codebook, variable);
-            variable.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
-            variable.bins = bins(codebook, variable); // calculate statistics prior to calculating number of bins
-            summarizeGroups(codebook, variable); // update summarizeGroups to return a value rather than modifying variable in place
-        });
-        console.log(summary);
-        //codebook.data.summary = codebook.data.filtered.length > 0
-        //    ? codebook.data.variables.map(variable => {
-        //        const varObj = {value_col: variable};
-
-        //        varObj.values = defineVariableArray(codebook, varObj);
-        //        varObj.metadata = attachMetadata(codebook, varObj);
-        //        varObj.statistics = calculateStatistics(codebook, varObj);
-        //        varObj.chartType = chartType(codebook, variable); // calculate statistics prior to determining chart type
-        //        varObj.bins = bins(codebook, varObj); // calculate statistics prior to calculating number of bins
-        //        summarizeGroups(codebook, varObj); // update summarizeGroups to return a value rather than modifying varObj in place
-
-        //        return varObj;
-        //    })
-        //    : [];
+        }) : [];
+        console.log(codebook.data.summary);
 
         //end performance test
         var t1 = performance.now();
         console.log('[makeSummary] took ' + (t1 - t0) + ' milliseconds.');
-
-        return summary;
     }
 
     /*------------------------------------------------------------------------------------------------\

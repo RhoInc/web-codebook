@@ -7,13 +7,17 @@ import {
 
 export default function continuous(vector, sub) {
     const statistics = {};
+
+    // frequencies
     statistics.N = vector.length;
     const nonMissing = vector
-        .filter(d => !d.missing)
-        .map(d => +d.value)
+        .map(scalar => +scalar)
+        .filter(scalar => scalar !== undefined && scalar !== null && !isNaN(scalar))
         .sort((a, b) => a - b);
     statistics.n = nonMissing.length;
-    statistics.nMissing = vector.length - statistics.n;
+    statistics.nMissing = statistics.N - statistics.n;
+
+    // rates
     statistics.percentMissing = statistics.nMissing / statistics.N;
     statistics.missingSummary =
         statistics.nMissing +
@@ -22,6 +26,8 @@ export default function continuous(vector, sub) {
         ' (' +
         d3format('0.1%')(statistics.percentMissing) +
         ')';
+
+    // descriptive
     statistics.mean = d3format('0.2f')(d3mean(nonMissing));
     statistics.SD = d3format('0.2f')(d3deviation(nonMissing));
     const quantiles = [
@@ -34,16 +40,16 @@ export default function continuous(vector, sub) {
         ['max', 1]
     ];
     quantiles.forEach(quantile => {
-        let statistic = quantile[0];
+        const statistic = quantile[0];
         statistics[statistic] = d3format('0.1f')(
             d3quantile(nonMissing, quantile[1])
         );
     });
 
     if (sub) {
-        var sub_vector = vector
+        const sub_vector = vector
             .filter(sub)
-            .filter(d => !isNaN(+d.value) && !/^\s*$/.test(d.value))
+            .filter(scalar => scalar !== undefined && scalar !== null && !isNaN(scalar))
             .map(d => +d.value)
             .sort((a, b) => a - b);
         statistics.mean_sub = d3format('0.2f')(d3mean(sub_vector));
@@ -55,11 +61,6 @@ export default function continuous(vector, sub) {
             );
         });
     }
-
-    vector.forEach(function(d, i) {
-        d.numeric = !isNaN(d.value) && !isNaN(parseFloat(d.value));
-        d.missing = d.missing || !d.numeric;
-    });
 
     return statistics;
 }

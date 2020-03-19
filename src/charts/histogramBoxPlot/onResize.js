@@ -8,6 +8,7 @@ import addModals from './addModals.js';
 
 export default function onResize() {
     const context = this;
+    console.log(this);
 
     //Hide overall plot if [settings.overall] is set to false.
     if (!this.config.overall && !this.group) {

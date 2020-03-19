@@ -2,10 +2,14 @@ import { nest as d3nest, format as d3format, set as d3set } from 'd3';
 
 export default function categorical(vector, sub) {
     const statistics = {};
+
+    // frequencies
     statistics.N = vector.length;
     const nonMissing = vector.filter(f => !f.missing);
     statistics.n = nonMissing.length;
     statistics.nMissing = vector.length - statistics.n;
+
+    // rates
     statistics.percentMissing = statistics.nMissing / statistics.N;
     statistics.missingSummary =
         statistics.nMissing +
@@ -15,7 +19,7 @@ export default function categorical(vector, sub) {
         d3format('0.1%')(statistics.percentMissing) +
         ')';
     statistics.values = d3nest()
-        .key(d => d.value)
+        .key(d => d)
         .rollup(function(d) {
             const stats = {
                 n: d.length,
@@ -35,13 +39,6 @@ export default function categorical(vector, sub) {
         });
 
     statistics.Unique = d3set(nonMissing.map(d => d.value)).values().length;
-
-    //statistics.values.forEach(value => {
-    //    for (const statistic in value.values) {
-    //        value[statistic] = value.values[statistic];
-    //    }
-    //    delete value.values;
-    //});
 
     if (sub) {
         statistics.highlightValues = d3nest()
@@ -63,13 +60,6 @@ export default function categorical(vector, sub) {
                 delete d.values;
                 return d;
             });
-
-        //statistics.highlightValues.forEach(value => {
-        //    for (const statistic in value.values) {
-        //        value[statistic] = value.values[statistic];
-        //    }
-        //    delete value.values;
-        //});
     }
 
     return statistics;

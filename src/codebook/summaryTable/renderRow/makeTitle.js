@@ -3,9 +3,9 @@ import { format as d3format } from 'd3';
 import createSpark from '../../../charts/createSpark';
 
 export default function makeTitle(d) {
-    var rowDiv = d3select(this.parentNode.parentNode.parentNode);
-    var chartDiv = rowDiv.select('.row-chart');
-    var hiddenFlag = rowDiv.classed('hiddenDetails');
+    const rowDiv = d3select(this.parentNode.parentNode.parentNode);
+    const chartDiv = rowDiv.select('.row-chart');
+    const hiddenFlag = rowDiv.classed('hiddenDetails');
 
     //Add row toggle
     d3select(this)

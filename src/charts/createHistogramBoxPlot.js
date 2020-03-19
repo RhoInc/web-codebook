@@ -2,6 +2,7 @@ import { defineHistogram } from './histogramBoxPlot/defineHistogram';
 import { select as d3select } from 'd3';
 
 export function createHistogramBoxPlot(this_, d) {
+    console.log(d);
     const chartContainer = d3select(this_).node();
     const chartSettings = {
         measure: ' ',
@@ -31,7 +32,7 @@ export function createHistogramBoxPlot(this_, d) {
     } else {
         d.values.forEach(d => {
             chartData.push({
-                ' ': d.value,
+                ' ': d,
                 index: d.index,
                 highlighted: d.highlighted
             });

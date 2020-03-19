@@ -8,7 +8,7 @@ import indicateLoading from './util/indicateLoading';
 export function init(data) {
     this.layout();
 
-    //indicateLoading(this, 'Codebook initialization', () => {
+    indicateLoading(this, 'Codebook initialization', () => {
         // Call init event.
         this.events.init.call(this);
 
@@ -27,7 +27,7 @@ export function init(data) {
         this.util.setDefaults(this);
 
         // data manipulation
-        this.data.summary = this.data.makeSummary(this);
+        this.data.makeSummary(this);
 
         // title
         this.title.init(this);
@@ -49,5 +49,5 @@ export function init(data) {
         this.dataListing.init(this);
         this.chartMaker.init(this);
         this.settings.init(this);
-    //});
+    });
 }

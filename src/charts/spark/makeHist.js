@@ -1,10 +1,11 @@
 import { select, scale, extent, layout, max } from 'd3';
 
 export default function makeHist(this_, d) {
-    var height = 15,
-        width = 100;
+    // TODO: move these settings somewhere else, and make sure the height is synced with row height
+    const height = 15;
+    const width = 100;
 
-    var svg = select(this_)
+    const svg = select(this_)
         .append('svg')
         .attr('height', height)
         .attr('width', width)
@@ -18,7 +19,7 @@ export default function makeHist(this_, d) {
         });
     } else if (d.type == 'continuous') {
         var values = d.values.filter(f => !f.missing).map(function(m) {
-            return +m.value;
+            return +m;
         });
         var x_linear = scale
             .linear()
@@ -46,7 +47,7 @@ export default function makeHist(this_, d) {
         )
         .rangeBands([0, width], 0.1, 0);
 
-    var width = x.rangeBand();
+    var xWidth = x.rangeBand();
 
     var y = scale
         .linear()
@@ -70,7 +71,7 @@ export default function makeHist(this_, d) {
 
     bar.append('rect')
         .attr('x', 1)
-        .attr('width', width)
+        .attr('width', xWidth)
         .attr('height', function(d) {
             return height - y(d.n);
         })
