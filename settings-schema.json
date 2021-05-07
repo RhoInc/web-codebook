@@ -1,7 +1,7 @@
 {
     "description": "",
     "overview": "The most straightforward way to customize a codebook is to define a settings object whose properties describe the codebook's behavior and appearance. The settings object can be passed as the second argument to `webcodebook.createCodebook()` (or its alias `webcodebook.createChart()`). All defaults can be overwritten by users when creating a codebook. Parameters for the settings object are described in detail below.",
-    "version": "1.4.0",
+    "version": "1.7.1",
     "type": "object",
     "properties": {
         "filters": {
