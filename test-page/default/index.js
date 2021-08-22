@@ -21,15 +21,11 @@ fetch(
             .join(' ')
       ).replace(/\.csv/i, '');
     });
-    console.log('Data file metadata:');
-    console.log(json);
     //const fileObj = json[Math.floor(Math.random() * json.length)];
     const fileObj = json[8];
-    console.log('Select data file metadata:');
-    console.log(fileObj);
     d3.csv(
       fileObj.github_url,
-      function(d) {
+      function(d, i) {
         return d;
       },
       function(error, data) {

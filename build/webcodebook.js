@@ -2324,6 +2324,8 @@
   }
 
   function onInit$2() {
+    var _this = this;
+
     var context = this;
     var config = this.initialSettings;
     var measure = config.measure;
@@ -2352,7 +2354,10 @@
     if (!this.group) {
       this.initialSettings.unfilteredData = this.raw_data;
       this.raw_data = this.initialSettings.unfilteredData.filter(function(d) {
-        return !isNaN(+d[measure]) && !/^\s*$/.test(d[measure]);
+        return (
+          _this.config.codebookConfig.missingValues.indexOf(d[measure]) ===
+            -1 && !/^\s*$/.test(d[measure])
+        );
       });
     }
 
@@ -2485,7 +2490,8 @@
       margin: this_.margin,
       nBins: d.bins,
       chartType: d.chartType,
-      commonScale: d.commonScale == undefined ? true : d.commonScale
+      commonScale: d.commonScale == undefined ? true : d.commonScale,
+      codebookConfig: d.codebookConfig
     };
     var chartData = [];
 
@@ -4232,6 +4238,9 @@
             else g.statistics = summarize.continuous(g.values, sub);
           });
         }
+
+        // Give charts access to codebook object.
+        varObj.codebookConfig = config;
         return varObj;
       });
 
