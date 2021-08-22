@@ -2356,7 +2356,9 @@
       this.raw_data = this.initialSettings.unfilteredData.filter(function(d) {
         return (
           _this.config.codebookConfig.missingValues.indexOf(d[measure]) ===
-            -1 && !/^\s*$/.test(d[measure])
+            -1 &&
+          !isNaN(d[measure]) && // [NaN].indexOf(NaN) always returns -1
+          !/^\s*$/.test(d[measure])
         );
       });
     }
@@ -3492,7 +3494,7 @@
     tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
     dataName: '',
     whiteSpaceAsMissing: true,
-    missingValues: [null, NaN, undefined]
+    missingValues: [null, undefined]
   };
 
   function setDefaults(codebook) {

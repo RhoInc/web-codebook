@@ -16,7 +16,7 @@ const defaultSettings = {
   tabs: ['codebook', 'listing', 'chartMaker', 'settings'],
   dataName: '',
   whiteSpaceAsMissing: true,
-  missingValues: [null, NaN, undefined]
+  missingValues: [null, undefined]
 };
 
 export default defaultSettings;
