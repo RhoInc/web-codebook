@@ -159,6 +159,9 @@ export function makeSummary(codebook) {
           else g.statistics = summarize.continuous(g.values, sub);
         });
       }
+
+      // Give charts access to codebook object.
+      varObj.codebookConfig = config;
       return varObj;
     });
 

@@ -34,7 +34,10 @@ export default function onInit() {
   if (!this.group) {
     this.initialSettings.unfilteredData = this.raw_data;
     this.raw_data = this.initialSettings.unfilteredData.filter(
-      d => !isNaN(+d[measure]) && !/^\s*$/.test(d[measure])
+      d =>
+        this.config.codebookConfig.missingValues.indexOf(d[measure]) === -1 &&
+        !isNaN(d[measure]) && // [NaN].indexOf(NaN) always returns -1
+        !/^\s*$/.test(d[measure])
     );
   }
 
